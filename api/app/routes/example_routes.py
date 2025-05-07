@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify
-from ..services.example_service import ExampleService
+from app.services.example_service import ExampleService
 
 example_bp = Blueprint('example', __name__)
 example_service = ExampleService()

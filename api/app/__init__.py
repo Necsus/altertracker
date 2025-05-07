@@ -1,5 +1,6 @@
 from flask import Flask
-from .extensions import db, migrate
+from app.extensions import db, migrate
+from app.routes.example_routes import example_bp
 
 def create_app(config_filename='config.py'):
     app = Flask(__name__)
@@ -8,7 +9,6 @@ def create_app(config_filename='config.py'):
     db.init_app(app)
     migrate.init_app(app, db)
 
-    from .routes.example_routes import example_bp
     app.register_blueprint(example_bp)
 
     return app
