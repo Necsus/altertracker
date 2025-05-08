@@ -13,8 +13,8 @@ services:
     networks:
       - backend
 
-  app:
-    build: ./app
+  api:
+    build: ./api
     restart: always
     depends_on:
       - db
@@ -31,7 +31,7 @@ services:
     volumes:
       - ./nginx:/etc/nginx/conf.d
     depends_on:
-      - app
+      - api
     networks:
       - backend
       - frontend

@@ -26,7 +26,7 @@ jobs:
           set -euo pipefail
 
           echo "[+] Début du déploiement à $(date)"
-          cd ~/geekom
+          cd ~/geekom/uniquetracker
 
           echo "[+] Pull du code depuis GitHub"
           git pull origin main
