@@ -8,7 +8,7 @@ __pycache__/
 *$py.class
 
 # Fichiers de configuration et secrets
-config.py
+# config.py
 *.env
 
 # Base de données
