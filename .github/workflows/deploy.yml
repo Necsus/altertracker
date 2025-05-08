@@ -23,8 +23,18 @@ jobs:
     - name: Deploy to server
       run: |
         ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          set -euo pipefail
+
+          echo "[+] Début du déploiement à $(date)"
           cd ~/geekom
+
+          echo "[+] Pull du code depuis GitHub"
           git pull origin main
+
+          echo "[+] Rebuild et redémarrage de Docker"
           docker compose build
           docker compose up -d
+
+          echo "[✓] Déploiement terminé avec succès"
+          exit 0
         EOF
