@@ -1,6 +1,6 @@
 from app.extensions import db
 
-class Post(db.Model):
+class Card(db.Model):
     __tablename__ = 'cards'
 
     id = db.Column(db.String(200), primary_key=True)
@@ -17,3 +17,6 @@ class Post(db.Model):
     MOUNTAIN_POWER = db.Column(db.Integer, default=0)
     OCEAN_POWER = db.Column(db.Integer, default=0)
     FOREST_POWER = db.Column(db.Integer, default=0)
+
+    def __repr__(self):
+        return f"<Card {self.name}>"
