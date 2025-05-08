@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypass
+      POSTGRES_DB: mydb
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - backend
+
+  app:
+    build: ./app
+    restart: always
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://myuser:mypass@db:5432/mydb
+    networks:
+      - backend
+
+  web:
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+    depends_on:
+      - app
+    networks:
+      - backend
+      - frontend
+
+volumes:
+  db_data:
+
+networks:
+  frontend:
+  backend:
