@@ -14,9 +14,11 @@ class Card(db.Model):
     isSuspended = db.Column(db.Boolean, default=False)
     MAIN_COST = db.Column(db.Integer, default=0)
     RECALL_COST = db.Column(db.Integer, default=0)
-    MOUNTAIN_POWER = db.Column(db.Integer, default=0)
-    OCEAN_POWER = db.Column(db.Integer, default=0)
-    FOREST_POWER = db.Column(db.Integer, default=0)
+    MOUNTAIN_POWER = db.Column(db.Integer, default=None)
+    OCEAN_POWER = db.Column(db.Integer, default=None)
+    FOREST_POWER = db.Column(db.Integer, default=None)
+    MAIN_EFFECT = db.Column(db.Text, default=None)
+    ECHO_EFFECT = db.Column(db.Text, default=None)
 
     def __repr__(self):
         return f"<Card {self.name}>"
