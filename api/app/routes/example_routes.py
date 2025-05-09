@@ -4,10 +4,6 @@ from app.services.example_service import ExampleService
 example_bp = Blueprint('example', __name__)
 example_service = ExampleService()
 
-@example_bp.route('/')
-def index():
-    return 'Bienvenue à la racine !'
-
-@example_bp.route('/example', methods=['GET'])
+@example_bp.route('/api/example', methods=['GET'])
 def get_example():
     return jsonify(example_service.get_example_data())

@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Builder en mode production
-RUN npm run build
+RUN npm run build --prod
 
 # Étape 2 : Servir l'app avec Nginx
 FROM nginx:alpine
@@ -23,7 +23,9 @@ FROM nginx:alpine
 RUN rm -rf /usr/share/nginx/html/*
 
 # Copier le build Angular dans le dossier Nginx
-COPY --from=builder /client/dist/client/* /usr/share/nginx/html
+COPY --from=builder /client/dist/client/browser/* /usr/share/nginx/html
+
+RUN chmod -R 755 /usr/share/nginx/html
 
 # Copier un fichier Nginx personnalisé si besoin (optionnel)
 # COPY nginx.conf /etc/nginx/nginx.conf

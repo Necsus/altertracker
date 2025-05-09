@@ -23,6 +23,7 @@ services:
 
   client:
     build: ./client
+    restart: always
     depends_on:
       - api
     networks:
@@ -36,7 +37,7 @@ services:
     volumes:
       - ./nginx:/etc/nginx/conf.d
       - ./nginx/robots.txt:/etc/nginx/static/robots.txt
-      - ./client/dist/client:/usr/share/nginx/html
+      - ./client/dist/client/browser:/usr/share/nginx/html
     depends_on:
       - client
       - api
