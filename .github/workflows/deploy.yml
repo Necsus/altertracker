@@ -36,6 +36,7 @@ jobs:
           git pull origin main
 
           echo "[+] Rebuild et redémarrage de Docker"
+          docker compose down
           docker compose build
           docker compose up -d
 
