@@ -25,9 +25,9 @@ RUN rm -rf /usr/share/nginx/html/*
 # Copier le build Angular dans le dossier Nginx
 COPY --from=builder /client/dist/client/browser/* /usr/share/nginx/html
 
-RUN chmod -R 755 /usr/share/nginx/html
-
 # Copier un fichier Nginx personnalisé si besoin (optionnel)
 # COPY nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
