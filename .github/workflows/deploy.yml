@@ -37,8 +37,7 @@ jobs:
 
           echo "[+] Execute npm install et build"
           cd ~/geekom/uniquetracker/client
-          rm -rf node_modules package-lock.json
-          chown -R $USER:$USER .
+          rm -rf node_modules package-lock.json dist
           npm cache clean --force
           npm install
           npm run build --production
