@@ -35,6 +35,9 @@ jobs:
           echo "[+] Pull du code depuis GitHub"
           git pull origin main
 
+          echo "[+] Configuration des permissions"
+          chmod -R 755 ~/geekom/uniquetracker
+
           echo "[+] Execute npm install et build"
           cd ~/geekom/uniquetracker/client
           rm -rf node_modules package-lock.json dist
