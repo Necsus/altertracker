@@ -40,7 +40,7 @@ def get_cards(page: int, rarity: str):
         print(f"Erreur lors de la requête : {e}")
         return None
     
-def get_unique_cards_name_faction(name: str, faction: str, set: str, mainCost: int, page: int):
+def get_unique_cards_name_faction(name: str, faction: str, set: str, mainCost: int, recallCost: int, page: int):
     base_url = "https://api.altered.gg/cards"
     params = {
         "page": page,
@@ -48,6 +48,7 @@ def get_unique_cards_name_faction(name: str, faction: str, set: str, mainCost: i
         "cardType[]": "CHARACTER",
         "factions[]": faction,
         "mainCost[]": mainCost,
+        "recallCost[]": recallCost,
         "rarity[]": "UNIQUE",
         "translations.name": f"\"{name}\"",
         "itemsPerPage": 36,

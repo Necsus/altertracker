@@ -151,8 +151,14 @@ with app.app_context():  # Activer le contexte de l'application
     def get_unique():
         print(f"----------- GET UNIQUE -----------")
         sets = ['COREKS', 'CORE', 'ALIZE']
-        mainCosts = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
-        existing_cards = {card.id: card for card in Card.query.filter(Card.rarity == 'RARE', Card.type == 'CHARACTER').all()}
+        mainCosts = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+        recallCosts = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+        existing_cards = {
+            card.id: card
+            for card in Card.query.filter(Card.rarity == 'RARE', Card.type == 'CHARACTER')
+            .order_by(Card.name_en.asc())  # Trier par ordre alphabétique croissant sur name_en
+            .all()
+        }
         for dbcard in existing_cards.values():
             print(f"--- CARDNAME : {dbcard.name}  FACTION : {dbcard.faction}")
             for set in sets:
@@ -161,36 +167,37 @@ with app.app_context():  # Activer le contexte de l'application
                 print(f"--- SET : {set}...")
                 for mainCost in mainCosts:
                     print(f"--- MAIN_COST : {mainCost}")
-                    page = 1
-                    cardToInsert = []
-                    while True:  # Boucle infinie, on sortira avec un break
-                        # Récupérer les données pour la page actuelle
-                        print(f"Récupération des cartes de la page {page}...")
-                        cards = card_routine.get_unique_cards_name_faction(dbcard.name_en, dbcard.faction, set, mainCost, page)
-                        
-                        # Vérifier si communes est vide ou None
-                        if not cards or 'hydra:member' not in cards or not cards['hydra:member']:
-                            break  # Sortir de la boucle si aucune donnée n'est retournée
+                    for recallCost in recallCosts:
+                        print(f"--- RECALL_COST : {recallCost}")
+                        page = 1
+                        cardToInsert = []
+                        while True:  # Boucle infinie, on sortira avec un break
+                            # Récupérer les données pour la page actuelle
+                            print(f"Récupération des cartes de la page {page}...")
+                            cards = card_routine.get_unique_cards_name_faction(dbcard.name_en, dbcard.faction, set, mainCost, recallCost, page)
+                            
+                            # Vérifier si communes est vide ou None
+                            if not cards or 'hydra:member' not in cards or not cards['hydra:member']:
+                                break  # Sortir de la boucle si aucune donnée n'est retournée
 
-                        # Ajouter les cartes à la liste
-                        for card in cards['hydra:member']:
-                            tempCard = map_jsoncard_to_card(card)
-                            existing_card = db.session.get(Card, tempCard.id)
-                            if existing_card:
-                                print(f"\rCarte {tempCard.reference} déjà existante. Passage à la suivante.", end="", flush=True)
-                                continue  # Passer à l'itération suivante si la carte n'est pas trouvée
-                            print(f"\rRécupération des stats de la carte {tempCard.reference}...", end="", flush=True)
-                            detailsCard = card_routine.get_card_by_id(tempCard.reference)
-                            tempCard = map_effect_to_card(tempCard, detailsCard)
-                            cardToInsert.append(tempCard)
-                            time.sleep(0.1)
-                        print()
+                            # Ajouter les cartes à la liste
+                            for card in cards['hydra:member']:
+                                tempCard = map_jsoncard_to_card(card)
+                                existing_card = db.session.get(Card, tempCard.id)
+                                if existing_card:
+                                    print(f"\rCarte {tempCard.reference} déjà existante. Passage à la suivante.", end="", flush=True)
+                                    continue  # Passer à l'itération suivante si la carte n'est pas trouvée
+                                print(f"\rRécupération des stats de la carte {tempCard.reference}...", end="", flush=True)
+                                detailsCard = card_routine.get_card_by_id(tempCard.reference)
+                                tempCard = map_effect_to_card(tempCard, detailsCard)
+                                cardToInsert.append(tempCard)
+                            print()
 
-                        # Passer à la page suivante
-                        page += 1
+                            # Passer à la page suivante
+                            page += 1
 
-                    # Insérer dans la db
-                    insert_cards_into_db(cardToInsert)
+                        # Insérer dans la db
+                        insert_cards_into_db(cardToInsert)
 
     # get_communes()
     # get_rare()
