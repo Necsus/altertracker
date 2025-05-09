@@ -21,16 +21,6 @@ services:
     networks:
       - backend
 
-  client:
-    build: ./client
-    restart: always
-    volumes:
-      - ./client/dist/client/browser:/usr/share/nginx/html
-    depends_on:
-      - api
-    networks:
-      - frontend
-
   web:
     image: nginx:latest
     ports:
@@ -39,8 +29,8 @@ services:
     volumes:
       - ./nginx:/etc/nginx/conf.d
       - ./nginx/robots.txt:/etc/nginx/static/robots.txt
+      - ./client/dist/client/browser:/usr/share/nginx/html
     depends_on:
-      - client
       - api
     networks:
       - backend

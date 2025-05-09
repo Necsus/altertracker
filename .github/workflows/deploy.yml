@@ -35,6 +35,13 @@ jobs:
           echo "[+] Pull du code depuis GitHub"
           git pull origin main
 
+          echo "[+] Execute npm install et build"
+          cd ~/geekom/uniquetracker/client
+          npm install
+          npm run build --production
+
+          cd ~/geekom/uniquetracker
+
           echo "[+] Rebuild et redémarrage de Docker"
           docker compose down
           docker compose build
