@@ -6,6 +6,7 @@ class Card(db.Model):
     id = db.Column(db.String(200), primary_key=True)
     reference = db.Column(db.String(200))
     name = db.Column(db.String(200))
+    name_en = db.Column(db.String(200), default=None)
     faction = db.Column(db.String(2))
     rarity = db.Column(db.String(20))
     type = db.Column(db.String(20))
