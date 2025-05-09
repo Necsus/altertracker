@@ -1,10 +1,12 @@
 from flask import Flask
+from flask_cors import CORS
 from app.extensions import db, migrate
 from app.routes.example_routes import example_bp
 from app.config import Config
 
 def create_app():
     app = Flask(__name__)
+    CORS(app, resources={r"/api/*": {"origins": "*"}})
     app.config.from_object(Config)
 
     db.init_app(app)

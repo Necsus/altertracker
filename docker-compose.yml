@@ -21,6 +21,13 @@ services:
     networks:
       - backend
 
+  client:
+    build: ./client
+    depends_on:
+      - api
+    networks:
+      - frontend
+
   web:
     image: nginx:latest
     ports:
@@ -28,8 +35,10 @@ services:
       - "443:443"
     volumes:
       - ./nginx:/etc/nginx/conf.d
-      - ./nginx/robots.txt:/usr/share/nginx/html/robots.txt
+      - ./nginx/static:/etc/nginx/static/robots.txt
+      - ./client/dist/client:/usr/share/nginx/html
     depends_on:
+      - client
       - api
     networks:
       - backend
