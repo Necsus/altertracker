@@ -6,7 +6,7 @@ set -e
 echo "⏳ Attente de PostgreSQL..."
 
 # Attente que PostgreSQL soit prêt
-while ! nc -z localhost 5432; do
+while ! nc -z db 5432; do
   sleep 1
 done
 
