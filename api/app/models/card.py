@@ -1,3 +1,4 @@
+import datetime
 from app.extensions import db
 
 class Card(db.Model):
@@ -20,6 +21,52 @@ class Card(db.Model):
     FOREST_POWER = db.Column(db.Integer, default=None)
     MAIN_EFFECT = db.Column(db.Text, default=None)
     ECHO_EFFECT = db.Column(db.Text, default=None)
+    created_at = db.Column(db.DateTime,  default=datetime.datetime.now(datetime.timezone.utc))
+    edited_at = db.Column(db.DateTime,  default=datetime.datetime.now(datetime.timezone.utc))
 
     def __repr__(self):
         return f"<Card {self.name}>"
+    
+    def json(self):
+        return {
+            'id': self.id,
+            'reference': self.reference,
+            'name': self.name,
+            'name_en': self.name_en,
+            'faction': self.faction,
+            'rarity': self.rarity,
+            'type': self.type,
+            'set': self.set,
+            'imagePath': self.imagePath,
+            'isSuspended': self.isSuspended,
+            'MAIN_COST': self.MAIN_COST,
+            'RECALL_COST': self.RECALL_COST,
+            'MOUNTAIN_POWER': self.MOUNTAIN_POWER,
+            'OCEAN_POWER': self.OCEAN_POWER,
+            'FOREST_POWER': self.FOREST_POWER,
+            'MAIN_EFFECT': self.MAIN_EFFECT,
+            'ECHO_EFFECT': self.ECHO_EFFECT,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'edited_at': self.edited_at.isoformat() if self.edited_at else None,
+        }
+    
+    def __init__(self, id, reference, name, name_en, faction, rarity, type, set, imagePath, isSuspended, MAIN_COST, RECALL_COST, MOUNTAIN_POWER, OCEAN_POWER, FOREST_POWER, MAIN_EFFECT, ECHO_EFFECT, created_at=None, edited_at=None):
+        self.id = id
+        self.reference = reference
+        self.name = name
+        self.name_en = name_en
+        self.faction = faction
+        self.rarity = rarity
+        self.type = type
+        self.set = set
+        self.imagePath = imagePath
+        self.isSuspended = isSuspended
+        self.MAIN_COST = MAIN_COST
+        self.RECALL_COST = RECALL_COST
+        self.MOUNTAIN_POWER = MOUNTAIN_POWER
+        self.OCEAN_POWER = OCEAN_POWER
+        self.FOREST_POWER = FOREST_POWER
+        self.MAIN_EFFECT = MAIN_EFFECT
+        self.ECHO_EFFECT = ECHO_EFFECT
+        self.created_at = created_at if created_at else datetime.datetime.now(datetime.timezone.utc)
+        self.edited_at = edited_at if edited_at else datetime.datetime.now(datetime.timezone.utc)
