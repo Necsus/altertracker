@@ -1,7 +1,8 @@
 from flask import Flask
 from flask_cors import CORS
 from app.extensions import db, migrate
-from app.routes.example_routes import example_bp
+from api.app.routes.global_routes import global_bp
+from api.app.routes.card_routes import card_bp
 from app.config import Config
 
 def create_app():
@@ -12,6 +13,7 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
 
-    app.register_blueprint(example_bp)
+    app.register_blueprint(global_bp)
+    app.register_blueprint(card_bp)
 
     return app

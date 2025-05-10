@@ -1,0 +1,14 @@
+<div class="space-y-4">
+  <!-- Group -->
+  <div class="bg-gray-800 p-4 rounded-lg shadow-lg">
+    <button (click)="toggleGroup('group1')"
+      class="w-full text-left text-2xl font-semibold mb-4 focus:outline-none">Groupement 1</button>
+    <div id="group1" [class.hidden]="!isGroupOpen['group1']" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Card -->
+      <app-card></app-card>
+      <app-card></app-card>
+      <app-card></app-card>
+      <app-card></app-card>
+    </div>
+  </div>
+</div>
