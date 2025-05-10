@@ -1,8 +1,8 @@
 from flask import Flask
 from flask_cors import CORS
 from app.extensions import db, migrate
-from api.app.routes.global_routes import global_bp
-from api.app.routes.card_routes import card_bp
+from app.routes.global_routes import global_bp
+from app.routes.card_routes import card_bp
 from app.config import Config
 
 def create_app():

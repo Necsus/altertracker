@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, make_response
-from api.app.services.card_service import CardService
+from app.services.card_service import CardService
 
 card_bp = Blueprint('card', __name__)
 card_service = CardService()
