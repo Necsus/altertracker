@@ -20,6 +20,7 @@ with app.app_context():  # Activer le contexte de l'application
             id = jsonCard['id'],
             reference = jsonCard['reference'],
             name = jsonCard['name'],
+            name_en = None,
             faction = jsonCard['mainFaction']['reference'],
             rarity = jsonCard['rarity']['reference'],
             type = jsonCard['cardType']['reference'],
@@ -31,6 +32,8 @@ with app.app_context():  # Activer le contexte de l'application
             MOUNTAIN_POWER = None if jsonCard['cardType']['reference'] != "CHARACTER" else jsonCard['elements']['MOUNTAIN_POWER'],
             OCEAN_POWER = None if jsonCard['cardType']['reference'] != "CHARACTER" else jsonCard['elements']['OCEAN_POWER'],
             FOREST_POWER = None if jsonCard['cardType']['reference'] != "CHARACTER" else jsonCard['elements']['FOREST_POWER'],
+            MAIN_EFFECT = None,
+            ECHO_EFFECT = None,
         )
         return card
     
@@ -159,7 +162,7 @@ with app.app_context():  # Activer le contexte de l'application
         existing_cards = {
             card.id: card
             for card in Card.query.filter(Card.rarity == 'RARE', Card.type == 'CHARACTER')
-            .order_by(Card.name_en.desc())  # Trier par ordre alphabétique croissant sur name_en
+            .order_by(Card.name_en.asc())  # Trier par ordre alphabétique croissant sur name_en
             .all()
         }
         total_cards = len(existing_cards)
@@ -167,8 +170,16 @@ with app.app_context():  # Activer le contexte de l'application
             for set in sets:
                 if dbcard.set == 'ALIZE' and set != 'ALIZE':
                     continue
-                for mainCost in mainCosts:
-                    for recallCost in recallCosts:
+                filtered_mainCosts = [
+                    cost for cost in mainCosts
+                    if dbcard.MAIN_COST - 4 <= int(cost) <= dbcard.MAIN_COST + 4
+                ]
+                for mainCost in filtered_mainCosts:
+                    filtered_recallCosts = [
+                        cost for cost in recallCosts
+                        if dbcard.RECALL_COST - 4 <= int(cost) <= dbcard.RECALL_COST + 4
+                    ]
+                    for recallCost in filtered_recallCosts:
                         cardToInsert = []
                         test_result = card_routine.get_unique_cards_name_faction(dbcard.name_en, dbcard.faction, set, mainCost, recallCost, forestPowers, 1)
                         if test_result and 'hydra:totalItems' in test_result:

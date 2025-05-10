@@ -1,17 +1,15 @@
 <div class="bg-gray-700 p-4 rounded-lg shadow-md flex flex-col md:flex-row">
-  <img
-    src="https://altered-prod-eu.s3.amazonaws.com/Art/CORE/CARDS/ALT_CORE_B_LY_13/UNIQUE/JPG/fr_FR/fc21bc5a1f4a434d1fb8ea06356f87e9.jpg"
-    alt="Carte TCG" class="w-full md:w-32 h-auto object-cover rounded-md mb-4 md:mb-0 md:mr-4"
-    (click)="openModal('https://altered-prod-eu.s3.amazonaws.com/Art/CORE/CARDS/ALT_CORE_B_LY_13/UNIQUE/JPG/fr_FR/fc21bc5a1f4a434d1fb8ea06356f87e9.jpg')">
+  <img [src]="card.imagePath" [alt]="card.name"
+    class="max-w-full max-h-64 object-contain rounded-md mb-4 md:mb-0 md:mr-4">
   <div class="flex flex-col justify-center">
-    <h3 class="text-xl font-semibold mb-2">Nom de la Carte 1</h3>
-    <p class="text-gray-300 mb-2">Effet: Description de l'effet de la carte.</p>
-    <p class="text-gray-300">Coût: 3</p>
+    <h3 class="text-xl font-semibold mb-2">{{ card.name }}</h3>
+    <p class="text-gray-300 mb-2">Effet: {{ card.MAIN_EFFECT }}</p>
+    <p class="text-gray-300">Coût: {{ card.MAIN_COST }}</p>
   </div>
 </div>
 
-<!-- Modal pour afficher l'image en grand -->
+<!-- Modal pour afficher l'image en grand
 <div id="imageModal" [class.hidden]="!isModalOpen" class="modal">
   <span class="close" (click)="closeModal()">&times;</span>
   <img class="modal-content" [src]="modalImageSrc">
-</div>
+</div> -->

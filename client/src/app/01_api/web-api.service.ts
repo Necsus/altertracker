@@ -3,27 +3,28 @@ import { Injectable } from '@angular/core';
 import { Observable, throwError as observableThrowError, of } from 'rxjs';
 import { catchError, switchMap, timeout } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { BaseResult } from '../00_models/01_dal/base-result.model';
-import { Exception } from '../00_models/01_dal/exeption.model';
-import { Param } from '../00_models/01_dal/param.model';
+import { Exception } from '../00_models/01_api/exeption.model';
+import { Param } from '../00_models/01_api/param.model';
 import { ExceptionType } from '../00_models/enums/exception-type.enum';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class WebApiService {
   constructor(
     private http: HttpClient) {
   }
 
   callGet$<Response>(controllerName: string, actionName: string, params: Array<Param> | undefined = undefined,
-    timeOutInMillisecond: number = 110000): Observable<BaseResult<Response>> {
+    timeOutInMillisecond: number = 110000): Observable<Response> {
     const options = this.getOptions(params);
     const url = this.getUrl(controllerName, actionName);
-    return this.http.get<BaseResult<Response>>(url, options)
+    return this.http.get<Response>(url, options)
       .pipe(
-        switchMap((response: BaseResult<Response>) => {
-          if (response?.message) {
-            // this.notificationService.addWarningToast(response?.message);
-          }
+        switchMap((response: Response) => {
+          // if (response?.message) {
+          //   this.notificationService.addWarningToast(response?.message);
+          // }
           return of(response);
         }),
         timeout(timeOutInMillisecond),
@@ -32,14 +33,14 @@ export class WebApiService {
   }
 
   callPost$<Response>(controllerName: string, actionName: string, params: Object | undefined = undefined,
-    timeOutInMillisecond: number = 110000): Observable<BaseResult<Response>> {
+    timeOutInMillisecond: number = 110000): Observable<Response> {
     const options = this.getOptions(undefined);
-    return this.http.post<BaseResult<Response>>(this.getUrl(controllerName, actionName), params, options)
+    return this.http.post<Response>(this.getUrl(controllerName, actionName), params, options)
       .pipe(
-        switchMap((response: BaseResult<Response>) => {
-          if (response?.message) {
-            // this.notificationService.addWarningToast(response?.message);
-          }
+        switchMap((response: Response) => {
+          // if (response?.message) {
+          //   this.notificationService.addWarningToast(response?.message);
+          // }
           return of(response);
         }),
         timeout(timeOutInMillisecond),
@@ -48,14 +49,14 @@ export class WebApiService {
   }
 
   callDelete$<Response>(controllerName: string, actionName: string, params: Array<Param> | undefined = undefined,
-    timeOutInMillisecond: number = 110000): Observable<BaseResult<Response>> {
+    timeOutInMillisecond: number = 110000): Observable<Response> {
     const options = this.getOptions(params);
-    return this.http.delete<BaseResult<Response>>(this.getUrl(controllerName, actionName), options)
+    return this.http.delete<Response>(this.getUrl(controllerName, actionName), options)
       .pipe(
-        switchMap((response: BaseResult<Response>) => {
-          if (response?.message) {
-            // this.notificationService.addWarningToast(response?.message);
-          }
+        switchMap((response: Response) => {
+          // if (response?.message) {
+          //   this.notificationService.addWarningToast(response?.message);
+          // }
           return of(response);
         }),
         timeout(timeOutInMillisecond),

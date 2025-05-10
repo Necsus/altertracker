@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, provideHttpClient } from '@angular/common/http';
 import { ApplicationConfig, importProvidersFrom, LOCALE_ID, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
@@ -25,5 +25,6 @@ export const appConfig: ApplicationConfig = {
     {
       provide: LOCALE_ID, useValue: navigator.language
     },
+    provideHttpClient()
   ]
 };

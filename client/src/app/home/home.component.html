@@ -1,5 +1,7 @@
 <div class="container mx-auto px-4 py-8">
   <h1 class="text-4xl font-bold text-center mb-8">Collection de Cartes TCG</h1>
-  <app-search-panel></app-search-panel>
-  <app-card-group></app-card-group>
+  <app-search-panel (cardsRetrieved)="onCardsRetrieved($event)"></app-search-panel>
+  <div *ngFor="let group of groupedCards | keyvalue" class="mb-8">
+    <app-card-group [groupName]="group.key" [cards]="group.value"></app-card-group>
+  </div>
 </div>

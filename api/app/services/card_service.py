@@ -1,5 +1,12 @@
-import app.data.card_data as card_data
+from typing import Optional
+from app.models.card import Card
+from app.data.card_data import (
+  get_card_by_reference_data,
+  search_cards_data
+)
 
-class CardService:
-    def get_card_by_reference(reference):
-        return card_data.get_card_by_reference(reference)
+def get_card_by_reference_service(reference) -> Optional[Card]:
+    return get_card_by_reference_data(reference)
+
+def search_cards_service(name, effect, cost):
+    return search_cards_data(name, effect, cost)
