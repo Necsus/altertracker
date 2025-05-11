@@ -1,34 +1,68 @@
 /* modal */
 .modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    padding-top: 100px;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0,0,0,0.9);
+  display: none;
+  position: fixed;
+  z-index: 1;
+  padding-top: 100px;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.9);
 }
+
 .modal-content {
-    margin: auto;
-    display: block;
-    width: 80%;
-    max-width: 700px;
+  margin: auto;
+  display: block;
+  width: 80%;
+  max-width: 700px;
 }
+
 .close {
-    position: absolute;
-    top: 15px;
-    right: 35px;
-    color: #f1f1f1;
-    font-size: 40px;
-    font-weight: bold;
-    transition: 0.3s;
+  position: absolute;
+  top: 15px;
+  right: 35px;
+  color: #f1f1f1;
+  font-size: 40px;
+  font-weight: bold;
+  transition: 0.3s;
 }
+
 .close:hover,
 .close:focus {
-    color: #bbb;
-    text-decoration: none;
-    cursor: pointer;
+  color: #bbb;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+header {
+  background-color: #1a202c;
+  /* Couleur de fond sombre */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* Ombre légère */
+}
+
+nav ul li a {
+  color: white;
+  /* Couleur du texte */
+  transition: color 0.3s ease;
+  /* Transition pour l'effet de survol */
+}
+
+nav ul li a:hover {
+  color: #90cdf4;
+  /* Couleur du texte au survol */
+}
+
+footer {
+  background-color: #1a202c;
+  /* Couleur de fond sombre */
+  padding: 1.5rem 0;
+  text-align: center;
+}
+
+footer img {
+  height: 2.5rem;
+  /* Taille de l'image */
 }
