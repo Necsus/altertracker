@@ -1,10 +1,14 @@
-<div class="bg-gray-700 p-4 rounded-lg shadow-md flex flex-col md:flex-row">
+<div class="bg-gray-700 pr-4 rounded-lg shadow-md flex flex-col md:flex-row">
   <img [src]="card.imagePath" [alt]="card.name" loading="lazy"
     class="max-w-full max-h-64 object-contain rounded-md mb-4 md:mb-0 md:mr-4">
   <div class="flex flex-col justify-center">
-    <h3 class="text-xl font-semibold mb-2">{{ card.name }}</h3>
+    <div class="flex items-center mb-2">
+      <p class="text-gray-300 mr-2">Offre :</p>
+      <button (click)="refreshPrice()" class="text-blue-500 hover:text-blue-700 transition duration-300">
+        <i class="fas fa-sync-alt"></i>
+      </button>
+    </div>
     <p class="text-gray-300 mb-2">Effet: {{ card.MAIN_EFFECT }}</p>
-    <p class="text-gray-300">Coût: {{ card.MAIN_COST }}</p>
   </div>
 </div>
 

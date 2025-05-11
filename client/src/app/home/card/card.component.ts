@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { CardModel } from '../../00_models/02_business/card.model';
+import { CardModel } from '../../01_models/03_business/card.model';
 
 @Component({
   selector: 'app-card',
@@ -9,6 +9,11 @@ export class CardComponent {
   @Input() card!: CardModel; // Données de la carte
   isModalOpen = false;
   modalImageSrc = '';
+
+  refreshPrice(): void {
+    // Logique pour rafraîchir le prix de la carte
+    console.log('Rafraîchir le prix de la carte :', this.card.name);
+  }
 
   // openModal(imgSrc: string) {
   //   this.modalImageSrc = imgSrc;

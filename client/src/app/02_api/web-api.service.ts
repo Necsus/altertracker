@@ -3,9 +3,9 @@ import { Injectable } from '@angular/core';
 import { Observable, throwError as observableThrowError, of } from 'rxjs';
 import { catchError, switchMap, timeout } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { Exception } from '../00_models/01_api/exeption.model';
-import { Param } from '../00_models/01_api/param.model';
-import { ExceptionType } from '../00_models/enums/exception-type.enum';
+import { Exception } from '../01_models/02_api/exeption.model';
+import { Param } from '../01_models/02_api/param.model';
+import { ExceptionType } from '../01_models/enums/exception-type.enum';
 
 @Injectable({
   providedIn: 'root'

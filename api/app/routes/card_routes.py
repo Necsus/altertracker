@@ -1,10 +1,20 @@
 from flask import Blueprint, jsonify, make_response, request
 from app.services.card_service import (
   get_card_by_reference_service,
-  search_cards_service
+  search_cards_service,
+  get_cards_count_service
 )
 
 card_bp = Blueprint('card', __name__)
+
+@card_bp.route('/api/card/count', methods=['GET'])
+def count_cards_route():
+    try:
+        # Assuming you have a function to count cards
+        count = get_cards_count_service()
+        return jsonify({'count': count}), 200
+    except Exception as e:
+        return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
 
 @card_bp.route('/api/card/<string:reference>', methods=['GET'])
 def get_card_by_reference_route(reference):
