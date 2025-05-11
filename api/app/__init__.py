@@ -3,11 +3,11 @@ from flask_cors import CORS
 from app.extensions import db, migrate
 from app.routes.global_routes import global_bp
 from app.routes.card_routes import card_bp
-from app.config import Config
+from app.config import Config, ConfigEnv
 
 def create_app():
     app = Flask(__name__)
-    CORS(app, origins=['https://altertracker.com', 'http://localhost:4200'])
+    CORS(app, origins=ConfigEnv.CORS_ORIGINS)
     app.config.from_object(Config)
 
     db.init_app(app)
