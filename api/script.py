@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 import time
 from app import create_app
 from app.scripts import auth, card_routine
@@ -83,16 +83,16 @@ with app.app_context():  # Activer le contexte de l'application
             # Valider la transaction
             db.session.commit()
             nb_cards += len(cards)
-            print(f"Cartes insérées : {add_card_len}")
-            print(f"Cartes modifiées : {edit_card_len}")
-            print(f"Nombre total de cartes : {len(cards)}")
+            print(f"\033[92mCartes insérées : {add_card_len}\033[0m")
+            print(f"\033[92mCartes modifiées : {edit_card_len}\033[0m")
+            print(f"\033[92mNombre total de cartes : {len(nb_cards)}\033[0m")
         except Exception as e:
             # Gérer les erreurs et annuler la transaction en cas d'échec
-            print(f"Erreur lors de l'insertion ou de la mise à jour des cartes : {e}")
+            print(f"\033[91mErreur lors de l'insertion ou de la mise à jour des cartes : {e}\033[0m")
             try:
                 db.session.rollback()
             except Exception as rollback_error:
-                print(f"Erreur lors du rollback : {rollback_error}")
+                print(f"\033[91mErreur lors du rollback : {rollback_error}\033[0m")
 
     def get_communes():
         print(f"----------- GET COMMUNES -----------")
