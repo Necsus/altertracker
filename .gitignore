@@ -33,3 +33,6 @@ __pycache__/
 # Fichiers système
 .DS_Store
 Thumbs.db
+
+nginx/certbot/conf/*
+nginx/certbot/webroot/*
