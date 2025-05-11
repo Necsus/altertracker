@@ -35,10 +35,6 @@ jobs:
           echo "[+] Pull du code depuis GitHub"
           git pull origin production
 
-          echo "[+] Active la page de maintenance"
-          cp ./nginx/maintenance.html ./client/dist/client/browser/
-          docker compose restart web
-
           echo "[+] Execute npm install et build"
           cd ~/geekom/uniquetracker/client
           rm -rf node_modules package-lock.json dist
@@ -63,10 +59,6 @@ jobs:
           docker compose down --remove-orphans
           docker compose build --no-cache
           docker compose up -d --force-recreate
-
-          echo "[+] Retire la page de maintenance"
-          rm -f ./client/dist/client/browser/maintenance.html
-          docker compose restart web
 
           echo "[✓] Déploiement terminé avec succès"
           exit 0
