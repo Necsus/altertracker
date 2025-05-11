@@ -47,9 +47,7 @@ services:
       - ./nginx/certbot/webroot:/var/www/certbot
     entrypoint: >
       sh -c "certbot certonly --webroot -w /var/www/certbot 
-      --email ton-email@example.com 
-      --agree-tos 
-      --no-eff-email 
+      --non-interactive --agree-tos --email necsus.dev@proton.me 
       -d altertracker.com -d www.altertracker.com"
     networks:
       - frontend

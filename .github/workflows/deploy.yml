@@ -25,6 +25,10 @@ jobs:
         ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
           set -euo pipefail
 
+          echo "[+] Active la page de maintenance"
+          cp ./nginx/maintenance.html ./client/dist/client/browser/
+          docker compose restart web
+
           export POSTGRES_USER=${{ secrets.POSTGRES_USER }}
           export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
           export POSTGRES_DB=${{ secrets.POSTGRES_DB }}
@@ -59,6 +63,10 @@ jobs:
           docker compose down
           docker compose build
           docker compose up -d
+
+          echo "[+] Retire la page de maintenance"
+          rm -f ./client/dist/client/browser/maintenance.html
+          docker compose restart web
 
           echo "[✓] Déploiement terminé avec succès"
           exit 0
