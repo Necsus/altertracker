@@ -10,6 +10,11 @@ export class CardComponent {
   isModalOpen = false;
   modalImageSrc = '';
 
+  refreshPrice(): void {
+    // Logique pour rafraîchir le prix de la carte
+    console.log('Rafraîchir le prix de la carte :', this.card.name);
+  }
+
   // openModal(imgSrc: string) {
   //   this.modalImageSrc = imgSrc;
   //   this.isModalOpen = true;

@@ -21,8 +21,10 @@ class Card(db.Model):
     FOREST_POWER = db.Column(db.Integer, default=None)
     MAIN_EFFECT = db.Column(db.Text, default=None)
     ECHO_EFFECT = db.Column(db.Text, default=None)
-    created_at = db.Column(db.DateTime,  default=datetime.datetime.now(datetime.timezone.utc))
-    edited_at = db.Column(db.DateTime,  default=datetime.datetime.now(datetime.timezone.utc))
+    created_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
+    edited_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
+    price = db.Column(db.Float, default=None)
+    price_updated_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
 
     def __repr__(self):
         return f"<Card {self.name}>"
@@ -48,9 +50,11 @@ class Card(db.Model):
             'ECHO_EFFECT': self.ECHO_EFFECT,
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'edited_at': self.edited_at.isoformat() if self.edited_at else None,
+            'price': self.price,
+            'price_updated_at': self.price_updated_at.isoformat() if self.price_updated_at else None
         }
     
-    def __init__(self, id, reference, name, name_en, faction, rarity, type, set, imagePath, isSuspended, MAIN_COST, RECALL_COST, MOUNTAIN_POWER, OCEAN_POWER, FOREST_POWER, MAIN_EFFECT, ECHO_EFFECT, created_at=None, edited_at=None):
+    def __init__(self, id, reference, name, name_en, faction, rarity, type, set, imagePath, isSuspended, MAIN_COST, RECALL_COST, MOUNTAIN_POWER, OCEAN_POWER, FOREST_POWER, MAIN_EFFECT, ECHO_EFFECT, created_at=None, edited_at=None, price=None, price_updated_at=None):
         self.id = id
         self.reference = reference
         self.name = name
@@ -70,3 +74,5 @@ class Card(db.Model):
         self.ECHO_EFFECT = ECHO_EFFECT
         self.created_at = created_at if created_at else datetime.datetime.now(datetime.timezone.utc)
         self.edited_at = edited_at if edited_at else datetime.datetime.now(datetime.timezone.utc)
+        self.price = price
+        self.price_updated_at = price_updated_at if price_updated_at else datetime.datetime.now(datetime.timezone.utc)
