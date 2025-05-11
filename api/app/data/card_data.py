@@ -4,16 +4,28 @@ from app.models.card import Card
 def get_card_by_reference_data(reference) -> Optional[Card]:
   return Card.query.filter_by(reference=reference).first()
 
-def search_cards_data(name, effect, cost):
+def search_cards_data(name, faction, set, main_effect, echo_effect, main_cost, recall_cost):
   query = Card.query
 
   if name:
     query = query.filter(Card.name.ilike(f'%{name}%'))
 
-  if effect:
-    query = query.filter(Card.MAIN_EFFECT.ilike(f'%{effect}%'))
+  if faction:
+    query = query.filter(Card.faction == faction)
 
-  if cost:
-    query = query.filter(Card.MAIN_COST == cost)
+  if set:
+    query = query.filter(Card.set == set)
+
+  if main_effect:
+    query = query.filter(Card.MAIN_EFFECT.ilike(f'%{main_effect}%'))
+
+  if echo_effect:
+    query = query.filter(Card.ECHO_EFFECT.ilike(f'%{echo_effect}%'))
+
+  if main_cost:
+    query = query.filter(Card.MAIN_COST == main_cost)
+
+  if recall_cost:
+    query = query.filter(Card.RECALL_COST == recall_cost)
 
   return query.all()

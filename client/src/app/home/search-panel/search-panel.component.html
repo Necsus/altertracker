@@ -7,13 +7,33 @@
         class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm p-2 text-white">
     </div>
     <div>
-      <label for="effect" class="block text-sm font-medium text-gray-300">Effet</label>
-      <input type="text" id="effect" formControlName="effect"
+      <label for="faction" class="block text-sm font-medium text-gray-300">Faction</label>
+      <input type="text" id="faction" formControlName="faction"
         class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm p-2 text-white">
     </div>
     <div>
-      <label for="cost" class="block text-sm font-medium text-gray-300">Coût</label>
-      <input type="number" id="cost" formControlName="cost"
+      <label for="set" class="block text-sm font-medium text-gray-300">Set</label>
+      <input type="text" id="set" formControlName="set"
+        class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm p-2 text-white">
+    </div>
+    <div>
+      <label for="main_effect" class="block text-sm font-medium text-gray-300">Main Effet</label>
+      <input type="text" id="main_effect" formControlName="main_effect"
+        class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm p-2 text-white">
+    </div>
+    <div>
+      <label for="echo_effect" class="block text-sm font-medium text-gray-300">Echo Effet</label>
+      <input type="text" id="echo_effect" formControlName="echo_effect"
+        class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm p-2 text-white">
+    </div>
+    <div>
+      <label for="main_cost" class="block text-sm font-medium text-gray-300">Main Cost</label>
+      <input type="number" id="main_cost" formControlName="main_cost"
+        class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm p-2 text-white">
+    </div>
+    <div>
+      <label for="recall_cost" class="block text-sm font-medium text-gray-300">Recall Cost</label>
+      <input type="number" id="recall_cost" formControlName="recall_cost"
         class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm p-2 text-white">
     </div>
     <button type="submit" [disabled]="!isFormValid()"

@@ -19,25 +19,41 @@ export class SearchPanelComponent implements OnInit {
   ngOnInit() {
     this.searchForm = this.fb.group({
       name: [''],
-      effect: [''],
-      cost: ['']
+      faction: [''],
+      set: [''],
+      main_effect: [''],
+      echo_effect: [''],
+      main_cost: [''],
+      recall_cost: ['']
     });
   }
 
   isFormValid(): boolean {
-    const { name, effect, cost } = this.searchForm.value;
-    return !!(name || effect || cost); // Vérifie si au moins un champ est rempli
+    const { name, faction, set, main_effect, echo_effect, main_cost, recall_cost } = this.searchForm.value;
+    return !!(name || faction || set || main_effect || echo_effect || main_cost || recall_cost); // Vérifie si au moins un champ est rempli
+  }
+
+  private cleanFormValues(values: any): any {
+    // Remplace null par une chaîne vide pour chaque champ
+    return Object.keys(values).reduce((acc: any, key) => {
+      acc[key] = values[key] === null ? '' : values[key];
+      return acc;
+    }, {});
   }
 
   onSubmit() {
-    const formValues = this.searchForm.value;
+    const formValues = this.cleanFormValues(this.searchForm.value);
     console.log('Recherche avec :', formValues);
     // Tu peux ensuite appeler ton service ou ta logique ici
     this.searchCards(formValues);
   }
 
   searchCards(criteria: any): void {
-    this.cardService.search_cards$(criteria.name, criteria.effect, criteria.cost).subscribe({
+    this.cardService.search_cards$(
+      criteria.name, criteria.faction, criteria.set,
+      criteria.main_effect, criteria.echo_effect, criteria.main_cost,
+      criteria.recall_cost
+    ).subscribe({
       next: (data: CardModel[]) => {
         this.cardsRetrieved.emit(data);
       },

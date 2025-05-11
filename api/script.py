@@ -1,3 +1,4 @@
+import datetime
 import time
 from app import create_app
 from app.scripts import auth, card_routine
@@ -15,12 +16,12 @@ with app.app_context():  # Activer le contexte de l'application
 
     nb_cards = 0
 
-    def map_jsoncard_to_card(jsonCard) -> Card:
+    def map_jsoncard_to_card(jsonCard, name_en = None) -> Card:
         card = Card(
             id = jsonCard['id'],
             reference = jsonCard['reference'],
             name = jsonCard['name'],
-            name_en = None,
+            name_en = name_en,
             faction = jsonCard['mainFaction']['reference'],
             rarity = jsonCard['rarity']['reference'],
             type = jsonCard['cardType']['reference'],
@@ -72,11 +73,13 @@ with app.app_context():  # Activer le contexte de l'application
                     existing_card.FOREST_POWER = card.FOREST_POWER
                     existing_card.MAIN_EFFECT = card.MAIN_EFFECT
                     existing_card.ECHO_EFFECT = card.ECHO_EFFECT
+                    existing_card.edited_at = datetime.now()
                     edit_card_len += 1
                 else:
-                    add_card_len += 1
                     # Ajouter une nouvelle carte si elle n'existe pas
+                    card.created_at = datetime.now()
                     db.session.add(card)
+                    add_card_len += 1
             # Valider la transaction
             db.session.commit()
             nb_cards += len(cards)
@@ -197,7 +200,7 @@ with app.app_context():  # Activer le contexte de l'application
 
                                     # Ajouter les cartes à la liste
                                     for card in cards['hydra:member']:
-                                        tempCard = map_jsoncard_to_card(card)
+                                        tempCard = map_jsoncard_to_card(card, dbcard.name_en)
                                         existing_card = db.session.get(Card, tempCard.id)
                                         if existing_card:
                                             print(f"\rCarte {tempCard.reference} déjà existante. Passage à la suivante.", end="", flush=True)

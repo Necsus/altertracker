@@ -8,5 +8,5 @@ from app.data.card_data import (
 def get_card_by_reference_service(reference) -> Optional[Card]:
     return get_card_by_reference_data(reference)
 
-def search_cards_service(name, effect, cost):
-    return search_cards_data(name, effect, cost)
+def search_cards_service(name, faction, set, main_effect, echo_effect, main_cost, recall_cost) -> Optional[list[Card]]:
+    return search_cards_data(name, faction, set, main_effect, echo_effect, main_cost, recall_cost)

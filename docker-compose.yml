@@ -30,6 +30,7 @@ services:
       - "443:443"
     volumes:
       - ./nginx:/etc/nginx/conf.d
+      - ./nginx/certs:/etc/nginx/certs:ro
       - ./nginx/robots.txt:/etc/nginx/static/robots.txt
       - ./client/dist/client/browser:/usr/share/nginx/html
     depends_on:
