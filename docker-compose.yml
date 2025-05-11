@@ -46,9 +46,9 @@ services:
       - ./nginx/certbot/conf:/etc/letsencrypt
       - ./nginx/certbot/webroot:/var/www/certbot
     entrypoint: >
-      sh -c "certbot certonly --webroot -w /var/www/certbot 
-      --non-interactive --agree-tos --email necsus.dev@proton.me 
-      -d altertracker.com -d www.altertracker.com"
+      sh -c "certbot certonly --webroot -w /var/www/certbot --non-interactive --agree-tos --email necsus.dev@proton.me -d altertracker.com -d www.altertracker.com"
+    depends_on:
+      - web
     networks:
       - frontend
 
