@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { CardModel } from '../00_models/02_business/card.model';
-import { CardApiService } from '../01_api/card-api.service';
+import { CardModel } from '../01_models/03_business/card.model';
+import { CardApiService } from '../02_api/card-api.service';
 
 @Injectable({
   providedIn: 'root'

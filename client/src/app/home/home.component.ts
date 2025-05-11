@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { CardModel } from '../00_models/02_business/card.model';
+import { CardModel } from '../01_models/03_business/card.model';
 import { CardGroupComponent } from './card-group/card-group.component';
 import { SearchPanelComponent } from './search-panel/search-panel.component';
 
