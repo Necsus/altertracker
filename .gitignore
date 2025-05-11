@@ -33,4 +33,3 @@ __pycache__/
 # Fichiers système
 .DS_Store
 Thumbs.db
-nginx/certs/

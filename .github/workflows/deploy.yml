@@ -25,10 +25,6 @@ jobs:
         ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
           set -euo pipefail
 
-          echo "[+] Active la page de maintenance"
-          cp ./nginx/maintenance.html ./client/dist/client/browser/
-          docker compose restart web
-
           export POSTGRES_USER=${{ secrets.POSTGRES_USER }}
           export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
           export POSTGRES_DB=${{ secrets.POSTGRES_DB }}
@@ -38,6 +34,10 @@ jobs:
 
           echo "[+] Pull du code depuis GitHub"
           git pull origin main
+
+          echo "[+] Active la page de maintenance"
+          cp ./nginx/maintenance.html ./client/dist/client/browser/
+          docker compose restart web
 
           echo "[+] Execute npm install et build"
           cd ~/geekom/uniquetracker/client
