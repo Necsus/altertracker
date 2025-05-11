@@ -44,17 +44,6 @@ jobs:
 
           cd ~/geekom/uniquetracker
 
-          echo "[+] Lancement de Nginx temporaire (port 80) pour Certbot"
-          docker compose up -d web
-
-          echo "[+] Vérification de l'existence du certificat"
-          if [ ! -f "./nginx/certbot/conf/live/altertracker.com/fullchain.pem" ]; then
-            echo "[+] Génération du certificat SSL via Let's Encrypt"
-            docker compose run --rm certbot
-          else
-            echo "[✓] Certificat SSL déjà présent, génération ignorée"
-          fi
-
           echo "[+] Rebuild et redémarrage de Docker"
           docker compose down
           docker compose build
