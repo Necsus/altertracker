@@ -33,7 +33,7 @@ jobs:
           cd ~/geekom/uniquetracker
 
           echo "[+] Pull du code depuis GitHub"
-          git pull origin main
+          git pull origin production
 
           echo "[+] Active la page de maintenance"
           cp ./nginx/maintenance.html ./client/dist/client/browser/
@@ -50,6 +50,13 @@ jobs:
 
           echo "[+] Lancement de Nginx temporaire (port 80) pour Certbot"
           docker compose up -d web
+
+          # Attendre que NGINX réponde sur le port 80
+          until curl -s http://localhost/.well-known/acme-challenge/test.txt | grep -q "ok"; do
+            echo "Attente de NGINX..."
+            echo "ok" > ./nginx/certbot/webroot/test.txt
+            sleep 2
+          done
 
           echo "[+] Vérification de l'existence du certificat"
           if [ ! -f "./nginx/certbot/conf/live/altertracker.com/fullchain.pem" ]; then
