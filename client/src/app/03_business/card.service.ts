@@ -8,6 +8,12 @@ import { CardApiService } from '../02_api/card-api.service';
 })
 export class CardService {
   constructor(private cardApiService: CardApiService) { }
+  count_all_cards$(): Observable<number> {
+    return this.cardApiService.count_all_cards$().pipe(map((dbModel: any) => {
+      return dbModel.count;
+    }));
+  }
+
   get_card_by_reference$(reference: string): Observable<any> {
     return this.cardApiService.get_card_by_reference$(reference).pipe(map((dbModel: any) => {
       return dbModel;

@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CardModel } from '../01_models/03_business/card.model';
+import { CardService } from '../03_business/card.service';
 import { CardGroupComponent } from './card-group/card-group.component';
 import { SearchPanelComponent } from './search-panel/search-panel.component';
 
@@ -9,16 +10,30 @@ import { SearchPanelComponent } from './search-panel/search-panel.component';
   templateUrl: './home.component.html',
   imports: [CommonModule, SearchPanelComponent, CardGroupComponent]
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   cards: CardModel[] = [];
   groupedCards: { [key: string]: CardModel[] } = {};
+  nbCards: number = 0;
 
-  onCardsRetrieved(cards: CardModel[]) {
+  constructor(private cardService: CardService) { }
+
+  ngOnInit(): void {
+    this.cardService.count_all_cards$().subscribe({
+      next: (count: number) => {
+        this.nbCards = count;
+      },
+      error: (error) => {
+        console.error('Error fetching card count:', error);
+      }
+    });
+  }
+
+  onCardsRetrieved(cards: CardModel[]): void {
     this.cards = cards;
     this.groupCardsByName();
   }
 
-  groupCardsByName() {
+  groupCardsByName(): void {
     this.groupedCards = this.cards.reduce((groups, card) => {
       const name = card.name || 'Unknown';
       if (!groups[name]) {
