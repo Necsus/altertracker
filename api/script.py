@@ -85,7 +85,7 @@ with app.app_context():  # Activer le contexte de l'application
             nb_cards += len(cards)
             print(f"\033[92mCartes insérées : {add_card_len}\033[0m")
             print(f"\033[92mCartes modifiées : {edit_card_len}\033[0m")
-            print(f"\033[92mNombre total de cartes : {len(nb_cards)}\033[0m")
+            print(f"\033[92mNombre total de cartes : {nb_cards}\033[0m")
         except Exception as e:
             # Gérer les erreurs et annuler la transaction en cas d'échec
             print(f"\033[91mErreur lors de l'insertion ou de la mise à jour des cartes : {e}\033[0m")

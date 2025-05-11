@@ -4,10 +4,13 @@
     <button (click)="toggleGroup()" class="w-full text-left text-2xl font-semibold mb-4 focus:outline-none">{{
       groupName }} ({{ cards.length }})</button>
     @if (isGroupOpen) {
-    <div id="group1" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
       <!-- Card -->
-      <app-card *ngFor="let card of cards" [card]="card"></app-card>
+      <app-card *ngFor="let card of cards | slice:0:displayedCards" [card]="card"></app-card>
     </div>
+    <button *ngIf="cards.length > displayedCards" (click)="loadMore()"
+      class="bg-blue-600 hover:bg-blue-700 w-full text-white py-2 px-4 rounded-md transition duration-300 mt-4">Charger
+      plus</button>
     }
   </div>
 </div>

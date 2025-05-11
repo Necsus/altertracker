@@ -18,13 +18,14 @@ def get_card_by_reference_route(reference):
 def search_cards_route():
     try:
         name = request.args.get('name')
+        rarity = request.args.get('rarity')
         faction = request.args.get('faction')
         set = request.args.get('set')
         main_effect = request.args.get('main_effect')
         echo_effect = request.args.get('echo_effect')
         main_cost = request.args.get('main_cost')
         recall_cost = request.args.get('recall_cost')
-        cards = search_cards_service(name, faction, set, main_effect, echo_effect, main_cost, recall_cost)
+        cards = search_cards_service(name, rarity, faction, set, main_effect, echo_effect, main_cost, recall_cost)
         if not cards:
             return make_response(jsonify({'message': 'No cards found'}), 404)
         return jsonify([card.json() for card in cards]), 201

@@ -19,6 +19,7 @@ export class SearchPanelComponent implements OnInit {
   ngOnInit() {
     this.searchForm = this.fb.group({
       name: [''],
+      rarity: [''],
       faction: [''],
       set: [''],
       main_effect: [''],
@@ -29,8 +30,8 @@ export class SearchPanelComponent implements OnInit {
   }
 
   isFormValid(): boolean {
-    const { name, faction, set, main_effect, echo_effect, main_cost, recall_cost } = this.searchForm.value;
-    return !!(name || faction || set || main_effect || echo_effect || main_cost || recall_cost); // Vérifie si au moins un champ est rempli
+    const { name, rarity, faction, set, main_effect, echo_effect, main_cost, recall_cost } = this.searchForm.value;
+    return !!(name || rarity || faction || set || main_effect || echo_effect || main_cost || recall_cost); // Vérifie si au moins un champ est rempli
   }
 
   private cleanFormValues(values: any): any {
@@ -50,9 +51,9 @@ export class SearchPanelComponent implements OnInit {
 
   searchCards(criteria: any): void {
     this.cardService.search_cards$(
-      criteria.name, criteria.faction, criteria.set,
-      criteria.main_effect, criteria.echo_effect, criteria.main_cost,
-      criteria.recall_cost
+      criteria.name, criteria.rarity, criteria.faction,
+      criteria.set, criteria.main_effect, criteria.echo_effect,
+      criteria.main_cost, criteria.recall_cost
     ).subscribe({
       next: (data: CardModel[]) => {
         this.cardsRetrieved.emit(data);

@@ -1,5 +1,4 @@
 <form [formGroup]="searchForm" (ngSubmit)="onSubmit()" class="bg-gray-800 p-4 rounded-lg shadow-lg mb-8">
-  <h2 class="text-xl font-semibold mb-4">Rechercher des cartes</h2>
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
     <div>
       <label for="name" class="block text-sm font-medium text-gray-300">Nom</label>
@@ -7,14 +6,37 @@
         class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm p-2 text-white">
     </div>
     <div>
-      <label for="faction" class="block text-sm font-medium text-gray-300">Faction</label>
-      <input type="text" id="faction" formControlName="faction"
+      <label for="rarity" class="block text-sm font-medium text-gray-300">Rarity</label>
+      <select id="rarity" formControlName="rarity"
         class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm p-2 text-white">
+        <option value="">-- Select Rarity --</option>
+        <option value="COMMON">COMMON</option>
+        <option value="RARE">RARE</option>
+        <option value="UNIQUE">UNIQUE</option>
+      </select>
+    </div>
+    <div>
+      <label for="faction" class="block text-sm font-medium text-gray-300">Faction</label>
+      <select id="faction" formControlName="faction"
+        class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm p-2 text-white">
+        <option value="">-- Select Faction --</option>
+        <option value="AX">Axiom</option>
+        <option value="BR">Bravos</option>
+        <option value="LY">Lyra</option>
+        <option value="MU">Muna</option>
+        <option value="OR">Ordis</option>
+        <option value="YZ">Yzmir</option>
+      </select>
     </div>
     <div>
       <label for="set" class="block text-sm font-medium text-gray-300">Set</label>
-      <input type="text" id="set" formControlName="set"
+      <select id="set" formControlName="set"
         class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm p-2 text-white">
+        <option value="">-- Select Set --</option>
+        <option value="ALIZE">Epreuve du froid</option>
+        <option value="CORE">Au-dela des portes</option>
+        <option value="COREKS">Au-dela des portes - KS</option>
+      </select>
     </div>
     <div>
       <label for="main_effect" class="block text-sm font-medium text-gray-300">Main Effet</label>
