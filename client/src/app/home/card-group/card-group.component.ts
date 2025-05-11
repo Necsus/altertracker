@@ -11,9 +11,9 @@ import { CardComponent } from '../card/card.component';
 export class CardGroupComponent {
   @Input() groupName!: string;
   @Input() cards: CardModel[] = [];
-  isGroupOpen: { [key: string]: boolean } = {};
+  isGroupOpen: boolean = false;
 
-  toggleGroup(groupId: string) {
-    this.isGroupOpen[groupId] = !this.isGroupOpen[groupId];
+  toggleGroup() {
+    this.isGroupOpen = !this.isGroupOpen;
   }
 }

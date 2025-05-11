@@ -16,7 +16,8 @@
       <input type="number" id="cost" formControlName="cost"
         class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm p-2 text-white">
     </div>
-    <button type="submit"
-      class="md:col-span-3 w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">Rechercher</button>
+    <button type="submit" [disabled]="!isFormValid()"
+      [ngClass]="{'bg-gray-500 cursor-not-allowed': !isFormValid(), 'bg-blue-600 hover:bg-blue-700': isFormValid()}"
+      class="md:col-span-3 w-full text-white py-2 px-4 rounded-md transition duration-300">Rechercher</button>
   </div>
 </form>

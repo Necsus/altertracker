@@ -281,4 +281,8 @@ with app.app_context():  # Activer le contexte de l'application
 end_time = time.time()
 execution_time = end_time - start_time
 
-print(f"Temps d'exécution : {execution_time:.2f} secondes")
+# Conversion en heures, minutes et secondes
+hours, remainder = divmod(execution_time, 3600)
+minutes, seconds = divmod(remainder, 60)
+
+print(f"Temps d'exécution : {int(hours):02}:{int(minutes):02}:{int(seconds):02}")

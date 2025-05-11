@@ -24,6 +24,11 @@ export class SearchPanelComponent implements OnInit {
     });
   }
 
+  isFormValid(): boolean {
+    const { name, effect, cost } = this.searchForm.value;
+    return !!(name || effect || cost); // Vérifie si au moins un champ est rempli
+  }
+
   onSubmit() {
     const formValues = this.searchForm.value;
     console.log('Recherche avec :', formValues);
