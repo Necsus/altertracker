@@ -15,10 +15,10 @@ export class CardService {
   }
 
   search_cards$(
-    name: string, faction: string, set: string,
+    name: string, rarity: string, faction: string, set: string,
     main_effect: string, echo_effect: string, main_cost: string,
     recall_cost: string): Observable<CardModel[]> {
-    return this.cardApiService.search_cards$(name, faction, set, main_effect, echo_effect, main_cost, recall_cost).pipe(map((dbModel: any) => {
+    return this.cardApiService.search_cards$(name, rarity, faction, set, main_effect, echo_effect, main_cost, recall_cost).pipe(map((dbModel: any) => {
       return dbModel;
     }));
   }

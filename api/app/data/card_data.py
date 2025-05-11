@@ -4,11 +4,14 @@ from app.models.card import Card
 def get_card_by_reference_data(reference) -> Optional[Card]:
   return Card.query.filter_by(reference=reference).first()
 
-def search_cards_data(name, faction, set, main_effect, echo_effect, main_cost, recall_cost):
+def search_cards_data(name, rarity, faction, set, main_effect, echo_effect, main_cost, recall_cost):
   query = Card.query
 
   if name:
     query = query.filter(Card.name.ilike(f'%{name}%'))
+
+  if rarity:
+    query = query.filter(Card.rarity == rarity)
 
   if faction:
     query = query.filter(Card.faction == faction)

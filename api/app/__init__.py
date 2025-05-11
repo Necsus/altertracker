@@ -7,7 +7,7 @@ from app.config import Config
 
 def create_app():
     app = Flask(__name__)
-    CORS(app, origins='*')
+    CORS(app, origins=['https://altertracker.com', 'http://localhost:4200'])
     app.config.from_object(Config)
 
     db.init_app(app)

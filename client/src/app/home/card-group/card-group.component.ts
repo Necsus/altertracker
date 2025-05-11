@@ -12,8 +12,13 @@ export class CardGroupComponent {
   @Input() groupName!: string;
   @Input() cards: CardModel[] = [];
   isGroupOpen: boolean = false;
+  displayedCards: number = 100;
 
   toggleGroup() {
     this.isGroupOpen = !this.isGroupOpen;
+  }
+
+  loadMore() {
+    this.displayedCards += 100;
   }
 }
