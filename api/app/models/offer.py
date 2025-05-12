@@ -4,7 +4,7 @@ from app.extensions import db
 class Offer(db.Model):
     __tablename__ = 'offers'
 
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True, unique=True, nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
     reference_card = db.Column(db.String(200))
     id_offer = db.Column(db.String(200))
     price = db.Column(db.Float, default=None)

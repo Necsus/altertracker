@@ -4,8 +4,8 @@ from app.extensions import db
 class Card(db.Model):
     __tablename__ = 'cards'
 
-    id = db.Column(db.String(200), primary_key=True)
-    incremental_id = db.Column(db.Integer, autoincrement=True, unique=True, nullable=True)
+    id = db.Column(db.Integer, primary_key=True)
+    id_card = db.Column(db.String(200))
     reference = db.Column(db.String(200))
     name = db.Column(db.String(200))
     name_en = db.Column(db.String(200), default=None)
@@ -34,7 +34,7 @@ class Card(db.Model):
     def json(self):
         return {
             'id': self.id,
-            'incremental_id': self.incremental_id,
+            'id_card': self.id_card,
             'reference': self.reference,
             'name': self.name,
             'name_en': self.name_en,
@@ -58,9 +58,8 @@ class Card(db.Model):
             'url_offer': self.url_offer
         }
     
-    def __init__(self, id, incremental_id, reference, name, name_en, faction, rarity, type, set, imagePath, isSuspended, MAIN_COST, RECALL_COST, MOUNTAIN_POWER, OCEAN_POWER, FOREST_POWER, MAIN_EFFECT, ECHO_EFFECT, created_at=None, edited_at=None, price=None, price_updated_at=None, url_offer=None):
-        self.id = id
-        self.incremental_id = incremental_id
+    def __init__(self, id_card, reference, name, name_en, faction, rarity, type, set, imagePath, isSuspended, MAIN_COST, RECALL_COST, MOUNTAIN_POWER, OCEAN_POWER, FOREST_POWER, MAIN_EFFECT, ECHO_EFFECT, created_at=None, edited_at=None, price=None, price_updated_at=None, url_offer=None):
+        self.id_card = id_card
         self.reference = reference
         self.name = name
         self.name_en = name_en
