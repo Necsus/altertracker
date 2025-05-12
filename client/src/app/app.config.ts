@@ -1,5 +1,5 @@
 import { HttpClient, provideHttpClient } from '@angular/common/http';
-import { ApplicationConfig, importProvidersFrom, LOCALE_ID, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, EnvironmentInjector, importProvidersFrom, Injector, LOCALE_ID, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
@@ -25,6 +25,11 @@ export const appConfig: ApplicationConfig = {
     {
       provide: LOCALE_ID, useValue: navigator.language
     },
-    provideHttpClient()
+    provideHttpClient(),
+    {
+      provide: EnvironmentInjector,
+      useFactory: (injector: Injector) => injector.get(EnvironmentInjector),
+      deps: [Injector]
+    }
   ]
 };

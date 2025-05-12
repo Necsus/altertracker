@@ -36,18 +36,8 @@ export class SearchPanelComponent implements OnInit {
     return !!(name || rarity || faction || set || main_effect || echo_effect || main_cost || recall_cost || in_market || no_condition); // Vérifie si au moins un champ est rempli
   }
 
-  private cleanFormValues(values: any): any {
-    // Remplace null par une chaîne vide pour chaque champ
-    return Object.keys(values).reduce((acc: any, key) => {
-      acc[key] = values[key] === null || values[key] === false ? '' : values[key];
-      return acc;
-    }, {});
-  }
-
   onSubmit() {
     const formValues = this.cleanFormValues(this.searchForm.value);
-    console.log('Recherche avec :', formValues);
-    // Tu peux ensuite appeler ton service ou ta logique ici
     this.searchCards(formValues);
   }
 
@@ -65,5 +55,13 @@ export class SearchPanelComponent implements OnInit {
         console.error('Error fetching card data:', error);
       }
     });
+  }
+
+  private cleanFormValues(values: any): any {
+    // Remplace null par une chaîne vide pour chaque champ
+    return Object.keys(values).reduce((acc: any, key) => {
+      acc[key] = values[key] === null || values[key] === false ? '' : values[key];
+      return acc;
+    }, {});
   }
 }

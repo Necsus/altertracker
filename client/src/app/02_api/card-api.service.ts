@@ -14,6 +14,9 @@ export class CardApiService {
   count_all_cards$(): Observable<any> {
     return this.wabApiService.callGet$(this.controller, 'count');
   }
+  count_all_cards_in_market$(): Observable<any> {
+    return this.wabApiService.callGet$(this.controller, 'inmarketcount');
+  }
   get_card_by_reference$(reference: string): Observable<any> {
     return this.wabApiService.callGet$(this.controller, reference);
   }

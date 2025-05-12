@@ -14,6 +14,12 @@ export class CardService {
     }));
   }
 
+  count_all_cards_in_market$(): Observable<number> {
+    return this.cardApiService.count_all_cards_in_market$().pipe(map((dbModel: any) => {
+      return dbModel.count;
+    }));
+  }
+
   get_card_by_reference$(reference: string): Observable<any> {
     return this.cardApiService.get_card_by_reference$(reference).pipe(map((dbModel: any) => {
       return dbModel;
