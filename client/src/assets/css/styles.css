@@ -101,3 +101,27 @@ footer img {
 }
 
 /* END LOADER */
+
+/* PAGE EN CONSTRUCTION */
+.construction-container {
+  text-align: center;
+  padding: 50px;
+  font-family: Arial, sans-serif;
+}
+
+.construction-image {
+  width: 200px;
+  margin-bottom: 20px;
+}
+
+.construction-h1 {
+  font-size: 2em;
+  color: #e67e22;
+}
+
+.construction-p {
+  font-size: 1.2em;
+  color: #555;
+}
+
+/* END PAGE EN CONSTRUCTION */
