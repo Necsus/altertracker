@@ -1,3 +1,4 @@
+import re
 from typing import Optional
 from app.models.offer import Offer
 from app.models.card import Card
@@ -13,7 +14,7 @@ def get_cards_in_market_count_data() -> int:
 def get_card_by_reference_data(reference) -> Optional[Card]:
   return Card.query.filter_by(reference=reference).first()
 
-def search_cards_data(name, rarity, faction, set, main_effect, echo_effect, main_cost, recall_cost, in_market, no_condition):
+def search_cards_data(name, rarity, faction, set, main_effect: str, echo_effect: str, main_cost, recall_cost, in_market, no_condition):
   query = Card.query
 
   if name:
@@ -29,7 +30,11 @@ def search_cards_data(name, rarity, faction, set, main_effect, echo_effect, main
     query = query.filter(Card.set == set)
 
   if main_effect:
-    query = query.filter(Card.MAIN_EFFECT.ilike(f'%{main_effect}%'))
+    main_effect = main_effect.strip()
+    main_effect = escape_special_chars(main_effect)
+    print(main_effect)
+    query = query.filter(Card.MAIN_EFFECT.ilike(f'%{main_effect}%', escape='\\'))
+    # query = query.filter(Card.MAIN_EFFECT.ilike(f'%{main_effect}%'))
 
   if echo_effect:
     query = query.filter(Card.ECHO_EFFECT.ilike(f'%{echo_effect}%'))
@@ -50,3 +55,15 @@ def search_cards_data(name, rarity, faction, set, main_effect, echo_effect, main
     )
 
   return query.all()
+
+def escape_special_chars(text):
+    if not text:
+        return None
+    # Remplacer les caractères spéciaux qui pourraient causer un problème dans SQL
+    return text.replace('%', '\\%') \
+              .replace('#', '\\#') \
+              .replace(':', '\\:') \
+              .replace('_', '\\_') \
+              .replace('{', '\\{') \
+              .replace('}', '\\}') \
+              .replace('—', '\\—')
