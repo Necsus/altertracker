@@ -39,7 +39,7 @@ export class SearchPanelComponent implements OnInit {
   private cleanFormValues(values: any): any {
     // Remplace null par une chaîne vide pour chaque champ
     return Object.keys(values).reduce((acc: any, key) => {
-      acc[key] = values[key] === null ? '' : values[key];
+      acc[key] = values[key] === null || values[key] === false ? '' : values[key];
       return acc;
     }, {});
   }
