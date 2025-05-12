@@ -42,8 +42,7 @@ class Offer(db.Model):
             'user_id': self.user_id
         }
     
-    def __init__(self, id, reference_card, id_offer, price, currency, quantity, status, link_offer, is_edited, is_deleted, created_at=None, edited_at=None, deleted_at=None, user_altered=None, user_id=None):
-        self.id = id
+    def __init__(self, reference_card, id_offer, price, currency, quantity, status, link_offer, is_edited=None, is_deleted=None, created_at=None, edited_at=None, deleted_at=None, user_altered=None, user_id=None):
         self.reference_card = reference_card
         self.id_offer = id_offer
         self.price = price

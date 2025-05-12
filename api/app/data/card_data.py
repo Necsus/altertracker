@@ -9,7 +9,7 @@ def get_cards_count_data() -> int:
 def get_card_by_reference_data(reference) -> Optional[Card]:
   return Card.query.filter_by(reference=reference).first()
 
-def search_cards_data(name, rarity, faction, set, main_effect, echo_effect, main_cost, recall_cost):
+def search_cards_data(name, rarity, faction, set, main_effect, echo_effect, main_cost, recall_cost, in_market, no_condition):
   query = Card.query
 
   if name:
@@ -35,5 +35,14 @@ def search_cards_data(name, rarity, faction, set, main_effect, echo_effect, main
 
   if recall_cost:
     query = query.filter(Card.RECALL_COST == recall_cost)
+
+  if in_market:
+    query = query.filter(Card.price != None)
+
+  if no_condition:
+    query = query.filter(
+      ~func.lower(Card.MAIN_EFFECT).like('% si %') & 
+      ~func.lower(Card.MAIN_EFFECT).like('% s\'il %')
+    )
 
   return query.all()
