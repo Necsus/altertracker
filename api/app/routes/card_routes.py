@@ -38,8 +38,6 @@ def search_cards_route():
         in_market = request.args.get('in_market')
         no_condition = request.args.get('no_condition')
         cards = search_cards_service(name, rarity, faction, set, main_effect, echo_effect, main_cost, recall_cost, in_market, no_condition)
-        if not cards:
-            return make_response(jsonify({'message': 'No cards found'}), 404)
         return jsonify([card.json() for card in cards]), 201
     except Exception as e:
         return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
