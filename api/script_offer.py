@@ -16,7 +16,7 @@ start_time = time.time()
 with app.app_context():  # Activer le contexte de l'application
     token = ""
     nb_offers = 0
-    start_incremental_id = 2935
+    start_incremental_id = 4824
     print(f"----------- GET OFFRES -----------")
     # Récupérer toutes les cartes
     existing_cards = {
