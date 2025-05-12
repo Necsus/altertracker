@@ -3,7 +3,7 @@
     class="max-w-full max-h-64 object-contain rounded-md mb-4 md:mb-0 md:mr-4">
   <div class="flex flex-col justify-center">
     <div class="flex items-center mb-2">
-      <p class="text-gray-300 mr-2">Offre :</p>
+      <p class="text-gray-300 mr-2">Offre : {{card.price}}{{card.price?'€':''}}</p>
       <button (click)="refreshPrice()" class="text-blue-500 hover:text-blue-700 transition duration-300">
         <i class="fas fa-sync-alt"></i>
       </button>

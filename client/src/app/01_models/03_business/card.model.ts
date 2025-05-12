@@ -17,5 +17,7 @@ export interface CardModel {
   MAIN_EFFECT?: string;
   ECHO_EFFECT?: string;
   created_at?: string; // ISO date string
-  edited_at?: string;  // ISO date string
+  edited_at?: string; // ISO date string
+  price?: number;
+  price_updated_at?: string; // ISO date string
 }
