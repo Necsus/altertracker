@@ -37,7 +37,7 @@ def get_cards(page: int, rarity: str):
         return data
     except requests.exceptions.RequestException as e:
         # Gérer les erreurs de requête
-        print(f"Erreur lors de la requête : {e}")
+        print(f"\033[91mErreur lors de la requête : {e}")
         return None
     
 def get_unique_cards_name_faction(name: str, faction: str, set: str, mainCost: int, recallCost: int, forestPower: list[str], page: int):
@@ -75,7 +75,7 @@ def get_unique_cards_name_faction(name: str, faction: str, set: str, mainCost: i
         return data
     except requests.exceptions.RequestException as e:
         # Gérer les erreurs de requête
-        print(f"Erreur lors de la requête : {e}")
+        print(f"\033[91mErreur lors de la requête : {e}\033[0m")
         return None
 
 def get_card_by_id(card_reference: str, en: bool = False):
@@ -98,5 +98,37 @@ def get_card_by_id(card_reference: str, en: bool = False):
         return data
     except requests.exceptions.RequestException as e:
         # Gérer les erreurs de requête
-        print(f"Erreur lors de la requête : {e}")
+        print(f"\033[91mErreur lors de la requête : {e}\033[0m")
+        return None
+
+def get_offer_by_reference(reference: str, token: str):
+    base_url = f"https://api.altered.gg/cards/{reference}/offers?itemsPerPage=10&page=1"
+    headers = {
+        "Authorization": f"Bearer {token}"
+    }
+    try:
+        # Effectuer une requête GET vers l'URL
+        response = requests.get(base_url, headers=headers)
+        
+        # Vérifier si la requête a réussi (code 200)
+        response.raise_for_status()
+        
+        # Récupérer les données au format JSON
+        data = response.json()
+
+        if data['code'] == 401:
+            if data['message']:
+                print(f"\033[91m{data['message']}\033[0m")
+            else:
+                print("\033[91mError lors de la requete card_routine.get_offer_by_reference\033[0m")
+            return None
+        
+        if data['hydra:totalItems'] <= 0 and data['hydra:member']:
+            return None
+        
+        # Retourner les données
+        return data['hydra:member']
+    except requests.exceptions.RequestException as e:
+        # Gérer les erreurs de requête
+        print(f"\033[91mErreur lors de la requête : {e}\033[0m")
         return None

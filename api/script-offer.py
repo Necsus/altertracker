@@ -17,3 +17,4 @@ with app.app_context():  # Activer le contexte de l'application
     nb_cards = 0
 
     print(f"----------- GET OFFRES -----------")
+    
