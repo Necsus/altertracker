@@ -104,7 +104,8 @@ def get_card_by_reference(card_reference: str, en: bool = False):
 def get_offer_by_reference(reference: str, token: str):
     base_url = f"https://api.altered.gg/cards/{reference}/offers?itemsPerPage=10&page=1"
     headers = {
-        "Authorization": f"Bearer {token}"
+        "authorization": f"Bearer {token}",
+        "accept": "*/*"
     }
     try:
         # Effectuer une requête GET vers l'URL
@@ -116,14 +117,14 @@ def get_offer_by_reference(reference: str, token: str):
         # Récupérer les données au format JSON
         data = response.json()
 
-        if data['code'] == 401:
-            if data['message']:
+        if 'code' in data and data['code'] == 401:
+            if 'message' in data and data['message']:
                 print(f"\033[91m{data['message']}\033[0m")
             else:
                 print("\033[91mError lors de la requete card_routine.get_offer_by_reference\033[0m")
             return None
         
-        if data['hydra:totalItems'] <= 0 and data['hydra:member']:
+        if data['hydra:totalItems'] <= 0 or len(data['hydra:member']) <= 0:
             return None
         
         # Retourner les données

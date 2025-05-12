@@ -19,8 +19,9 @@ export class CardApiService {
   }
   search_cards$(name: string, rarity: string, faction: string, set: string,
     main_effect: string, echo_efect: string, main_cost: string,
-    recall_cost: string): Observable<any> {
+    recall_cost: string, in_market: string, no_condition: string): Observable<any> {
     return this.wabApiService.callGet$(this.controller, 'search?name=' + name + '&rarity=' + rarity + '&faction=' + faction + '&set=' + set +
-      '&main_effect=' + main_effect + '&echo_effect=' + echo_efect + '&main_cost=' + main_cost + '&recall_cost=' + recall_cost);
+      '&main_effect=' + main_effect + '&echo_effect=' + echo_efect + '&main_cost=' + main_cost + '&recall_cost=' + recall_cost + '&in_market=' + in_market +
+      '&no_condition=' + no_condition);
   }
 }

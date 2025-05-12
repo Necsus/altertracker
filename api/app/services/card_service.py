@@ -12,5 +12,5 @@ def get_cards_count_service() -> int:
 def get_card_by_reference_service(reference) -> Optional[Card]:
     return get_card_by_reference_data(reference)
 
-def search_cards_service(name, rarity, faction, set, main_effect, echo_effect, main_cost, recall_cost) -> Optional[list[Card]]:
-    return search_cards_data(name, rarity, faction, set, main_effect, echo_effect, main_cost, recall_cost)
+def search_cards_service(name, rarity, faction, set, main_effect, echo_effect, main_cost, recall_cost, in_market, no_condition) -> Optional[list[Card]]:
+    return search_cards_data(name, rarity, faction, set, main_effect, echo_effect, main_cost, recall_cost, in_market, no_condition)

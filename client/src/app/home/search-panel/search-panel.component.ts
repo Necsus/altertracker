@@ -25,13 +25,15 @@ export class SearchPanelComponent implements OnInit {
       main_effect: [''],
       echo_effect: [''],
       main_cost: [''],
-      recall_cost: ['']
+      recall_cost: [''],
+      in_market: [''],
+      no_condition: ['']
     });
   }
 
   isFormValid(): boolean {
-    const { name, rarity, faction, set, main_effect, echo_effect, main_cost, recall_cost } = this.searchForm.value;
-    return !!(name || rarity || faction || set || main_effect || echo_effect || main_cost || recall_cost); // Vérifie si au moins un champ est rempli
+    const { name, rarity, faction, set, main_effect, echo_effect, main_cost, recall_cost, in_market, no_condition } = this.searchForm.value;
+    return !!(name || rarity || faction || set || main_effect || echo_effect || main_cost || recall_cost || in_market || no_condition); // Vérifie si au moins un champ est rempli
   }
 
   private cleanFormValues(values: any): any {
@@ -53,7 +55,8 @@ export class SearchPanelComponent implements OnInit {
     this.cardService.search_cards$(
       criteria.name, criteria.rarity, criteria.faction,
       criteria.set, criteria.main_effect, criteria.echo_effect,
-      criteria.main_cost, criteria.recall_cost
+      criteria.main_cost, criteria.recall_cost, criteria.in_market,
+      criteria.no_condition
     ).subscribe({
       next: (data: CardModel[]) => {
         this.cardsRetrieved.emit(data);
