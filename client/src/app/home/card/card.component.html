@@ -1,8 +1,8 @@
 <div class="bg-gray-700 pr-4 rounded-lg shadow-md flex flex-col md:flex-row">
-  <img [src]="card.imagePath" [alt]="card.name" loading="lazy"
-    class="max-w-full max-h-64 object-contain rounded-md mb-4 md:mb-0 md:mr-4">
+  <img (click)="openModal()" [src]="card.imagePath" [alt]="card.name" loading="lazy"
+    class="max-w-full max-h-64 object-contain rounded-md mb-4 md:mb-0 md:mr-4 cursor-pointer">
   <div class="flex flex-col justify-center">
-    <div class="flex items-center mb-2">
+    <div class="flex items-center mb-2 pt-4">
       @if (card.price) {
       <p class="text-gray-300 mr-2" title="{{card.price_updated_at}}">Market : {{card.price}}{{card.price?'€':''}}</p>
       <button (click)="goToOffer()" class="text-blue-500 hover:text-blue-700 transition duration-300">
@@ -13,9 +13,3 @@
     <p class="text-gray-300 mb-2">{{ card.MAIN_EFFECT }}</p>
   </div>
 </div>
-
-<!-- Modal pour afficher l'image en grand
-<div id="imageModal" [class.hidden]="!isModalOpen" class="modal">
-  <span class="close" (click)="closeModal()">&times;</span>
-  <img class="modal-content" [src]="modalImageSrc">
-</div> -->

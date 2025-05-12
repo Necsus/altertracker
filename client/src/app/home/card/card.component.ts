@@ -1,5 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CardModel } from '../../01_models/03_business/card.model';
+import { ModalService } from '../../shared/services/modal/modal.service';
+import { CardImgComponent } from './card-img.component';
 
 @Component({
   selector: 'app-card',
@@ -7,13 +9,17 @@ import { CardModel } from '../../01_models/03_business/card.model';
 })
 export class CardComponent {
   @Input() card!: CardModel; // Données de la carte
-  isModalOpen = false;
-  modalImageSrc = '';
+
+  constructor(private modalService: ModalService) { }
 
   goToOffer(): void {
     if (this.card.url_offer) {
       window.open(this.card.url_offer, '_blank');
     }
+  }
+
+  openModal(): void {
+    this.modalService.open(CardImgComponent, { src: this.card.imagePath });
   }
 
   // refreshPrice(): void {

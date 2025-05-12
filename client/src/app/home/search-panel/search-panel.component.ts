@@ -3,6 +3,8 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CardModel } from '../../01_models/03_business/card.model';
 import { CardService } from '../../03_business/card.service';
+import { LoaderService } from '../../shared/services/loader/loader.service';
+import { withLoader } from '../../shared/services/loader/rxjs-operator';
 
 @Component({
   selector: 'app-search-panel',
@@ -14,7 +16,8 @@ export class SearchPanelComponent implements OnInit {
   searchForm!: FormGroup;
   constructor(
     private fb: FormBuilder,
-    private cardService: CardService) { }
+    private cardService: CardService,
+    private loaderService: LoaderService) { }
 
   ngOnInit() {
     this.searchForm = this.fb.group({
@@ -36,18 +39,8 @@ export class SearchPanelComponent implements OnInit {
     return !!(name || rarity || faction || set || main_effect || echo_effect || main_cost || recall_cost || in_market || no_condition); // Vérifie si au moins un champ est rempli
   }
 
-  private cleanFormValues(values: any): any {
-    // Remplace null par une chaîne vide pour chaque champ
-    return Object.keys(values).reduce((acc: any, key) => {
-      acc[key] = values[key] === null || values[key] === false ? '' : values[key];
-      return acc;
-    }, {});
-  }
-
   onSubmit() {
     const formValues = this.cleanFormValues(this.searchForm.value);
-    console.log('Recherche avec :', formValues);
-    // Tu peux ensuite appeler ton service ou ta logique ici
     this.searchCards(formValues);
   }
 
@@ -57,13 +50,25 @@ export class SearchPanelComponent implements OnInit {
       criteria.set, criteria.main_effect, criteria.echo_effect,
       criteria.main_cost, criteria.recall_cost, criteria.in_market,
       criteria.no_condition
-    ).subscribe({
-      next: (data: CardModel[]) => {
-        this.cardsRetrieved.emit(data);
-      },
-      error: (error) => {
-        console.error('Error fetching card data:', error);
-      }
-    });
+    )
+      .pipe(
+        withLoader(this.loaderService)
+      )
+      .subscribe({
+        next: (data: CardModel[]) => {
+          this.cardsRetrieved.emit(data);
+        },
+        error: (error) => {
+          console.error('Error fetching card data:', error);
+        }
+      });
+  }
+
+  private cleanFormValues(values: any): any {
+    // Remplace null par une chaîne vide pour chaque champ
+    return Object.keys(values).reduce((acc: any, key) => {
+      acc[key] = values[key] === null || values[key] === false ? '' : values[key];
+      return acc;
+    }, {});
   }
 }

@@ -5,7 +5,7 @@ def get_cards(page: int, rarity: str):
     base_url = "https://api.altered.gg/cards"
     params = {
         "page": page,
-        "cardSet[]": ["CORE", "ALIZE"],
+        "cardSet[]": ["CORE", "ALIZE", "BISE"],
         "cardType[]": [
             "EXPEDITION_PERMANENT",
             "CHARACTER",

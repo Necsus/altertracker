@@ -110,6 +110,10 @@ with app.app_context():  # Activer le contexte de l'application
             # Ajouter les cartes à la liste
             for card in cards['hydra:member']:
                 tempCard = map_jsoncard_to_card(card)
+                existing_card = db.session.query(Card).filter_by(id_card=tempCard.id_card).first()
+                if existing_card:
+                    print(f"\rCarte {tempCard.reference} déjà existante. Passage à la suivante.", end="", flush=True)
+                    continue
                 print(f"\rRécupération des stats de la carte {tempCard.reference}...", end="", flush=True)
                 detailsCard = card_routine.get_card_by_reference(tempCard.reference)
                 tempCard = map_effect_to_card(tempCard, detailsCard)
@@ -140,6 +144,10 @@ with app.app_context():  # Activer le contexte de l'application
             # Ajouter les cartes à la liste
             for card in cards['hydra:member']:
                 tempCard = map_jsoncard_to_card(card)
+                existing_card = db.session.query(Card).filter_by(id_card=tempCard.id_card).first()
+                if existing_card:
+                    print(f"\rCarte {tempCard.reference} déjà existante. Passage à la suivante.", end="", flush=True)
+                    continue
                 print(f"\rRécupération des stats de la carte {tempCard.reference}...", end="", flush=True)
                 detailsCard = card_routine.get_card_by_reference(tempCard.reference)
                 tempCard = map_effect_to_card(tempCard, detailsCard)
@@ -158,7 +166,7 @@ with app.app_context():  # Activer le contexte de l'application
 
     def get_unique():
         print(f"----------- GET UNIQUE -----------")
-        sets = ['COREKS', 'CORE', 'ALIZE']
+        sets = ['COREKS', 'CORE', 'ALIZE', 'BISE']
         mainCosts = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
         recallCosts = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
         forestPowers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
@@ -204,7 +212,7 @@ with app.app_context():  # Activer le contexte de l'application
                                         existing_card = db.session.query(Card).filter_by(id_card=tempCard.id_card).first()
                                         if existing_card:
                                             print(f"\rCarte {tempCard.reference} déjà existante. Passage à la suivante.", end="", flush=True)
-                                            continue  # Passer à l'itération suivante si la carte n'est pas trouvée
+                                            continue  # Passer à l'itération suivante si la carte existe
                                         print(f"\rRécupération des stats de la carte {tempCard.reference}...", end="", flush=True)
                                         detailsCard = card_routine.get_card_by_reference(tempCard.reference)
                                         tempCard = map_effect_to_card(tempCard, detailsCard)
@@ -273,8 +281,8 @@ with app.app_context():  # Activer le contexte de l'application
                         if cardToInsert:
                             insert_cards_into_db(cardToInsert)
 
-    # get_communes()
-    # get_rare()
+    get_communes()
+    get_rare()
     get_unique()
 
     print(f"Fin de l'insertion des cartes.")

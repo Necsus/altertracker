@@ -14,6 +14,8 @@ export class HomeComponent implements OnInit {
   cards: CardModel[] = [];
   groupedCards: { [key: string]: CardModel[] } = {};
   nbCards: number = 0;
+  nbCardsInMarket: number = 0;
+  autoOpenGroup: string | null = null;
 
   constructor(private cardService: CardService) { }
 
@@ -26,11 +28,24 @@ export class HomeComponent implements OnInit {
         console.error('Error fetching card count:', error);
       }
     });
+
+    this.cardService.count_all_cards_in_market$().subscribe({
+      next: (count: number) => {
+        this.nbCardsInMarket = count;
+      },
+      error: (error) => {
+        console.error('Error fetching card count:', error);
+      }
+    });
   }
 
   onCardsRetrieved(cards: CardModel[]): void {
     this.cards = cards;
     this.groupCardsByName();
+
+    // Détecter un seul groupe
+    const groupNames = Object.keys(this.groupedCards);
+    this.autoOpenGroup = groupNames.length === 1 ? groupNames[0] : null;
   }
 
   groupCardsByName(): void {
