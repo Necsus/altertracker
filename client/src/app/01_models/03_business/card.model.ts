@@ -1,5 +1,6 @@
 export interface CardModel {
-  id: string;
+  id: number;
+  id_card: string;
   reference: string;
   name: string;
   name_en?: string;
@@ -20,4 +21,5 @@ export interface CardModel {
   edited_at?: string; // ISO date string
   price?: number;
   price_updated_at?: string; // ISO date string
+  url_offer?: string;
 }

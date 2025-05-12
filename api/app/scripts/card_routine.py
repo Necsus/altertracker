@@ -78,7 +78,7 @@ def get_unique_cards_name_faction(name: str, faction: str, set: str, mainCost: i
         print(f"\033[91mErreur lors de la requête : {e}\033[0m")
         return None
 
-def get_card_by_id(card_reference: str, en: bool = False):
+def get_card_by_reference(card_reference: str, en: bool = False):
     base_url = f"https://api.altered.gg/cards/{card_reference}"
     params = {
         "locale": "en-us" if en else "fr-fr"

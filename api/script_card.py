@@ -18,7 +18,7 @@ with app.app_context():  # Activer le contexte de l'application
 
     def map_jsoncard_to_card(jsonCard, name_en = None) -> Card:
         card = Card(
-            id = jsonCard['id'],
+            id_card = jsonCard['id'],
             reference = jsonCard['reference'],
             name = jsonCard['name'],
             name_en = name_en,
@@ -54,7 +54,7 @@ with app.app_context():  # Activer le contexte de l'application
             add_card_len = 0
             for card in cards:
                 # Vérifier si une carte avec le même id existe déjà
-                existing_card = db.session.get(Card, card.id)
+                existing_card = db.session.query(Card).filter_by(id_card=card.id_card).first()
                 if existing_card:
                     # Mettre à jour les champs de la carte existante
                     existing_card.reference = card.reference
@@ -111,9 +111,9 @@ with app.app_context():  # Activer le contexte de l'application
             for card in cards['hydra:member']:
                 tempCard = map_jsoncard_to_card(card)
                 print(f"\rRécupération des stats de la carte {tempCard.reference}...", end="", flush=True)
-                detailsCard = card_routine.get_card_by_id(tempCard.reference)
+                detailsCard = card_routine.get_card_by_reference(tempCard.reference)
                 tempCard = map_effect_to_card(tempCard, detailsCard)
-                name_en = card_routine.get_card_by_id(tempCard.reference, en=True)
+                name_en = card_routine.get_card_by_reference(tempCard.reference, en=True)
                 tempCard = map_name_en(tempCard, name_en)
                 cardToInsert.append(tempCard)
             print()
@@ -141,9 +141,9 @@ with app.app_context():  # Activer le contexte de l'application
             for card in cards['hydra:member']:
                 tempCard = map_jsoncard_to_card(card)
                 print(f"\rRécupération des stats de la carte {tempCard.reference}...", end="", flush=True)
-                detailsCard = card_routine.get_card_by_id(tempCard.reference)
+                detailsCard = card_routine.get_card_by_reference(tempCard.reference)
                 tempCard = map_effect_to_card(tempCard, detailsCard)
-                name_en = card_routine.get_card_by_id(tempCard.reference, True)
+                name_en = card_routine.get_card_by_reference(tempCard.reference, True)
                 tempCard = map_name_en(tempCard, name_en)
                 cardToInsert.append(tempCard)
             print()
@@ -201,12 +201,12 @@ with app.app_context():  # Activer le contexte de l'application
                                     # Ajouter les cartes à la liste
                                     for card in cards['hydra:member']:
                                         tempCard = map_jsoncard_to_card(card, dbcard.name_en)
-                                        existing_card = db.session.get(Card, tempCard.id)
+                                        existing_card = db.session.query(Card).filter_by(id_card=tempCard.id_card).first()
                                         if existing_card:
                                             print(f"\rCarte {tempCard.reference} déjà existante. Passage à la suivante.", end="", flush=True)
                                             continue  # Passer à l'itération suivante si la carte n'est pas trouvée
                                         print(f"\rRécupération des stats de la carte {tempCard.reference}...", end="", flush=True)
-                                        detailsCard = card_routine.get_card_by_id(tempCard.reference)
+                                        detailsCard = card_routine.get_card_by_reference(tempCard.reference)
                                         tempCard = map_effect_to_card(tempCard, detailsCard)
                                         cardToInsert.append(tempCard)
                                     print()
@@ -228,12 +228,12 @@ with app.app_context():  # Activer le contexte de l'application
                                     # Ajouter les cartes à la liste
                                     for card in cards['hydra:member']:
                                         tempCard = map_jsoncard_to_card(card)
-                                        existing_card = db.session.get(Card, tempCard.id)
+                                        existing_card = db.session.query(Card).filter_by(id_card=tempCard.id_card).first()
                                         if existing_card:
                                             print(f"\rCarte {tempCard.reference} déjà existante. Passage à la suivante.", end="", flush=True)
                                             continue  # Passer à l'itération suivante si la carte n'est pas trouvée
                                         print(f"\rRécupération des stats de la carte {tempCard.reference}...", end="", flush=True)
-                                        detailsCard = card_routine.get_card_by_id(tempCard.reference)
+                                        detailsCard = card_routine.get_card_by_reference(tempCard.reference)
                                         tempCard = map_effect_to_card(tempCard, detailsCard)
                                         cardToInsert.append(tempCard)
                                     print()
@@ -255,12 +255,12 @@ with app.app_context():  # Activer le contexte de l'application
                                     # Ajouter les cartes à la liste
                                     for card in cards['hydra:member']:
                                         tempCard = map_jsoncard_to_card(card)
-                                        existing_card = db.session.get(Card, tempCard.id)
+                                        existing_card = db.session.query(Card).filter_by(id_card=tempCard.id_card).first()
                                         if existing_card:
                                             print(f"\rCarte {tempCard.reference} déjà existante. Passage à la suivante.", end="", flush=True)
                                             continue  # Passer à l'itération suivante si la carte n'est pas trouvée
                                         print(f"\rRécupération des stats de la carte {tempCard.reference}...", end="", flush=True)
-                                        detailsCard = card_routine.get_card_by_id(tempCard.reference)
+                                        detailsCard = card_routine.get_card_by_reference(tempCard.reference)
                                         tempCard = map_effect_to_card(tempCard, detailsCard)
                                         cardToInsert.append(tempCard)
                                     print()
