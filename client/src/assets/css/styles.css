@@ -58,3 +58,46 @@ footer img {
   height: auto;
   object-fit: contain;
 }
+
+/* LOADER */
+.loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.4);
+  /* semi-transparent pour effet de flou */
+  z-index: 9999;
+  /* très haut pour être au-dessus de tout */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: all;
+  /* bloque les clics */
+  overflow: hidden;
+}
+
+.loader-overlay body {
+  overflow: hidden;
+  /* bloque le scroll */
+}
+
+.loader {
+  width: 64px;
+  height: 64px;
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #3f51b5;
+  /* couleur du spinner */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  box-shadow: 0 0 20px rgba(63, 81, 181, 0.6);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* END LOADER */
