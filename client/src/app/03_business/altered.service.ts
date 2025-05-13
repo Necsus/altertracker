@@ -1,0 +1,59 @@
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { catchError, map, Observable, throwError } from 'rxjs';
+import { OfferLiveMarketRequest } from '../01_models/02_api/card/offer-live-market-request.model';
+import { CardModel } from '../01_models/03_business/card.model';
+import { AlteredApiService } from '../02_api/altered-api.service';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class AlteredService {
+  constructor(private alteredApiService: AlteredApiService, private router: Router) { }
+  getMarketOffer$(card: CardModel, token: string): Observable<OfferLiveMarketRequest> {
+    return this.alteredApiService.getOfferByReference(card.reference, token).pipe(
+      map((response: any) => {
+        // Mettre à jour les propriétés de la carte avec les données de l'API
+        if (response['hydra:totalItems'] && response['hydra:totalItems'] > 0) {
+          card.price = Number(response['hydra:member'][0]['convertedPrice']);
+          card.url_offer = `https://www.altered.gg/fr-fr/cards/${card.reference}/offers`;
+
+          // Construire et retourner l'objet OfferLiveMarketRequest
+          return <OfferLiveMarketRequest>{
+            id: card.id,
+            reference: card.reference,
+            status: 'available', // Exemple de statut, ajustez selon vos besoins
+            offerId: response['hydra:member'][0]['offerId'],
+            convertedPrice: card.price,
+            convertedCurrency: response['hydra:member'][0]['convertedCurrency'],
+            quantity: response['hydra:member'][0]['quantity']
+          };
+        } else {
+          card.price = undefined;
+          card.url_offer = undefined;
+
+          // Retourner un objet OfferLiveMarketRequest avec un statut non disponible
+          return {
+            id: card.id,
+            reference: card.reference,
+            status: 'unavailable',
+            offerId: undefined,
+            convertedPrice: undefined,
+            convertedCurrency: undefined,
+            quantity: undefined
+          };
+        }
+      }),
+      catchError((error) => {
+        if (error.status === 401) {
+          console.error('Erreur 401 détectée : Redirection vers la page /token.');
+          sessionStorage.removeItem('altered_token');
+          sessionStorage.removeItem('cgu_altered_token');
+          this.router.navigate(['/token']); // Redirige l'utilisateur vers la page /token
+          return throwError(() => new Error('Token invalide ou expiré. Veuillez le réinsérer.'));
+        }
+        return throwError(() => error); // Propager les autres erreurs
+      })
+    );
+  }
+}

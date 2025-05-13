@@ -12,12 +12,13 @@ import { withLoader } from '../../shared/services/loader/rxjs-operator';
   imports: [CommonModule, ReactiveFormsModule]
 })
 export class SearchPanelComponent implements OnInit {
-  @Output() cardsRetrieved = new EventEmitter<CardModel[]>();
+  @Output() cardsRetrieved = new EventEmitter<{ cards: CardModel[], searchOffers: boolean }>();
   searchForm!: FormGroup;
   constructor(
     private fb: FormBuilder,
-    private cardService: CardService,
-    private loaderService: LoaderService) { }
+    private loaderService: LoaderService,
+    private cardService: CardService
+  ) { }
 
   ngOnInit() {
     this.searchForm = this.fb.group({
@@ -30,7 +31,8 @@ export class SearchPanelComponent implements OnInit {
       main_cost: [''],
       recall_cost: [''],
       in_market: [''],
-      no_condition: ['']
+      no_condition: [''],
+      search_offers: [sessionStorage.getItem('altered_token') ? true : false]
     });
   }
 
@@ -56,7 +58,7 @@ export class SearchPanelComponent implements OnInit {
       )
       .subscribe({
         next: (data: CardModel[]) => {
-          this.cardsRetrieved.emit(data);
+          this.cardsRetrieved.emit({ cards: data, searchOffers: criteria.search_offers });
         },
         error: (error) => {
           console.error('Error fetching card data:', error);

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
+import { OfferLiveMarketRequest } from '../01_models/02_api/card/offer-live-market-request.model';
 import { CardModel } from '../01_models/03_business/card.model';
 import { CardApiService } from '../02_api/card-api.service';
 
@@ -33,5 +34,9 @@ export class CardService {
     return this.cardApiService.search_cards$(name, rarity, faction, set, main_effect, echo_effect, main_cost, recall_cost, in_market, no_condition).pipe(map((dbModel: any) => {
       return dbModel;
     }));
+  }
+
+  post_offer_live_market$(request: OfferLiveMarketRequest[]): Observable<void> {
+    return this.cardApiService.post_offer_live_market$(request).pipe(map(() => void 0));
   }
 }

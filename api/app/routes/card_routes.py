@@ -1,9 +1,11 @@
 from flask import Blueprint, jsonify, make_response, request
+from marshmallow import Schema, fields, ValidationError
 from app.services.card_service import (
   get_card_by_reference_service,
   search_cards_service,
   get_cards_count_service,
-  get_cards_in_market_count_service
+  get_cards_in_market_count_service,
+  post_offer_live_market_service
 )
 
 card_bp = Blueprint('card', __name__)
@@ -49,5 +51,27 @@ def search_cards_route():
         no_condition = request.args.get('no_condition')
         cards = search_cards_service(name, rarity, faction, set, main_effect, echo_effect, main_cost, recall_cost, in_market, no_condition)
         return jsonify([card.json() for card in cards]), 201
+    except Exception as e:
+        return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
+
+class OfferLiveMarketSchema(Schema):
+    id = fields.Int(required=True)
+    reference = fields.Str(required=True)
+    status = fields.Str(required=True)
+    offerId = fields.Str()
+    convertedPrice = fields.Float()
+    convertedCurrency = fields.Str()
+    quantity = fields.Int()
+
+@card_bp.route('/api/card/offerlivemarket', methods=['POST'])
+def post_offer_live_market():
+    try:
+        data = request.get_json()
+        schema = OfferLiveMarketSchema(many=True)
+        validated_data = schema.load(data)
+        post_offer_live_market_service(validated_data)
+        return jsonify({'message': 'Offres mises à jour avec succès'}), 201
+    except ValidationError as ve:
+        return make_response(jsonify({'message': 'Invalid data', 'errors': ve.messages}), 400)
     except Exception as e:
         return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
