@@ -14,7 +14,7 @@ def get_cards_in_market_count_data() -> int:
 def get_card_by_reference_data(reference) -> Optional[Card]:
   return Card.query.filter_by(reference=reference).first()
 
-def search_cards_data(name, rarity, faction, set, main_effect: str, echo_effect: str, main_cost, recall_cost, in_market, no_condition):
+def search_cards_data(name, rarity, faction, set, main_effect, echo_effect, main_cost, recall_cost, in_market, no_condition):
   query = Card.query
 
   if name:
@@ -30,10 +30,11 @@ def search_cards_data(name, rarity, faction, set, main_effect: str, echo_effect:
     query = query.filter(Card.set == set)
 
   if main_effect:
-    main_effect = main_effect.strip()
+    main_effect = strip(main_effect)
     query = query.filter(Card.MAIN_EFFECT.ilike(f'%{main_effect}%'))
 
   if echo_effect:
+    echo_effect = strip(echo_effect)
     query = query.filter(Card.ECHO_EFFECT.ilike(f'%{echo_effect}%'))
 
   if main_cost:
@@ -52,6 +53,9 @@ def search_cards_data(name, rarity, faction, set, main_effect: str, echo_effect:
     )
 
   return query.all()
+
+def strip(text: str):
+  return text.strip()
 
 def escape_special_chars(text):
     if not text:
