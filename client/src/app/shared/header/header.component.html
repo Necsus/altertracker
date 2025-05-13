@@ -1,11 +1,29 @@
 <header class="bg-gray-800 text-white shadow-lg">
   <div class="container mx-auto px-4 py-4">
     <nav class="flex justify-between items-center">
+      <!-- Logo -->
       <div class="flex items-center">
         <img src="assets/img/test_logo_2.png" alt="Logo" class="h-10 mr-2">
         <div class="text-2xl font-bold">AlterTracker</div>
       </div>
-      <ul class="flex space-x-6">
+
+      <!-- Hamburger (mobile) -->
+      <button class="sm:hidden flex flex-col items-center justify-center space-y-1 focus:outline-none"
+        (click)="isMenuOpen = !isMenuOpen" aria-label="Toggle navigation">
+        <!-- Ligne 1 -->
+        <span class="w-6 h-0.5 bg-white transition-transform duration-300"
+          [ngClass]="{ 'rotate-45 translate-y-1.5': isMenuOpen }"></span>
+
+        <!-- Ligne 2 -->
+        <span class="w-6 h-0.5 bg-white transition-opacity duration-300" [ngClass]="{ 'opacity-0': isMenuOpen }"></span>
+
+        <!-- Ligne 3 -->
+        <span class="w-6 h-0.5 bg-white transition-transform duration-300"
+          [ngClass]="{ '-rotate-45 -translate-y-1.5': isMenuOpen }"></span>
+      </button>
+
+      <!-- Menu links -->
+      <ul class="hidden sm:flex space-x-6">
         <li><a routerLink="/" routerLinkActive="text-blue-400" [routerLinkActiveOptions]="{ exact: true }"
             class="hover:text-blue-300 transition duration-300 cursor-pointer">Cartes</a></li>
         <li><a routerLink="/offres" routerLinkActive="text-blue-400"
@@ -20,5 +38,21 @@
             class="hover:text-blue-300 transition duration-300 cursor-pointer">Login</a></li>
       </ul>
     </nav>
+
+    <!-- Mobile menu -->
+    <div *ngIf="isMenuOpen" class="sm:hidden mt-4 space-y-4">
+      <a routerLink="/" routerLinkActive="text-blue-400" [routerLinkActiveOptions]="{ exact: true }"
+        class="block hover:text-blue-300 transition duration-300">Cartes</a>
+      <a routerLink="/offres" routerLinkActive="text-blue-400"
+        class="block hover:text-blue-300 transition duration-300">Offres</a>
+      <a routerLink="/a-propos" routerLinkActive="text-blue-400"
+        class="block hover:text-blue-300 transition duration-300">À propos</a>
+      <a routerLink="/contact" routerLinkActive="text-blue-400"
+        class="block hover:text-blue-300 transition duration-300">Contact</a>
+      <a routerLink="/token" routerLinkActive="text-blue-400"
+        class="block hover:text-blue-300 transition duration-300">Token</a>
+      <a routerLink="/login" routerLinkActive="text-blue-400"
+        class="block hover:text-blue-300 transition duration-300">Login</a>
+    </div>
   </div>
 </header>
