@@ -32,7 +32,6 @@ def search_cards_data(name, rarity, faction, set, main_effect: str, echo_effect:
   if main_effect:
     main_effect = main_effect.strip()
     query = query.filter(Card.MAIN_EFFECT.ilike(f'%{main_effect}%'))
-    # query = query.filter(Card.MAIN_EFFECT.ilike(f'%{main_effect}%'))
 
   if echo_effect:
     query = query.filter(Card.ECHO_EFFECT.ilike(f'%{echo_effect}%'))
