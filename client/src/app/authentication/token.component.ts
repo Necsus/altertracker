@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ToastService } from '../shared/services/toast/toast.service';
 
 @Component({
   selector: 'app-token',
@@ -13,7 +14,7 @@ export class TokenComponent {
   acceptedCGU: boolean = false;
   formSubmitted: boolean = false;
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private toastService: ToastService) { }
 
   ngOnInit() {
     const storedToken = sessionStorage.getItem('altered_token');
@@ -34,6 +35,7 @@ export class TokenComponent {
     if (this.isFormValid()) {
       sessionStorage.setItem('altered_token', this.token);
       sessionStorage.setItem('cgu_altered_token', String(this.acceptedCGU));
+      this.toastService.show('Token enregistré avec succès', 'success', 5000);
       this.router.navigate(['/']);
     }
   }
