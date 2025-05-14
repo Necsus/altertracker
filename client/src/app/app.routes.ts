@@ -1,6 +1,9 @@
 import { Routes } from '@angular/router';
+import { ForgotPasswordComponent } from './authentication/forgot-password.component';
 import { LoginComponent } from './authentication/login.component';
+import { RegisterComponent } from './authentication/register.component';
 import { TokenComponent } from './authentication/token.component';
+import { ContactComponent } from './contact/contact.component';
 import { NotFoundComponent } from './error-pages/not-found/not-found.component';
 import { HomeComponent } from './home/home.component';
 import { UnderConstructionComponent } from './shared/under-construction/under-construction.component';
@@ -8,8 +11,10 @@ import { UnderConstructionComponent } from './shared/under-construction/under-co
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'forgotpassword', component: ForgotPasswordComponent },
   { path: 'token', component: TokenComponent },
-  { path: 'contact', component: UnderConstructionComponent },
+  { path: 'contact', component: ContactComponent },
   { path: 'a-propos', component: UnderConstructionComponent },
   { path: 'offres', component: UnderConstructionComponent },
   { path: '**', component: NotFoundComponent }

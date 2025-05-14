@@ -3,19 +3,19 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ToastService } from '../shared/services/toast/toast.service';
 
+
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
+  selector: 'app-forgot-password',
+  templateUrl: './forgot-password.component.html',
   imports: [RouterModule, ReactiveFormsModule]
 })
-export class LoginComponent implements OnInit {
-  loginForm!: FormGroup;
+export class ForgotPasswordComponent implements OnInit {
+  forgotPasswordForm!: FormGroup;
   constructor(private fb: FormBuilder, private toastService: ToastService) { }
 
   ngOnInit(): void {
-    this.loginForm = this.fb.group({
-      email: [''],
-      password: ['']
+    this.forgotPasswordForm = this.fb.group({
+      email: ['']
     });
   }
 
