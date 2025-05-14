@@ -44,8 +44,10 @@
       <!-- CGU -->
       <div class="flex items-start mt-4">
         <input type="checkbox" id="cgu" name="cgu" [(ngModel)]="acceptedCGU" required class="mt-1 accent-blue-600" />
-        <label for="cgu" class="ml-2 text-sm text-gray-300">
-          J'accepte les <a href="#" class="text-blue-400 hover:underline">Conditions Générales d'Utilisation</a>.
+        <label for="cgu" class="ml-2 text-sm text-gray-300" style="user-select: none;">
+          J'accepte les <a (click)="cguClick(); $event.preventDefault(); $event.stopPropagation()"
+            class="text-blue-400 hover:underline cursor-pointer">Conditions
+            Générales d'Utilisation</a>.
         </label>
       </div>
 
