@@ -51,7 +51,7 @@ def post_offer_live_market_service(data: List[dict]) -> None:
             "reference": str(item['reference']).strip(),
             "price": float(item['convertedPrice']) if item.get('convertedPrice') is not None else None,
             "price_updated_at": datetime.now(),
-            "url_offer": f"https://www.altered.gg/fr-fr/cards/{item['reference']}/offers" if item['status'] == "active" else None
+            "url_offer": f"https://www.altered.gg/fr-fr/cards/{item['reference']}/offers" if item['status'] == "available" else None
         }
         print('modif card')
         sanitized_data.append(sanitized_item)

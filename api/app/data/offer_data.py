@@ -6,7 +6,7 @@ from typing import List, Optional
 from app.extensions import db
 
 def get_cards_in_market_count_data() -> int:
-    return db.session.query(func.count(Offer.id)).scalar()
+    return db.session.query(func.count(Offer.id)).filter(Offer.is_deleted is False).scalar()
 
 def insert_offers_bulk(offers: List[dict]) -> None:
     if not offers:
