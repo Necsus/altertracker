@@ -1,9 +1,10 @@
-import { HttpClient, provideHttpClient } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, provideHttpClient } from '@angular/common/http';
 import { ApplicationConfig, EnvironmentInjector, importProvidersFrom, Injector, LOCALE_ID, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { routes } from './app.routes';
+import { TokenInterceptor } from './authentication/token.interceptor';
 
 const createTranslateLoader = (http: HttpClient): TranslateHttpLoader => {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -30,6 +31,7 @@ export const appConfig: ApplicationConfig = {
       provide: EnvironmentInjector,
       useFactory: (injector: Injector) => injector.get(EnvironmentInjector),
       deps: [Injector]
-    }
+    },
+    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }
   ]
 };
