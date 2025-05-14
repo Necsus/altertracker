@@ -1,6 +1,4 @@
-import re
 from typing import Optional
-from app.models.offer import Offer
 from app.models.card import Card
 from sqlalchemy import func
 from app.extensions import db
