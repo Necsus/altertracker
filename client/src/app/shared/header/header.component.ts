@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -9,4 +9,10 @@ import { RouterModule } from '@angular/router';
 })
 export class HeaderComponent {
   isMenuOpen = false;
+
+  constructor(private router: Router) { }
+
+  navigateToHome(): void {
+    this.router.navigate(['']);
+  }
 }
