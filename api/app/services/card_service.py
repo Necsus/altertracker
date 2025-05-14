@@ -23,8 +23,8 @@ def get_cards_in_market_count_service() -> int:
 def get_card_by_reference_service(reference) -> Optional[Card]:
     return get_card_by_reference_data(reference)
 
-def search_cards_service(name, rarity, faction, set, main_effect, echo_effect, main_cost, recall_cost, in_market, no_condition) -> Optional[list[Card]]:
-    return search_cards_data(name, rarity, faction, set, main_effect, echo_effect, main_cost, recall_cost, in_market, no_condition)
+def search_cards_service(name, rarity, faction, set, main_effect, main_effect_2, echo_effect, main_cost, recall_cost, in_market, no_condition) -> Optional[list[Card]]:
+    return search_cards_data(name, rarity, faction, set, main_effect, main_effect_2, echo_effect, main_cost, recall_cost, in_market, no_condition)
 
 def post_offer_live_market_service(data: List[dict]) -> None:
     # Vérification des données reçues
@@ -53,24 +53,18 @@ def post_offer_live_market_service(data: List[dict]) -> None:
             "price_updated_at": datetime.now(),
             "url_offer": f"https://www.altered.gg/fr-fr/cards/{item['reference']}/offers" if item['status'] == "available" else None
         }
-        print('modif card')
         sanitized_data.append(sanitized_item)
-        print("if item['status'] == 'available'")
         if item['status'] == 'available' and sanitized_item['price'] is not None and item['offerId'] is not None:
-            print("existing_offer")
             existing_offer = get_offer_by_reference(sanitized_item['reference'])
-            print(existing_offer)
             if existing_offer:
                 if existing_offer.id == item['offerId']:
                     continue
                 else:
-                    print('modif offer')
                     updated_offers.append({
                         "id": existing_offer.id,
                         "is_edited": True,
                         "edited_at": datetime.now()
                     })
-            print('add offer')
             # Insérer une nouvelle offre pour conserver l'historique
             new_offers.append({
                 "reference_card": sanitized_item['reference'],
@@ -85,7 +79,6 @@ def post_offer_live_market_service(data: List[dict]) -> None:
         else:
             existing_offer = get_offer_by_reference(sanitized_item['reference'])
             if existing_offer:
-                print('modif offer 2')
                 updated_offers.append({
                     "id": existing_offer.id,
                     "is_deleted": True,
@@ -96,7 +89,6 @@ def post_offer_live_market_service(data: List[dict]) -> None:
     # Mise à jour en masse des cartes
     try:
         update_cards_bulk(sanitized_data)
-        print(f"{len(sanitized_data)} cartes mises à jour avec succès.")
     except Exception as e:
         print(f"Erreur lors de la mise à jour des cartes : {e}")
         raise
@@ -105,7 +97,6 @@ def post_offer_live_market_service(data: List[dict]) -> None:
     if updated_offers:
         try:
             update_offers_bulk(updated_offers)
-            print(f"{len(updated_offers)} offres mises à jour avec succès.")
         except Exception as e:
             print(f"Erreur lors de la mise à jour des offres : {e}")
             raise
@@ -114,7 +105,6 @@ def post_offer_live_market_service(data: List[dict]) -> None:
     if new_offers:
         try:
             insert_offers_bulk(new_offers)
-            print(f"{len(new_offers)} nouvelles offres insérées avec succès.")
         except Exception as e:
             print(f"Erreur lors de l'insertion des nouvelles offres : {e}")
             raise
