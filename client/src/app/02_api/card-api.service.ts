@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { OfferLiveMarketRequest } from '../01_models/02_api/card/offer-live-market-request.model';
 import { WebApiService } from './web-api.service';
 
 @Injectable({
@@ -26,5 +27,8 @@ export class CardApiService {
     return this.wabApiService.callGet$(this.controller, 'search?name=' + name + '&rarity=' + rarity + '&faction=' + faction + '&set=' + set +
       '&main_effect=' + main_effect + '&echo_effect=' + echo_efect + '&main_cost=' + main_cost + '&recall_cost=' + recall_cost + '&in_market=' + in_market +
       '&no_condition=' + no_condition);
+  }
+  post_offer_live_market$(request: OfferLiveMarketRequest[]): Observable<void> {
+    return this.wabApiService.callPost$(this.controller, 'offerlivemarket', request);
   }
 }

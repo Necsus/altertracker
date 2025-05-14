@@ -1,5 +1,41 @@
-<div class="construction-container">
-  <img src="assets/construction.png" alt="Page en construction" class="construction-image" />
-  <h1>Page en construction</h1>
-  <p>Nous travaillons dur pour finaliser cette page. Revenez bientôt !</p>
+<div class="py-32 flex items-center justify-center bg-gray-900">
+  <div class="bg-gray-800 text-white rounded-lg shadow-lg p-8 w-full max-w-md">
+    <h2 class="text-2xl font-bold text-center mb-6">Connexion</h2>
+    <form>
+      <!-- Email -->
+      <div class="mb-4">
+        <label for="email" class="block text-sm font-medium mb-2">Adresse e-mail</label>
+        <input type="email" id="email"
+          class="w-full px-4 py-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Entrez votre e-mail" required />
+      </div>
+
+      <!-- Mot de passe -->
+      <div class="mb-4">
+        <label for="password" class="block text-sm font-medium mb-2">Mot de passe</label>
+        <input type="password" id="password"
+          class="w-full px-4 py-2 rounded-lg bg-gray-700 text-white border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Entrez votre mot de passe" required />
+      </div>
+
+      <!-- Bouton de connexion -->
+      <button type="submit"
+        class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg transition duration-300">
+        Se connecter
+      </button>
+
+      <!-- Lien mot de passe oublié -->
+      <div class="text-center mt-4">
+        <a href="#" class="text-sm text-blue-400 hover:underline">Mot de passe oublié ?</a>
+      </div>
+    </form>
+
+    <!-- Lien inscription -->
+    <div class="text-center mt-6">
+      <p class="text-sm">
+        Pas encore de compte ?
+        <a href="/register" class="text-blue-400 hover:underline">Inscrivez-vous</a>
+      </p>
+    </div>
+  </div>
 </div>

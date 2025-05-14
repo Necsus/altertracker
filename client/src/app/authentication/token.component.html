@@ -1,0 +1,54 @@
+<div class="py-24 flex items-center justify-center bg-gray-900 p-4">
+  <div class="bg-gray-800 p-6 rounded-2xl shadow-xl w-full max-w-md text-gray-100">
+    <h2 class="text-2xl font-semibold mb-4">Activez la fonction Live Market, en renseignant votre token Altered</h2>
+
+    <!-- Phrase explicative -->
+    <p class="text-sm text-gray-400 mb-4">
+      Une fois connecté sur le site
+      <a href="https://auth.altered.gg/realms/players/protocol/openid-connect/auth?client_id=web&scope=openid%20email%20profile%20offline_access&response_type=code&redirect_uri=https%3A%2F%2Fwww.altered.gg%2Fapi%2Fauth%2Fcallback%2Fkeycloak&ui_locales=fr&shop_redirect_uri=https%3A%2F%2Fwww.altered.gg%2Fapi%2Fauth%2Fcallback%2Fkeycloak-shop&state=-X3iP4pfM-Lj_l9DKXsS5LMPDyJdJ2YQqzI48lRjxNQ&code_challenge=UgPvBsGJJ6OxtglHAxE9CM7S6nZqmuYQIEce_Hu9KQI&code_challenge_method=S256"
+        target="_blank" rel="noopener noreferrer" class="text-blue-400 underline hover:text-blue-300">
+        Altered&nbsp;<i class="fas fa-up-right-from-square text-xs"></i><br />
+      </a>
+      Vous pouvez récupérer votre <strong>accessToken</strong> depuis
+      <a href="https://www.altered.gg/api/auth/session" target="_blank" rel="noopener noreferrer"
+        class="text-blue-400 underline hover:text-blue-300">
+        cette page&nbsp;<i class="fas fa-up-right-from-square text-xs"></i>
+      </a>
+    </p>
+
+    <form (ngSubmit)="onSubmit()" #tokenForm="ngForm" novalidate>
+      <!-- Textarea -->
+      <label class="block mb-2 text-sm font-medium text-gray-300" for="token">
+        Votre token
+        <span *ngIf="token">
+          <span *ngIf="isTokenValid(); else invalid" class="text-green-400 ml-2">
+            (valide)
+          </span>
+          <ng-template #invalid>
+            <span class="text-red-400 ml-2">(invalide)</span>
+          </ng-template>
+        </span>
+      </label>
+      <textarea id="token" name="token" [(ngModel)]="token" required rows="4"
+        class="w-full p-3 rounded-xl border border-gray-600 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+        placeholder="Entrez votre token ici...">
+      </textarea>
+
+      <!-- CGU -->
+      <div class="flex items-start mt-4">
+        <input type="checkbox" id="cgu" name="cgu" [(ngModel)]="acceptedCGU" required class="mt-1 accent-blue-600" />
+        <label for="cgu" class="ml-2 text-sm text-gray-300">
+          J'accepte les <a href="#" class="text-blue-400 hover:underline">Conditions Générales d'Utilisation</a>.
+        </label>
+      </div>
+
+      <!-- Bouton -->
+      <button type="submit" [disabled]="!isFormValid()"
+        [ngClass]="{'bg-gray-500 cursor-not-allowed': !isFormValid(), 'bg-blue-600 hover:bg-blue-700': isFormValid()}"
+        class="mt-6 w-full py-2 px-4 rounded-xl transition text-white 
+              bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed">
+        Continuer
+      </button>
+    </form>
+  </div>
+</div>

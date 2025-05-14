@@ -3,6 +3,7 @@ import { AfterViewInit, Component, ComponentRef, Input, Type, ViewChild, ViewCon
 @Component({
   selector: 'app-modal',
   templateUrl: './modal.component.html',
+  styleUrls: ['modal.component.css'],
   standalone: true
 })
 export class ModalComponent implements AfterViewInit {
