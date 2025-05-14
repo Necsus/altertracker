@@ -27,6 +27,7 @@ export class SearchPanelComponent implements OnInit {
       faction: [''],
       set: [''],
       main_effect: [''],
+      main_effect_2: [''],
       echo_effect: [''],
       main_cost: [''],
       recall_cost: [''],
@@ -37,8 +38,8 @@ export class SearchPanelComponent implements OnInit {
   }
 
   isFormValid(): boolean {
-    const { name, rarity, faction, set, main_effect, echo_effect, main_cost, recall_cost, in_market, no_condition } = this.searchForm.value;
-    return !!(name || rarity || faction || set || main_effect || echo_effect || main_cost || recall_cost || in_market || no_condition); // Vérifie si au moins un champ est rempli
+    const { name, rarity, faction, set, main_effect, main_effect_2, echo_effect, main_cost, recall_cost, in_market, no_condition } = this.searchForm.value;
+    return !!(name || rarity || faction || set || main_effect || main_effect_2 || echo_effect || main_cost || recall_cost || in_market || no_condition); // Vérifie si au moins un champ est rempli
   }
 
   onSubmit() {
@@ -49,7 +50,7 @@ export class SearchPanelComponent implements OnInit {
   searchCards(criteria: any): void {
     this.cardService.search_cards$(
       criteria.name, criteria.rarity, criteria.faction,
-      criteria.set, criteria.main_effect, criteria.echo_effect,
+      criteria.set, criteria.main_effect, criteria.main_effect_2, criteria.echo_effect,
       criteria.main_cost, criteria.recall_cost, criteria.in_market,
       criteria.no_condition
     )

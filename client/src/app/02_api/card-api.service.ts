@@ -22,10 +22,10 @@ export class CardApiService {
     return this.wabApiService.callGet$(this.controller, reference);
   }
   search_cards$(name: string, rarity: string, faction: string, set: string,
-    main_effect: string, echo_efect: string, main_cost: string,
+    main_effect: string, main_effect_2: string, echo_efect: string, main_cost: string,
     recall_cost: string, in_market: string, no_condition: string): Observable<any> {
     return this.wabApiService.callGet$(this.controller, 'search?name=' + name + '&rarity=' + rarity + '&faction=' + faction + '&set=' + set +
-      '&main_effect=' + main_effect + '&echo_effect=' + echo_efect + '&main_cost=' + main_cost + '&recall_cost=' + recall_cost + '&in_market=' + in_market +
+      '&main_effect=' + main_effect + '&main_effect_2=' + main_effect_2 + '&echo_effect=' + echo_efect + '&main_cost=' + main_cost + '&recall_cost=' + recall_cost + '&in_market=' + in_market +
       '&no_condition=' + no_condition);
   }
   post_offer_live_market$(request: OfferLiveMarketRequest[]): Observable<void> {

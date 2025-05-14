@@ -4,18 +4,20 @@ import { RouterModule } from '@angular/router';
 import { ToastService } from '../shared/services/toast/toast.service';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.component.html',
+  selector: 'app-contact',
+  templateUrl: './contact.component.html',
   imports: [RouterModule, ReactiveFormsModule]
 })
-export class LoginComponent implements OnInit {
-  loginForm!: FormGroup;
+export class ContactComponent implements OnInit {
+  contactForm!: FormGroup;
   constructor(private fb: FormBuilder, private toastService: ToastService) { }
 
   ngOnInit(): void {
-    this.loginForm = this.fb.group({
+    this.contactForm = this.fb.group({
+      name: [''],
       email: [''],
-      password: ['']
+      subject: [''],
+      message: ['']
     });
   }
 

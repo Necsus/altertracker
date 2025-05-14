@@ -29,6 +29,10 @@ export class TokenComponent {
     }
   }
 
+  cguClick(): void {
+    this.toastService.show('Fonctionnalité en construction...', 'error', 5000);
+  }
+
   onSubmit() {
     this.formSubmitted = true;
 

@@ -40,12 +40,17 @@
       </select>
     </div>
     <div>
-      <label for="main_effect" class="block text-sm font-medium text-gray-300">Main Effet</label>
+      <label for="main_effect" class="block text-sm font-medium text-gray-300">Main Effect</label>
       <input type="text" id="main_effect" formControlName="main_effect"
         class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm p-2 text-white">
     </div>
     <div>
-      <label for="echo_effect" class="block text-sm font-medium text-gray-300">Echo Effet</label>
+      <label for="main_effect_2" class="block text-sm font-medium text-gray-300">et Main Effect 2</label>
+      <input type="text" id="main_effect_2" formControlName="main_effect_2"
+        class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm p-2 text-white">
+    </div>
+    <div>
+      <label for="echo_effect" class="block text-sm font-medium text-gray-300">Echo Effect</label>
       <input type="text" id="echo_effect" formControlName="echo_effect"
         class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm p-2 text-white">
     </div>
@@ -60,17 +65,20 @@
         class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm p-2 text-white">
     </div>
     <div class="flex items-center justify-center h-full space-x-4">
-      <label for="no_condition" class="inline-flex items-center text-sm font-medium text-gray-300">
+      <label for="no_condition" class="inline-flex items-center text-sm font-medium text-gray-300"
+        style="user-select: none;">
         <input type="checkbox" id="no_condition" formControlName="no_condition"
           class="h-4 w-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-offset-gray-800">
         <span class="ml-2">No Condition</span>
       </label>
-      <label for="in_market" class="inline-flex items-center text-sm font-medium text-gray-300">
+      <label for="in_market" class="inline-flex items-center text-sm font-medium text-gray-300"
+        style="user-select: none;">
         <input type="checkbox" id="in_market" formControlName="in_market"
           class="h-4 w-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-offset-gray-800">
         <span class="ml-2">Db Market</span>
       </label>
-      <label for="search_offers" class="inline-flex items-center text-sm font-medium text-gray-300">
+      <label for="search_offers" class="inline-flex items-center text-sm font-medium text-gray-300"
+        style="user-select: none;">
         <input type="checkbox" id="search_offers" formControlName="search_offers"
           class="h-4 w-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-offset-gray-800">
         <span class="ml-2">Live Market</span>

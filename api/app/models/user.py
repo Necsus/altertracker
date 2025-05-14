@@ -7,6 +7,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
     created_at = db.Column(db.DateTime,  default=datetime.datetime.now(datetime.timezone.utc))
     edited_at = db.Column(db.DateTime,  default=datetime.datetime.now(datetime.timezone.utc))
 
@@ -22,9 +23,9 @@ class User(db.Model):
             'edited_at': self.edited_at.isoformat() if self.edited_at else None,
         }
     
-    def __init__(self, id, username, email, created_at=None, edited_at=None):
-        self.id = id
+    def __init__(self, id, username, email, password, created_at=None, edited_at=None):
         self.reference = username
         self.name = email
+        self.password = password
         self.created_at = created_at if created_at else datetime.datetime.now(datetime.timezone.utc)
         self.edited_at = edited_at if edited_at else datetime.datetime.now(datetime.timezone.utc)
