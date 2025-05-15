@@ -20,17 +20,17 @@ def register():
     if User.query.filter_by(email=data['email']).first():
         return jsonify({"msg": "Email already used"}), 400
     hashed = hash_password(data['password'])
-    user = User(email=data['email'], password_hash=hashed)
+    user = User(username=data['username'], email=data['email'], password_hash=hashed)
     db.session.add(user)
     db.session.commit()
-    return jsonify({"msg": "User created"}), 201
+    return jsonify({"message": "User created"}), 201
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
     user = User.query.filter_by(email=data['email']).first()
     if not user or not check_password(data['password'], user.password_hash):
-        return jsonify({"msg": "Invalid credentials"}), 401
+        return jsonify({"message": "Invalid credentials"}), 401
     access_token = create_access_token(identity=user.id)
     refresh_token = create_refresh_token(identity=user.id)
     return jsonify(access_token=access_token, refresh_token=refresh_token)
@@ -48,7 +48,7 @@ def logout():
     jti = get_jwt()["jti"]
     db.session.add(TokenBlacklist(jti=jti))
     db.session.commit()
-    response = jsonify({"msg": "Logout successful"})
+    response = jsonify({"message": "Logout successful"})
     unset_jwt_cookies(response)
     return response
 
@@ -57,22 +57,22 @@ def forgot_password():
     data = request.get_json()
     user = User.query.filter_by(email=data['email']).first()
     if not user:
-        return jsonify({"msg": "Email not found"}), 404
+        return jsonify({"message": "Email not found"}), 404
     token = serializer.dumps(user.email, salt='reset')
     reset_url = f"http://frontend/reset-password/{token}"
     msg = Message("Password Reset", recipients=[user.email])
     msg.body = f"Click to reset: {reset_url}"
     mail.send(msg)
-    return jsonify({"msg": "Reset email sent"}), 200
+    return jsonify({"message": "Reset email sent"}), 200
 
 @auth_bp.route('/reset-password/<token>', methods=['POST'])
 def reset_password(token):
     try:
         email = serializer.loads(token, salt='reset', max_age=3600)
     except itsdangerous.BadSignature:
-        return jsonify({"msg": "Invalid or expired token"}), 400
+        return jsonify({"message": "Invalid or expired token"}), 400
     data = request.get_json()
     user = User.query.filter_by(email=email).first()
     user.password_hash = hash_password(data['password'])
     db.session.commit()
-    return jsonify({"msg": "Password updated"}), 200
+    return jsonify({"message": "Password updated"}), 200

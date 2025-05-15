@@ -46,6 +46,14 @@ with app.app_context():  # Activer le contexte de l'application
         card.MAIN_EFFECT = None if 'MAIN_EFFECT' not in jsonCard['elements'] else jsonCard['elements']['MAIN_EFFECT'],
         card.ECHO_EFFECT = None if 'ECHO_EFFECT' not in jsonCard['elements'] else jsonCard['elements']['ECHO_EFFECT'],
         return card
+    
+    def map_names(card: Card, name_fr: str, name_en: str):
+        card.name = name_fr
+        card.name_en = name_en
+        card.edited_at = datetime.now()
+        if card.created_at is None:
+            card.created_at = datetime.now()
+        db.session.commit()
 
     def insert_cards_into_db(cards):
         global nb_cards
@@ -110,8 +118,41 @@ with app.app_context():  # Activer le contexte de l'application
 
             for card in cards['hydra:member']:
                 tempCard = map_jsoncard_to_card(card)
-                if db.session.query(Card.id_card).filter_by(id_card=tempCard.id_card).first():
+                card_to_update = db.session.query(Card).filter_by(reference=tempCard.reference).first()
+                if card_to_update:
                     print(f"\rCarte {tempCard.reference} déjà existante. Passage à la suivante.", end="", flush=True)
+                    # Initialiser un drapeau pour suivre les modifications
+                    has_updated = False
+
+                    # Vérifiez et mettez à jour uniquement si les valeurs sont différentes
+                    if card_to_update.isSuspended != tempCard.isSuspended:
+                        card_to_update.isSuspended = tempCard.isSuspended
+                        has_updated = True
+                    if card_to_update.imagePath != tempCard.imagePath:
+                        card_to_update.imagePath = tempCard.imagePath
+                        has_updated = True
+                    if card_to_update.MAIN_COST != tempCard.MAIN_COST:
+                        card_to_update.MAIN_COST = tempCard.MAIN_COST
+                        has_updated = True
+                    if card_to_update.RECALL_COST != tempCard.RECALL_COST:
+                        card_to_update.RECALL_COST = tempCard.RECALL_COST
+                        has_updated = True
+                    if card_to_update.MOUNTAIN_POWER != tempCard.MOUNTAIN_POWER:
+                        card_to_update.MOUNTAIN_POWER = tempCard.MOUNTAIN_POWER
+                        has_updated = True
+                    if card_to_update.OCEAN_POWER != tempCard.OCEAN_POWER:
+                        card_to_update.OCEAN_POWER = tempCard.OCEAN_POWER
+                        has_updated = True
+                    if card_to_update.FOREST_POWER != tempCard.FOREST_POWER:
+                        card_to_update.FOREST_POWER = tempCard.FOREST_POWER
+                        has_updated = True
+                    if card_to_update.created_at is None:
+                        card_to_update.created_at = datetime.now()
+                        has_updated = True
+
+                    # Si une modification a été effectuée, mettre à jour `edited_at`
+                    if has_updated:
+                        card_to_update.edited_at = datetime.now()
                     continue
 
                 print(f"\rRécupération des stats de la carte {tempCard.reference}...", end="", flush=True)
@@ -124,67 +165,8 @@ with app.app_context():  # Activer le contexte de l'application
         if cardToInsert:
             insert_cards_into_db(cardToInsert)
 
-    def get_unique():
-        print(f"----------- GET UNIQUE -----------")
-        sets = ['COREKS', 'CORE', 'ALIZE', 'BISE']
-        mainCosts = list(range(1, 11))
-        recallCosts = list(range(1, 11))
-        forestPowers = list(range(0, 11))
-
-        existing_cards = {
-            card.id: card
-            for card in Card.query.filter(Card.rarity == 'RARE', Card.type == 'CHARACTER')
-            .order_by(Card.name_en.asc())
-            .all()
-        }
-
-        total_cards = len(existing_cards)
-        for index, dbcard in enumerate(existing_cards.values(), start=1):
-            for set in sets:
-                if dbcard.set == 'ALIZE' and set != 'ALIZE':
-                    continue
-
-                filtered_mainCosts = [cost for cost in mainCosts if dbcard.MAIN_COST - 4 <= cost <= dbcard.MAIN_COST + 4]
-                for mainCost in filtered_mainCosts:
-                    filtered_recallCosts = [cost for cost in recallCosts if dbcard.RECALL_COST - 4 <= cost <= dbcard.RECALL_COST + 4]
-                    for recallCost in filtered_recallCosts:
-                        cardToInsert = []
-                        test_result = card_routine.get_unique_cards_name_faction(
-                            dbcard.name_en, dbcard.faction, set, mainCost, recallCost, forestPowers, 1
-                        )
-
-                        if test_result and test_result.get('hydra:totalItems', 0) > 0:
-                            print(f"--- CARDNAME : {dbcard.name}  FACTION : {dbcard.faction}  SET : {set}  MAIN_COST : {mainCost}  RECALL_COST : {recallCost}  |  {index}/{total_cards}")
-                            page = 1
-                            while True:
-                                print(f"Récupération des cartes de la page {page}...")
-                                cards = card_routine.get_unique_cards_name_faction(
-                                    dbcard.name_en, dbcard.faction, set, mainCost, recallCost, forestPowers, page
-                                )
-
-                                if not cards or 'hydra:member' not in cards or not cards['hydra:member']:
-                                    break
-
-                                for card in cards['hydra:member']:
-                                    tempCard = map_jsoncard_to_card(card, dbcard.name_en)
-                                    if db.session.query(Card.id_card).filter_by(id_card=tempCard.id_card).first():
-                                        print(f"\rCarte {tempCard.reference} déjà existante. Passage à la suivante.", end="", flush=True)
-                                        continue
-
-                                    print(f"\rRécupération des stats de la carte {tempCard.reference}...", end="", flush=True)
-                                    detailsCard = card_routine.get_card_by_reference(tempCard.reference)
-                                    tempCard = map_effect_to_card(tempCard, detailsCard)
-                                    cardToInsert.append(tempCard)
-
-                                print()
-                                page += 1
-
-                        if cardToInsert:
-                            insert_cards_into_db(cardToInsert)
-
     get_no_unique('COMMON')
     get_no_unique('RARE')
-    get_unique()
 
     print(f"Fin de l'insertion des cartes.")
     print(f"Cartes scannées : {nb_cards}")
