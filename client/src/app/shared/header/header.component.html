@@ -28,11 +28,9 @@
             style="user-select: none;" class="hover:text-blue-300 transition duration-300 cursor-pointer">Cartes</a>
         </li>
         <li><a routerLink="/offres" routerLinkActive="text-blue-400" style="user-select: none;"
-            class="hover:text-blue-300 transition duration-300 cursor-pointer">Offres</a></li>
+            class="hover:text-blue-300 transition duration-300 cursor-pointer">Offres d'achat</a></li>
         <li><a routerLink="/a-propos" routerLinkActive="text-blue-400" style="user-select: none;"
             class="hover:text-blue-300 transition duration-300 cursor-pointer">À propos</a></li>
-        <li><a routerLink="/contact" routerLinkActive="text-blue-400" style="user-select: none;"
-            class="hover:text-blue-300 transition duration-300 cursor-pointer">Contact</a></li>
         <li><a routerLink="/token" routerLinkActive="text-blue-400" style="user-select: none;"
             class="hover:text-blue-300 transition duration-300 cursor-pointer">Token</a></li>
         @if (isLoggedIn) {
@@ -44,6 +42,8 @@
             class="hover:text-blue-300 transition duration-300 cursor-pointer">Login</a></li>
         }
 
+        <li><a routerLink="/contact" routerLinkActive="text-blue-400" style="user-select: none;"
+            class="hover:text-blue-300 transition duration-300 cursor-pointer"><i class="fas fa-bug"></i></a></li>
       </ul>
     </nav>
 
