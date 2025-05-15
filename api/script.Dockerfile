@@ -3,23 +3,18 @@ FROM python:3.11-slim
 # Installer cron
 RUN apt-get update && apt-get install -y cron
 
-# Définir le dossier de travail
+# Définir le répertoire de travail
 WORKDIR /api
 
-# Copier les scripts Python
+# Copier les fichiers nécessaires
 COPY . .
 
-# Copier la crontab
-COPY crontab.txt /etc/cron.d/my-cron
+# Installer les dépendances (si besoin)
+# COPY requirements.txt .
+# RUN pip install -r requirements.txt
 
-# Donner les droits nécessaires
-RUN chmod 0644 /etc/cron.d/my-cron
+# Installer la crontab
+RUN crontab crontab.txt
 
-# Enregistrer la crontab
-RUN crontab /etc/cron.d/my-cron
-
-# Script de démarrage pour cron
-COPY cron/start-cron.sh /start-cron.sh
-RUN chmod +x /start-cron.sh
-
-CMD ["/start-cron.sh"]
+# Lancer cron en avant-plan pour Docker
+CMD ["cron", "-f"]
