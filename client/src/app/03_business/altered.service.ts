@@ -4,12 +4,16 @@ import { catchError, map, Observable, throwError } from 'rxjs';
 import { OfferLiveMarketRequest } from '../01_models/02_api/card/offer-live-market-request.model';
 import { CardModel } from '../01_models/03_business/card.model';
 import { AlteredApiService } from '../02_api/altered-api.service';
+import { LoaderService } from '../shared/services/loader/loader.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AlteredService {
-  constructor(private alteredApiService: AlteredApiService, private router: Router) { }
+  constructor(
+    private alteredApiService: AlteredApiService,
+    private router: Router,
+    private loaderService: LoaderService) { }
   getMarketOffer$(card: CardModel, token: string): Observable<OfferLiveMarketRequest> {
     return this.alteredApiService.getOfferByReference(card.reference, token).pipe(
       map((response: any) => {
@@ -50,6 +54,7 @@ export class AlteredService {
           console.error('Erreur 401 détectée : Redirection vers la page /token.');
           sessionStorage.removeItem('altered_token');
           sessionStorage.removeItem('cgu_altered_token');
+          this.loaderService.hide();
           this.router.navigate(['/token']); // Redirige l'utilisateur vers la page /token
           return throwError(() => new Error('Token invalide ou expiré. Veuillez le réinsérer.'));
         }
