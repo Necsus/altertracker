@@ -16,6 +16,7 @@ import { ToastService } from '../../shared/services/toast/toast.service';
 export class SearchPanelComponent implements OnInit {
   @Output() cardsRetrieved = new EventEmitter<{ cards: CardModel[], searchOffers: boolean, fullSearchLiveMarket: boolean }>();
   searchForm!: FormGroup;
+  fullSearchLiveMarketLimit: number = 300;
   constructor(
     private fb: FormBuilder,
     private loaderService: LoaderService,
@@ -103,8 +104,8 @@ export class SearchPanelComponent implements OnInit {
 
     searchObservable.subscribe({
       next: (data: CardModel[]) => {
-        if (fullSearchLiveMarket && data.length > 200) {
-          this.toastService.show('Jeu de resultat > 200, fullSearchLiveMarket désactivé', 'warning', 5000);
+        if (fullSearchLiveMarket && data.length > this.fullSearchLiveMarketLimit) {
+          this.toastService.show(`Jeu de resultat > ${this.fullSearchLiveMarketLimit}, fullSearchLiveMarket désactivé`, 'warning', 5000);
           this.loaderService.hide();
         } else {
           if (fullSearchLiveMarket && data.length <= 0) {

@@ -27,6 +27,16 @@ services:
     networks:
       - backend
 
+  cron_script:
+    build:
+      context: ./api
+      dockerfile: script.Dockerfile
+    container_name: cron_script
+    depends_on:
+      - db
+    networks:
+      - backend
+
   web:
     image: nginx:latest
     ports:
