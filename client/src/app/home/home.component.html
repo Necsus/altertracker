@@ -2,6 +2,7 @@
   <h1 class="text-4xl font-bold text-center mb-4">Recherche de cartes</h1>
   <p class="text-center mb-8">parmis les {{nbCards}} cartes d'Altered dont {{nbCardsInMarket}} sur le market</p>
   <app-search-panel (cardsRetrieved)="onCardsRetrieved($event)"></app-search-panel>
+  result : {{cards.length}} cartes
   <div *ngFor="let group of groupedCards | keyvalue" class="mb-8">
     <app-card-group [groupName]="group.key" [cards]="group.value" [autoOpen]="group.key === autoOpenGroup"
       (visibleCardsChange)="onVisibleCardsChange($event)">
