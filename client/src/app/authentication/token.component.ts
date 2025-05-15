@@ -40,7 +40,7 @@ export class TokenComponent {
       sessionStorage.setItem('altered_token', this.token);
       sessionStorage.setItem('cgu_altered_token', String(this.acceptedCGU));
       this.toastService.show('Token enregistré avec succès', 'success', 5000);
-      this.router.navigate(['/']);
+      this.router.navigate(['/cards']);
     }
   }
 

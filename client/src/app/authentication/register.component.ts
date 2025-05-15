@@ -36,8 +36,7 @@ export class RegisterComponent implements OnInit {
   onSubmit(): void {
     const formValues = this.registerForm.value;
     this.authService.register$(formValues.username, formValues.email, formValues.password).subscribe({
-      next: (response: any) => {
-        console.log(response);
+      next: () => {
         this.toastService.show('Success register', 'success', 5000);
         this.router.navigate(['/login']);
       },

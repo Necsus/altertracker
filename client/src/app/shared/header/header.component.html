@@ -25,25 +25,37 @@
       <!-- Menu links -->
       <ul class="hidden sm:flex space-x-6">
         <li><a routerLink="/" routerLinkActive="text-blue-400" [routerLinkActiveOptions]="{ exact: true }"
+            style="user-select: none;" class="hover:text-blue-300 transition duration-300 cursor-pointer">Accueil</a>
+        </li>
+        <li><a routerLink="/cards" routerLinkActive="text-blue-400" [routerLinkActiveOptions]="{ exact: true }"
             style="user-select: none;" class="hover:text-blue-300 transition duration-300 cursor-pointer">Cartes</a>
         </li>
+        @if (isLoggedIn) {
         <li><a routerLink="/offres" routerLinkActive="text-blue-400" style="user-select: none;"
             class="hover:text-blue-300 transition duration-300 cursor-pointer">Offres d'achat</a></li>
-        <li><a routerLink="/a-propos" routerLinkActive="text-blue-400" style="user-select: none;"
+        <li><a routerLink="/searchs" routerLinkActive="text-blue-400" style="user-select: none;"
+            class="hover:text-blue-300 transition duration-300 cursor-pointer">Mes recherches</a></li>
+        <li><a routerLink="/alerts" routerLinkActive="text-blue-400" style="user-select: none;"
+            class="hover:text-blue-300 transition duration-300 cursor-pointer">Mes alertes</a></li>
+        }
+        <li><a routerLink="/about" routerLinkActive="text-blue-400" style="user-select: none;"
             class="hover:text-blue-300 transition duration-300 cursor-pointer">À propos</a></li>
         <li><a routerLink="/token" routerLinkActive="text-blue-400" style="user-select: none;"
             class="hover:text-blue-300 transition duration-300 cursor-pointer">Token</a></li>
         @if (isLoggedIn) {
+        <li><a routerLink="/me" routerLinkActive="text-blue-400" style="user-select: none;"
+            class="hover:text-blue-300 transition duration-300 cursor-pointer">Mon compte</a></li>
         <li><a (click)="onLogout()" style="user-select: none;"
             class="text-red-300 hover:text-red-200 transition duration-300 cursor-pointer">Logout</a></li>
+        <li><a routerLink="/contact" routerLinkActive="text-blue-400" style="user-select: none;"
+            class="hover:text-blue-300 transition duration-300 cursor-pointer"><i class="fas fa-bug"></i></a></li>
         }
         @else {
         <li><a routerLink="/login" routerLinkActive="text-blue-400" style="user-select: none;"
             class="hover:text-blue-300 transition duration-300 cursor-pointer">Login</a></li>
         }
 
-        <li><a routerLink="/contact" routerLinkActive="text-blue-400" style="user-select: none;"
-            class="hover:text-blue-300 transition duration-300 cursor-pointer"><i class="fas fa-bug"></i></a></li>
+
       </ul>
     </nav>
 

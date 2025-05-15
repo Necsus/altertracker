@@ -1,17 +1,26 @@
 import { Injectable } from '@angular/core';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthViewService {
-  loggedIn = new BehaviorSubject<boolean>(this.hasValidToken());
+  loggedIn = new BehaviorSubject<boolean>(this.isTokenValid());
 
   constructor() { }
 
   // Vérifie si l'access token existe
-  private hasValidToken(): boolean {
+  private isTokenValid(): boolean {
     const token = localStorage.getItem('access_token');
-    // Tu peux aussi décoder le token pour tester l’expiration ici si tu veux
-    return !!token;
+    if (!token) return false;
+
+    try {
+      const decoded: JwtPayload = jwtDecode(token);
+      const currentTime = Date.now() / 1000;
+      return decoded.exp !== undefined && decoded.exp > currentTime;
+    } catch (err) {
+      console.error('Invalid token', err);
+      return false;
+    }
   }
 
   // Observable pour les composants
