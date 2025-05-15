@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { CardModel } from '../../01_models/03_business/card.model';
 import { CardService } from '../../03_business/card.service';
 import { withLoader } from '../../shared/services/loader/loader.operator';
@@ -19,7 +20,8 @@ export class SearchPanelComponent implements OnInit {
     private fb: FormBuilder,
     private loaderService: LoaderService,
     private cardService: CardService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
@@ -40,6 +42,25 @@ export class SearchPanelComponent implements OnInit {
       no_condition: [''],
       search_offers: [sessionStorage.getItem('altered_token') ? true : false]
     });
+
+    // Récupérer les paramètres de l'URL et remplir le formulaire
+    const queryParams = this.route.snapshot.queryParams;
+    this.searchForm.patchValue({
+      name: queryParams['name'] || '',
+      rarity: queryParams['rarity'] || '',
+      faction: queryParams['faction'] || '',
+      set: queryParams['set'] || '',
+      main_effect: queryParams['main_effect'] || '',
+      main_effect_2: queryParams['main_effect_2'] || '',
+      echo_effect: queryParams['echo_effect'] || '',
+      main_cost: queryParams['main_cost'] || '',
+      recall_cost: queryParams['recall_cost'] || '',
+      forest_power: queryParams['forest_power'] || '',
+      mountain_power: queryParams['mountain_power'] || '',
+      ocean_power: queryParams['ocean_power'] || '',
+      in_market: queryParams['in_market'] || '',
+      no_condition: queryParams['no_condition'] || ''
+    });
   }
 
   isFormValid(): boolean {
@@ -49,6 +70,19 @@ export class SearchPanelComponent implements OnInit {
 
   onSubmit(fullSearchLiveMarket: boolean = false) {
     const formValues = this.cleanFormValues(this.searchForm.value);
+
+    // Construire l'URL avec les paramètres du formulaire
+    const queryParams = new URLSearchParams();
+    Object.keys(formValues).forEach(key => {
+      if (formValues[key]) { // N'ajoute que les champs non vides
+        queryParams.append(key, formValues[key]);
+      }
+    });
+
+    // Sauvegarder l'URL dans le sessionStorage
+    const searchUrl = `/cards?${queryParams.toString()}`;
+    sessionStorage.setItem('lastSearchUrl', searchUrl);
+
     this.searchCards(formValues, fullSearchLiveMarket);
   }
 

@@ -39,8 +39,14 @@ export class TokenComponent {
     if (this.isFormValid()) {
       sessionStorage.setItem('altered_token', this.token);
       sessionStorage.setItem('cgu_altered_token', String(this.acceptedCGU));
+      const lastSearchUrl = sessionStorage.getItem('lastSearchUrl');
       this.toastService.show('Token enregistré avec succès', 'success', 5000);
-      this.router.navigate(['/cards']);
+      // Rediriger vers /cards avec les paramètres de recherche si disponibles
+      if (lastSearchUrl) {
+        this.router.navigateByUrl(lastSearchUrl);
+      } else {
+        this.router.navigate(['/cards']);
+      }
     }
   }
 
