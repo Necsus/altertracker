@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
 export class AuthStorageService {
   constructor() { }
-  private currentUserSubject = new BehaviorSubject<any>(null);
 
   getToken(): string | null {
     return localStorage.getItem('access_token');
