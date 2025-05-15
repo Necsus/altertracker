@@ -70,7 +70,12 @@ export class SearchPanelComponent implements OnInit {
           this.toastService.show('Jeu de resultat > 200, fullSearchLiveMarket désactivé', 'warning', 5000);
           this.loaderService.hide();
         } else {
-          this.cardsRetrieved.emit({ cards: data, searchOffers: criteria.search_offers, fullSearchLiveMarket: fullSearchLiveMarket });
+          if (fullSearchLiveMarket && data.length <= 0) {
+            this.toastService.show('Pas de résultat', 'warning', 5000);
+            this.loaderService.hide();
+          } else {
+            this.cardsRetrieved.emit({ cards: data, searchOffers: criteria.search_offers, fullSearchLiveMarket: fullSearchLiveMarket });
+          }
         }
       },
       error: (error) => {

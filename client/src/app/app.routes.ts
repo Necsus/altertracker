@@ -5,11 +5,12 @@ import { RegisterComponent } from './authentication/register.component';
 import { TokenComponent } from './authentication/token.component';
 import { CardsComponent } from './cards/cards.component';
 import { ContactComponent } from './contact/contact.component';
+import { HomeComponent } from './home/home.component';
 import { NotFoundComponent } from './shared/error-pages/not-found/not-found.component';
 import { UnderConstructionComponent } from './shared/under-construction/under-construction.component';
 
 export const routes: Routes = [
-  { path: '', component: UnderConstructionComponent },
+  { path: '', component: HomeComponent },
   { path: 'cards', component: CardsComponent },
   { path: 'searchs', component: UnderConstructionComponent },
   { path: 'alerts', component: UnderConstructionComponent },
