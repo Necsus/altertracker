@@ -20,6 +20,11 @@ export class LoginComponent implements OnInit {
     private authViewService: AuthViewService) { }
 
   ngOnInit(): void {
+    this.authViewService.isLoggedIn$.subscribe(status => {
+      if (status) {
+        this.router.navigate(['/']);
+      }
+    });
     this.loginForm = this.fb.group({
       email: [''],
       password: ['']

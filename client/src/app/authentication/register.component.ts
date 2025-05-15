@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../03_business/auth.service';
 import { ToastService } from '../shared/services/toast/toast.service';
+import { AuthViewService } from './auth-view.service';
 
 
 @Component({
@@ -16,9 +17,15 @@ export class RegisterComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private toastService: ToastService,
-    private router: Router) { }
+    private router: Router,
+    private authViewService: AuthViewService) { }
 
   ngOnInit(): void {
+    this.authViewService.isLoggedIn$.subscribe(status => {
+      if (status) {
+        this.router.navigate(['/']);
+      }
+    });
     this.registerForm = this.fb.group({
       username: [''],
       email: [''],
