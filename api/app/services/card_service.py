@@ -47,7 +47,6 @@ def post_offer_live_market_service(data: List[dict]) -> None:
 
         # Validation et sanitization des données
         sanitized_item = {
-            "id": int(item['id']),
             "reference": str(item['reference']).strip(),
             "price": float(item['convertedPrice']) if item.get('convertedPrice') is not None else None,
             "price_updated_at": datetime.now(),

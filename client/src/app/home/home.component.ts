@@ -6,6 +6,8 @@ import { OfferLiveMarketRequest } from '../01_models/02_api/card/offer-live-mark
 import { CardModel } from '../01_models/03_business/card.model';
 import { AlteredService } from '../03_business/altered.service';
 import { CardService } from '../03_business/card.service';
+import { LoaderService } from '../shared/services/loader/loader.service';
+import { ToastService } from '../shared/services/toast/toast.service';
 import { CardGroupComponent } from './card-group/card-group.component';
 import { SearchPanelComponent } from './search-panel/search-panel.component';
 
@@ -21,8 +23,14 @@ export class HomeComponent implements OnInit {
   nbCardsInMarket: number = 0;
   autoOpenGroup: string | null = null;
   searchOffers: boolean = false;
+  fullSearchLiveMarket: boolean = false;
 
-  constructor(private cardService: CardService, private alteredService: AlteredService, private router: Router) { }
+  constructor(
+    private cardService: CardService,
+    private alteredService: AlteredService,
+    private router: Router,
+    private toastService: ToastService,
+    private loaderService: LoaderService) { }
 
   ngOnInit(): void {
     this.cardService.count_all_cards$().subscribe({
@@ -44,27 +52,36 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  onCardsRetrieved(event: { cards: CardModel[]; searchOffers: boolean }): void {
-    const { cards, searchOffers } = event;
+  onCardsRetrieved(event: { cards: CardModel[]; searchOffers: boolean, fullSearchLiveMarket: boolean }): void {
+    const { cards, searchOffers, fullSearchLiveMarket } = event;
     this.cards = cards;
     this.searchOffers = searchOffers;
+    this.fullSearchLiveMarket = fullSearchLiveMarket;
     this.groupCardsByName();
 
     // Détecter un seul groupe
     const groupNames = Object.keys(this.groupedCards);
+
+    if (this.fullSearchLiveMarket) {
+      this.getMarketOffer(this.cards, true);
+    }
+
     this.autoOpenGroup = groupNames.length === 1 ? groupNames[0] : null;
   }
 
   onVisibleCardsChange(visibleCards: CardModel[]): void {
     // Exécute les requêtes pour les cartes visibles
-    if (this.searchOffers) {
+    if (this.searchOffers && !this.fullSearchLiveMarket) {
       this.getMarketOffer(visibleCards);
     }
   }
 
-  private getMarketOffer(data: CardModel[]): void {
+  private getMarketOffer(data: CardModel[], activeLoader: boolean = false): void {
     const alteredToken = sessionStorage.getItem('altered_token');
     if (alteredToken) {
+      if (activeLoader) {
+        this.loaderService.show(); // Active le loader
+      }
       const maxConcurrentRequests = 5; // Limite de requêtes simultanées
       const updatedCards: OfferLiveMarketRequest[] = [];
       from(data)
@@ -100,6 +117,11 @@ export class HomeComponent implements OnInit {
                 },
                 error: (error) => {
                   console.error('Erreur lors de la mise à jour des offres live market :', error);
+                },
+                complete: () => {
+                  if (activeLoader) {
+                    this.loaderService.hide();
+                  }
                 }
               });
             }
