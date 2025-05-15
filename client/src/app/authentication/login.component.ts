@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../03_business/auth.service';
 import { ToastService } from '../shared/services/toast/toast.service';
+import { AuthViewService } from './auth-view.service';
 
 @Component({
   selector: 'app-login',
@@ -15,7 +16,8 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private toastService: ToastService,
-    private router: Router) { }
+    private router: Router,
+    private authViewService: AuthViewService) { }
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
@@ -28,6 +30,7 @@ export class LoginComponent implements OnInit {
     const formValues = this.loginForm.value;
     this.authService.login$(formValues.email, formValues.password).subscribe({
       next: (response: { access_token: string, refresh_token: string }) => {
+        this.authViewService['loggedIn'].next(true);
         this.toastService.show('Success login', 'success', 5000);
         this.router.navigate(['/']);
       },

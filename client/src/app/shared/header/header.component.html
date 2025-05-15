@@ -34,8 +34,15 @@
             class="hover:text-blue-300 transition duration-300 cursor-pointer">Contact</a></li>
         <li><a routerLink="/token" routerLinkActive="text-blue-400"
             class="hover:text-blue-300 transition duration-300 cursor-pointer">Token</a></li>
+        @if (isLoggedIn) {
         <li><a routerLink="/login" routerLinkActive="text-blue-400"
             class="hover:text-blue-300 transition duration-300 cursor-pointer">Login</a></li>
+        }
+        @else {
+        <li><a (click)="onLogout()" routerLinkActive="text-red-400"
+            class="hover:text-blue-300 transition duration-300 cursor-pointer">Logout</a></li>
+        }
+
       </ul>
     </nav>
 
