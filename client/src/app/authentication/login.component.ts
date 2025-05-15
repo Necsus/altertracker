@@ -35,7 +35,7 @@ export class LoginComponent implements OnInit {
     const formValues = this.loginForm.value;
     this.authService.login$(formValues.email, formValues.password).subscribe({
       next: (response: { access_token: string, refresh_token: string }) => {
-        this.authViewService['loggedIn'].next(true);
+        this.authViewService.loggedIn.next(true);
         this.toastService.show('Success login', 'success', 5000);
         this.router.navigate(['/']);
       },

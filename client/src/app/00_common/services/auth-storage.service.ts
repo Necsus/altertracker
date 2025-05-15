@@ -16,7 +16,6 @@ export class AuthStorageService {
   storeAccessToken(accessToken: string) {
     localStorage.setItem('access_token', accessToken);
   }
-
   getRefreshToken(): string | null {
     return localStorage.getItem('refresh_token');
   }

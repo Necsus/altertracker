@@ -16,7 +16,7 @@ export class AppComponent implements AfterViewInit {
   constructor(private authStorageService: AuthStorageService, private authViewService: AuthViewService) { }
   ngAfterViewInit() {
     if (this.authStorageService.getToken()) {
-      this.authViewService['loggedIn'].next(true);
+      this.authViewService.loggedIn.next(true);
     }
   }
 }
