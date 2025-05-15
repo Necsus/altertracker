@@ -22,7 +22,7 @@ export class CardApiService {
     return this.wabApiService.callGet$(this.controller, reference);
   }
   search_cards$(name: string, rarity: string, faction: string, set: string,
-    main_effect: string, main_effect_2: string, echo_efect: string, main_cost: string,
+    main_effect: string, main_effect_2: string, echo_effect: string, main_cost: string,
     recall_cost: string, forest_power: string, mountain_power: string, ocean_power: string,
     in_market: string, no_condition: string): Observable<any> {
     return this.wabApiService.callGet$(this.controller, 'search',
@@ -33,7 +33,7 @@ export class CardApiService {
         { name: 'set', value: set },
         { name: 'main_effect', value: main_effect },
         { name: 'main_effect_2', value: main_effect_2 },
-        { name: 'echo_efect', value: echo_efect },
+        { name: 'echo_effect', value: echo_effect },
         { name: 'main_cost', value: main_cost },
         { name: 'recall_cost', value: recall_cost },
         { name: 'forest_power', value: forest_power },
