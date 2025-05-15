@@ -7,7 +7,6 @@ import { CardModel } from '../01_models/03_business/card.model';
 import { AlteredService } from '../03_business/altered.service';
 import { CardService } from '../03_business/card.service';
 import { LoaderService } from '../shared/services/loader/loader.service';
-import { ToastService } from '../shared/services/toast/toast.service';
 import { CardGroupComponent } from './card-group/card-group.component';
 import { SearchPanelComponent } from './search-panel/search-panel.component';
 
@@ -29,7 +28,6 @@ export class HomeComponent implements OnInit {
     private cardService: CardService,
     private alteredService: AlteredService,
     private router: Router,
-    private toastService: ToastService,
     private loaderService: LoaderService) { }
 
   ngOnInit(): void {
