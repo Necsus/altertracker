@@ -9,7 +9,7 @@ def get_cards_count_data() -> int:
 def get_card_by_reference_data(reference) -> Optional[Card]:
     return db.session.query(Card).filter_by(reference=reference).first()
 
-def search_cards_data(name, rarity, faction, set, main_effect, main_effect_2, echo_effect, main_cost, recall_cost, in_market, no_condition):
+def search_cards_data(name, rarity, faction, set, main_effect, main_effect_2, echo_effect, main_cost, recall_cost, forest_power, mountain_power, ocean_power, in_market, no_condition):
     query = db.session.query(Card)
 
     if name:
@@ -48,6 +48,15 @@ def search_cards_data(name, rarity, faction, set, main_effect, main_effect_2, ec
 
     if recall_cost:
         query = query.filter(Card.RECALL_COST == recall_cost)
+
+    if forest_power:
+        query = query.filter(Card.FOREST_POWER == forest_power)
+
+    if mountain_power:
+        query = query.filter(Card.MOUNTAIN_POWER == mountain_power)
+
+    if ocean_power:
+        query = query.filter(Card.OCEAN_POWER == ocean_power)
 
     if in_market:
         query = query.filter(Card.price.isnot(None))

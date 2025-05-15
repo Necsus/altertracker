@@ -33,6 +33,9 @@ export class SearchPanelComponent implements OnInit {
       echo_effect: [''],
       main_cost: [''],
       recall_cost: [''],
+      forest_power: [''],
+      mountain_power: [''],
+      ocean_power: [''],
       in_market: [''],
       no_condition: [''],
       search_offers: [sessionStorage.getItem('altered_token') ? true : false]
@@ -40,8 +43,8 @@ export class SearchPanelComponent implements OnInit {
   }
 
   isFormValid(): boolean {
-    const { name, rarity, faction, set, main_effect, main_effect_2, echo_effect, main_cost, recall_cost, in_market, no_condition } = this.searchForm.value;
-    return !!(name || rarity || faction || set || main_effect || main_effect_2 || echo_effect || main_cost || recall_cost || in_market || no_condition); // Vérifie si au moins un champ est rempli
+    const { name, rarity, faction, set, main_effect, main_effect_2, echo_effect, main_cost, recall_cost, forest_power, mountain_power, ocean_power, in_market, no_condition } = this.searchForm.value;
+    return !!(name || rarity || faction || set || main_effect || main_effect_2 || echo_effect || main_cost || recall_cost || forest_power || mountain_power || ocean_power || in_market || no_condition); // Vérifie si au moins un champ est rempli
   }
 
   onSubmit(fullSearchLiveMarket: boolean = false) {
@@ -53,8 +56,8 @@ export class SearchPanelComponent implements OnInit {
     let searchObservable = this.cardService.search_cards$(
       criteria.name, criteria.rarity, criteria.faction,
       criteria.set, criteria.main_effect, criteria.main_effect_2, criteria.echo_effect,
-      criteria.main_cost, criteria.recall_cost, criteria.in_market,
-      criteria.no_condition
+      criteria.main_cost, criteria.recall_cost, criteria.forest_power, criteria.mountain_power,
+      criteria.ocean_power, criteria.in_market, criteria.no_condition
     );
 
     // Appliquer conditionnellement le pipe `withLoader`
