@@ -48,9 +48,12 @@ def search_cards_route():
         echo_effect = request.args.get('echo_effect')
         main_cost = request.args.get('main_cost')
         recall_cost = request.args.get('recall_cost')
+        forest_power = request.args.get('forest_power')
+        mountain_power = request.args.get('mountain_power')
+        ocean_power = request.args.get('ocean_power')
         in_market = request.args.get('in_market')
         no_condition = request.args.get('no_condition')
-        cards = search_cards_service(name, rarity, faction, set, main_effect, main_effect_2, echo_effect, main_cost, recall_cost, in_market, no_condition)
+        cards = search_cards_service(name, rarity, faction, set, main_effect, main_effect_2, echo_effect, main_cost, recall_cost, forest_power, mountain_power, ocean_power, in_market, no_condition)
         return jsonify([card.json() for card in cards]), 201
     except Exception as e:
         return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
