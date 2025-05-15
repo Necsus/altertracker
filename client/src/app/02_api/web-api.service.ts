@@ -3,16 +3,20 @@ import { Injectable } from '@angular/core';
 import { Observable, throwError as observableThrowError, of } from 'rxjs';
 import { catchError, switchMap, timeout } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
+import { AuthStorageService } from '../00_common/services/auth-storage.service';
 import { Exception } from '../01_models/02_api/exeption.model';
 import { Param } from '../01_models/02_api/param.model';
 import { ExceptionType } from '../01_models/enums/exception-type.enum';
+import { ToastService } from '../shared/services/toast/toast.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WebApiService {
   constructor(
-    private http: HttpClient) {
+    private http: HttpClient,
+    private toastService: ToastService,
+    private authStorageService: AuthStorageService) {
   }
 
   callGet$<Response>(controllerName: string, actionName: string, params: Array<Param> | undefined = undefined,
@@ -21,10 +25,10 @@ export class WebApiService {
     const url = this.getUrl(controllerName, actionName);
     return this.http.get<Response>(url, options)
       .pipe(
-        switchMap((response: Response) => {
-          // if (response?.message) {
-          //   this.notificationService.addWarningToast(response?.message);
-          // }
+        switchMap((response: any) => {
+          if (response?.message) {
+            this.toastService.show(response?.message, 'warning', 5000);
+          }
           return of(response);
         }),
         timeout(timeOutInMillisecond),
@@ -33,14 +37,14 @@ export class WebApiService {
   }
 
   callPost$<Response>(controllerName: string, actionName: string, params: Object | undefined = undefined,
-    timeOutInMillisecond: number = 110000): Observable<Response> {
-    const options = this.getOptions(undefined);
+    timeOutInMillisecond: number = 110000, useRefresToken: boolean = false): Observable<Response> {
+    const options = this.getOptions(undefined, useRefresToken);
     return this.http.post<Response>(this.getUrl(controllerName, actionName), params, options)
       .pipe(
-        switchMap((response: Response) => {
-          // if (response?.message) {
-          //   this.notificationService.addWarningToast(response?.message);
-          // }
+        switchMap((response: any) => {
+          if (response?.message) {
+            this.toastService.show(response?.message, 'warning', 5000);
+          }
           return of(response);
         }),
         timeout(timeOutInMillisecond),
@@ -53,10 +57,10 @@ export class WebApiService {
     const options = this.getOptions(params);
     return this.http.delete<Response>(this.getUrl(controllerName, actionName), options)
       .pipe(
-        switchMap((response: Response) => {
-          // if (response?.message) {
-          //   this.notificationService.addWarningToast(response?.message);
-          // }
+        switchMap((response: any) => {
+          if (response?.message) {
+            this.toastService.show(response?.message, 'warning', 5000);
+          }
           return of(response);
         }),
         timeout(timeOutInMillisecond),
@@ -68,13 +72,17 @@ export class WebApiService {
     return environment.api_url + '/' + controllerName + '/' + actionName;
   }
 
-  private getOptions(params: Array<Param> | undefined): { headers: HttpHeaders, body: any } {
+  private getOptions(params: Array<Param> | undefined, useRefresToken: boolean = false): { headers: HttpHeaders, body: any } {
     let headers = new HttpHeaders();
     headers = headers.set('Accept', 'application/json');
-    // const context = <Context>this.storageService.getItem(StorageType.LocalStorage, this.config.localStorageKeyApiContext);
-    // if (context) {
-    //   headers = headers.set('Authorization', 'Bearer ' + context.token);
-    // }
+
+    let token = this.authStorageService.getToken();
+    if (useRefresToken) {
+      token = this.authStorageService.getRefreshToken();
+    }
+    if (token) {
+      headers = headers.set('Authorization', 'Bearer ' + token);
+    }
     const options = { headers: <HttpHeaders>headers, body: <any>null, params: this.convertToParams(params) };
     return options;
   }

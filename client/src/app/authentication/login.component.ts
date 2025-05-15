@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../03_business/auth.service';
 import { ToastService } from '../shared/services/toast/toast.service';
+import { AuthViewService } from './auth-view.service';
 
 @Component({
   selector: 'app-login',
@@ -10,7 +12,12 @@ import { ToastService } from '../shared/services/toast/toast.service';
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;
-  constructor(private fb: FormBuilder, private toastService: ToastService) { }
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private toastService: ToastService,
+    private router: Router,
+    private authViewService: AuthViewService) { }
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
@@ -20,6 +27,14 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit(): void {
-    this.toastService.show('Fonctionnalité en construction...', 'error', 5000);
+    const formValues = this.loginForm.value;
+    this.authService.login$(formValues.email, formValues.password).subscribe({
+      next: (response: { access_token: string, refresh_token: string }) => {
+        this.authViewService['loggedIn'].next(true);
+        this.toastService.show('Success login', 'success', 5000);
+        this.router.navigate(['/']);
+      },
+      error: (err: any) => this.toastService.show(`Error: ${err.message}`, 'error', 5000)
+    });
   }
 }

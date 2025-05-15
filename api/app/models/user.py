@@ -23,9 +23,9 @@ class User(db.Model):
             'edited_at': self.edited_at.isoformat() if self.edited_at else None,
         }
     
-    def __init__(self, id, username, email, password, created_at=None, edited_at=None):
-        self.reference = username
-        self.name = email
-        self.password = password
+    def __init__(self, username, email, password_hash, created_at=None, edited_at=None):
+        self.username = username
+        self.email = email
+        self.password_hash = password_hash
         self.created_at = created_at if created_at else datetime.datetime.now(datetime.timezone.utc)
         self.edited_at = edited_at if edited_at else datetime.datetime.now(datetime.timezone.utc)

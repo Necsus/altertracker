@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../03_business/auth.service';
 import { ToastService } from '../shared/services/toast/toast.service';
 
 
@@ -11,17 +12,29 @@ import { ToastService } from '../shared/services/toast/toast.service';
 })
 export class RegisterComponent implements OnInit {
   registerForm!: FormGroup;
-  constructor(private fb: FormBuilder, private toastService: ToastService) { }
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private toastService: ToastService,
+    private router: Router) { }
 
   ngOnInit(): void {
     this.registerForm = this.fb.group({
-      name: [''],
+      username: [''],
       email: [''],
       password: ['']
     });
   }
 
   onSubmit(): void {
-    this.toastService.show('Fonctionnalité en construction...', 'error', 5000);
+    const formValues = this.registerForm.value;
+    this.authService.register$(formValues.username, formValues.email, formValues.password).subscribe({
+      next: (response: any) => {
+        console.log(response);
+        this.toastService.show('Success register', 'success', 5000);
+        this.router.navigate(['/login']);
+      },
+      error: (err: any) => this.toastService.show(`Error: ${err.message}`, 'error', 5000)
+    });
   }
 }
