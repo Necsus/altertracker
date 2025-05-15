@@ -35,12 +35,12 @@
         <li><a routerLink="/token" routerLinkActive="text-blue-400"
             class="hover:text-blue-300 transition duration-300 cursor-pointer">Token</a></li>
         @if (isLoggedIn) {
-        <li><a routerLink="/login" routerLinkActive="text-blue-400"
-            class="hover:text-blue-300 transition duration-300 cursor-pointer">Login</a></li>
+        <li><a (click)="onLogout()"
+            class="text-red-300 hover:text-red-200 transition duration-300 cursor-pointer">Logout</a></li>
         }
         @else {
-        <li><a (click)="onLogout()" routerLinkActive="text-red-400"
-            class="hover:text-blue-300 transition duration-300 cursor-pointer">Logout</a></li>
+        <li><a routerLink="/login" routerLinkActive="text-blue-400"
+            class="hover:text-blue-300 transition duration-300 cursor-pointer">Login</a></li>
         }
 
       </ul>
