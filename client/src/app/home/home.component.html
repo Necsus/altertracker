@@ -5,14 +5,14 @@
     <section>
       <div class="mt-8">
         <h2 class="text-2xl font-semibold mb-4">🃏 Nouvelles cartes ajoutées la veille</h2>
-        <div class="flex space-x-4 overflow-x-auto pb-4 whitespace-nowrap">
-          <div *ngFor="let carte of nouvellesCartes" class="flex-shrink-0 w-48 bg-gray-800 rounded-xl shadow">
+        <div class="scroll-container flex flex-nowrap space-x-4 overflow-x-auto pb-2">
+          <div *ngFor="let card of newCards" class="flex-shrink-0 w-48 bg-gray-800 rounded-xl shadow">
             <div class="overflow-hidden rounded-xl bg-black">
-              <img [src]="carte.image" [alt]="carte.nom" class="max-w-full object-contain rounded-md cursor-pointer" />
+              <img [src]="card.image" [alt]="card.name" class="max-w-full object-contain rounded-md cursor-pointer" />
             </div>
             <div class="mt-2 text-center text-white p-2">
-              <p class="font-semibold">{{ carte.nom }}</p>
-              <p class="text-sm text-gray-400">{{ carte.faction }} • {{ carte.extension }}</p>
+              <p class="font-semibold">{{ card.name }}</p>
+              <p class="text-sm text-gray-400">{{ card.faction }} • {{ card.extension }}</p>
             </div>
           </div>
         </div>
@@ -22,16 +22,16 @@
     <!-- Section : Nouvelles Offres -->
     <section>
       <h2 class="text-2xl font-semibold mb-4">💰 Nouvelles offres de vente (hier)</h2>
-      <div class="flex space-x-4 overflow-x-auto scrollbar-hide pb-2">
-        <div *ngFor="let offre of nouvellesOffres" class="w-48 bg-gray-800 rounded-xl shadow">
+      <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
+        <div *ngFor="let offer of newOffers" class="w-48 bg-gray-800 rounded-xl shadow">
           <div class="overflow-hidden w-48 rounded-xl bg-black">
-            <img [src]="offre.carte.image" [alt]="offre.carte.nom"
+            <img [src]="offer.card.image" [alt]="offer.card.name"
               class="max-w-full object-contain rounded-md cursor-pointer" />
           </div>
           <div class="mt-2 text-center text-white p-2">
-            <div class="font-medium">{{ offre.carte.nom }}</div>
-            <div class="text-sm text-gray-400">Prix : {{ offre.prix }} €</div>
-            <div class="text-sm text-gray-500">Vendeur : {{ offre.vendeur }}</div>
+            <div class="font-medium">{{ offer.card.name }}</div>
+            <div class="text-sm text-gray-400">Prix : {{ offer.price }} €</div>
+            <div class="text-sm text-gray-500">Vendeur : {{ offer.seller }}</div>
           </div>
         </div>
       </div>
@@ -40,15 +40,15 @@
     <!-- Section : Offres disparues -->
     <section>
       <h2 class="text-2xl font-semibold mb-4">❌ Offres disparues (hier)</h2>
-      <div class="flex space-x-4 overflow-x-auto scrollbar-hide pb-2">
-        <div *ngFor="let offre of offresDisparues" class="w-48 bg-gray-800 rounded-xl shadow">
+      <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
+        <div *ngFor="let offer of deletedOffers" class="w-48 bg-gray-800 rounded-xl shadow">
           <div class="overflow-hidden w-48 rounded-xl bg-black">
-            <img [src]="offre.carte.image" [alt]="offre.carte.nom"
+            <img [src]="offer.card.image" [alt]="offer.card.name"
               class="max-w-full object-contain rounded-md cursor-pointer" />
           </div>
           <div class="mt-2 text-center text-white p-2">
-            <div class="font-medium">{{ offre.carte.nom }}</div>
-            <div class="text-sm text-gray-400">Ancien prix : {{ offre.prix }} €</div>
+            <div class="font-medium">{{ offer.card.name }}</div>
+            <div class="text-sm text-gray-400">Ancien prix : {{ offer.price }} €</div>
           </div>
         </div>
       </div>
@@ -57,19 +57,19 @@
     <!-- Section : Offres modifiées -->
     <section>
       <h2 class="text-2xl font-semibold mb-4">✏️ Offres modifiées (hier)</h2>
-      <div class="flex space-x-4 overflow-x-auto scrollbar-hide pb-2">
-        <div *ngFor="let offre of offresModifiees" class="w-48 bg-gray-800 rounded-xl shadow">
+      <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
+        <div *ngFor="let offer of editedOffers" class="w-48 bg-gray-800 rounded-xl shadow">
           <div class="overflow-hidden w-48 rounded-xl bg-black">
-            <img [src]="offre.carte.image" [alt]="offre.carte.nom"
+            <img [src]="offer.card.image" [alt]="offer.card.name"
               class="max-w-full object-contain rounded-md cursor-pointer" />
           </div>
           <div class="mt-2 text-center text-white p-2">
-            <div class="font-medium">{{ offre.carte.nom }}</div>
+            <div class="font-medium">{{ offer.card.name }}</div>
             <div class="text-sm text-gray-400">
-              Prix : <span class="line-through text-red-400">{{ offre.ancienPrix }} €</span>
-              → <span class="text-green-400">{{ offre.nouveauPrix }} €</span>
+              Prix : <span class="line-through text-red-400">{{ offer.oldPrice }}€</span>
+              → <span class="text-green-400">{{ offer.newPrice }}€</span>
             </div>
-            <div class="text-sm text-gray-500">Vendeur : {{ offre.vendeur }}</div>
+            <div class="text-sm text-gray-500">Vendeur : {{ offer.seller }}</div>
           </div>
         </div>
       </div>
@@ -78,16 +78,16 @@
     <!-- Section : Nouvelles offres du site -->
     <section>
       <h2 class="text-2xl font-semibold mb-4">📢 Nouvelles offres d'achat ajoutées sur le site</h2>
-      <div class="flex space-x-4 overflow-x-auto scrollbar-hide pb-2">
-        <div *ngFor="let offre of nouvellesOffresSite" class="w-48 bg-gray-800 rounded-xl shadow">
+      <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
+        <div *ngFor="let offer of purchaseOffers" class="w-48 bg-gray-800 rounded-xl shadow">
           <div class="overflow-hidden w-48 rounded-xl bg-black">
-            <img [src]="offre.carte.image" [alt]="offre.carte.nom"
+            <img [src]="offer.card.image" [alt]="offer.card.name"
               class="max-w-full object-contain rounded-md cursor-pointer" />
           </div>
           <div class="mt-2 text-center text-white p-2">
-            <div class="font-medium">{{ offre.carte.nom }}</div>
-            <div class="text-sm text-gray-400">Prix : {{ offre.prix }} €</div>
-            <div class="text-sm text-gray-500">Acheteur : {{ offre.acheteur }}</div>
+            <div class="font-medium">{{ offer.card.name }}</div>
+            <div class="text-sm text-gray-400">Prix : {{ offer.price }} €</div>
+            <div class="text-sm text-gray-500">Acheteur : {{ offer.buyer }}</div>
           </div>
         </div>
       </div>

@@ -1,9 +1,12 @@
-/* styles.css */
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
+.scroll-container::-webkit-scrollbar {
+  height: 8px;
 }
 
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+.scroll-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
