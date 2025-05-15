@@ -20,13 +20,14 @@ export class AlteredService {
 
           // Construire et retourner l'objet OfferLiveMarketRequest
           return <OfferLiveMarketRequest>{
-            id: card.id,
+            id: 0,
             reference: card.reference,
-            status: 'available', // Exemple de statut, ajustez selon vos besoins
+            status: response['hydra:member'][0]['status'],
             offerId: response['hydra:member'][0]['offerId'],
             convertedPrice: card.price,
             convertedCurrency: response['hydra:member'][0]['convertedCurrency'],
-            quantity: response['hydra:member'][0]['quantity']
+            quantity: response['hydra:member'][0]['quantity'],
+
           };
         } else {
           card.price = undefined;
@@ -34,7 +35,7 @@ export class AlteredService {
 
           // Retourner un objet OfferLiveMarketRequest avec un statut non disponible
           return {
-            id: card.id,
+            id: 0,
             reference: card.reference,
             status: 'unavailable',
             offerId: undefined,

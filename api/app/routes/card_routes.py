@@ -56,7 +56,7 @@ def search_cards_route():
         return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
 
 class OfferLiveMarketSchema(Schema):
-    id = fields.Int(required=True)
+    id = fields.Int()
     reference = fields.Str(required=True)
     status = fields.Str(required=True)
     offerId = fields.Str()
