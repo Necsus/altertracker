@@ -106,7 +106,7 @@
       <button (click)="onSubmit(true); $event.preventDefault()" [disabled]="!isFormValid()"
         [ngClass]="{'bg-gray-500 cursor-not-allowed': !isFormValid(), 'bg-green-600 hover:bg-green-700': isFormValid()}"
         class="md:col-span-3 w-full text-white py-2 px-4 rounded-md transition duration-300">Rechercher Full Live
-        Market (si jeu de resultat < 200)</button>
+        Market (si jeu de resultat <= {{ fullSearchLiveMarketLimit }})</button>
     </div>
   </div>
 </form>

@@ -1,0 +1,1 @@
+0 0 * * * root python /api/script_get_unique.py >> /var/log/cron.log 2>&1
