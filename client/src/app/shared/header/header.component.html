@@ -4,7 +4,7 @@
       <!-- Logo -->
       <div class="flex items-center cursor-pointer" (click)="navigateToHome()">
         <img src="assets/img/test_logo_2.png" alt="Logo" class="h-10 mr-2">
-        <div class="text-2xl font-bold">AlterTracker</div>
+        <div class="text-2xl font-bold" style="user-select: none;">AlterTracker</div>
       </div>
 
       <!-- Hamburger (mobile) -->
@@ -25,24 +25,25 @@
       <!-- Menu links -->
       <ul class="hidden sm:flex space-x-6">
         <li><a routerLink="/" routerLinkActive="text-blue-400" [routerLinkActiveOptions]="{ exact: true }"
-            class="hover:text-blue-300 transition duration-300 cursor-pointer">Cartes</a></li>
-        <li><a routerLink="/offres" routerLinkActive="text-blue-400"
-            class="hover:text-blue-300 transition duration-300 cursor-pointer">Offres</a></li>
-        <li><a routerLink="/a-propos" routerLinkActive="text-blue-400"
+            style="user-select: none;" class="hover:text-blue-300 transition duration-300 cursor-pointer">Cartes</a>
+        </li>
+        <li><a routerLink="/offres" routerLinkActive="text-blue-400" style="user-select: none;"
+            class="hover:text-blue-300 transition duration-300 cursor-pointer">Offres d'achat</a></li>
+        <li><a routerLink="/a-propos" routerLinkActive="text-blue-400" style="user-select: none;"
             class="hover:text-blue-300 transition duration-300 cursor-pointer">À propos</a></li>
-        <li><a routerLink="/contact" routerLinkActive="text-blue-400"
-            class="hover:text-blue-300 transition duration-300 cursor-pointer">Contact</a></li>
-        <li><a routerLink="/token" routerLinkActive="text-blue-400"
+        <li><a routerLink="/token" routerLinkActive="text-blue-400" style="user-select: none;"
             class="hover:text-blue-300 transition duration-300 cursor-pointer">Token</a></li>
         @if (isLoggedIn) {
-        <li><a (click)="onLogout()"
+        <li><a (click)="onLogout()" style="user-select: none;"
             class="text-red-300 hover:text-red-200 transition duration-300 cursor-pointer">Logout</a></li>
         }
         @else {
-        <li><a routerLink="/login" routerLinkActive="text-blue-400"
+        <li><a routerLink="/login" routerLinkActive="text-blue-400" style="user-select: none;"
             class="hover:text-blue-300 transition duration-300 cursor-pointer">Login</a></li>
         }
 
+        <li><a routerLink="/contact" routerLinkActive="text-blue-400" style="user-select: none;"
+            class="hover:text-blue-300 transition duration-300 cursor-pointer"><i class="fas fa-bug"></i></a></li>
       </ul>
     </nav>
 
