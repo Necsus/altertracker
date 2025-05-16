@@ -5,12 +5,13 @@ from app.services.card_service import (
   search_cards_service,
   get_cards_count_service,
   get_cards_in_market_count_service,
-  post_offer_live_market_service
+  post_offer_live_market_service,
+  get_last_added_cards_service
 )
 
 card_bp = Blueprint('card', __name__)
 
-@card_bp.route('/api/card/count', methods=['GET'])
+@card_bp.route('/count', methods=['GET'])
 def count_cards_route():
     try:
         # Assuming you have a function to count cards
@@ -19,7 +20,7 @@ def count_cards_route():
     except Exception as e:
         return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
     
-@card_bp.route('/api/card/inmarketcount', methods=['GET'])
+@card_bp.route('/inmarketcount', methods=['GET'])
 def count_cards_in_market_route():
     try:
         # Assuming you have a function to count cards
@@ -28,7 +29,7 @@ def count_cards_in_market_route():
     except Exception as e:
         return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
 
-@card_bp.route('/api/card/<string:reference>', methods=['GET'])
+@card_bp.route('/<string:reference>', methods=['GET'])
 def get_card_by_reference_route(reference):
     try:
         card = get_card_by_reference_service(reference)
@@ -36,7 +37,7 @@ def get_card_by_reference_route(reference):
     except Exception as e:
         return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
     
-@card_bp.route('/api/card/search', methods=['GET'])
+@card_bp.route('/search', methods=['GET'])
 def search_cards_route():
     try:
         name = request.args.get('name')
@@ -67,7 +68,7 @@ class OfferLiveMarketSchema(Schema):
     convertedCurrency = fields.Str()
     quantity = fields.Int()
 
-@card_bp.route('/api/card/offerlivemarket', methods=['POST'])
+@card_bp.route('/offerlivemarket', methods=['POST'])
 def post_offer_live_market():
     try:
         data = request.get_json()
@@ -77,5 +78,13 @@ def post_offer_live_market():
         return jsonify({'message': 'Offres mises à jour avec succès'}), 201
     except ValidationError as ve:
         return make_response(jsonify({'message': 'Invalid data', 'errors': ve.messages}), 400)
+    except Exception as e:
+        return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
+    
+@card_bp.route('/lastadded', methods=['GET'])
+def get_last_added_cards():
+    try:
+        cards = get_last_added_cards_service()
+        return jsonify([card.json() for card in cards]), 201
     except Exception as e:
         return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)

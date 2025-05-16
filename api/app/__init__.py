@@ -3,6 +3,7 @@ from flask_cors import CORS
 from app.extensions import db, migrate
 from app.routes.global_routes import global_bp
 from app.routes.card_routes import card_bp
+from app.routes.offer_routes import offer_bp
 from app.routes.auth_routes import auth_bp, mail
 from app.config import Config, ConfigEnv
 from flask_jwt_extended import JWTManager, get_jwt
@@ -18,9 +19,10 @@ def create_app():
     jwt = JWTManager(app)
     migrate.init_app(app, db)
 
-    app.register_blueprint(global_bp)
+    app.register_blueprint(global_bp, url_prefix="/api/global")
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
-    app.register_blueprint(card_bp)
+    app.register_blueprint(card_bp, url_prefix="/api/card")
+    app.register_blueprint(offer_bp, url_prefix="/api/offer")
 
     @app.before_request
     def check_blacklist():

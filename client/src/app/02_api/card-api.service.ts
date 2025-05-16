@@ -46,4 +46,8 @@ export class CardApiService {
   post_offer_live_market$(request: OfferLiveMarketRequest[]): Observable<void> {
     return this.wabApiService.callPost$(this.controller, 'offerlivemarket', request);
   }
+
+  get_last_added_cards$(): Observable<any> {
+    return this.wabApiService.callGet$(this.controller, 'lastadded');
+  }
 }

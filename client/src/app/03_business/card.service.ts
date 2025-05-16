@@ -40,4 +40,10 @@ export class CardService {
   post_offer_live_market$(request: OfferLiveMarketRequest[]): Observable<void> {
     return this.cardApiService.post_offer_live_market$(request).pipe(map(() => void 0));
   }
+
+  get_last_added_cards$(): Observable<CardModel[]> {
+    return this.cardApiService.get_last_added_cards$().pipe(map((dbModel: any) => {
+      return dbModel;
+    }));
+  }
 }
