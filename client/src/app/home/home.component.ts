@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { CardModel } from '../01_models/03_business/card.model';
 import { DeletedOffer, EditedOffer, NewOffer, PurchaseOffer } from '../01_models/home/home-view.model';
 import { CardService } from '../03_business/card.service';
+import { CardImgComponent } from '../cards/card/card-img.component';
+import { ModalService } from '../shared/services/modal/modal.service';
 import { ToastService } from '../shared/services/toast/toast.service';
 
 @Component({
@@ -22,7 +23,10 @@ export class HomeComponent implements OnInit {
   purchaseOffers: PurchaseOffer[] = [];
 
 
-  constructor(private router: Router, private cardService: CardService, private toastService: ToastService) { }
+  constructor(
+    private cardService: CardService,
+    private toastService: ToastService,
+    private modalService: ModalService) { }
   ngOnInit(): void {
     // this.router.navigate(['/cards']);
     this.newCardsLoading = true;
@@ -34,5 +38,8 @@ export class HomeComponent implements OnInit {
       complete: () => this.newCardsLoading = false,
       error: (err: any) => this.toastService.show(err.message, 'error', 5000)
     });
+  }
+  openModal(imagePath: string): void {
+    this.modalService.open(CardImgComponent, { src: imagePath });
   }
 }
