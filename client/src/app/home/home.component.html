@@ -31,8 +31,8 @@
         <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
           <div *ngFor="let offer of newOffers" class="w-48 bg-gray-800 rounded-xl shadow">
             <div class="overflow-hidden w-48 rounded-xl bg-black">
-              <img [src]="offer.card.imagePath" [alt]="offer.card.name" loading="lazy"
-                class="max-w-full object-contain rounded-md cursor-pointer" />
+              <img (click)="openModal(offer.card.imagePath)" [src]="offer.card.imagePath" [alt]="offer.card.name"
+                loading="lazy" class="max-w-full object-contain rounded-md cursor-pointer" />
             </div>
             <div class="mt-2 text-center text-white p-2">
               <div class="font-medium">{{ offer.card.name }}</div>
@@ -52,8 +52,8 @@
         <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
           <div *ngFor="let offer of deletedOffers" class="w-48 bg-gray-800 rounded-xl shadow">
             <div class="overflow-hidden w-48 rounded-xl bg-black">
-              <img [src]="offer.card.imagePath" [alt]="offer.card.name" loading="lazy"
-                class="max-w-full object-contain rounded-md cursor-pointer" />
+              <img (click)="openModal(offer.card.imagePath)" [src]="offer.card.imagePath" [alt]="offer.card.name"
+                loading="lazy" class="max-w-full object-contain rounded-md cursor-pointer" />
             </div>
             <div class="mt-2 text-center text-white p-2">
               <div class="font-medium">{{ offer.card.name }}</div>
@@ -73,8 +73,8 @@
         <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
           <div *ngFor="let offer of editedOffers" class="w-48 bg-gray-800 rounded-xl shadow">
             <div class="overflow-hidden w-48 rounded-xl bg-black">
-              <img [src]="offer.card.imagePath" [alt]="offer.card.name" loading="lazy"
-                class="max-w-full object-contain rounded-md cursor-pointer" />
+              <img (click)="openModal(offer.card.imagePath)" [src]="offer.card.imagePath" [alt]="offer.card.name"
+                loading="lazy" class="max-w-full object-contain rounded-md cursor-pointer" />
             </div>
             <div class="mt-2 text-center text-white p-2">
               <div class="font-medium">{{ offer.card.name }}</div>
