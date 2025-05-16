@@ -1,9 +1,11 @@
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
+from app.models.card import Card
 from app.models.offer import Offer  # Assurez-vous que le modèle Offer est correctement importé
 from typing import List, Optional
 from app.extensions import db
+from datetime import datetime, timezone
 
 def get_cards_in_market_count_data() -> int:
     return db.session.query(func.count(Offer.id)).filter(Offer.is_deleted == False).scalar()
@@ -68,3 +70,32 @@ def select_offers_by_reference(reference: str) -> List[Offer]:
 
 def select_offers_by_id(offer_id: int) -> List[Offer]:
     return db.session.query(Offer).filter_by(id=offer_id).all()
+
+def get_last_added_offers_data() -> list[dict]:
+    today_utc = datetime.now(timezone.utc).date()
+    return db.session.query(Offer, Card).join(
+        Card, Offer.reference_card == Card.reference
+    ).filter(
+        func.date(Offer.created_at) == today_utc,
+        Offer.is_edited == False,
+        Offer.is_deleted == False
+    )
+
+def get_last_edited_offers_data() -> list[dict]:
+    today_utc = datetime.now(timezone.utc).date()
+    return db.session.query(Offer, Card).join(
+        Card, Offer.reference_card == Card.reference
+    ).filter(
+        func.date(Offer.edited_at) == today_utc,
+        Offer.is_edited == True,
+        Offer.is_deleted == False
+    )
+
+def get_last_deleted_offers_data() -> list[dict]:
+    today_utc = datetime.now(timezone.utc).date()
+    return db.session.query(Offer, Card).join(
+        Card, Offer.reference_card == Card.reference
+    ).filter(
+        func.date(Offer.deleted_at) == today_utc,
+        Offer.is_deleted == True
+    )
