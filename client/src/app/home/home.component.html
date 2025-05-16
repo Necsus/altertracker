@@ -4,28 +4,32 @@
     <!-- Section : Nouvelles Cartes -->
     <section>
       <div class="mt-8">
-        <h2 class="text-2xl font-semibold mb-4">🃏 Nouvelles cartes ajoutées la veille</h2>
-        <div class="scroll-container flex flex-nowrap space-x-4 overflow-x-auto pb-2">
-          <div *ngFor="let card of newCards" class="flex-shrink-0 w-48 bg-gray-800 rounded-xl shadow">
-            <div class="overflow-hidden rounded-xl bg-black">
-              <img [src]="card.image" [alt]="card.name" class="max-w-full object-contain rounded-md cursor-pointer" />
-            </div>
-            <div class="mt-2 text-center text-white p-2">
-              <p class="font-semibold">{{ card.name }}</p>
-              <p class="text-sm text-gray-400">{{ card.faction }} • {{ card.extension }}</p>
+        <h2 class="text-2xl font-semibold mb-4">🃏 Nouvelles cartes ajoutées à j-1 <span class="text-green-400">+{{
+            newCardsCount }}</span></h2>
+        <ng-container *ngIf="!newCardsLoading; else cardsLoadingSection">
+          <div class="scroll-container flex flex-nowrap space-x-4 overflow-x-auto pb-2">
+            <div *ngFor="let card of newCards" class="flex-shrink-0 w-48 bg-gray-800 rounded-xl shadow">
+              <div class="overflow-hidden rounded-xl bg-black">
+                <img [src]="card.imagePath" [alt]="card.name" loading="lazy"
+                  class="max-w-full object-contain rounded-md cursor-pointer" />
+              </div>
+              <div class="mt-2 text-center text-white p-2">
+                <p class="font-semibold">{{ card.name }}</p>
+                <p class="text-sm text-gray-400">{{ card.faction }} • {{ card.set }}</p>
+              </div>
             </div>
           </div>
-        </div>
+        </ng-container>
       </div>
     </section>
 
     <!-- Section : Nouvelles Offres -->
     <section>
-      <h2 class="text-2xl font-semibold mb-4">💰 Nouvelles offres de vente (hier)</h2>
+      <h2 class="text-2xl font-semibold mb-4">💰 Nouvelles offres de vente</h2>
       <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
         <div *ngFor="let offer of newOffers" class="w-48 bg-gray-800 rounded-xl shadow">
           <div class="overflow-hidden w-48 rounded-xl bg-black">
-            <img [src]="offer.card.image" [alt]="offer.card.name"
+            <img [src]="offer.card.image" [alt]="offer.card.name" loading="lazy"
               class="max-w-full object-contain rounded-md cursor-pointer" />
           </div>
           <div class="mt-2 text-center text-white p-2">
@@ -39,11 +43,11 @@
 
     <!-- Section : Offres disparues -->
     <section>
-      <h2 class="text-2xl font-semibold mb-4">❌ Offres disparues (hier)</h2>
+      <h2 class="text-2xl font-semibold mb-4">❌ Offres disparues</h2>
       <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
         <div *ngFor="let offer of deletedOffers" class="w-48 bg-gray-800 rounded-xl shadow">
           <div class="overflow-hidden w-48 rounded-xl bg-black">
-            <img [src]="offer.card.image" [alt]="offer.card.name"
+            <img [src]="offer.card.image" [alt]="offer.card.name" loading="lazy"
               class="max-w-full object-contain rounded-md cursor-pointer" />
           </div>
           <div class="mt-2 text-center text-white p-2">
@@ -56,11 +60,11 @@
 
     <!-- Section : Offres modifiées -->
     <section>
-      <h2 class="text-2xl font-semibold mb-4">✏️ Offres modifiées (hier)</h2>
+      <h2 class="text-2xl font-semibold mb-4">✏️ Offres modifiées</h2>
       <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
         <div *ngFor="let offer of editedOffers" class="w-48 bg-gray-800 rounded-xl shadow">
           <div class="overflow-hidden w-48 rounded-xl bg-black">
-            <img [src]="offer.card.image" [alt]="offer.card.name"
+            <img [src]="offer.card.image" [alt]="offer.card.name" loading="lazy"
               class="max-w-full object-contain rounded-md cursor-pointer" />
           </div>
           <div class="mt-2 text-center text-white p-2">
@@ -81,7 +85,7 @@
       <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
         <div *ngFor="let offer of purchaseOffers" class="w-48 bg-gray-800 rounded-xl shadow">
           <div class="overflow-hidden w-48 rounded-xl bg-black">
-            <img [src]="offer.card.image" [alt]="offer.card.name"
+            <img [src]="offer.card.image" [alt]="offer.card.name" loading="lazy"
               class="max-w-full object-contain rounded-md cursor-pointer" />
           </div>
           <div class="mt-2 text-center text-white p-2">
@@ -95,3 +99,16 @@
 
   </div>
 </div>
+
+<ng-template #cardsLoadingSection>
+  <div class="flex flex-nowrap space-x-4 overflow-x-auto pb-2">
+    <div *ngFor="let skeleton of [1,2,3,4,5,6,7,8,9,10]"
+      class="flex-shrink-0 w-48 bg-gray-800 rounded-xl shadow animate-pulse">
+      <div class="overflow-hidden rounded-xl bg-gray-700 h-64"></div>
+      <div class="mt-2 text-center text-white p-2">
+        <div class="h-4 bg-gray-700 rounded w-3/4 mx-auto mb-2"></div>
+        <div class="h-3 bg-gray-700 rounded w-1/2 mx-auto"></div>
+      </div>
+    </div>
+  </div>
+</ng-template>

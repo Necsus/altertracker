@@ -5,7 +5,8 @@ from app.data.card_data import (
   get_card_by_reference_data,
   search_cards_data,
   get_cards_count_data,
-  update_cards_bulk
+  update_cards_bulk_data,
+  get_last_added_cards_data
 )
 from app.data.offer_data import (
   get_offer_by_reference,
@@ -87,7 +88,7 @@ def post_offer_live_market_service(data: List[dict]) -> None:
 
     # Mise à jour en masse des cartes
     try:
-        update_cards_bulk(sanitized_data)
+        update_cards_bulk_data(sanitized_data)
     except Exception as e:
         print(f"Erreur lors de la mise à jour des cartes : {e}")
         raise
@@ -107,3 +108,6 @@ def post_offer_live_market_service(data: List[dict]) -> None:
         except Exception as e:
             print(f"Erreur lors de l'insertion des nouvelles offres : {e}")
             raise
+        
+def get_last_added_cards_service() -> List[dict]:
+    return get_last_added_cards_data()

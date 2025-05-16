@@ -1,7 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { DeletedOffer, EditedOffer, NewCard, NewOffer, PurchaseOffer } from '../01_models/home/home-view.model';
+import { CardModel } from '../01_models/03_business/card.model';
+import { DeletedOffer, EditedOffer, NewOffer, PurchaseOffer } from '../01_models/home/home-view.model';
+import { CardService } from '../03_business/card.service';
+import { ToastService } from '../shared/services/toast/toast.service';
 
 @Component({
   selector: 'app-home',
@@ -10,14 +13,26 @@ import { DeletedOffer, EditedOffer, NewCard, NewOffer, PurchaseOffer } from '../
   imports: [CommonModule]
 })
 export class HomeComponent implements OnInit {
-  newCards: NewCard[] = [];
+  newCardsLoading: boolean = false;
+  newCardsCount: Number = 0;
+  newCards: CardModel[] = [];
   newOffers: NewOffer[] = [];
   deletedOffers: DeletedOffer[] = [];
   editedOffers: EditedOffer[] = [];
   purchaseOffers: PurchaseOffer[] = [];
 
-  constructor(private router: Router) { }
+
+  constructor(private router: Router, private cardService: CardService, private toastService: ToastService) { }
   ngOnInit(): void {
     // this.router.navigate(['/cards']);
+    this.newCardsLoading = true;
+    this.cardService.get_last_added_cards$().subscribe({
+      next: (response: CardModel[]) => {
+        this.newCardsCount = response.length;
+        this.newCards = response.slice(0, 20);
+      },
+      complete: () => this.newCardsLoading = false,
+      error: (err: any) => this.toastService.show(err.message, 'error', 5000)
+    });
   }
 }

@@ -2,6 +2,7 @@ from typing import Optional
 from app.models.card import Card
 from sqlalchemy import func
 from app.extensions import db
+from datetime import datetime, timezone
 
 def get_cards_count_data() -> int:
     return db.session.query(func.count(Card.id)).scalar()
@@ -69,7 +70,7 @@ def search_cards_data(name, rarity, faction, set, main_effect, main_effect_2, ec
 
     return query.all()
 
-def insert_cards_bulk(cards: list[dict]) -> None:
+def insert_cards_bulk_data(cards: list[dict]) -> None:
     if not cards:
         return
 
@@ -80,7 +81,7 @@ def insert_cards_bulk(cards: list[dict]) -> None:
         db.session.rollback()
         print(f"Erreur lors de l'insertion des cartes : {e}")
 
-def update_cards_bulk(cards: list[dict]) -> None:
+def update_cards_bulk_data(cards: list[dict]) -> None:
     if not cards:
         return
 
@@ -113,3 +114,9 @@ def prepare_like_query(text: str) -> str:
     text = escape_special_chars(text)
     # Remplacer les espaces insécables par un espace normal
     return text.replace(' ', '_')
+
+def get_last_added_cards_data() -> list[dict]:
+    today_utc = datetime.now(timezone.utc).date()
+    return db.session.query(Card).filter(
+        func.date(Card.created_at) == today_utc
+    ).all()

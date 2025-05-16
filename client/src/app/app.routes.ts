@@ -21,6 +21,6 @@ export const routes: Routes = [
   { path: 'token', component: TokenComponent },
   { path: 'contact', component: ContactComponent },
   { path: 'about', component: UnderConstructionComponent },
-  { path: 'offres', component: UnderConstructionComponent },
+  { path: 'purchaseoffers', component: UnderConstructionComponent },
   { path: '**', component: NotFoundComponent }
 ];

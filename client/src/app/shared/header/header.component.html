@@ -31,7 +31,7 @@
             style="user-select: none;" class="hover:text-blue-300 transition duration-300 cursor-pointer">Cartes</a>
         </li>
         @if (isLoggedIn) {
-        <li><a routerLink="/offres" routerLinkActive="text-blue-400" style="user-select: none;"
+        <li><a routerLink="/purchaseoffers" routerLinkActive="text-blue-400" style="user-select: none;"
             class="hover:text-blue-300 transition duration-300 cursor-pointer">Offres d'achat</a></li>
         <li><a routerLink="/searchs" routerLinkActive="text-blue-400" style="user-select: none;"
             class="hover:text-blue-300 transition duration-300 cursor-pointer">Mes recherches</a></li>
@@ -60,19 +60,37 @@
     </nav>
 
     <!-- Mobile menu -->
-    <div *ngIf="isMenuOpen" class="sm:hidden mt-4 space-y-4">
+    @if (isMenuOpen) {
+    <div class="sm:hidden mt-4 space-y-4">
       <a routerLink="/" routerLinkActive="text-blue-400" [routerLinkActiveOptions]="{ exact: true }"
+        class="block hover:text-blue-300 transition duration-300">Accueil</a>
+      <a routerLink="/cards" routerLinkActive="text-blue-400" [routerLinkActiveOptions]="{ exact: true }"
         class="block hover:text-blue-300 transition duration-300">Cartes</a>
-      <a routerLink="/offres" routerLinkActive="text-blue-400"
-        class="block hover:text-blue-300 transition duration-300">Offres</a>
-      <a routerLink="/a-propos" routerLinkActive="text-blue-400"
+      @if (isLoggedIn) {
+      <a routerLink="/purchaseoffers" routerLinkActive="text-blue-400"
+        class="block hover:text-blue-300 transition duration-300">Offres d'achat</a>
+      <a routerLink="/searchs" routerLinkActive="text-blue-400"
+        class="block hover:text-blue-300 transition duration-300">Mes recherches</a>
+      <a routerLink="/alerts" routerLinkActive="text-blue-400"
+        class="block hover:text-blue-300 transition duration-300">Mes alertes</a>
+      }
+      <a routerLink="/about" routerLinkActive="text-blue-400"
         class="block hover:text-blue-300 transition duration-300">À propos</a>
-      <a routerLink="/contact" routerLinkActive="text-blue-400"
-        class="block hover:text-blue-300 transition duration-300">Contact</a>
       <a routerLink="/token" routerLinkActive="text-blue-400"
         class="block hover:text-blue-300 transition duration-300">Token</a>
+      @if (isLoggedIn) {
+      <a routerLink="/me" routerLinkActive="text-blue-400" class="block hover:text-blue-300 transition duration-300">Mon
+        compte</a>
+      <a (click)="onLogout()"
+        class="block text-red-300 hover:text-red-200 transition duration-300 cursor-pointer">Logout</a>
+      <a routerLink="/contact" routerLinkActive="text-blue-400"
+        class="block hover:text-blue-300 transition duration-300"><i class="fas fa-bug"></i></a>
+      }
+      @else {
       <a routerLink="/login" routerLinkActive="text-blue-400"
         class="block hover:text-blue-300 transition duration-300">Login</a>
+      }
     </div>
+    }
   </div>
 </header>
