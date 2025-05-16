@@ -4,7 +4,7 @@
     <!-- Section : Nouvelles Cartes -->
     <section>
       <div class="mt-8">
-        <h2 class="text-2xl font-semibold mb-4">🃏 Nouvelles cartes ajoutées à j-1 <span class="text-green-400">+{{
+        <h2 class="text-2xl font-semibold mb-4">🃏 Nouvelles cartes scannées <span class="text-green-400">+{{
             newCardsCount }}</span></h2>
         <ng-container *ngIf="!newCardsLoading; else cardsLoadingSection">
           <div class="scroll-container flex flex-nowrap space-x-4 overflow-x-auto pb-2">
@@ -25,62 +25,72 @@
 
     <!-- Section : Nouvelles Offres -->
     <section>
-      <h2 class="text-2xl font-semibold mb-4">💰 Nouvelles offres de vente</h2>
-      <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
-        <div *ngFor="let offer of newOffers" class="w-48 bg-gray-800 rounded-xl shadow">
-          <div class="overflow-hidden w-48 rounded-xl bg-black">
-            <img [src]="offer.card.image" [alt]="offer.card.name" loading="lazy"
-              class="max-w-full object-contain rounded-md cursor-pointer" />
-          </div>
-          <div class="mt-2 text-center text-white p-2">
-            <div class="font-medium">{{ offer.card.name }}</div>
-            <div class="text-sm text-gray-400">Prix : {{ offer.price }} €</div>
-            <div class="text-sm text-gray-500">Vendeur : {{ offer.seller }}</div>
+      <h2 class="text-2xl font-semibold mb-4">💰 Nouvelles offres de vente <span class="text-green-400">+{{
+          newOffersCount }}</span></h2>
+      <ng-container *ngIf="!newOffersLoading; else cardsLoadingSection">
+        <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
+          <div *ngFor="let offer of newOffers" class="w-48 bg-gray-800 rounded-xl shadow">
+            <div class="overflow-hidden w-48 rounded-xl bg-black">
+              <img [src]="offer.card.imagePath" [alt]="offer.card.name" loading="lazy"
+                class="max-w-full object-contain rounded-md cursor-pointer" />
+            </div>
+            <div class="mt-2 text-center text-white p-2">
+              <div class="font-medium">{{ offer.card.name }}</div>
+              <div class="text-sm text-gray-400">Prix : {{ offer.offer.price }} €</div>
+              <div class="text-sm text-gray-500">Vendeur : {{ offer.offer.userAltered }}</div>
+            </div>
           </div>
         </div>
-      </div>
+      </ng-container>
     </section>
 
     <!-- Section : Offres disparues -->
     <section>
-      <h2 class="text-2xl font-semibold mb-4">❌ Offres disparues</h2>
-      <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
-        <div *ngFor="let offer of deletedOffers" class="w-48 bg-gray-800 rounded-xl shadow">
-          <div class="overflow-hidden w-48 rounded-xl bg-black">
-            <img [src]="offer.card.image" [alt]="offer.card.name" loading="lazy"
-              class="max-w-full object-contain rounded-md cursor-pointer" />
-          </div>
-          <div class="mt-2 text-center text-white p-2">
-            <div class="font-medium">{{ offer.card.name }}</div>
-            <div class="text-sm text-gray-400">Ancien prix : {{ offer.price }} €</div>
+      <h2 class="text-2xl font-semibold mb-4">❌ Offres disparues (resultat correct ?) <span class="text-green-400">+{{
+          deletedOffersCount }}</span></h2>
+      <ng-container *ngIf="!deletedOffersLoading; else cardsLoadingSection">
+        <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
+          <div *ngFor="let offer of deletedOffers" class="w-48 bg-gray-800 rounded-xl shadow">
+            <div class="overflow-hidden w-48 rounded-xl bg-black">
+              <img [src]="offer.card.imagePath" [alt]="offer.card.name" loading="lazy"
+                class="max-w-full object-contain rounded-md cursor-pointer" />
+            </div>
+            <div class="mt-2 text-center text-white p-2">
+              <div class="font-medium">{{ offer.card.name }}</div>
+              <div class="text-sm text-gray-400">Ancien prix : {{ offer.offer.price }} €</div>
+            </div>
           </div>
         </div>
-      </div>
+      </ng-container>
     </section>
 
     <!-- Section : Offres modifiées -->
     <section>
-      <h2 class="text-2xl font-semibold mb-4">✏️ Offres modifiées</h2>
-      <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
-        <div *ngFor="let offer of editedOffers" class="w-48 bg-gray-800 rounded-xl shadow">
-          <div class="overflow-hidden w-48 rounded-xl bg-black">
-            <img [src]="offer.card.image" [alt]="offer.card.name" loading="lazy"
-              class="max-w-full object-contain rounded-md cursor-pointer" />
-          </div>
-          <div class="mt-2 text-center text-white p-2">
-            <div class="font-medium">{{ offer.card.name }}</div>
-            <div class="text-sm text-gray-400">
-              Prix : <span class="line-through text-red-400">{{ offer.oldPrice }}€</span>
-              → <span class="text-green-400">{{ offer.newPrice }}€</span>
+      <h2 class="text-2xl font-semibold mb-4">✏️ Offres modifiées (bug sur la diff de prix) <span
+          class="text-green-400">+{{
+          editedOffersCount }}</span></h2>
+      <ng-container *ngIf="!editedOffersLoading; else cardsLoadingSection">
+        <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
+          <div *ngFor="let offer of editedOffers" class="w-48 bg-gray-800 rounded-xl shadow">
+            <div class="overflow-hidden w-48 rounded-xl bg-black">
+              <img [src]="offer.card.imagePath" [alt]="offer.card.name" loading="lazy"
+                class="max-w-full object-contain rounded-md cursor-pointer" />
             </div>
-            <div class="text-sm text-gray-500">Vendeur : {{ offer.seller }}</div>
+            <div class="mt-2 text-center text-white p-2">
+              <div class="font-medium">{{ offer.card.name }}</div>
+              <div class="text-sm text-gray-400">
+                Prix : <span class="line-through text-red-400">{{ offer.offer.price }}€</span>
+                → <span class="text-green-400">{{ offer.offer.price }}€</span>
+              </div>
+              <div class="text-sm text-gray-500">Vendeur : {{ offer.offer.userAltered }}</div>
+            </div>
           </div>
         </div>
-      </div>
+      </ng-container>
     </section>
 
     <!-- Section : Nouvelles offres du site -->
-    <section>
+    <!-- <section>
       <h2 class="text-2xl font-semibold mb-4">📢 Nouvelles offres d'achat ajoutées sur le site</h2>
       <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
         <div *ngFor="let offer of purchaseOffers" class="w-48 bg-gray-800 rounded-xl shadow">
@@ -95,7 +105,7 @@
           </div>
         </div>
       </div>
-    </section>
+    </section> -->
 
   </div>
 </div>
