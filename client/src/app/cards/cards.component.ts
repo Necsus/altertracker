@@ -132,6 +132,7 @@ export class CardsComponent implements OnInit {
           }
         });
     } else {
+      this.loaderService.hide();
       this.router.navigate(['/token']);
     }
   }

@@ -19,6 +19,7 @@ class Offer(db.Model):
     deleted_at = db.Column(db.DateTime, default=None)
     user_altered = db.Column(db.Text, default=None)
     user_id = db.Column(db.Integer, default=None)
+    previous_offer = db.Column(db.Integer, default=None)
 
     def __repr__(self):
         return f"<Offer {self.reference_card}>"
@@ -38,6 +39,7 @@ class Offer(db.Model):
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'edited_at': self.edited_at.isoformat() if self.edited_at else None,
             'deleted_at': self.deleted_at.isoformat() if self.deleted_at else None,
+            'previous_offer': self.previous_offer,
             'user_altered': self.user_altered,
             'user_id': self.user_id
         }

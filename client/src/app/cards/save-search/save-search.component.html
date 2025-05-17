@@ -1,6 +1,16 @@
 <button (click)="toggleSlider()"
-  class="absolute top-12 right-8 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow-lg">
-  Enregistrer la recherche
+  class="absolute top-12 right-8 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow-lg flex items-center justify-center">
+  <span class="hidden md:block">
+    @if (canSaveSearch) {
+    Enregistrer la recherche
+    }
+    @else {
+    Mes recherches
+    }
+  </span>
+  <span class="block md:hidden">
+    <i class="fas fa-save"></i>
+  </span>
 </button>
 
 <!-- Backdrop -->
@@ -10,6 +20,7 @@
 <div [ngClass]="{ 'translate-x-0': sliderOpen, 'translate-x-full': !sliderOpen }"
   class="fixed top-0 right-0 h-full w-64 bg-gray-800 shadow-lg transform transition-transform duration-300 scroll-container overflow-auto z-50">
   <div class="p-4">
+    @if (canSaveSearch) {
     <h2 class="text-xl font-semibold text-white mb-4">Enregistrer la recherche</h2>
     <form (ngSubmit)="saveSearch()">
       <div class="mb-4">
@@ -23,6 +34,8 @@
         Enregistrer
       </button>
     </form>
+    }
+
 
     <!-- Gestion du chargement -->
     <div *ngIf="isLoading" class="mt-4 text-center text-gray-400">
