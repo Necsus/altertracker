@@ -22,4 +22,6 @@ export interface CardModel {
   price?: number;
   price_updated_at?: string; // ISO date string
   url_offer?: string;
+
+  alert_id?: number;
 }

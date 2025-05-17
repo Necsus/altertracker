@@ -11,6 +11,7 @@ import { AuthViewService } from '../../authentication/auth-view.service';
 export class HeaderComponent implements OnInit {
   isMenuOpen = false;
   isLoggedIn = false;
+  isDropdownOpen = false;
 
   constructor(private router: Router, private authViewService: AuthViewService) { }
 

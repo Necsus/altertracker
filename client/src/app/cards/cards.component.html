@@ -1,4 +1,4 @@
-<div class="container mx-auto px-4 py-8">
+<div class="container mx-auto px-4 py-8 relative">
   <h1 class="text-4xl font-bold text-center mb-4">Recherche de cartes</h1>
   <p class="text-center mb-8">parmis les <strong>{{nbCards}}</strong> cartes d'Altered dont
     <strong>{{nbCardsInMarket}}</strong> sur le market
@@ -14,7 +14,7 @@
       (visibleCardsChange)="onVisibleCardsChange($event)">
     </app-card-group>
   </div>
+  @if (isLoggedIn && cards && cards.length > 0) {
+  <app-save-search></app-save-search>
+  }
 </div>
-@if (isLoggedIn) {
-<app-save-search></app-save-search>
-}

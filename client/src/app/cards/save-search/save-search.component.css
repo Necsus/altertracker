@@ -29,5 +29,18 @@
 }
 
 .bg-opacity-50 {
-  background-opacity: 0.5;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.scroll-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

@@ -9,13 +9,14 @@ import { ContactComponent } from './contact/contact.component';
 import { HomeComponent } from './home/home.component';
 import { NotFoundComponent } from './shared/error-pages/not-found/not-found.component';
 import { UnderConstructionComponent } from './shared/under-construction/under-construction.component';
-import { UserSearchesComponent } from './user-searches/user-searches.component';
+import { UserAlertsComponent } from './user/user-alerts/user-alerts.component';
+import { UserSearchesComponent } from './user/user-searches/user-searches.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'cards', component: CardsComponent },
   { path: 'searches', component: UserSearchesComponent, canActivate: [TokenGuard] },
-  { path: 'alerts', component: UnderConstructionComponent, canActivate: [TokenGuard] },
+  { path: 'alerts', component: UserAlertsComponent, canActivate: [TokenGuard] },
   { path: 'me', component: UnderConstructionComponent, canActivate: [TokenGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },

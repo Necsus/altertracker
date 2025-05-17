@@ -69,7 +69,14 @@ export class SearchPanelComponent implements OnInit {
 
   isFormValid(): boolean {
     const { name, rarity, faction, set, main_effect, main_effect_2, echo_effect, main_cost, recall_cost, forest_power, mountain_power, ocean_power, in_market, no_condition } = this.searchForm.value;
-    return !!(name || rarity || faction || set || main_effect || main_effect_2 || echo_effect || main_cost || recall_cost || forest_power || mountain_power || ocean_power || in_market || no_condition); // Vérifie si au moins un champ est rempli
+    // Vérifie si au moins un champ est rempli ou si forest_power, mountain_power ou ocean_power est égal à 0
+    return !!(
+      name || rarity || faction || set || main_effect || main_effect_2 || echo_effect || main_cost || recall_cost ||
+      forest_power !== '' && forest_power !== null && forest_power !== undefined ||
+      mountain_power !== '' && mountain_power !== null && mountain_power !== undefined ||
+      ocean_power !== '' && ocean_power !== null && ocean_power !== undefined ||
+      in_market || no_condition
+    );
   }
 
   onSubmit(fullSearchLiveMarket: boolean = false) {
@@ -78,7 +85,7 @@ export class SearchPanelComponent implements OnInit {
     // Construire l'URL avec les paramètres du formulaire
     const queryParams = new URLSearchParams();
     Object.keys(formValues).forEach(key => {
-      if (formValues[key]) { // N'ajoute que les champs non vides
+      if (formValues[key] !== null && formValues[key] !== undefined && formValues[key] !== '') {
         queryParams.append(key, formValues[key]);
       }
     });
@@ -126,9 +133,13 @@ export class SearchPanelComponent implements OnInit {
   }
 
   private cleanFormValues(values: any): any {
-    // Remplace null par une chaîne vide pour chaque champ
+    // Conserve les valeurs 0 et remplace uniquement null ou false par une chaîne vide
     return Object.keys(values).reduce((acc: any, key) => {
-      acc[key] = values[key] === null || values[key] === false ? '' : values[key];
+      if (key === 'forest_power' || key === 'mountain_power' || key === 'ocean_power') {
+        acc[key] = values[key]; // Conserve la valeur telle quelle, y compris 0
+      } else {
+        acc[key] = values[key] === null || values[key] === false ? '' : values[key];
+      }
       return acc;
     }, {});
   }

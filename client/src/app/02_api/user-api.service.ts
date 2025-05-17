@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { UserAlertModel } from '../01_models/03_business/user-alert.model';
 import { UserSearchModel } from '../01_models/03_business/user-search.model';
 import { WebApiService } from './web-api.service';
 
@@ -18,10 +19,23 @@ export class UserApiService {
   get_user_searches$(): Observable<UserSearchModel[]> {
     return this.wabApiService.callGet$(this.controller, 'searches');
   }
-  post_user_searche$(request: UserSearchModel): Observable<UserSearchModel> {
+  post_user_search$(request: UserSearchModel): Observable<UserSearchModel> {
     return this.wabApiService.callPost$(this.controller, 'searches', request);
   }
-  delete_user_searche$(id_search: number): Observable<void> {
+  delete_user_search$(id_search: number): Observable<void> {
     return this.wabApiService.callDelete$(this.controller, `searches/${id_search}`);
+  }
+
+  get_user_alerts$(): Observable<UserAlertModel[]> {
+    return this.wabApiService.callGet$(this.controller, 'alerts');
+  }
+  post_user_alert$(request: UserAlertModel): Observable<UserAlertModel> {
+    return this.wabApiService.callPost$(this.controller, 'alerts', request);
+  }
+  delete_user_alert$(id_search: number): Observable<void> {
+    return this.wabApiService.callDelete$(this.controller, `alerts/${id_search}`);
+  }
+  put_user_alert$(request: UserAlertModel): Observable<UserAlertModel> {
+    return this.wabApiService.callPut$(this.controller, 'alerts', request);
   }
 }
