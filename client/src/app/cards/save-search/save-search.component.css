@@ -1,0 +1,33 @@
+.fixed {
+  position: fixed;
+}
+
+.transform {
+  transform: translateX(100%);
+}
+
+.translate-x-0 {
+  transform: translateX(0);
+}
+
+.translate-x-full {
+  transform: translateX(100%);
+}
+
+.transition-transform {
+  transition: transform 0.3s ease-in-out;
+}
+
+.z-40 {
+  z-index: 40;
+  /* Backdrop */
+}
+
+.z-50 {
+  z-index: 50;
+  /* Slider */
+}
+
+.bg-opacity-50 {
+  background-opacity: 0.5;
+}

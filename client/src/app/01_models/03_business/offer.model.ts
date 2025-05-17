@@ -3,18 +3,18 @@ import { CardModel } from './card.model';
 export interface OfferModel {
   id: number;
   referenceCard: string;
-  idOffer: string;
+  id_offer: string;
   price: number | null;
   currency: string | null;
   quantity: number | null;
   status: string | null;
-  linkOffer: string | null;
-  isEdited: boolean;
-  isDeleted: boolean;
-  createdAt: string | null; // ISO string format
-  editedAt: string | null;  // ISO string format
-  deletedAt: string | null; // ISO string format
-  userAltered: string | null;
+  link_offer: string | null;
+  is_ddited: boolean;
+  is_deleted: boolean;
+  created_at: string | null; // ISO string format
+  edited_at: string | null;  // ISO string format
+  deleted_at: string | null; // ISO string format
+  user_altered: string | null;
   userId: number | null;
 
   card: CardModel | null;

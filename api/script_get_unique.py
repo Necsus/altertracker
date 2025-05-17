@@ -83,7 +83,6 @@ with app.app_context():
                             )
 
                             if test_result and test_result.get('hydra:totalItems', 0) > 0:
-                                logging.info(f"--- CARDNAME : {dbcard.name}  FACTION : {dbcard.faction}  SET : {set}  MAIN_COST : {mainCost}  RECALL_COST : {recallCost}  |  {index}/{total_cards}")
                                 page = 1
                                 while True:
                                     cards = card_routine.get_unique_cards_name_faction(
@@ -101,31 +100,31 @@ with app.app_context():
                                             has_updated = False
 
                                             # Vérifiez et mettez à jour uniquement si les valeurs sont différentes
-                                            if card_to_update.name != tempCard.name:
+                                            if str(card_to_update.name) != tempCard.name:
                                                 card_to_update.name = tempCard.name
                                                 has_updated = True
-                                            if card_to_update.name_en != tempCard.name_en:
+                                            if str(card_to_update.name_en) != tempCard.name_en:
                                                 card_to_update.name_en = tempCard.name_en
                                                 has_updated = True
-                                            if card_to_update.isSuspended != tempCard.isSuspended:
+                                            if str(card_to_update.isSuspended) != tempCard.isSuspended:
                                                 card_to_update.isSuspended = tempCard.isSuspended
                                                 has_updated = True
-                                            if card_to_update.imagePath != tempCard.imagePath:
+                                            if str(card_to_update.imagePath) != tempCard.imagePath:
                                                 card_to_update.imagePath = tempCard.imagePath
                                                 has_updated = True
-                                            if card_to_update.MAIN_COST != tempCard.MAIN_COST:
+                                            if str(card_to_update.MAIN_COST) != tempCard.MAIN_COST:
                                                 card_to_update.MAIN_COST = tempCard.MAIN_COST
                                                 has_updated = True
-                                            if card_to_update.RECALL_COST != tempCard.RECALL_COST:
+                                            if str(card_to_update.RECALL_COST) != tempCard.RECALL_COST:
                                                 card_to_update.RECALL_COST = tempCard.RECALL_COST
                                                 has_updated = True
-                                            if card_to_update.MOUNTAIN_POWER != tempCard.MOUNTAIN_POWER:
+                                            if str(card_to_update.MOUNTAIN_POWER) != tempCard.MOUNTAIN_POWER:
                                                 card_to_update.MOUNTAIN_POWER = tempCard.MOUNTAIN_POWER
                                                 has_updated = True
-                                            if card_to_update.OCEAN_POWER != tempCard.OCEAN_POWER:
+                                            if str(card_to_update.OCEAN_POWER) != tempCard.OCEAN_POWER:
                                                 card_to_update.OCEAN_POWER = tempCard.OCEAN_POWER
                                                 has_updated = True
-                                            if card_to_update.FOREST_POWER != tempCard.FOREST_POWER:
+                                            if str(card_to_update.FOREST_POWER) != tempCard.FOREST_POWER:
                                                 card_to_update.FOREST_POWER = tempCard.FOREST_POWER
                                                 has_updated = True
                                             if card_to_update.created_at is None:
@@ -134,11 +133,14 @@ with app.app_context():
 
                                             # Si une modification a été effectuée, mettre à jour `edited_at`
                                             if has_updated:
+                                                logging.info(f"Mise à jour de la carte : {card_to_update.name_en} ({card_to_update.reference})")
                                                 card_to_update.edited_at = datetime.now()
+                                                session.commit()
                                             continue
 
                                         detailsCard = card_routine.get_card_by_reference(tempCard.reference)
                                         tempCard = map_effect_to_card(tempCard, detailsCard)
+                                        logging.info(f"Ajout de la carte : {tempCard.name_en} ({tempCard.reference})")
                                         cardToInsert.append(tempCard)
 
                                     page += 1
@@ -149,7 +151,6 @@ with app.app_context():
             session.close()
 
     def get_unique():
-        """Récupère les cartes uniques et les traite en parallèle."""
         logging.info("----------- GET UNIQUE -----------")
         sets = ['COREKS', 'CORE', 'ALIZE', 'BISE']
         mainCosts = list(range(1, 11))
@@ -168,9 +169,9 @@ with app.app_context():
             session.close()
 
         total_cards = len(existing_cards)
-        subsets = split_list(list(existing_cards.values()), 6)  # Divise en 5 sous-listes
+        subsets = split_list(list(existing_cards.values()), 10)  # Divise en 5 sous-listes
 
-        with ThreadPoolExecutor(max_workers=6) as executor:
+        with ThreadPoolExecutor(max_workers=10) as executor:
             futures = []
             for i, subset in enumerate(subsets):
                 start_index = sum(len(subsets[j]) for j in range(i)) + 1

@@ -156,7 +156,10 @@ with app.app_context():  # Activer le contexte de l'application
                     continue
 
                 print(f"\rRécupération des stats de la carte {tempCard.reference}...", end="", flush=True)
-                tempCard = map_effect_to_card(tempCard, details[tempCard.reference])
+                detailsCard = card_routine.get_card_by_reference(tempCard.reference)
+                tempCard = map_effect_to_card(tempCard, detailsCard)
+                name_en = card_routine.get_card_by_reference(tempCard.reference, True)
+                tempCard = map_name_en(tempCard, name_en)
                 cardToInsert.append(tempCard)
 
             print()

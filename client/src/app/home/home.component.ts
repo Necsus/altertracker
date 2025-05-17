@@ -29,7 +29,6 @@ export class HomeComponent implements OnInit {
   editedOffers: OfferViewModel[] = [];
   // purchaseOffers: PurchaseOffer[] = [];
 
-
   constructor(
     private cardService: CardService,
     private offerService: OfferService,
