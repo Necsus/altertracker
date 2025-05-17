@@ -21,7 +21,7 @@ export class AlteredApiService {
     return this.http.get<any>(url, { headers }).pipe(
       catchError((error) => {
         if (error.status === 401) {
-          console.error('Erreur 401 : Token invalide ou expiré.');
+          console.error(error.message ?? 'Unauthorized');
         }
         return throwError(() => error);
       })

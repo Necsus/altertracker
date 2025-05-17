@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { UserSearchModel } from '../01_models/03_business/user-search.model';
-import { UserService } from '../03_business/user.service';
-import { ToastService } from '../shared/services/toast/toast.service';
+import { UserSearchModel } from '../../01_models/03_business/user-search.model';
+import { UserService } from '../../03_business/user.service';
+import { ToastService } from '../../shared/services/toast/toast.service';
 
 @Component({
   selector: 'app-user-searches',
@@ -47,9 +47,10 @@ export class UserSearchesComponent implements OnInit {
 
   deleteSearch(id: number): void {
     this.isLoading = true; // Démarre le chargement
-    this.userService.delete_user_searche$(id).subscribe({
+    this.userService.delete_user_search$(id).subscribe({
       next: () => {
         this.searches = this.searches.filter(search => search.id !== id);
+        this.toastService.show('Recherche supprimée avec succès', 'success', 5000);
       },
       error: (err: any) => {
         this.isLoading = false;

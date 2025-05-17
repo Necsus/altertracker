@@ -1,0 +1,20 @@
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-2xl font-bold text-center mb-4">Mes alertes enregistrées</h1>
+
+  <!-- Gestion du chargement -->
+  <div *ngIf="isLoading" class="text-center text-gray-400">
+    <i class="fas fa-spinner fa-spin text-2xl"></i>
+    <p>Chargement des alertes...</p>
+  </div>
+
+  <div class="space-y-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      <app-card *ngFor="let alert of alerts" [card]="alert.card"></app-card>
+    </div>
+  </div>
+
+  <!-- Message si aucune alerte -->
+  <div *ngIf="!isLoading && alerts.length === 0" class="text-center text-gray-400">
+    <p>Aucune alerte enregistrée.</p>
+  </div>
+</div>

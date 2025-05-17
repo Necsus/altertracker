@@ -15,10 +15,10 @@
         <div class="flex justify-between items-center">
           <div>
             <h4 class="text-white font-medium">{{ search.name_search }}</h4>
-            <p class="text-sm text-gray-400 break-words">{{ search.url_search }}</p>
+            <p class="text-sm text-gray-400 break-all">{{ search.url_search }}</p>
             <p class="text-xs text-gray-500">Créé le : {{ search.created_at | date:'short' }}</p>
           </div>
-          <div class="flex space-x-2">
+          <div class="flex space-x-2 px-4">
             <button (click)="deleteSearch(search.id); $event.stopPropagation()"
               class="delete-btn bg-red-600 hover:bg-red-700 text-white py-1 px-3 rounded-md transition duration-300">
               <i class="fas fa-trash"></i>

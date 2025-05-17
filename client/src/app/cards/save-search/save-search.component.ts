@@ -27,6 +27,7 @@ export class SaveSearchComponent {
 
   toggleSlider(): void {
     this.sliderOpen = !this.sliderOpen; // Ouvre/ferme le slider
+    this.updateBodyScroll();
     this.lastSearchUrl = sessionStorage.getItem('lastSearchUrl');
     this.isLoading = true; // Démarre le chargement
     this.userService.get_user_searches$().subscribe({
@@ -46,6 +47,7 @@ export class SaveSearchComponent {
 
   closeSlider(): void {
     this.sliderOpen = false; // Ferme le slider
+    this.updateBodyScroll();
   }
 
   saveSearch(): void {
@@ -55,7 +57,7 @@ export class SaveSearchComponent {
         name_search: this.searchName.trim(),
         url_search: this.lastSearchUrl
       };
-      this.userService.post_user_searche$(request).subscribe({
+      this.userService.post_user_search$(request).subscribe({
         next: (response: UserSearchModel) => {
           this.searches.push(response); // Ajoute la recherche à la liste
           this.toastService.show('Recherche sauvegardée avec succès !', 'success', 5000);
@@ -77,5 +79,13 @@ export class SaveSearchComponent {
   goSearch(url: string): void {
     this.closeSlider(); // Ferme le slider
     this.router.navigateByUrl(url); // Redirige vers l'URL de recherche
+  }
+
+  private updateBodyScroll(): void {
+    if (this.sliderOpen) {
+      document.body.classList.add('overflow-hidden');
+    } else {
+      document.body.classList.remove('overflow-hidden');
+    }
   }
 }

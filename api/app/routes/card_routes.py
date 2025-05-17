@@ -1,4 +1,5 @@
 from flask import Blueprint, jsonify, make_response, request
+from flask_jwt_extended import get_jwt_identity, jwt_required
 from marshmallow import Schema, fields, ValidationError
 from app.services.card_service import (
   get_card_by_reference_service,
@@ -38,8 +39,10 @@ def get_card_by_reference_route(reference):
         return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
     
 @card_bp.route('/search', methods=['GET'])
+@jwt_required(optional=True)
 def search_cards_route():
     try:
+        user_id = get_jwt_identity()
         name = request.args.get('name')
         rarity = request.args.get('rarity')
         faction = request.args.get('faction')
@@ -54,8 +57,12 @@ def search_cards_route():
         ocean_power = request.args.get('ocean_power')
         in_market = request.args.get('in_market')
         no_condition = request.args.get('no_condition')
-        cards = search_cards_service(name, rarity, faction, set, main_effect, main_effect_2, echo_effect, main_cost, recall_cost, forest_power, mountain_power, ocean_power, in_market, no_condition)
-        return jsonify([card.json() for card in cards]), 201
+        cards = search_cards_service(
+            name, rarity, faction, set, main_effect, main_effect_2,
+            echo_effect, main_cost, recall_cost, forest_power, mountain_power, ocean_power,
+            in_market, no_condition, user_id
+        )
+        return jsonify(cards), 200
     except Exception as e:
         return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
 

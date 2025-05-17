@@ -68,6 +68,22 @@ export class WebApiService {
       );
   }
 
+  callPut$<Response>(controllerName: string, actionName: string, params: Object | undefined = undefined,
+    timeOutInMillisecond: number = 110000): Observable<Response> {
+    const options = this.getOptions(undefined);
+    return this.http.put<Response>(this.getUrl(controllerName, actionName), params, options)
+      .pipe(
+        switchMap((response: any) => {
+          if (response?.message) {
+            this.toastService.show(response?.message, 'success', 5000);
+          }
+          return of(response);
+        }),
+        timeout(timeOutInMillisecond),
+        catchError((error: any) => this.handleError$(error))
+      );
+  }
+
   private getUrl(controllerName: string, actionName: string): string {
     return environment.api_url + '/' + controllerName + '/' + actionName;
   }
@@ -114,7 +130,7 @@ export class WebApiService {
     if (params) {
       for (const param of params) {
         let value = param.value;
-        if (value) {
+        if (value === 0 || value) {
           if (value instanceof Date) {
             value = this.toISOLocal(value as Date);
           }

@@ -24,8 +24,12 @@ def get_cards_in_market_count_service() -> int:
 def get_card_by_reference_service(reference) -> Optional[Card]:
     return get_card_by_reference_data(reference)
 
-def search_cards_service(name, rarity, faction, set, main_effect, main_effect_2, echo_effect, main_cost, recall_cost, forest_cost, mountain_cost, ocean_cost, in_market, no_condition) -> Optional[list[Card]]:
-    return search_cards_data(name, rarity, faction, set, main_effect, main_effect_2, echo_effect, main_cost, recall_cost, forest_cost, mountain_cost, ocean_cost, in_market, no_condition)
+def search_cards_service(name, rarity, faction, set, main_effect, main_effect_2,
+    echo_effect, main_cost, recall_cost, forest_cost, mountain_cost, ocean_cost,
+    in_market, no_condition, user_id) -> List[dict]:
+    return search_cards_data(name, rarity, faction, set, main_effect, main_effect_2,
+        echo_effect, main_cost, recall_cost, forest_cost, mountain_cost, ocean_cost,
+        in_market, no_condition, user_id)
 
 def post_offer_live_market_service(data: List[dict]) -> None:
     # Vérification des données reçues

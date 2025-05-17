@@ -1,4 +1,5 @@
 from typing import Optional
+from app.models.user_alert import UserAlert
 from app.models.card import Card
 from sqlalchemy import func
 from app.extensions import db
@@ -10,9 +11,17 @@ def get_cards_count_data() -> int:
 def get_card_by_reference_data(reference) -> Optional[Card]:
     return db.session.query(Card).filter_by(reference=reference).first()
 
-def search_cards_data(name, rarity, faction, set, main_effect, main_effect_2, echo_effect,
-                      main_cost, recall_cost, forest_power, mountain_power, ocean_power, in_market, no_condition):
-    query = db.session.query(Card)
+def search_cards_data(name, rarity, faction, set, main_effect, main_effect_2,
+    echo_effect, main_cost, recall_cost, forest_power, mountain_power, ocean_power,
+    in_market, no_condition, user_id):
+    query = db.session.query(Card) if not user_id else db.session.query(
+        Card,
+        UserAlert.id.label("alert_id")  # Ajoute une colonne booléenne pour indiquer si une alerte est activée
+    )
+
+    # Jointure conditionnelle avec UserAlert si l'utilisateur est authentifié
+    if user_id:
+        query = query.outerjoin(UserAlert, (UserAlert.reference_card == Card.reference) & (UserAlert.id_user == user_id))
 
     if name:
         name = lower_strip(name)
@@ -69,7 +78,21 @@ def search_cards_data(name, rarity, faction, set, main_effect, main_effect_2, ec
             ~func.lower(Card.MAIN_EFFECT).like('% s\'il %')
         )
 
-    return query.all()
+    # Exécution de la requête
+    results = query.all()
+
+    # Transformation des résultats en JSON
+    if user_id:
+      return [
+          {
+              **card.json(),
+              "alert_id": alert_id
+          }
+          for card, alert_id in results
+      ]
+    return [
+        card.json()
+        for card in results]
 
 def insert_cards_bulk_data(cards: list[dict]) -> None:
     if not cards:

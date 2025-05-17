@@ -23,9 +23,9 @@ class Card(db.Model):
     MAIN_EFFECT = db.Column(db.Text, default=None)
     ECHO_EFFECT = db.Column(db.Text, default=None)
     created_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
-    edited_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
+    edited_at = db.Column(db.DateTime, default=None)
     price = db.Column(db.Float, default=None)
-    price_updated_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
+    price_updated_at = db.Column(db.DateTime, default=None)
     url_offer = db.Column(db.Text, default=None)
 
     def __repr__(self):
@@ -58,7 +58,7 @@ class Card(db.Model):
             'url_offer': self.url_offer
         }
     
-    def __init__(self, id_card, reference, name, name_en, faction, rarity, type, set, imagePath, isSuspended, MAIN_COST, RECALL_COST, MOUNTAIN_POWER, OCEAN_POWER, FOREST_POWER, MAIN_EFFECT, ECHO_EFFECT, created_at=None, edited_at=None, price=None, price_updated_at=None, url_offer=None):
+    def __init__(self, id_card, reference, name, name_en, faction, rarity, type, set, imagePath, isSuspended, MAIN_COST, RECALL_COST, MOUNTAIN_POWER, OCEAN_POWER, FOREST_POWER, MAIN_EFFECT, ECHO_EFFECT, created_at, edited_at=None, price=None, price_updated_at=None, url_offer=None):
         self.id_card = id_card
         self.reference = reference
         self.name = name
