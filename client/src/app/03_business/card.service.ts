@@ -32,7 +32,7 @@ export class CardService {
     main_effect: string, main_effect_2: string, echo_effect: string, main_cost: string,
     recall_cost: string, forest_power: string, mountain_power: string, ocean_power: string,
     in_market: string, no_condition: string): Observable<CardModel[]> {
-    return this.cardApiService.search_cards$(name, rarity, faction, set, main_effect, main_effect_2, echo_effect, main_cost, forest_power, mountain_power, ocean_power, recall_cost, in_market, no_condition).pipe(map((dbModel: any) => {
+    return this.cardApiService.search_cards$(name, rarity, faction, set, main_effect, main_effect_2, echo_effect, main_cost, recall_cost, forest_power, mountain_power, ocean_power, in_market, no_condition).pipe(map((dbModel: any) => {
       return dbModel;
     }));
   }
