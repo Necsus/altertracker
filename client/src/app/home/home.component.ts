@@ -4,6 +4,7 @@ import { CardModel } from '../01_models/03_business/card.model';
 import { OfferViewModel } from '../01_models/home/home-view.model';
 import { CardService } from '../03_business/card.service';
 import { OfferService } from '../03_business/offer.service';
+import { UserService } from '../03_business/user.service';
 import { CardImgComponent } from '../cards/card/card-img.component';
 import { ModalService } from '../shared/services/modal/modal.service';
 import { ToastService } from '../shared/services/toast/toast.service';
@@ -28,10 +29,12 @@ export class HomeComponent implements OnInit {
   editedOffersCount: Number = 0;
   editedOffers: OfferViewModel[] = [];
   // purchaseOffers: PurchaseOffer[] = [];
+  usersCount: Number = 0;
 
   constructor(
     private cardService: CardService,
     private offerService: OfferService,
+    private userService: UserService,
     private toastService: ToastService,
     private modalService: ModalService) { }
   ngOnInit(): void {
@@ -70,6 +73,12 @@ export class HomeComponent implements OnInit {
         this.deletedOffers = response.slice(0, 20);
       },
       complete: () => this.deletedOffersLoading = false,
+      error: (err: any) => this.toastService.show(err.message, 'error', 5000)
+    });
+    this.userService.count_all_users$().subscribe({
+      next: (response: number) => {
+        this.usersCount = response;
+      },
       error: (err: any) => this.toastService.show(err.message, 'error', 5000)
     });
   }

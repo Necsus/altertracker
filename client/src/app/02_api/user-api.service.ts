@@ -12,6 +12,9 @@ export class UserApiService {
 
   constructor(private wabApiService: WebApiService) {
   }
+  count_all_users$(): Observable<any> {
+    return this.wabApiService.callGet$(this.controller, 'count');
+  }
   get_user_searches$(): Observable<UserSearchModel[]> {
     return this.wabApiService.callGet$(this.controller, 'searches');
   }

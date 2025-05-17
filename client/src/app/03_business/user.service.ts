@@ -8,6 +8,12 @@ import { UserApiService } from '../02_api/user-api.service';
 })
 export class UserService {
   constructor(private userApiService: UserApiService) { }
+  count_all_users$(): Observable<number> {
+    return this.userApiService.count_all_users$().pipe(map((dbModel: any) => {
+      return dbModel.count;
+    }));
+  }
+
   get_user_searches$(): Observable<UserSearchModel[]> {
     return this.userApiService.get_user_searches$().pipe(map((response: UserSearchModel[]) => {
       return response;

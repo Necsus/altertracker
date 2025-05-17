@@ -2,9 +2,13 @@ from datetime import datetime
 from app.data.user_data import (
   get_user_search_data,
   save_user_search,
-  delete_user_search
+  delete_user_search,
+  get_user_count_data
 )
 from typing import List, Dict
+
+def get_user_count_services() -> int:
+    return get_user_count_data()
 
 def get_user_search_service(id_user: int) -> List[Dict]:
     return [search.json() for search in get_user_search_data(id_user)]

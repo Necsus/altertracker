@@ -1,6 +1,11 @@
+from sqlalchemy import func
+from app.models.user import User
 from app.models.user_search import UserSearch
 from app.extensions import db
 from sqlalchemy.exc import SQLAlchemyError
+
+def get_user_count_data() -> int:
+    return db.session.query(func.count(User.id)).scalar()
 
 def get_user_search_data(id_user: int) -> list[dict]:
     return db.session.query(UserSearch).filter_by(id_user=id_user).all()
