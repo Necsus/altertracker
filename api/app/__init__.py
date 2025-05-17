@@ -7,7 +7,7 @@ from app.routes.offer_routes import offer_bp
 from app.routes.user_routes import user_bp
 from app.routes.auth_routes import auth_bp, mail
 from app.config import Config, ConfigEnv
-from flask_jwt_extended import JWTManager, get_jwt
+from flask_jwt_extended import JWTManager, get_jwt, verify_jwt_in_request
 from app.models.token_blacklist import TokenBlacklist
 
 def create_app():
@@ -45,9 +45,13 @@ def create_app():
     @app.before_request
     def check_blacklist():
         if request.endpoint in ['auth.logout', 'auth.refresh']:
+            if request.endpoint == 'auth.logout':
+                verify_jwt_in_request()
+            else:
+                verify_jwt_in_request(refresh=True)
             jti = get_jwt().get("jti")
             if jti and TokenBlacklist.query.filter_by(jti=jti).first():
-                return jsonify({"msg": "Token revoked"}), 401
+                return jsonify({"message": "Token revoked"}), 401
 
     # with app.app_context():
     #     db.create_all()

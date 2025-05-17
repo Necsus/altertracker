@@ -59,8 +59,6 @@ export class AuthViewService {
     const currentTime = Date.now();
     const timeUntilRefresh = expirationTime - currentTime - 60000;
 
-    console.log(timeUntilRefresh);// Rafraîchit 1 minute avant l'expiration
-
     if (timeUntilRefresh > 0) {
       this.refreshTimeout = setTimeout(() => {
         this.refreshToken();
