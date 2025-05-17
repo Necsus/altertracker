@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserSearchModel } from '../../01_models/03_business/user-search.model';
@@ -13,6 +13,7 @@ import { ToastService } from '../../shared/services/toast/toast.service';
   imports: [CommonModule, FormsModule]
 })
 export class SaveSearchComponent {
+  @Input() canSaveSearch: boolean = false; // Indique si l'utilisateur peut sauvegarder une recherche
   sliderOpen: boolean = false; // État du slider
   searchName: string = ''; // Nom de la recherche
   isLoading: boolean = false; // État de chargement
@@ -58,7 +59,7 @@ export class SaveSearchComponent {
       };
       this.userService.post_user_search$(request).subscribe({
         next: (response: UserSearchModel) => {
-          this.searches.push(response); // Ajoute la recherche à la liste
+          this.searches.unshift(response); // Ajoute la recherche à la liste
           this.toastService.show('Recherche sauvegardée avec succès !', 'success', 5000);
         },
         error: (err: any) => {

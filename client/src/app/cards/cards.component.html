@@ -14,7 +14,7 @@
       (visibleCardsChange)="onVisibleCardsChange($event)">
     </app-card-group>
   </div>
-  @if (isLoggedIn && cards && cards.length > 0) {
-  <app-save-search></app-save-search>
+  @if (isLoggedIn) {
+  <app-save-search [canSaveSearch]="cards && cards.length > 0"></app-save-search>
   }
 </div>

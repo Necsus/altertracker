@@ -50,7 +50,6 @@ export class UserSearchesComponent implements OnInit {
     this.userService.delete_user_search$(id).subscribe({
       next: () => {
         this.searches = this.searches.filter(search => search.id !== id);
-        this.toastService.show('Recherche supprimée avec succès', 'success', 5000);
       },
       error: (err: any) => {
         this.isLoading = false;
