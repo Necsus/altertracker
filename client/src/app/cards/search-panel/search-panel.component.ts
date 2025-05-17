@@ -44,23 +44,26 @@ export class SearchPanelComponent implements OnInit {
       search_offers: [sessionStorage.getItem('altered_token') ? true : false]
     });
 
-    // Récupérer les paramètres de l'URL et remplir le formulaire
-    const queryParams = this.route.snapshot.queryParams;
-    this.searchForm.patchValue({
-      name: queryParams['name'] || '',
-      rarity: queryParams['rarity'] || '',
-      faction: queryParams['faction'] || '',
-      set: queryParams['set'] || '',
-      main_effect: queryParams['main_effect'] || '',
-      main_effect_2: queryParams['main_effect_2'] || '',
-      echo_effect: queryParams['echo_effect'] || '',
-      main_cost: queryParams['main_cost'] || '',
-      recall_cost: queryParams['recall_cost'] || '',
-      forest_power: queryParams['forest_power'] || '',
-      mountain_power: queryParams['mountain_power'] || '',
-      ocean_power: queryParams['ocean_power'] || '',
-      in_market: queryParams['in_market'] || '',
-      no_condition: queryParams['no_condition'] || ''
+    this.route.queryParams.subscribe((queryParams) => {
+      if (Object.keys(queryParams).length === 0) {
+        sessionStorage.removeItem('lastSearchUrl');
+      }
+      this.searchForm.patchValue({
+        name: queryParams['name'] || '',
+        rarity: queryParams['rarity'] || '',
+        faction: queryParams['faction'] || '',
+        set: queryParams['set'] || '',
+        main_effect: queryParams['main_effect'] || '',
+        main_effect_2: queryParams['main_effect_2'] || '',
+        echo_effect: queryParams['echo_effect'] || '',
+        main_cost: queryParams['main_cost'] || '',
+        recall_cost: queryParams['recall_cost'] || '',
+        forest_power: queryParams['forest_power'] || '',
+        mountain_power: queryParams['mountain_power'] || '',
+        ocean_power: queryParams['ocean_power'] || '',
+        in_market: queryParams['in_market'] || '',
+        no_condition: queryParams['no_condition'] || ''
+      });
     });
   }
 

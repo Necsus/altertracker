@@ -1,0 +1,8 @@
+.container {
+  max-width: 800px;
+}
+
+.group:hover:not(:has(.delete-btn:hover)) {
+  background-color: #4b5563;
+  /* Couleur de fond pour hover */
+}

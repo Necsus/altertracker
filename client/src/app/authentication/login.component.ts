@@ -34,8 +34,9 @@ export class LoginComponent implements OnInit {
   onSubmit(): void {
     const formValues = this.loginForm.value;
     this.authService.login$(formValues.email, formValues.password).subscribe({
-      next: (response: { access_token: string, refresh_token: string }) => {
+      next: () => {
         this.authViewService.loggedIn.next(true);
+        this.authViewService.startTokenRefresh();
         this.toastService.show('Success login', 'success', 5000);
         this.router.navigate(['/']);
       },

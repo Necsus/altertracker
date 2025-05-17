@@ -8,7 +8,7 @@ class TokenBlacklist(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.now())
 
     def __repr__(self):
-          return f"<Offer {self.reference_card}>"
+          return f"<TokenBlacklist {self.id}>"
       
     def json(self):
         return {

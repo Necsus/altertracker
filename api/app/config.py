@@ -10,6 +10,9 @@ class Config:
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY') or 'jwt-secret'
     JWT_ACCESS_TOKEN_EXPIRES = 900  # 15 minutes
     JWT_REFRESH_TOKEN_EXPIRES = 2592000  # 30 days
+    JWT_TOKEN_LOCATION = ['headers']  # Assurez-vous que les tokens sont envoyés dans les en-têtes
+    JWT_HEADER_NAME = 'Authorization'
+    JWT_HEADER_TYPE = 'Bearer'
     PASSWORD_PEPPER = os.getenv('PASSWORD_PEPPER') or 'ultra-secret-pepper'
     MAIL_DEFAULT_SENDER = 'noreply@yourapp.com'
     MAIL_SERVER = 'smtp.mailtrap.io'

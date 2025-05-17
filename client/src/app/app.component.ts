@@ -17,6 +17,7 @@ export class AppComponent implements AfterViewInit {
   ngAfterViewInit() {
     if (this.authStorageService.getToken()) {
       this.authViewService.loggedIn.next(true);
+      this.authViewService.startTokenRefresh();
     }
   }
 }

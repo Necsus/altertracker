@@ -6,14 +6,16 @@ import { OfferLiveMarketRequest } from '../01_models/02_api/card/offer-live-mark
 import { CardModel } from '../01_models/03_business/card.model';
 import { AlteredService } from '../03_business/altered.service';
 import { CardService } from '../03_business/card.service';
+import { AuthViewService } from '../authentication/auth-view.service';
 import { LoaderService } from '../shared/services/loader/loader.service';
 import { CardGroupComponent } from './card-group/card-group.component';
+import { SaveSearchComponent } from './save-search/save-search.component';
 import { SearchPanelComponent } from './search-panel/search-panel.component';
 
 @Component({
   selector: 'app-cards',
   templateUrl: './cards.component.html',
-  imports: [CommonModule, SearchPanelComponent, CardGroupComponent]
+  imports: [CommonModule, SearchPanelComponent, CardGroupComponent, SaveSearchComponent]
 })
 export class CardsComponent implements OnInit {
   cards: CardModel[] = [];
@@ -23,14 +25,19 @@ export class CardsComponent implements OnInit {
   autoOpenGroup: string | null = null;
   searchOffers: boolean = false;
   fullSearchLiveMarket: boolean = false;
+  isLoggedIn = false;
 
   constructor(
     private cardService: CardService,
     private alteredService: AlteredService,
     private router: Router,
-    private loaderService: LoaderService) { }
+    private loaderService: LoaderService,
+    private authViewService: AuthViewService) { }
 
   ngOnInit(): void {
+    this.authViewService.isLoggedIn$.subscribe(status => {
+      this.isLoggedIn = status;
+    });
     this.cardService.count_all_cards$().subscribe({
       next: (count: number) => {
         this.nbCards = count;
@@ -39,7 +46,6 @@ export class CardsComponent implements OnInit {
         console.error('Error fetching card count:', error);
       }
     });
-
     this.cardService.count_all_cards_in_market$().subscribe({
       next: (count: number) => {
         this.nbCardsInMarket = count;

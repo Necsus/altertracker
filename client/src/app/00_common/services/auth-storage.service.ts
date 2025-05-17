@@ -7,16 +7,20 @@ export class AuthStorageService {
   getToken(): string | null {
     return localStorage.getItem('access_token');
   }
+  getRefreshToken(): string | null {
+    return localStorage.getItem('refresh_token');
+  }
 
   storeTokens(accessToken: string, refreshToken: string) {
     localStorage.setItem('access_token', accessToken);
     localStorage.setItem('refresh_token', refreshToken);
   }
-
   storeAccessToken(accessToken: string) {
     localStorage.setItem('access_token', accessToken);
   }
-  getRefreshToken(): string | null {
-    return localStorage.getItem('refresh_token');
+
+  clearTokens() {
+    localStorage.removeItem('access_token');
+    localStorage.removeItem('refresh_token');
   }
 }

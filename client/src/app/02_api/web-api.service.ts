@@ -16,8 +16,8 @@ export class WebApiService {
   constructor(
     private http: HttpClient,
     private toastService: ToastService,
-    private authStorageService: AuthStorageService) {
-  }
+    private authStorageService: AuthStorageService
+  ) { }
 
   callGet$<Response>(controllerName: string, actionName: string, params: Array<Param> | undefined = undefined,
     timeOutInMillisecond: number = 110000): Observable<Response> {
@@ -27,7 +27,7 @@ export class WebApiService {
       .pipe(
         switchMap((response: any) => {
           if (response?.message) {
-            this.toastService.show(response?.message, 'warning', 5000);
+            this.toastService.show(response?.message, 'success', 5000);
           }
           return of(response);
         }),
@@ -43,7 +43,7 @@ export class WebApiService {
       .pipe(
         switchMap((response: any) => {
           if (response?.message) {
-            this.toastService.show(response?.message, 'warning', 5000);
+            this.toastService.show(response?.message, 'success', 5000);
           }
           return of(response);
         }),
@@ -59,7 +59,7 @@ export class WebApiService {
       .pipe(
         switchMap((response: any) => {
           if (response?.message) {
-            this.toastService.show(response?.message, 'warning', 5000);
+            this.toastService.show(response?.message, 'success', 5000);
           }
           return of(response);
         }),
@@ -82,6 +82,11 @@ export class WebApiService {
     }
     if (token) {
       headers = headers.set('Authorization', 'Bearer ' + token);
+      const options = {
+        headers: <HttpHeaders>headers, body: <any>null, params: this.convertToParams(params),
+        withCredentials: true
+      };
+      return options;
     }
     const options = { headers: <HttpHeaders>headers, body: <any>null, params: this.convertToParams(params) };
     return options;
@@ -148,8 +153,8 @@ export class WebApiService {
           err.code = error.status.toString();
           break;
       }
-      if (error.error && error.error.message) {
-        err.message = error.error.message;
+      if (error.error && (error.error.message || error.error.msg)) {
+        err.message = error.error.message ?? error.error.msg;
       }
     } else {
       err.type = ExceptionType.InternalLocalError;

@@ -85,7 +85,6 @@ def insert_cards_bulk_data(cards: list[dict]) -> None:
 def update_cards_bulk_data(cards: list[dict]) -> None:
     if not cards:
         return
-
     try:
         db.session.bulk_update_mappings(Card, cards)
         db.session.commit()
