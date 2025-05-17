@@ -32,7 +32,6 @@ export class SaveSearchComponent {
     this.isLoading = true; // Démarre le chargement
     this.userService.get_user_searches$().subscribe({
       next: (response: UserSearchModel[]) => {
-        console.log('Recherches de l\'utilisateur :', response);
         this.searches = response; // Met à jour la liste des recherches
       },
       error: (err: any) => {
