@@ -50,7 +50,7 @@ export class AlteredService {
         }
       }),
       catchError((error) => {
-        if (error.status === 401 && error.message == "Expired JWT Token") {
+        if (error.status === 401 && error.error.message == "Expired JWT Token") {
           console.error('Erreur 401 détectée : Redirection vers la page /token.');
           sessionStorage.removeItem('altered_token');
           sessionStorage.removeItem('cgu_altered_token');

@@ -10,7 +10,7 @@ def get_user_count_data() -> int:
     return db.session.query(func.count(User.id)).scalar()
 
 def get_user_search_data(id_user: int) -> list[dict]:
-    return db.session.query(UserSearch).filter_by(id_user=id_user).all()
+    return db.session.query(UserSearch).filter_by(id_user=id_user).order_by(UserSearch.created_at.desc()).all()
 
 def save_user_search_data(data: dict) -> UserSearch:
     try:
@@ -47,7 +47,7 @@ def get_user_alert_with_card_data(id_user: int) -> list[dict]:
             Card, UserAlert.reference_card == Card.reference
         ).filter(
             UserAlert.id_user == id_user
-        ).all()
+        ).order_by(UserAlert.created_at.desc()).all()
 
         # Transformation des résultats en JSON
         return [
