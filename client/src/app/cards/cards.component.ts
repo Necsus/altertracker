@@ -24,7 +24,7 @@ export class CardsComponent implements OnInit {
   nbCardsInMarket: number = 0;
   autoOpenGroup: string | null = null;
   searchOffers: boolean = false;
-  fullSearchLiveMarket: boolean = false;
+  onlyMarket: boolean = false;
   isLoggedIn = false;
 
   constructor(
@@ -56,26 +56,21 @@ export class CardsComponent implements OnInit {
     });
   }
 
-  onCardsRetrieved(event: { cards: CardModel[]; searchOffers: boolean, fullSearchLiveMarket: boolean }): void {
-    const { cards, searchOffers, fullSearchLiveMarket } = event;
+  onCardsRetrieved(event: { cards: CardModel[]; searchOffers: boolean, onlyMarket: boolean }): void {
+    const { cards, searchOffers, onlyMarket } = event;
     this.cards = cards;
     this.searchOffers = searchOffers;
-    this.fullSearchLiveMarket = fullSearchLiveMarket;
+    this.onlyMarket = onlyMarket;
     this.groupCardsByName();
 
     // Détecter un seul groupe
     const groupNames = Object.keys(this.groupedCards);
-
-    if (this.fullSearchLiveMarket) {
-      this.getMarketOffer(this.cards, true);
-    }
-
     this.autoOpenGroup = groupNames.length === 1 ? groupNames[0] : null;
   }
 
   onVisibleCardsChange(visibleCards: CardModel[]): void {
     // Exécute les requêtes pour les cartes visibles
-    if (this.searchOffers && !this.fullSearchLiveMarket) {
+    if (this.searchOffers) {
       this.getMarketOffer(visibleCards);
     }
   }
@@ -112,6 +107,9 @@ export class CardsComponent implements OnInit {
             console.error('Erreur lors de la récupération des offres :', error);
           },
           complete: () => {
+            this.cards = this.cards.filter((card) => card.price !== undefined);
+            // this.groupCardsByName();
+
             console.log('Toutes les offres visibles ont été récupérées.');
             // Appeler post_offer_live_market$ avec les cartes mises à jour
             if (updatedCards.length > 0) {

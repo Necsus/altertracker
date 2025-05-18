@@ -69,8 +69,8 @@ def search_cards_data(name, rarity, faction, set, main_effect, main_effect_2,
     if ocean_power:
         query = query.filter(Card.OCEAN_POWER == ocean_power)
 
-    if in_market:
-        query = query.filter(Card.price.isnot(None))
+    # if in_market:
+    #     query = query.filter(Card.price.isnot(None))
 
     if no_condition:
         query = query.filter(

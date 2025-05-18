@@ -14,9 +14,8 @@ import { ToastService } from '../../shared/services/toast/toast.service';
   imports: [CommonModule, ReactiveFormsModule]
 })
 export class SearchPanelComponent implements OnInit {
-  @Output() cardsRetrieved = new EventEmitter<{ cards: CardModel[], searchOffers: boolean, fullSearchLiveMarket: boolean }>();
+  @Output() cardsRetrieved = new EventEmitter<{ cards: CardModel[], searchOffers: boolean, onlyMarket: boolean }>();
   searchForm!: FormGroup;
-  fullSearchLiveMarketLimit: number = 300;
   constructor(
     private fb: FormBuilder,
     private loaderService: LoaderService,
@@ -94,37 +93,21 @@ export class SearchPanelComponent implements OnInit {
     const searchUrl = `/cards?${queryParams.toString()}`;
     sessionStorage.setItem('lastSearchUrl', searchUrl);
 
-    this.searchCards(formValues, fullSearchLiveMarket);
+    this.searchCards(formValues);
   }
 
-  searchCards(criteria: any, fullSearchLiveMarket: boolean): void {
+  searchCards(criteria: any): void {
     let searchObservable = this.cardService.search_cards$(
       criteria.name, criteria.rarity, criteria.faction,
       criteria.set, criteria.main_effect, criteria.main_effect_2, criteria.echo_effect,
       criteria.main_cost, criteria.recall_cost, criteria.forest_power, criteria.mountain_power,
       criteria.ocean_power, criteria.in_market, criteria.no_condition
     );
-
     // Appliquer conditionnellement le pipe `withLoader`
-    if (!fullSearchLiveMarket) {
-      searchObservable = searchObservable.pipe(withLoader(this.loaderService));
-    } else {
-      this.loaderService.show();
-    }
-
+    searchObservable = searchObservable.pipe(withLoader(this.loaderService));
     searchObservable.subscribe({
       next: (data: CardModel[]) => {
-        if (fullSearchLiveMarket && data.length > this.fullSearchLiveMarketLimit) {
-          this.toastService.show(`Jeu de resultat > ${this.fullSearchLiveMarketLimit}, fullSearchLiveMarket désactivé`, 'warning', 5000);
-          this.loaderService.hide();
-        } else {
-          if (fullSearchLiveMarket && data.length <= 0) {
-            this.toastService.show('Pas de résultat', 'warning', 5000);
-            this.loaderService.hide();
-          } else {
-            this.cardsRetrieved.emit({ cards: data, searchOffers: criteria.search_offers, fullSearchLiveMarket: fullSearchLiveMarket });
-          }
-        }
+        this.cardsRetrieved.emit({ cards: data, searchOffers: criteria.search_offers, onlyMarket: criteria.in_market });
       },
       error: (error) => {
         console.error('Error fetching card data:', error);
