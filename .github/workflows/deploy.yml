@@ -32,6 +32,7 @@ jobs:
           export PASSWORD_PEPPER=${{ secrets.PASSWORD_PEPPER }}
           export SECRET_KEY=${{ secrets.SECRET_KEY }}
           export JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
+          export BREVO_API_KEY=${{ secrets.BREVO_API_KEY }}
 
           echo "[+] Début du déploiement à $(date)"
           cd ~/geekom/uniquetracker

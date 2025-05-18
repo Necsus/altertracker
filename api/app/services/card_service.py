@@ -69,9 +69,7 @@ def post_offer_live_market_service(data: List[dict]) -> None:
                     new_offer.user_altered = None
                     new_offer.user_id = None
                     new_offer.previous_offer = existing_offer.id
-                    print('add offer')
                     db.session.add(new_offer)
-                    print('get_card_by_reference_data')
                     card_to_update = get_card_by_reference_data(new_offer.reference_card)
                     if card_to_update:
                         # on met à jour la carte
@@ -93,7 +91,6 @@ def post_offer_live_market_service(data: List[dict]) -> None:
                 new_offer.user_id = None
                 if existing_offer:
                   new_offer.previous_offer = existing_offer.id
-                print('add offer if not existing_offer or deleted')
                 db.session.add(new_offer)
 
                 card_to_update = get_card_by_reference_data(new_offer.reference_card)
@@ -113,7 +110,13 @@ def post_offer_live_market_service(data: List[dict]) -> None:
                 existing_offer.is_deleted = True
                 existing_offer.deleted_at = datetime.now()
                 existing_offer.status = 'expired'
-                print('just delete offer')
+
+                card_to_update = get_card_by_reference_data(new_offer.reference_card)
+                if card_to_update:
+                    # on met à jour la carte
+                    card_to_update.price = None
+                    card_to_update.price_updated_at = datetime.now()
+                    card_to_update.url_offer = None
                 db.session.commit()
         
 def get_last_added_cards_service() -> List[dict]:

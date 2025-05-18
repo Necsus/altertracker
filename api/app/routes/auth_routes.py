@@ -1,15 +1,20 @@
+import os
 import re
+import sib_api_v3_sdk
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import (
     create_access_token, create_refresh_token, jwt_required,
     get_jwt_identity, get_jwt, unset_jwt_cookies
 )
+from app.utils.emails import render_template_with_data
 from app.models.user import User
 from app.models.token_blacklist import TokenBlacklist
 from app.extensions import db
 from app.utils.security import hash_password, check_password
 from flask_mail import Message, Mail
 import itsdangerous
+from datetime import datetime
+from app.extensions import mail_api, ApiException
 
 auth_bp = Blueprint('auth', __name__)
 mail = Mail()
@@ -44,6 +49,24 @@ def register():
     user = User(username=data['username'], email=data['email'], password_hash=hashed)
     db.session.add(user)
     db.session.commit()
+
+    # Envoi d'un email de bienvenue
+    template_path = os.path.join(os.path.dirname(__file__), '../templates/register.html')
+    send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
+        to=[{"email": data['email'], "name": data['username']}],
+        subject="Bienvenue sur AlterTracker.com",
+        html_content=render_template_with_data(template_path, {
+            "USERNAME": data['username'],
+            "LIEN_DE_VALIDATION": "https://altertracker.com/",
+            "YEAR": str(datetime.now().year)
+        }),
+        sender={"name": "AlterTracker", "email": "noreply@altertracker.com"}
+    )
+    try:
+        response = mail_api.send_transac_email(send_smtp_email)
+        print(response)
+    except ApiException as e:
+        print("Exception lors de l'appel à l’API Sendinblue: %s\n" % e)
     return jsonify({"message": "User created"}), 201
 
 @auth_bp.route('/login', methods=['POST'])

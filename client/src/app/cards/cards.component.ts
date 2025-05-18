@@ -62,6 +62,9 @@ export class CardsComponent implements OnInit {
   }
 
   onCardsRetrieved(event: { cards: CardModel[]; searchOffers: boolean }): void {
+    if (this.allGroupsOpen) {
+      this.allGroupsOpen = false; // Si tous les groupes sont ouverts, ne pas en ouvrir un automatiquement
+    }
     const { cards, searchOffers } = event;
     this.cards = cards;
     this.searchOffers = searchOffers;

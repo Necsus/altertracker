@@ -24,6 +24,7 @@ services:
       PASSWORD_PEPPER: ${PASSWORD_PEPPER}
       SECRET_KEY: ${SECRET_KEY}
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      BREVO_API_KEY: ${BREVO_API_KEY}
     networks:
       - backend
 
