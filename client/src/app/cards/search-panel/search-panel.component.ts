@@ -14,7 +14,7 @@ import { ToastService } from '../../shared/services/toast/toast.service';
   imports: [CommonModule, ReactiveFormsModule]
 })
 export class SearchPanelComponent implements OnInit {
-  @Output() cardsRetrieved = new EventEmitter<{ cards: CardModel[], searchOffers: boolean, onlyMarket: boolean }>();
+  @Output() cardsRetrieved = new EventEmitter<{ cards: CardModel[], searchOffers: boolean, removeNoPrice: boolean }>();
   searchForm!: FormGroup;
   constructor(
     private fb: FormBuilder,
@@ -40,7 +40,8 @@ export class SearchPanelComponent implements OnInit {
       ocean_power: [''],
       in_market: [''],
       no_condition: [''],
-      search_offers: [sessionStorage.getItem('altered_token') ? true : false]
+      search_offers: [sessionStorage.getItem('altered_token') ? true : false],
+      remove_no_price: ['']
     });
 
     this.route.queryParams.subscribe((queryParams) => {
@@ -78,7 +79,7 @@ export class SearchPanelComponent implements OnInit {
     );
   }
 
-  onSubmit(fullSearchLiveMarket: boolean = false) {
+  onSubmit() {
     const formValues = this.cleanFormValues(this.searchForm.value);
 
     // Construire l'URL avec les paramètres du formulaire
@@ -107,7 +108,7 @@ export class SearchPanelComponent implements OnInit {
     searchObservable = searchObservable.pipe(withLoader(this.loaderService));
     searchObservable.subscribe({
       next: (data: CardModel[]) => {
-        this.cardsRetrieved.emit({ cards: data, searchOffers: criteria.search_offers, onlyMarket: criteria.in_market });
+        this.cardsRetrieved.emit({ cards: data, searchOffers: criteria.search_offers, removeNoPrice: criteria.remove_no_price });
       },
       error: (error) => {
         console.error('Error fetching card data:', error);

@@ -24,7 +24,7 @@ export class CardsComponent implements OnInit {
   nbCardsInMarket: number = 0;
   autoOpenGroup: string | null = null;
   searchOffers: boolean = false;
-  onlyMarket: boolean = false;
+  removeNoPrice: boolean = false;
   isLoggedIn = false;
 
   constructor(
@@ -56,11 +56,11 @@ export class CardsComponent implements OnInit {
     });
   }
 
-  onCardsRetrieved(event: { cards: CardModel[]; searchOffers: boolean, onlyMarket: boolean }): void {
-    const { cards, searchOffers, onlyMarket } = event;
+  onCardsRetrieved(event: { cards: CardModel[]; searchOffers: boolean, removeNoPrice: boolean }): void {
+    const { cards, searchOffers, removeNoPrice } = event;
     this.cards = cards;
     this.searchOffers = searchOffers;
-    this.onlyMarket = onlyMarket;
+    this.removeNoPrice = removeNoPrice;
     this.groupCardsByName();
 
     // Détecter un seul groupe
@@ -75,15 +75,13 @@ export class CardsComponent implements OnInit {
     }
   }
 
-  private getMarketOffer(data: CardModel[], activeLoader: boolean = false): void {
+  private getMarketOffer(cards: CardModel[]): void {
     const alteredToken = sessionStorage.getItem('altered_token');
     if (alteredToken) {
-      if (activeLoader) {
-        this.loaderService.show(); // Active le loader
-      }
       const maxConcurrentRequests = 5; // Limite de requêtes simultanées
       const updatedCards: OfferLiveMarketRequest[] = [];
-      from(data)
+      const filteredCards: CardModel[] = [];
+      from(cards)
         .pipe(
           mergeMap(
             (card) => this.alteredService.getMarketOffer$(card, alteredToken),
@@ -92,6 +90,11 @@ export class CardsComponent implements OnInit {
           map((offerRequest) => {
             // Ajouter chaque objet OfferLiveMarketRequest à updatedCards
             updatedCards.push(offerRequest);
+
+            // Si removeNoPrice est activé, ne conserver que les cartes avec un prix défini
+            if (!this.removeNoPrice || (offerRequest.convertedPrice !== undefined && offerRequest.convertedPrice !== null)) {
+              filteredCards.push(cards.find(c => c.reference === offerRequest.reference)!);
+            }
           }),
           catchError((error) => {
             if (error.message === 'Token invalide ou expiré. Veuillez le réinsérer.') {
@@ -108,6 +111,13 @@ export class CardsComponent implements OnInit {
           },
           complete: () => {
             console.log('Toutes les offres visibles ont été récupérées.');
+
+            // Mettre à jour le modèle local si removeNoPrice est activé
+            if (this.removeNoPrice) {
+              this.cards = filteredCards;
+              this.groupCardsByName(); // Regrouper les cartes après la mise à jour
+            }
+
             // Appeler post_offer_live_market$ avec les cartes mises à jour
             if (updatedCards.length > 0) {
               this.cardService.post_offer_live_market$(updatedCards).subscribe({
@@ -117,17 +127,12 @@ export class CardsComponent implements OnInit {
                 error: (error) => {
                   console.error('Erreur lors de la mise à jour des offres live market :', error);
                 },
-                complete: () => {
-                  if (activeLoader) {
-                    this.loaderService.hide();
-                  }
-                }
+                complete: () => { }
               });
             }
           }
         });
     } else {
-      this.loaderService.hide();
       this.router.navigate(['/token']);
     }
   }

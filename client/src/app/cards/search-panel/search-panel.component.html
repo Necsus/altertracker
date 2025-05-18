@@ -1,7 +1,7 @@
 <form [formGroup]="searchForm" (ngSubmit)="onSubmit()" class="bg-gray-800 p-4 rounded-lg shadow-lg mb-8">
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
     <div>
-      <label for="name" class="block text-sm font-medium text-gray-300">Nom</label>
+      <label for="name" class="block text-sm font-medium text-gray-300">Nom ou référence (ALT_)</label>
       <input type="text" id="name" formControlName="name"
         class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm p-2 text-white">
     </div>
@@ -97,6 +97,12 @@
         <input type="checkbox" id="search_offers" formControlName="search_offers"
           class="h-4 w-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-offset-gray-800">
         <span class="ml-2">Live Market</span>
+      </label>
+      <label for="remove_no_price" class="inline-flex items-center text-sm font-medium text-gray-300"
+        style="user-select: none;">
+        <input type="checkbox" id="remove_no_price" formControlName="remove_no_price"
+          class="h-4 w-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-offset-gray-800">
+        <span class="ml-2">Masquer cartes sans prix</span>
       </label>
     </div>
     <div class="flex space-x-4 mt-4">
