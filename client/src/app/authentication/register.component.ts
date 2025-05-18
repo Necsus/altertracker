@@ -37,7 +37,6 @@ export class RegisterComponent implements OnInit {
     const formValues = this.registerForm.value;
     this.authService.register$(formValues.username, formValues.email, formValues.password).subscribe({
       next: () => {
-        this.toastService.show('Success register', 'success', 5000);
         this.router.navigate(['/login']);
       },
       error: (err: any) => this.toastService.show(`Error: ${err.message}`, 'error', 5000)

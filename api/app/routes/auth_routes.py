@@ -1,3 +1,4 @@
+import re
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import (
     create_access_token, create_refresh_token, jwt_required,
@@ -20,10 +21,25 @@ def register():
     # Trimer les espaces en début et en fin pour chaque champ
     data = {key: value.strip() if isinstance(value, str) else value for key, value in data.items()}
 
+    # Vérifier que tous les champs requis sont présents
     if not data.get('username') or not data.get('email') or not data.get('password'):
         return jsonify({"message": "Missing fields"}), 400
+
+    # Vérifier que l'email est valide
+    email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+    if not re.match(email_regex, data['email']):
+        return jsonify({"message": "Invalid email format"}), 400
+
+    # Vérifier que le mot de passe contient plus de 9 caractères
+    if len(data['password']) <= 9:
+        return jsonify({"message": "Password must be longer than 9 characters"}), 400
+
+    # Vérifier si l'email est déjà utilisé
     if User.query.filter_by(email=data['email']).first():
         return jsonify({"message": "Email already used"}), 400
+    # Vérifier si le pseudo est déjà utilisé
+    if User.query.filter_by(username=data['username']).first():
+        return jsonify({"message": "Pseudo already used"}), 400
     hashed = hash_password(data['password'])
     user = User(username=data['username'], email=data['email'], password_hash=hashed)
     db.session.add(user)
