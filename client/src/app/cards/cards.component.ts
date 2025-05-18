@@ -24,8 +24,8 @@ export class CardsComponent implements OnInit {
   nbCardsInMarket: number = 0;
   autoOpenGroup: string | null = null;
   searchOffers: boolean = false;
-  fullSearchLiveMarket: boolean = false;
   isLoggedIn = false;
+  allGroupsOpen: boolean = false;
 
   constructor(
     private cardService: CardService,
@@ -56,39 +56,35 @@ export class CardsComponent implements OnInit {
     });
   }
 
-  onCardsRetrieved(event: { cards: CardModel[]; searchOffers: boolean, fullSearchLiveMarket: boolean }): void {
-    const { cards, searchOffers, fullSearchLiveMarket } = event;
+  toggleAllGroups(): void {
+    // Ouvre tous les groupes
+    this.allGroupsOpen = !this.allGroupsOpen;
+  }
+
+  onCardsRetrieved(event: { cards: CardModel[]; searchOffers: boolean }): void {
+    const { cards, searchOffers } = event;
     this.cards = cards;
     this.searchOffers = searchOffers;
-    this.fullSearchLiveMarket = fullSearchLiveMarket;
     this.groupCardsByName();
 
     // Détecter un seul groupe
     const groupNames = Object.keys(this.groupedCards);
-
-    if (this.fullSearchLiveMarket) {
-      this.getMarketOffer(this.cards, true);
-    }
-
     this.autoOpenGroup = groupNames.length === 1 ? groupNames[0] : null;
   }
 
   onVisibleCardsChange(visibleCards: CardModel[]): void {
     // Exécute les requêtes pour les cartes visibles
-    if (this.searchOffers && !this.fullSearchLiveMarket) {
+    if (this.searchOffers) {
       this.getMarketOffer(visibleCards);
     }
   }
 
-  private getMarketOffer(data: CardModel[], activeLoader: boolean = false): void {
+  private getMarketOffer(cards: CardModel[]): void {
     const alteredToken = sessionStorage.getItem('altered_token');
     if (alteredToken) {
-      if (activeLoader) {
-        this.loaderService.show(); // Active le loader
-      }
       const maxConcurrentRequests = 5; // Limite de requêtes simultanées
       const updatedCards: OfferLiveMarketRequest[] = [];
-      from(data)
+      from(cards)
         .pipe(
           mergeMap(
             (card) => this.alteredService.getMarketOffer$(card, alteredToken),
@@ -107,7 +103,7 @@ export class CardsComponent implements OnInit {
           })
         )
         .subscribe({
-          next: (updatedCard) => { },
+          next: () => { },
           error: (error) => {
             console.error('Erreur lors de la récupération des offres :', error);
           },
@@ -122,17 +118,12 @@ export class CardsComponent implements OnInit {
                 error: (error) => {
                   console.error('Erreur lors de la mise à jour des offres live market :', error);
                 },
-                complete: () => {
-                  if (activeLoader) {
-                    this.loaderService.hide();
-                  }
-                }
+                complete: () => { }
               });
             }
           }
         });
     } else {
-      this.loaderService.hide();
       this.router.navigate(['/token']);
     }
   }

@@ -1,3 +1,4 @@
+import re
 from typing import Optional
 from app.models.user_alert import UserAlert
 from app.models.card import Card
@@ -14,6 +15,37 @@ def get_card_by_reference_data(reference) -> Optional[Card]:
 def search_cards_data(name, rarity, faction, set, main_effect, main_effect_2,
     echo_effect, main_cost, recall_cost, forest_power, mountain_power, ocean_power,
     in_market, no_condition, user_id):
+    # Vérifier si le nom correspond à la regexp ^ALT_
+    if name and re.match(r'^ALT_', name):
+        query = db.session.query(Card) if not user_id else db.session.query(
+            Card,
+            UserAlert.id.label("alert_id")
+        )
+        
+        # Jointure conditionnelle avec UserAlert si l'utilisateur est authentifié
+        if user_id:
+            query = query.outerjoin(UserAlert, (UserAlert.reference_card == Card.reference) & (UserAlert.id_user == user_id))
+        
+        # Rechercher directement par référence
+        query = query.filter(Card.reference == name)
+        
+        # Exécution de la requête
+        results = query.all()
+        
+        # Transformation des résultats en JSON
+        if user_id:
+            return [
+                {
+                    **card.json(),
+                    "alert_id": alert_id
+                }
+                for card, alert_id in results
+            ]
+        return [
+            card.json()
+            for card in results
+        ]
+
     query = db.session.query(Card) if not user_id else db.session.query(
         Card,
         UserAlert.id.label("alert_id")  # Ajoute une colonne booléenne pour indiquer si une alerte est activée
