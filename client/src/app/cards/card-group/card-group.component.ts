@@ -17,14 +17,10 @@ export class CardGroupComponent implements OnChanges {
   displayedCards: number = 100;
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['cards']) {
-      // Réinitialiser les cartes affichées si la liste des cartes change
-      this.displayedCards = 100;
-      this.emitVisibleCards();
-    }
     if (changes['autoOpen'] && this.autoOpen) {
       this.isGroupOpen = true; // Ouvre automatiquement le groupe
     }
+    this.emitVisibleCards();
   }
 
   toggleGroup() {

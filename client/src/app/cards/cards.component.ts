@@ -107,9 +107,6 @@ export class CardsComponent implements OnInit {
             console.error('Erreur lors de la récupération des offres :', error);
           },
           complete: () => {
-            this.cards = this.cards.filter((card) => card.price !== undefined);
-            // this.groupCardsByName();
-
             console.log('Toutes les offres visibles ont été récupérées.');
             // Appeler post_offer_live_market$ avec les cartes mises à jour
             if (updatedCards.length > 0) {
