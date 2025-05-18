@@ -6,12 +6,24 @@
   <app-search-panel (cardsRetrieved)="onCardsRetrieved($event)"></app-search-panel>
 
   @if (cards && cards.length > 0) {
-  <p class="text-lg mb-4"><span class="font-bold">{{cards.length}}</span> cartes trouvées.</p>
+  <div class="flex justify-between items-center mb-8">
+    <p class="text-lg"><span class="font-bold">{{cards.length}}</span> cartes trouvées.</p>
+    @if (cards.length <= 300) { <button (click)="toggleAllGroups()" id="openAllGroups"
+      class="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition duration-300">
+      @if (!allGroupsOpen) {
+      Ouvrir tous les groupes
+      }
+      @else {
+      Fermer tous les groupes
+      }
+      </button>
+      }
+  </div>
   }
 
   <div *ngFor="let group of groupedCards | keyvalue" class="mb-8">
     <app-card-group [groupName]="group.key" [cards]="group.value" [autoOpen]="group.key === autoOpenGroup"
-      (visibleCardsChange)="onVisibleCardsChange($event)">
+      [allGroupsOpen]="allGroupsOpen" (visibleCardsChange)="onVisibleCardsChange($event)">
     </app-card-group>
   </div>
   @if (isLoggedIn) {

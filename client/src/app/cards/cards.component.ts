@@ -24,8 +24,8 @@ export class CardsComponent implements OnInit {
   nbCardsInMarket: number = 0;
   autoOpenGroup: string | null = null;
   searchOffers: boolean = false;
-  removeNoPrice: boolean = false;
   isLoggedIn = false;
+  allGroupsOpen: boolean = false;
 
   constructor(
     private cardService: CardService,
@@ -56,11 +56,15 @@ export class CardsComponent implements OnInit {
     });
   }
 
-  onCardsRetrieved(event: { cards: CardModel[]; searchOffers: boolean, removeNoPrice: boolean }): void {
-    const { cards, searchOffers, removeNoPrice } = event;
+  toggleAllGroups(): void {
+    // Ouvre tous les groupes
+    this.allGroupsOpen = !this.allGroupsOpen;
+  }
+
+  onCardsRetrieved(event: { cards: CardModel[]; searchOffers: boolean }): void {
+    const { cards, searchOffers } = event;
     this.cards = cards;
     this.searchOffers = searchOffers;
-    this.removeNoPrice = removeNoPrice;
     this.groupCardsByName();
 
     // Détecter un seul groupe
@@ -80,7 +84,6 @@ export class CardsComponent implements OnInit {
     if (alteredToken) {
       const maxConcurrentRequests = 5; // Limite de requêtes simultanées
       const updatedCards: OfferLiveMarketRequest[] = [];
-      const filteredCards: CardModel[] = [];
       from(cards)
         .pipe(
           mergeMap(
@@ -100,7 +103,7 @@ export class CardsComponent implements OnInit {
           })
         )
         .subscribe({
-          next: (updatedCard) => { },
+          next: () => { },
           error: (error) => {
             console.error('Erreur lors de la récupération des offres :', error);
           },

@@ -12,13 +12,32 @@ export class CardGroupComponent implements OnChanges {
   @Input() groupName!: string;
   @Input() cards: CardModel[] = [];
   @Input() autoOpen: boolean = false;
+  @Input() allGroupsOpen: boolean = false;
   @Output() visibleCardsChange = new EventEmitter<CardModel[]>(); // Émet les cartes visibles
   isGroupOpen: boolean = false;
   displayedCards: number = 100;
+  onlyCardsWithPrice: boolean = false;
+
+  get visibleCards(): CardModel[] {
+    if (this.onlyCardsWithPrice) {
+      return this.cards.filter(card => card.visible);
+    }
+    return this.cards;
+  }
+
+  // Méthode pour gérer le changement de la case à cocher
+  onOnlyCardsWithPrice(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.onlyCardsWithPrice = input.checked; // Met à jour la valeur de la case à cocher
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['autoOpen'] && this.autoOpen) {
       this.isGroupOpen = true; // Ouvre automatiquement le groupe
+    }
+    if (changes['allGroupsOpen']) {
+      console.log('allGroupsOpen', this.allGroupsOpen);
+      this.isGroupOpen = this.allGroupsOpen; // Ouvre ou ferme en fonction de l'état global
     }
     this.emitVisibleCards();
   }
