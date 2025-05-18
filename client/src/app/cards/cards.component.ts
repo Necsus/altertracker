@@ -99,7 +99,11 @@ export class CardsComponent implements OnInit {
           }),
           catchError((error) => {
             if (error.message === 'Token invalide ou expiré. Veuillez le réinsérer.') {
-              console.error('Arrêt des requêtes en raison d\'une erreur 401.');
+              console.error('Erreur 401 détectée : Redirection vers la page /token.');
+              sessionStorage.removeItem('altered_token');
+              sessionStorage.removeItem('cgu_altered_token');
+              this.loaderService.hide();
+              this.router.navigate(['/token']); // Redirige l'utilisateur vers la page /token
               return of(); // Arrête la propagation des requêtes
             }
             return throwError(() => error);

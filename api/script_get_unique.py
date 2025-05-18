@@ -145,6 +145,7 @@ with app.app_context():
                                     page += 1
 
                             if cardToInsert:
+                                logging.info(f"Nombre de carte insérées : {len(cardToInsert)}")
                                 insert_cards_into_db(cardToInsert, session)
         finally:
             session.close()

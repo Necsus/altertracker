@@ -35,8 +35,7 @@ export class CardGroupComponent implements OnChanges {
     if (changes['autoOpen'] && this.autoOpen) {
       this.isGroupOpen = true; // Ouvre automatiquement le groupe
     }
-    if (changes['allGroupsOpen']) {
-      console.log('allGroupsOpen', this.allGroupsOpen);
+    if (changes['allGroupsOpen'] && !this.autoOpen) {
       this.isGroupOpen = this.allGroupsOpen; // Ouvre ou ferme en fonction de l'état global
     }
     this.emitVisibleCards();

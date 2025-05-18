@@ -48,11 +48,6 @@ export class AlteredService {
       }),
       catchError((error) => {
         if (error.status === 401 && error.error.message == "Expired JWT Token") {
-          console.error('Erreur 401 détectée : Redirection vers la page /token.');
-          sessionStorage.removeItem('altered_token');
-          sessionStorage.removeItem('cgu_altered_token');
-          this.loaderService.hide();
-          this.router.navigate(['/token']); // Redirige l'utilisateur vers la page /token
           return throwError(() => new Error('Token invalide ou expiré. Veuillez le réinsérer.'));
         }
         return throwError(() => error); // Propager les autres erreurs
