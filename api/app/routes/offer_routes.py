@@ -13,7 +13,7 @@ def get_last_added_cards():
         offers = get_last_added_offers_service()
         return [
             {
-                "current_offer": offer.json(),
+                "offer": offer.json(),
                 "card": card.json()
             }
             for offer, card in offers
@@ -35,7 +35,7 @@ def get_last_deleted_cards():
         offers = get_last_deleted_offers_service()
         return [
             {
-                "current_offer": offer.json(),
+                "offer": offer.json(),
                 "card": card.json()
             }
             for offer, card in offers

@@ -105,7 +105,7 @@ def get_last_edited_offers_data() -> list[dict]:
         # Formater les résultats en liste de dictionnaires
         return [
             {
-                "current_offer": offer.json(),
+                "offer": offer.json(),
                 "previous_offer": previous_offer.json() if previous_offer else None,
                 "card": card.json()
             }
@@ -133,7 +133,7 @@ def get_last_deleted_offers_data() -> list[dict]:
         # Formater les résultats en liste de dictionnaires
         return [
             {
-                "current_offer": offer.json(),
+                "offer": offer.json(),
                 "card": card.json()
             }
             for offer, card in results
