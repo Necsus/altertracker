@@ -83,17 +83,61 @@ def get_last_added_offers_data() -> list[dict]:
 # a revoir avec le 
 def get_last_edited_offers_data() -> list[dict]:
     today_utc = datetime.now(timezone.utc).date()
-    return db.session.query(Offer, Card).join(
-        Card, Offer.reference_card == Card.reference
-    ).filter(
-        Offer.is_deleted == True
-    )
+    try:
+        # Alias pour la jointure avec la previous_offer
+        previous_offer_alias = db.aliased(Offer)
+
+        # Requête principale
+        results = db.session.query(
+            Offer,  # Offre actuelle
+            previous_offer_alias,  # Offre précédente
+            Card  # Carte de référence
+        ).join(
+            Card, Offer.reference_card == Card.reference  # Jointure avec la carte
+        ).outerjoin(
+            previous_offer_alias, Offer.previous_offer == previous_offer_alias.id  # Jointure avec l'offre précédente
+        ).filter(
+            func.date(Offer.created_at) == today_utc,  # Filtrer par date de création
+            Offer.is_deleted == False,  # Exclure les offres supprimées
+            Offer.previous_offer != None  # Inclure uniquement les offres avec une previous_offer
+        ).all()
+
+        # Formater les résultats en liste de dictionnaires
+        return [
+            {
+                "current_offer": offer.json(),
+                "previous_offer": previous_offer.json() if previous_offer else None,
+                "card": card.json()
+            }
+            for offer, previous_offer, card in results
+        ]
+    except Exception as e:
+        print(f"Erreur lors de la récupération des offres éditées : {e}")
+        return []
 
 def get_last_deleted_offers_data() -> list[dict]:
     today_utc = datetime.now(timezone.utc).date()
-    return db.session.query(Offer, Card).join(
-        Card, Offer.reference_card == Card.reference
-    ).filter(
-        func.date(Offer.deleted_at) == today_utc,
-        Offer.is_deleted == True
-    )
+    try:
+        # Sous-requête pour récupérer les IDs présents dans previous_offer
+        subquery = db.session.query(Offer.previous_offer).filter(Offer.previous_offer != None).subquery()
+
+        # Requête principale
+        results = db.session.query(Offer, Card).join(
+            Card, Offer.reference_card == Card.reference
+        ).filter(
+            func.date(Offer.deleted_at) == today_utc,  # Filtrer par date de suppression
+            Offer.is_deleted == True,  # Vérifier que l'offre est supprimée
+            ~Offer.id.in_(subquery)  # Vérifier que l'ID n'est pas dans previous_offer
+        ).all()
+
+        # Formater les résultats en liste de dictionnaires
+        return [
+            {
+                "current_offer": offer.json(),
+                "card": card.json()
+            }
+            for offer, card in results
+        ]
+    except Exception as e:
+        print(f"Erreur lors de la récupération des offres supprimées : {e}")
+        return []
