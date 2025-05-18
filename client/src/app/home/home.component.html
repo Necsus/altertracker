@@ -25,7 +25,7 @@
 
     <!-- Section : Nouvelles Offres -->
     <section>
-      <h2 class="text-2xl font-semibold mb-4">💰 Nouvelles offres de vente <span class="text-green-400">+{{
+      <h2 class="text-2xl font-semibold mb-4">💰 Nouvelles offres de vente&nbsp;<span class="text-green-400">+{{
           newOffersCount }}</span></h2>
       <ng-container *ngIf="!newOffersLoading; else cardsLoadingSection">
         <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
@@ -46,7 +46,7 @@
 
     <!-- Section : Offres disparues -->
     <section>
-      <h2 class="text-2xl font-semibold mb-4">❌ Offres disparues (resultat correct ?) <span class="text-green-400">+{{
+      <h2 class="text-2xl font-semibold mb-4">❌ Offres disparues&nbsp;<span class="text-green-400">+{{
           deletedOffersCount }}</span></h2>
       <ng-container *ngIf="!deletedOffersLoading; else cardsLoadingSection">
         <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
@@ -66,8 +66,7 @@
 
     <!-- Section : Offres modifiées -->
     <section>
-      <h2 class="text-2xl font-semibold mb-4">✏️ Offres modifiées (bug sur la diff de prix) <span
-          class="text-green-400">+{{
+      <h2 class="text-2xl font-semibold mb-4">✏️ Offres modifiées&nbsp;<span class="text-green-400">+{{
           editedOffersCount }}</span></h2>
       <ng-container *ngIf="!editedOffersLoading; else cardsLoadingSection">
         <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">

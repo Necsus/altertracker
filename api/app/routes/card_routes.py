@@ -67,13 +67,11 @@ def search_cards_route():
         return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
 
 class OfferLiveMarketSchema(Schema):
-    id = fields.Int()
     reference = fields.Str(required=True)
     status = fields.Str(required=True)
     offerId = fields.Str()
     convertedPrice = fields.Float()
     convertedCurrency = fields.Str()
-    quantity = fields.Int()
 
 @card_bp.route('/offerlivemarket', methods=['POST'])
 def post_offer_live_market():
@@ -81,6 +79,7 @@ def post_offer_live_market():
         data = request.get_json()
         schema = OfferLiveMarketSchema(many=True)
         validated_data = schema.load(data)
+        print('post_offer_live_market_service')
         post_offer_live_market_service(validated_data)
         return jsonify({'message': 'Offres mises à jour avec succès'}), 201
     except ValidationError as ve:

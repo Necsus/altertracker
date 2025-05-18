@@ -30,7 +30,6 @@ export class CardComponent {
         this.is_favorite = !!this.card.alert_id; // Initialiser l'état favori de la carte
       }
     });
-
   }
 
   toggleFavorite(): void {
