@@ -21,6 +21,7 @@ export class AlteredService {
         if (response['hydra:totalItems'] && response['hydra:totalItems'] > 0) {
           card.price = Number(response['hydra:member'][0]['convertedPrice']);
           card.url_offer = `https://www.altered.gg/fr-fr/cards/${card.reference}/offers`;
+          card.visible = true;
 
           // Construire et retourner l'objet OfferLiveMarketRequest
           return <OfferLiveMarketRequest>{
@@ -33,6 +34,7 @@ export class AlteredService {
         } else {
           card.price = undefined;
           card.url_offer = undefined;
+          card.visible = false;
 
           // Retourner un objet OfferLiveMarketRequest avec un statut non disponible
           return {

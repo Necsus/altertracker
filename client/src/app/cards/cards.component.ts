@@ -90,11 +90,6 @@ export class CardsComponent implements OnInit {
           map((offerRequest) => {
             // Ajouter chaque objet OfferLiveMarketRequest à updatedCards
             updatedCards.push(offerRequest);
-
-            // Si removeNoPrice est activé, ne conserver que les cartes avec un prix défini
-            if (!this.removeNoPrice || (offerRequest.convertedPrice !== undefined && offerRequest.convertedPrice !== null)) {
-              filteredCards.push(cards.find(c => c.reference === offerRequest.reference)!);
-            }
           }),
           catchError((error) => {
             if (error.message === 'Token invalide ou expiré. Veuillez le réinsérer.') {
@@ -111,12 +106,6 @@ export class CardsComponent implements OnInit {
           },
           complete: () => {
             console.log('Toutes les offres visibles ont été récupérées.');
-            // Mettre à jour le modèle local si removeNoPrice est activé
-            if (this.removeNoPrice && filteredCards.length > 0) {
-              const name = filteredCards[0]?.name;
-              this.groupedCards[name] = filteredCards;
-            }
-
             // Appeler post_offer_live_market$ avec les cartes mises à jour
             if (updatedCards.length > 0) {
               this.cardService.post_offer_live_market$(updatedCards).subscribe({

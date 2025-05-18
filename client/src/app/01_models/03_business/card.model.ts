@@ -24,4 +24,5 @@ export interface CardModel {
   url_offer?: string;
 
   alert_id?: number;
+  visible?: boolean;
 }
