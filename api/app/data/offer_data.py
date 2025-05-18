@@ -34,9 +34,9 @@ def update_offers_bulk(offers: List[dict]) -> None:
         print(f"Erreur lors de la mise à jour des offres : {e}")
 
 
-def get_offer_by_reference(reference: str) -> Optional[Offer]:
+def get_last_offer_by_reference_data(reference: str) -> Optional[Offer]:
     try:
-        return db.session.query(Offer).filter_by(reference_card=reference).first()
+        return db.session.query(Offer).filter_by(reference_card=reference).order_by(Offer.created_at.desc()).first()
     except Exception as e:
         print(f"Erreur lors de la récupération de l'offre avec la référence {reference} : {e}")
         return None
@@ -77,18 +77,16 @@ def get_last_added_offers_data() -> list[dict]:
         Card, Offer.reference_card == Card.reference
     ).filter(
         func.date(Offer.created_at) == today_utc,
-        Offer.is_edited == False,
         Offer.is_deleted == False
     )
 
+# a revoir avec le 
 def get_last_edited_offers_data() -> list[dict]:
     today_utc = datetime.now(timezone.utc).date()
     return db.session.query(Offer, Card).join(
         Card, Offer.reference_card == Card.reference
     ).filter(
-        func.date(Offer.edited_at) == today_utc,
-        Offer.is_edited == True,
-        Offer.is_deleted == False
+        Offer.is_deleted == True
     )
 
 def get_last_deleted_offers_data() -> list[dict]:

@@ -54,7 +54,6 @@ with app.app_context():
             new_cards = [card for card in cards if card.reference not in existing_references]
             session.bulk_save_objects(new_cards)
             session.commit()
-            logging.info(f"{len(new_cards)} cartes insérées.")
         except Exception as e:
             session.rollback()
             logging.error(f"Erreur lors de l'insertion des cartes : {e}")
@@ -100,31 +99,31 @@ with app.app_context():
                                             has_updated = False
 
                                             # Vérifiez et mettez à jour uniquement si les valeurs sont différentes
-                                            if str(card_to_update.name) != tempCard.name:
+                                            if str(card_to_update.name) != str(tempCard.name):
                                                 card_to_update.name = tempCard.name
                                                 has_updated = True
-                                            if str(card_to_update.name_en) != tempCard.name_en:
+                                            if str(card_to_update.name_en) != str(tempCard.name_en):
                                                 card_to_update.name_en = tempCard.name_en
                                                 has_updated = True
-                                            if str(card_to_update.isSuspended) != tempCard.isSuspended:
+                                            if str(card_to_update.isSuspended) != str(tempCard.isSuspended):
                                                 card_to_update.isSuspended = tempCard.isSuspended
                                                 has_updated = True
-                                            if str(card_to_update.imagePath) != tempCard.imagePath:
+                                            if str(card_to_update.imagePath) != str(tempCard.imagePath):
                                                 card_to_update.imagePath = tempCard.imagePath
                                                 has_updated = True
-                                            if str(card_to_update.MAIN_COST) != tempCard.MAIN_COST:
+                                            if str(card_to_update.MAIN_COST) != str(tempCard.MAIN_COST):
                                                 card_to_update.MAIN_COST = tempCard.MAIN_COST
                                                 has_updated = True
-                                            if str(card_to_update.RECALL_COST) != tempCard.RECALL_COST:
+                                            if str(card_to_update.RECALL_COST) != str(tempCard.RECALL_COST):
                                                 card_to_update.RECALL_COST = tempCard.RECALL_COST
                                                 has_updated = True
-                                            if str(card_to_update.MOUNTAIN_POWER) != tempCard.MOUNTAIN_POWER:
+                                            if str(card_to_update.MOUNTAIN_POWER) != str(tempCard.MOUNTAIN_POWER):
                                                 card_to_update.MOUNTAIN_POWER = tempCard.MOUNTAIN_POWER
                                                 has_updated = True
-                                            if str(card_to_update.OCEAN_POWER) != tempCard.OCEAN_POWER:
+                                            if str(card_to_update.OCEAN_POWER) != str(tempCard.OCEAN_POWER):
                                                 card_to_update.OCEAN_POWER = tempCard.OCEAN_POWER
                                                 has_updated = True
-                                            if str(card_to_update.FOREST_POWER) != tempCard.FOREST_POWER:
+                                            if str(card_to_update.FOREST_POWER) != str(tempCard.FOREST_POWER):
                                                 card_to_update.FOREST_POWER = tempCard.FOREST_POWER
                                                 has_updated = True
                                             if card_to_update.created_at is None:

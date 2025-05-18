@@ -58,7 +58,7 @@ class Card(db.Model):
             'url_offer': self.url_offer
         }
     
-    def __init__(self, id_card, reference, name, name_en, faction, rarity, type, set, imagePath, isSuspended, MAIN_COST, RECALL_COST, MOUNTAIN_POWER, OCEAN_POWER, FOREST_POWER, MAIN_EFFECT, ECHO_EFFECT, created_at, edited_at=None, price=None, price_updated_at=None, url_offer=None):
+    def __init__(self, id_card, reference, name, name_en, faction, rarity, type, set, imagePath, isSuspended, MAIN_COST, RECALL_COST, MOUNTAIN_POWER, OCEAN_POWER, FOREST_POWER, MAIN_EFFECT, ECHO_EFFECT, created_at=None, edited_at=None, price=None, price_updated_at=None, url_offer=None):
         self.id_card = id_card
         self.reference = reference
         self.name = name
