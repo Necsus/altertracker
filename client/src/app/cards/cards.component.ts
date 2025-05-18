@@ -111,11 +111,10 @@ export class CardsComponent implements OnInit {
           },
           complete: () => {
             console.log('Toutes les offres visibles ont été récupérées.');
-
             // Mettre à jour le modèle local si removeNoPrice est activé
-            if (this.removeNoPrice) {
-              this.cards = filteredCards;
-              this.groupCardsByName(); // Regrouper les cartes après la mise à jour
+            if (this.removeNoPrice && filteredCards.length > 0) {
+              const name = filteredCards[0]?.name;
+              this.groupedCards[name] = filteredCards;
             }
 
             // Appeler post_offer_live_market$ avec les cartes mises à jour
