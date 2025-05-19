@@ -15,6 +15,7 @@ import { UnderConstructionComponent } from './shared/under-construction/under-co
 import { ContactComponent } from './user/contact/contact.component';
 import { UserAlertsComponent } from './user/user-alerts/user-alerts.component';
 import { UserSearchesComponent } from './user/user-searches/user-searches.component';
+import { ValidateEmailComponent } from './user/validate-email/validate-email.component';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -24,6 +25,7 @@ export const routes: Routes = [
   { path: 'me', component: UnderConstructionComponent, canActivate: [TokenGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
+  { path: 'validate-email/:token', component: ValidateEmailComponent },
   { path: 'forgotpassword', component: ForgotPasswordComponent },
   { path: 'token', component: TokenComponent },
   { path: 'contact', component: ContactComponent, canActivate: [TokenGuard] },

@@ -15,6 +15,14 @@ export class AuthApiService {
     return this.wabApiService.callPost$(this.controller, 'register', { username: username, email: email, password: password });
   }
 
+  validateEmail$(token: string): Observable<any> {
+    return this.wabApiService.callGet$(this.controller, `validate-email/${token}`);
+  }
+
+  resendValidationEmail$(token: string): Observable<any> {
+    return this.wabApiService.callGet$(this.controller, `resend-validation/${token}`);
+  }
+
   login$(email: string, password: string): Observable<{ access_token: string, refresh_token: string }> {
     return this.wabApiService.callPost$(this.controller, 'login', { email: email, password: password });
   }

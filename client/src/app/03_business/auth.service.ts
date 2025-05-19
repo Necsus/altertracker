@@ -22,6 +22,18 @@ export class AuthService {
     }));
   }
 
+  validateEmail$(token: string): Observable<any> {
+    return this.authApiService.validateEmail$(token).pipe(map((dbModel: any) => {
+      return dbModel;
+    }));
+  }
+
+  resendValidationEmail$(token: string): Observable<any> {
+    return this.authApiService.resendValidationEmail$(token).pipe(map((dbModel: any) => {
+      return dbModel;
+    }));
+  }
+
   refresh$(): Observable<void> {
     return this.authApiService.refresh$().pipe(map((response: any) => {
       this.authStorageService.storeAccessToken(response.access_token);
