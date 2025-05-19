@@ -6,6 +6,7 @@ from flask_jwt_extended import (
     create_access_token, create_refresh_token, jwt_required,
     get_jwt_identity, get_jwt, unset_jwt_cookies
 )
+from app.config import Config
 from app.utils.emails import render_template_with_data
 from app.models.user import User
 from app.models.token_blacklist import TokenBlacklist
@@ -47,8 +48,13 @@ def register():
         return jsonify({"message": "Pseudo already used"}), 400
     hashed = hash_password(data['password'])
     user = User(username=data['username'], email=data['email'], password_hash=hashed)
+    
     db.session.add(user)
     db.session.commit()
+
+    # Générer un jeton de validation
+    token = serializer.dumps(user.email, salt=Config.SECRET_KEY)
+    validation_url = f"https://altertracker.com/validate-email/{token}"
 
     # Envoi d'un email de bienvenue
     template_path = os.path.join(os.path.dirname(__file__), '../templates/register.html')
@@ -57,7 +63,7 @@ def register():
         subject="Bienvenue sur AlterTracker.com",
         html_content=render_template_with_data(template_path, {
             "USERNAME": data['username'],
-            "LIEN_DE_VALIDATION": "https://altertracker.com/",
+            "LIEN_DE_VALIDATION": validation_url,
             "YEAR": str(datetime.now().year)
         }),
         sender={"name": "AlterTracker", "email": "noreply@altertracker.com"}
@@ -67,7 +73,64 @@ def register():
         print(response)
     except ApiException as e:
         print("Exception lors de l'appel à l’API Sendinblue: %s\n" % e)
-    return jsonify({"message": "User created"}), 201
+    return jsonify({"message": "Un email vient de vous être envoyé pour la suite de l'inscription"}), 201
+
+@auth_bp.route('/validate-email/<token>', methods=['GET'])
+def validate_email(token):
+    try:
+        email = serializer.loads(token, salt=Config.SECRET_KEY, max_age=3600)  # 1 heure
+    except itsdangerous.SignatureExpired:
+        return jsonify({"message": "The token has expired"}), 400
+    except itsdangerous.BadSignature:
+        return jsonify({"message": "Invalid token"}), 400
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+
+    if user.is_email_verified:
+        return jsonify({"message": "Email already validated"}), 400
+
+    user.is_email_verified = True
+    db.session.commit()
+    return jsonify({"message": "Email validated successfully"}), 200
+
+@auth_bp.route('/resend-validation/<token>', methods=['GET'])
+def resend_validation_email(token):
+    try:
+        email = serializer.loads(token, salt=Config.SECRET_KEY, max_age=3600)  # 1 heure
+        if not email:
+            return jsonify({"message": "Email is required"}), 400
+
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            return jsonify({"message": "User not found"}), 404
+
+        if user.is_email_verified:
+            return jsonify({"message": "Email is already validated"}), 400
+
+        # Générer un nouveau jeton de validation
+        token = serializer.dumps(user.email, salt=Config.SECRET_KEY)
+        validation_url = f"https://altertracker.com/validate-email/{token}"
+
+        send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
+            to=[{"email": email, "name": user.username}],
+            subject="Bienvenue sur AlterTracker.com",
+            html_content=f"Bonjour {user.username},\n\nClique sur le lien pour valier ton email: {validation_url}\n\nCe lien expire dans 1h.",
+            sender={"name": "AlterTracker", "email": "noreply@altertracker.com"}
+        )
+        try:
+            response = mail_api.send_transac_email(send_smtp_email)
+            print(response)
+        except ApiException as e:
+            print("Exception lors de l'appel à l’API Sendinblue: %s\n" % e)
+    except itsdangerous.SignatureExpired:
+        return jsonify({"message": "The token has expired"}), 400
+    except itsdangerous.BadSignature:
+        return jsonify({"message": "Invalid token"}), 400
+
+    
+    return jsonify({"message": "Validation email resent successfully"}), 200
 
 @auth_bp.route('/login', methods=['POST'])
 def login():
@@ -75,6 +138,8 @@ def login():
     user = User.query.filter_by(email=data['email']).first()
     if not user or not check_password(data['password'], user.password_hash):
         return jsonify({"message": "Invalid credentials"}), 401
+    if not user.is_email_verified:
+        return jsonify({"message": "Email not verified"}), 401
     additional_claims = {
         "is_admin": user.is_admin,
         "username": user.username
