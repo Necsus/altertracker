@@ -38,8 +38,8 @@ def post_offer_live_market_service(data: List[dict]) -> None:
         new_offer = Offer (
             reference_card=item['reference'],
             id_offer=item['offerId'] if item.get('offerId') is not None else None,
-            price=item['convertedPrice'] if item.get('convertedPrice') is not None else None,
-            currency=item['convertedCurrency'] if item.get('convertedCurrency') is not None else None,
+            price=item['price'] if item.get('price') is not None else None,
+            currency=item['currency'] if item.get('currency') is not None else None,
             status=item['status'],
             link_offer=None
         )
@@ -51,8 +51,8 @@ def post_offer_live_market_service(data: List[dict]) -> None:
             if existing_offer and not existing_offer.is_deleted:
                 # c'est que l'offre est l'offre actuelle
                 # on test donc le prix
-                if existing_offer.price == new_offer.price and existing_offer.id_offer == new_offer.id_offer:
-                    # si le prix est le même et l'id de l'offre est le même on test la meme offre donc on passe à la suite
+                if existing_offer.id_offer == new_offer.id_offer:
+                    # si l'id de l'offre est le même on test la meme offre donc on passe à la suite
                     continue
                 else:
                     # sinon ca veut dire qu'il ya une nouvelle offre
@@ -76,6 +76,7 @@ def post_offer_live_market_service(data: List[dict]) -> None:
                         card_to_update.price = new_offer.price
                         card_to_update.price_updated_at = datetime.now()
                         card_to_update.url_offer = new_offer.link_offer
+                        card_to_update.url_offer = new_offer.currency
                     # sauvegarde de l'ancienne offre
                     # ajout de la nouvelle en lien de l'ancienne
                     # modification du prix de la carte
@@ -99,6 +100,7 @@ def post_offer_live_market_service(data: List[dict]) -> None:
                     card_to_update.price = new_offer.price
                     card_to_update.price_updated_at = datetime.now()
                     card_to_update.url_offer = new_offer.link_offer
+                    card_to_update.url_offer = new_offer.currency
                 # ajout de la nouvelle en lien de l'ancienne
                 # modification du prix de la carte
                 db.session.commit()
@@ -116,6 +118,7 @@ def post_offer_live_market_service(data: List[dict]) -> None:
                     # on met à jour la carte
                     card_to_update.price = None
                     card_to_update.price_updated_at = datetime.now()
+                    card_to_update.url_offer = None
                     card_to_update.url_offer = None
                 db.session.commit()
         
