@@ -92,11 +92,11 @@ export class UserAlertsComponent implements OnInit {
   }
 
   onToggleNotification(alert: UserAlertModel): void {
-    // Inverse l'état de notification
     this.userService.put_user_alert$(alert).subscribe({
-      next: () => {
-        alert.mail_active = !alert.mail_active;
-      }
+      next: () => { },
+      error: (err: any) => {
+        alert.mail_active = !alert.mail_active; // Rétablit l'état précédent en cas d'erreur
+      },
     });
   }
 }

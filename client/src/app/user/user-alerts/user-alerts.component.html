@@ -11,19 +11,10 @@
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
       <div *ngFor="let alert of alerts" class="relative">
         <app-card [card]="alert.card"></app-card>
-        <!-- Toggle notifications -->
+        <!-- Checkbox notifications -->
         <div class="absolute bottom-2 right-2 flex items-center space-x-2">
           <label class="flex items-center cursor-pointer">
-            <div class="relative">
-              <input type="checkbox" class="sr-only peer" [(ngModel)]="alert.mail_active"
-                (change)="onToggleNotification(alert)" />
-              <div
-                class="w-11 h-6 bg-gray-200 dark:bg-gray-700 rounded-full peer peer-checked:bg-green-500 dark:peer-checked:bg-green-400 transition-colors">
-              </div>
-              <div
-                class="absolute left-1 top-1 bg-white dark:bg-gray-900 w-4 h-4 rounded-full transition-transform peer-checked:translate-x-5">
-              </div>
-            </div>
+            <input type="checkbox" [(ngModel)]="alert.mail_active" (change)="onToggleNotification(alert)" />
             <span class="ml-2 text-sm text-gray-300 dark:text-gray-300">Mail</span>
           </label>
         </div>
