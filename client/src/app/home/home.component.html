@@ -76,6 +76,9 @@
                 loading="lazy" class="max-w-full object-contain rounded-md cursor-pointer" />
             </div>
             <div class="mt-2 text-center text-white p-2">
+              <a href="https://altered.gg/fr-fr/cards/{{offer.card.reference}}" target="_blank"
+                class="text-xs text-blue-400 underline hover:text-blue-300">{{
+                offer.card.reference }}&nbsp;<i class="fas fa-up-right-from-square text-xs"></i></a>
               <div class="font-medium">{{ offer.card.name }}</div>
               <div class="text-sm text-gray-400">
                 Prix : <span class="line-through text-red-400">{{ offer.previous_offer?.price }}€</span>
