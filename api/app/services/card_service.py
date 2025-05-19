@@ -1,20 +1,26 @@
+import os
 from typing import List, Optional
+
+import sib_api_v3_sdk
+from app.utils.emails import render_template_with_data
 from app.models.offer import Offer
 from app.models.card import Card
 from datetime import datetime
 from app.extensions import db
+from app.extensions import mail_api, ApiException
 from app.data.card_data import (
   get_card_by_reference_data,
   search_cards_data,
   get_cards_count_data,
-  update_cards_bulk_data,
   get_last_added_cards_data
 )
 from app.data.offer_data import (
   get_last_offer_by_reference_data,
-  update_offers_bulk,
-  insert_offers_bulk,
   get_cards_in_market_count_data,
+)
+from app.data.user_data import (
+  get_user_by_id_data,
+  get_user_alert_by_reference_card_data
 )
 
 def get_cards_count_service() -> int:
@@ -76,7 +82,8 @@ def post_offer_live_market_service(data: List[dict]) -> None:
                         card_to_update.price = new_offer.price
                         card_to_update.price_updated_at = datetime.now()
                         card_to_update.url_offer = new_offer.link_offer
-                        card_to_update.url_offer = new_offer.currency
+                        card_to_update.price_currency = new_offer.currency
+                        send_user_alert(card_to_update, "edited")
                     # sauvegarde de l'ancienne offre
                     # ajout de la nouvelle en lien de l'ancienne
                     # modification du prix de la carte
@@ -100,7 +107,8 @@ def post_offer_live_market_service(data: List[dict]) -> None:
                     card_to_update.price = new_offer.price
                     card_to_update.price_updated_at = datetime.now()
                     card_to_update.url_offer = new_offer.link_offer
-                    card_to_update.url_offer = new_offer.currency
+                    card_to_update.price_currency = new_offer.currency
+                    send_user_alert(card_to_update, "added")
                 # ajout de la nouvelle en lien de l'ancienne
                 # modification du prix de la carte
                 db.session.commit()
@@ -118,9 +126,40 @@ def post_offer_live_market_service(data: List[dict]) -> None:
                     # on met à jour la carte
                     card_to_update.price = None
                     card_to_update.price_updated_at = datetime.now()
+                    card_to_update.price_currency = None
                     card_to_update.url_offer = None
-                    card_to_update.url_offer = None
+                    send_user_alert(card_to_update, "expired")
                 db.session.commit()
         
 def get_last_added_cards_service() -> List[dict]:
     return get_last_added_cards_data()
+
+def send_user_alert(card: Card, type_changement: str):
+    alerts = get_user_alert_by_reference_card_data(card.reference)
+    for alert in alerts:
+        user = get_user_by_id_data(alert.id_user)
+        if user:
+            print(f"{card.price} {card.price_currency}")
+            # Envoi de la notif de modif de prix
+            template_path = os.path.join(os.path.dirname(__file__), '../templates/user-alert.html')
+            send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
+                to=[{"email": user.email, "name": user.username}],
+                subject= f"Changement de prix de votre favoris : {card.name}",
+                html_content=render_template_with_data(template_path, {
+                    "USERNAME": user.username,
+                    "CHANGEMENT_TYPE": type_changement,
+                    "NAME_CARD": card.name,
+                    "REFERENCE": card.reference,
+                    "PRICE": f"{card.price} {card.price_currency}" if card.price and card.price_currency else "N/A",
+                    "DATE_EFFECTIVE": card.price_updated_at.strftime("%d/%m/%Y %H:%M"),
+                    "URL_IMAGE_CARD": card.imagePath,
+                    "LIEN_VERS_ALERTS": "https://altertracker.com/alerts",
+                    "YEAR": str(datetime.now().year)
+                }),
+                sender={"name": "AlterTracker", "email": "noreply@altertracker.com"}
+            )
+            try:
+                response = mail_api.send_transac_email(send_smtp_email)
+                print(response)
+            except ApiException as e:
+                print("Exception lors de l'appel à l’API Sendinblue: %s\n" % e)

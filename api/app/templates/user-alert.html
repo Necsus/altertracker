@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Changement de prix</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      background-color: #1e1e1e;
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 24px;
+      border-radius: 10px;
+      color: #e0e0e0;
+    }
+
+    h1 {
+      color: #ffffff;
+      font-size: 22px;
+    }
+
+    p {
+      color: #cccccc;
+      line-height: 1.6;
+      font-size: 15px;
+    }
+
+    .button {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 24px;
+      background-color: #0d6efd;
+      color: #ffffff !important;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 12px;
+      color: #777777;
+    }
+
+    .highlight {
+      color: #ffffff;
+      font-weight: bold;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>Un changement de prix a été appliqué à votre carte</h1>
+    <p>Bonjour [USERNAME],</p>
+    <p>Nous souhaitons vous informer qu’un changement de prix a été détecté sur une de vos cartes favorites associée à
+      votre compte
+      <span class="highlight">AlterTracker</span>.
+    </p>
+    <p>
+      <strong>Nom :</strong> [NAME_CARD]<br>
+      <strong>Référence :</strong> [REFERENCE]<br>
+      <strong>Changement :</strong> [CHANGEMENT_TYPE]<br>
+      <strong>Prix :</strong> [PRICE]<br>
+      <strong>Date de détection :</strong> [DATE_EFFECTIVE]
+    </p>
+    <div class="card-image">
+      <img style="width: 100%; height: auto; border-radius: 10px;" src="[URL_IMAGE_CARD]" alt="Image de votre carte" />
+    </div>
+    <a href="[LIEN_VERS_ALERTS]" class="button">Voir mes alertes</a>
+    <p>Merci pour votre confiance,<br>L’équipe AlterTracker</p>
+    <div class="footer">
+      &copy; [YEAR] AlterTracker — Tous droits réservés.
+    </div>
+  </div>
+</body>
+
+</html>
