@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { AuthViewService } from '../authentication/auth-view.service';
 import { ToastService } from '../shared/services/toast/toast.service';
 
 @Component({
@@ -10,11 +11,14 @@ import { ToastService } from '../shared/services/toast/toast.service';
 })
 export class ContactComponent implements OnInit {
   contactForm!: FormGroup;
-  constructor(private fb: FormBuilder, private toastService: ToastService) { }
+  constructor(
+    private fb: FormBuilder,
+    private toastService: ToastService,
+    private authViewService: AuthViewService) { }
 
   ngOnInit(): void {
     this.contactForm = this.fb.group({
-      name: [''],
+      name: [this.authViewService.getUsername() ?? ''],
       email: [''],
       subject: [''],
       message: ['']

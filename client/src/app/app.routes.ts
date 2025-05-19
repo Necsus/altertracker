@@ -1,6 +1,8 @@
 import { Routes } from '@angular/router';
+import { AdminGuard } from './00_common/guards/admin.guard';
 import { TokenGuard } from './00_common/guards/token.guard';
 import { AboutComponent } from './about/about.component';
+import { AdminComponent } from './admin/admin.component';
 import { ForgotPasswordComponent } from './authentication/forgot-password.component';
 import { LoginComponent } from './authentication/login.component';
 import { RegisterComponent } from './authentication/register.component';
@@ -9,6 +11,7 @@ import { CardsComponent } from './cards/cards.component';
 import { ContactComponent } from './contact/contact.component';
 import { HomeComponent } from './home/home.component';
 import { NotFoundComponent } from './shared/error-pages/not-found/not-found.component';
+import { UnauthorizedComponent } from './shared/error-pages/unauthorized/unauthorized.component';
 import { UnderConstructionComponent } from './shared/under-construction/under-construction.component';
 import { UserAlertsComponent } from './user/user-alerts/user-alerts.component';
 import { UserSearchesComponent } from './user/user-searches/user-searches.component';
@@ -26,5 +29,7 @@ export const routes: Routes = [
   { path: 'contact', component: ContactComponent, canActivate: [TokenGuard] },
   { path: 'about', component: AboutComponent },
   { path: 'purchaseoffers', component: UnderConstructionComponent, canActivate: [TokenGuard] },
+  { path: 'admin', component: AdminComponent, canActivate: [AdminGuard] },
+  { path: 'unauthorized', component: UnauthorizedComponent },
   { path: '**', component: NotFoundComponent }
 ];

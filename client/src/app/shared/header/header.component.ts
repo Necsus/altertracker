@@ -12,16 +12,25 @@ export class HeaderComponent implements OnInit {
   isMenuOpen = false;
   isLoggedIn = false;
   isDropdownOpen = false;
+  isAdmin = false;
+  username: string | null = null;
 
   constructor(private router: Router, private authViewService: AuthViewService) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.authViewService.isLoggedIn$.subscribe(status => {
       this.isLoggedIn = status;
+      if (this.isLoggedIn) {
+        this.isAdmin = this.authViewService.isAdmin();
+        this.username = this.authViewService.getUsername();
+      } else {
+        this.isAdmin = false; // Réinitialiser si l'utilisateur n'est pas connecté
+        this.username = null; // Réinitialiser si l'utilisateur n'est pas connecté
+      }
     });
   }
 
-  onLogout() {
+  onLogout(): void {
     this.authViewService.logout();
   }
 

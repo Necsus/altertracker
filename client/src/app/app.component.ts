@@ -15,9 +15,12 @@ import { ToastComponent } from './shared/services/toast/toast.component';
 export class AppComponent implements AfterViewInit {
   constructor(private authStorageService: AuthStorageService, private authViewService: AuthViewService) { }
   ngAfterViewInit() {
-    if (this.authStorageService.getToken()) {
+    const token = this.authStorageService.getToken();
+    if (token) {
       this.authViewService.loggedIn.next(true);
       this.authViewService.startTokenRefresh();
+    } else {
+      this.authViewService.loggedIn.next(false); // Assurez-vous de mettre à jour l'état si aucun token n'est présent
     }
   }
 }

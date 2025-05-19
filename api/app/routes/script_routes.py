@@ -4,6 +4,7 @@ import threading
 from flask import Blueprint
 from flask_jwt_extended import jwt_required
 from app.extensions import socketio
+from app.decorators.auth_decorator import admin_required
 
 script_bp = Blueprint('script', __name__)
 
@@ -29,7 +30,8 @@ def run_script():
 
 @script_bp.route('/start-script')
 @jwt_required()
+@admin_required
 def start_script():
-    # thread = threading.Thread(target=run_script)
-    # thread.start()
+    thread = threading.Thread(target=run_script)
+    thread.start()
     return {'status': 'started'}
