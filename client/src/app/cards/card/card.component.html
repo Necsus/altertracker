@@ -5,7 +5,8 @@
     <i [class]="is_favorite ? 'fas fa-heart text-red-500' : 'far fa-heart'"></i>
   </button>
   }
-  <img (click)="openModal()" [src]="card.imagePath" [alt]="card.name" loading="lazy"
+  <img (click)="openModal()" [src]="card.imagePath" [alt]="card.name"
+    onerror="this.onerror=null; this.src='/assets/img/cardback.webp';" loading="lazy"
     class="max-w-full max-h-64 object-contain rounded-md mb-4 md:mb-0 md:mr-4 cursor-pointer">
   <div class="flex flex-col justify-center">
     <div class="flex items-center py-2">
