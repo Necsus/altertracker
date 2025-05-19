@@ -1,0 +1,20 @@
+<div class="py-20 flex items-center justify-center bg-gray-900">
+  <div class="bg-gray-900 text-white p-6 rounded-2xl shadow-lg max-w-md mx-auto text-center space-y-4">
+    <svg class="mx-auto h-16 w-16 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M9 12l2 2l4-4m5 2a9 9 0 11-18 0a9 9 0 0118 0z" />
+    </svg>
+
+    <h2 class="text-2xl font-semibold">Merci pour votre {{ context === 'contact' ? 'message' : 'signalement' }} !</h2>
+
+    <p class="text-gray-400">
+      Nous avons bien reçu votre {{ context === 'contact' ? 'demande de contact' : 'rapport de bug' }}.
+      Nous vous répondrons dès que possible.
+    </p>
+
+    <a routerLink="/"
+      class="inline-block mt-4 px-4 py-2 bg-green-500 hover:bg-green-600 text-white font-medium rounded-xl transition cursor-pointer">
+      Retour à l'accueil
+    </a>
+  </div>
+</div>

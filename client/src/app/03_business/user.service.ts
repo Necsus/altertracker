@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { UserAlertModel } from '../01_models/03_business/user-alert.model';
+import { UserContactModel } from '../01_models/03_business/user-contact.model';
 import { UserSearchModel } from '../01_models/03_business/user-search.model';
 import { UserApiService } from '../02_api/user-api.service';
 
@@ -44,6 +45,12 @@ export class UserService {
   }
   put_user_alert$(request: UserAlertModel): Observable<UserAlertModel> {
     return this.userApiService.put_user_alert$(request).pipe(map((response: UserAlertModel) => {
+      return response;
+    }));
+  }
+  post_user_contact$(request: UserContactModel): Observable<UserAlertModel> {
+    return this.userApiService.post_user_contact$(request).pipe(map((response: any) => {
+      console.log('response', response);
       return response;
     }));
   }
