@@ -11,7 +11,7 @@ script_bp = Blueprint('script', __name__)
 def run_script():
     try:
         process = subprocess.Popen(
-            ['python3', 'app/scripts/script_get_no_unique.py'],
+            ['python3', '-u', '../scripts/test-script.py'],
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,
@@ -19,6 +19,7 @@ def run_script():
         )
 
         for line in process.stdout:
+            print(line)
             socketio.emit('script_output', {'data': line})
 
         process.stdout.close()
