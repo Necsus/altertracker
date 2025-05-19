@@ -9,6 +9,12 @@ from sqlalchemy.exc import SQLAlchemyError
 def get_user_count_data() -> int:
     return db.session.query(func.count(User.id)).scalar()
 
+def get_user_by_id_data(id_user: int) -> User:
+    user = db.session.query(User).filter_by(id=id_user).first()
+    if not user:
+        raise Exception(f"Aucun utilisateur trouvé avec l'ID {id_user}")
+    return user
+
 def get_user_search_data(id_user: int) -> list[dict]:
     return db.session.query(UserSearch).filter_by(id_user=id_user).order_by(UserSearch.created_at.desc()).all()
 
@@ -36,6 +42,9 @@ def delete_user_search_data(id_search: int) -> None:
     
 def get_user_alert_data(id_user: int) -> list[dict]:
     return db.session.query(UserAlert).filter_by(id_user=id_user).all()
+
+def get_user_alert_by_reference_card_data(reference_card: str) -> list[dict]:
+    return db.session.query(UserAlert).filter_by(reference_card=reference_card).all()
 
 def get_user_alert_with_card_data(id_user: int) -> list[dict]:
     try:

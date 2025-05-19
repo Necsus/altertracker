@@ -53,8 +53,6 @@ def save_user_alert_service(data: Dict) -> Dict:
     saved_alert = save_user_alert_data(mapped_data)
     return saved_alert.json()
 
-
-
 def delete_user_alert_service(id_alert: int) -> None:
     delete_user_alert_data(id_alert)
 
