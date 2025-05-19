@@ -134,8 +134,8 @@ def contact_form():
         send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
             to=[{"email": "contact@altertracker.com", "name": "contact"}],
             subject=data.get('subject'),
-            html_content=data.get('message'),
-            sender={"name": f"{data.get('name')} id: {user_id}", "email": data.get('email')}
+            html_content= f"{data.get('email')}<br/>{data.get('message')}",
+            sender={"name": f"{data.get('name')} id: {user_id}", "email": "noreply@altertracker.com"}
         )
         try:
             response = mail_api.send_transac_email(send_smtp_email)
