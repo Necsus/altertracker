@@ -8,8 +8,8 @@ class User(db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     password_hash = db.Column(db.String(128), nullable=False)
-    created_at = db.Column(db.DateTime,  default=datetime.datetime.now(datetime.timezone.utc))
-    edited_at = db.Column(db.DateTime,  default=datetime.datetime.now(datetime.timezone.utc))
+    created_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
+    edited_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
     is_admin = db.Column(db.Boolean, default=False)
     is_email_verified = db.Column(db.Boolean, default=False)
     email_verified_at = db.Column(db.DateTime, nullable=True)
@@ -35,4 +35,4 @@ class User(db.Model):
         self.created_at = created_at if created_at else datetime.datetime.now(datetime.timezone.utc)
         self.edited_at = edited_at if edited_at else datetime.datetime.now(datetime.timezone.utc)
         self.is_email_verified = is_email_verified
-        self.email_verified_at = email_verified_at if email_verified_at else datetime.datetime.now(datetime.timezone.utc)
+        self.email_verified_at = email_verified_at
