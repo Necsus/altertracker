@@ -47,7 +47,7 @@ def save_user_alert_service(data: Dict) -> Dict:
     mapped_data = {
         "id_user": data.get("id_user"),
         "reference_card": data.get("reference_card"),
-        "mail_active": data.get("mail_active", False),
+        "mail_active": True,
         "created_at": datetime.fromisoformat(data["created_at"]) if "created_at" in data else datetime.now()
     }
     saved_alert = save_user_alert_data(mapped_data)
