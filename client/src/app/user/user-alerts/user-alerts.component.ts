@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { catchError, from, map, mergeMap, of, throwError } from 'rxjs';
 import { OfferLiveMarketRequest } from '../../01_models/02_api/card/offer-live-market-request.model';
@@ -15,7 +16,7 @@ import { ToastService } from '../../shared/services/toast/toast.service';
   selector: 'app-user-alerts',
   templateUrl: './user-alerts.component.html',
   styleUrls: ['./user-alerts.component.css'],
-  imports: [CommonModule, CardComponent]
+  imports: [CommonModule, FormsModule, CardComponent]
 })
 export class UserAlertsComponent implements OnInit {
   isLoading: boolean = false; // État de chargement
@@ -87,6 +88,15 @@ export class UserAlertsComponent implements OnInit {
             });
         }
       }
+    });
+  }
+
+  onToggleNotification(alert: UserAlertModel): void {
+    this.userService.put_user_alert$(alert).subscribe({
+      next: () => { },
+      error: (err: any) => {
+        alert.mail_active = !alert.mail_active; // Rétablit l'état précédent en cas d'erreur
+      },
     });
   }
 }

@@ -102,19 +102,22 @@ def delete_user_alert(id_alert):
         return jsonify({"message": f"Erreur lors de la suppression de l'alerte : {str(e)}"}), 400
 
 
-@user_bp.route('/alerts/<int:id_alert>', methods=['PUT'])
+@user_bp.route('/alerts', methods=['PUT'])
 @jwt_required()
-def update_user_alert(id_alert):
+def update_user_alert():
     try:
         user_id = get_jwt_identity()
         data = request.get_json()
 
+        # Supprime la clé 'card' si elle est présente
+        data.pop('card', None)
+
         # Vérifie si l'alerte appartient à l'utilisateur authentifié
         alerts = get_user_alert_service(user_id)
-        if not any(alert["id"] == id_alert for alert in alerts):
+        if not any(alert["id"] == data["id"] for alert in alerts):
             return jsonify({"message": "Alerte non trouvée ou non autorisée"}), 403
 
-        updated_alert = edit_user_alert_service(id_alert, data)
+        updated_alert = edit_user_alert_service(data["id"], data)
         return jsonify(updated_alert), 200
     except Exception as e:
         return jsonify({"message": f"Erreur lors de la mise à jour de l'alerte : {str(e)}"}), 400

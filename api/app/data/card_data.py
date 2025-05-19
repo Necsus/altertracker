@@ -77,9 +77,12 @@ def search_cards_data(name, rarity, faction, set, main_effect, main_effect_2,
         # Si main_effect et main_effect_2 sont fournis
         main_effect = lower_strip(main_effect)
         main_effect_2 = lower_strip(main_effect_2)
+        # Échapper les caractères spéciaux pour la regex
+        main_effect_regex = re.escape(main_effect)
+        main_effect_2_regex = re.escape(main_effect_2)
         query = query.filter(
-            func.lower(Card.MAIN_EFFECT).like(f'%{prepare_like_query(main_effect)}%', escape='\\'),  # Vérifier que MAIN_EFFECT contient main_effect
-            func.regexp_replace(func.lower(Card.MAIN_EFFECT), main_effect, '', 1).like(f'%{prepare_like_query(main_effect_2)}%', escape='\\')
+            func.lower(Card.MAIN_EFFECT).like(f'%{prepare_like_query(main_effect)}%', escape='\\'),
+            func.regexp_replace(func.lower(Card.MAIN_EFFECT), main_effect_regex, '', 1).like(f'%{prepare_like_query(main_effect_2)}%', escape='\\')
         )
 
     if echo_effect:
