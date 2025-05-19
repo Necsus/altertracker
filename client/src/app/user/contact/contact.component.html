@@ -1,3 +1,4 @@
+@if (!messageSended) {
 <div class="py-20 flex items-center justify-center bg-gray-900">
   <div class="bg-gray-800 text-white rounded-lg shadow-lg p-8 w-full max-w-md">
     <h2 class="text-2xl font-bold text-center mb-6">Contactez-nous</h2>
@@ -35,10 +36,15 @@
       </div>
 
       <!-- Bouton d'envoi -->
-      <button type="submit"
-        class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg transition duration-300">
+      <button type="submit" [disabled]="!isFormValid()"
+        [ngClass]="{'bg-gray-500 cursor-not-allowed': !isFormValid(), 'bg-blue-600 hover:bg-blue-700': isFormValid()}"
+        class="md:col-span-3 w-full text-white py-2 px-4 rounded-md transition duration-300">
         Envoyer le message
       </button>
     </form>
   </div>
 </div>
+}
+@else {
+<app-thank-you [context]="'contact'"></app-thank-you>
+}

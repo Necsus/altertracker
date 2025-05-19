@@ -1,11 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { catchError, from, map, mergeMap, of, throwError } from 'rxjs';
 import { OfferLiveMarketRequest } from '../../01_models/02_api/card/offer-live-market-request.model';
 import { UserAlertModel } from '../../01_models/03_business/user-alert.model';
 import { AlteredService } from '../../03_business/altered.service';
 import { CardService } from '../../03_business/card.service';
 import { UserService } from '../../03_business/user.service';
+import { AuthViewService } from '../../authentication/auth-view.service';
 import { CardComponent } from '../../cards/card/card.component';
 import { ToastService } from '../../shared/services/toast/toast.service';
 
@@ -23,10 +25,15 @@ export class UserAlertsComponent implements OnInit {
     private userService: UserService,
     private toastService: ToastService,
     private alteredService: AlteredService,
-    private cardService: CardService
+    private cardService: CardService,
+    private authViewService: AuthViewService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
+    this.authViewService.isLoggedIn$.subscribe(status => {
+      if (!status) this.router.navigate(['/login']);
+    });
     this.loadUserAlerts();
   }
 

@@ -1,5 +1,7 @@
+import sib_api_v3_sdk
 from flask import Blueprint, jsonify, request, make_response
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from app.extensions import mail_api, ApiException
 from app.services.user_service import (
     get_user_search_service,
     save_user_search_service,
@@ -116,3 +118,29 @@ def update_user_alert(id_alert):
         return jsonify(updated_alert), 200
     except Exception as e:
         return jsonify({"message": f"Erreur lors de la mise à jour de l'alerte : {str(e)}"}), 400
+    
+@user_bp.route('/contact', methods=['POST'])
+@jwt_required()
+def contact_form():
+    try:
+        user_id = get_jwt_identity()
+        data = request.get_json()
+
+        # Vérification des champs requis
+        if not data.get('name') or not data.get('email') or not data.get('subject') or not data.get('message'):
+            return jsonify({"message": "Tous les champs sont requis"}), 400
+
+        # Envoi d'un email de bienvenue
+        send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
+            to=[{"email": "contact@altertracker.com", "name": "contact"}],
+            subject=data.get('subject'),
+            html_content=data.get('message'),
+            sender={"name": f"{data.get('name')} id: {user_id}", "email": data.get('email')}
+        )
+        try:
+            response = mail_api.send_transac_email(send_smtp_email)
+        except ApiException as e:
+            print("Exception lors de l'appel à l’API Sendinblue: %s\n" % e)
+        return jsonify({"message": "Votre message a été envoyé avec succès"}), 200
+    except Exception as e:
+        return jsonify({"message": f"Erreur lors de l'envoi de l'email : {str(e)}"}), 500

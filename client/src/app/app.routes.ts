@@ -8,11 +8,11 @@ import { LoginComponent } from './authentication/login.component';
 import { RegisterComponent } from './authentication/register.component';
 import { TokenComponent } from './authentication/token.component';
 import { CardsComponent } from './cards/cards.component';
-import { ContactComponent } from './contact/contact.component';
 import { HomeComponent } from './home/home.component';
 import { NotFoundComponent } from './shared/error-pages/not-found/not-found.component';
 import { UnauthorizedComponent } from './shared/error-pages/unauthorized/unauthorized.component';
 import { UnderConstructionComponent } from './shared/under-construction/under-construction.component';
+import { ContactComponent } from './user/contact/contact.component';
 import { UserAlertsComponent } from './user/user-alerts/user-alerts.component';
 import { UserSearchesComponent } from './user/user-searches/user-searches.component';
 

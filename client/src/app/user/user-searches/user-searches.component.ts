@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserSearchModel } from '../../01_models/03_business/user-search.model';
 import { UserService } from '../../03_business/user.service';
+import { AuthViewService } from '../../authentication/auth-view.service';
 import { ToastService } from '../../shared/services/toast/toast.service';
 
 @Component({
@@ -18,10 +19,14 @@ export class UserSearchesComponent implements OnInit {
   constructor(
     private userService: UserService,
     private toastService: ToastService,
+    private authViewService: AuthViewService,
     private router: Router
   ) { }
 
   ngOnInit(): void {
+    this.authViewService.isLoggedIn$.subscribe(status => {
+      if (!status) this.router.navigate(['/login']);
+    });
     this.loadUserSearches();
   }
 

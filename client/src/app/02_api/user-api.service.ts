@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UserAlertModel } from '../01_models/03_business/user-alert.model';
+import { UserContactModel } from '../01_models/03_business/user-contact.model';
 import { UserSearchModel } from '../01_models/03_business/user-search.model';
 import { WebApiService } from './web-api.service';
 
@@ -37,5 +38,8 @@ export class UserApiService {
   }
   put_user_alert$(request: UserAlertModel): Observable<UserAlertModel> {
     return this.wabApiService.callPut$(this.controller, 'alerts', request);
+  }
+  post_user_contact$(request: UserContactModel): Observable<any> {
+    return this.wabApiService.callPost$(this.controller, 'contact', request);
   }
 }

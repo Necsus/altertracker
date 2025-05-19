@@ -87,7 +87,12 @@ def login():
 @jwt_required(refresh=True)
 def refresh():
     identity = get_jwt_identity()
-    access_token = create_access_token(identity=identity)
+    user = User.query.filter_by(id=identity).first()
+    additional_claims = {
+        "is_admin": user.is_admin,
+        "username": user.username
+    }
+    access_token = create_access_token(identity=identity, additional_claims=additional_claims)
     return jsonify(access_token=access_token)
 
 @auth_bp.route('/logout', methods=['POST'])
