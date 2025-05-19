@@ -38,7 +38,6 @@ export class HomeComponent implements OnInit {
     private toastService: ToastService,
     private modalService: ModalService) { }
   ngOnInit(): void {
-    // this.router.navigate(['/cards']);
     this.newCardsLoading = true;
     this.cardService.get_last_added_cards$().subscribe({
       next: (response: CardModel[]) => {

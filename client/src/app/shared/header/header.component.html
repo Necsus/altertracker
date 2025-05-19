@@ -39,11 +39,14 @@
         <li class="relative">
           <button class="flex items-center space-x-2 hover:text-blue-300 transition duration-300 focus:outline-none"
             (click)="isDropdownOpen = !isDropdownOpen">
-            <span>Mon compte</span>
+            <span>{{ username }}</span>
             <i class="fas fa-chevron-down"></i>
           </button>
           <ul *ngIf="isDropdownOpen" class="absolute right-0 mt-2 w-48 bg-gray-700 text-white rounded-lg shadow-lg z-10"
             (mouseleave)="isDropdownOpen = false">
+            @if (isAdmin) {
+            <li><a routerLink="/admin" class="block px-4 py-2 hover:bg-gray-600 rounded-t-lg">Admin</a></li>
+            }
             <li><a routerLink="/me" class="block px-4 py-2 hover:bg-gray-600 rounded-t-lg">Profil</a></li>
             <li><a routerLink="/searches" class="block px-4 py-2 hover:bg-gray-600">Mes recherches</a></li>
             <li><a routerLink="/alerts" class="block px-4 py-2 hover:bg-gray-600">Mes alertes</a></li>
@@ -88,8 +91,12 @@
       <a routerLink="/token" routerLinkActive="text-blue-400"
         class="block hover:text-blue-300 transition duration-300">Token</a>
       @if (isLoggedIn) {
-      <a routerLink="/me" routerLinkActive="text-blue-400" class="block hover:text-blue-300 transition duration-300">Mon
-        compte</a>
+
+      <a routerLink="/me" routerLinkActive="text-blue-400" class="block hover:text-blue-300 transition duration-300">{{
+        username }}</a>
+      @if (isAdmin) {
+      <a routerLink="/admin" class="block hover:text-blue-300 transition duration-300">Admin</a>
+      }
       <a (click)="onLogout()"
         class="block text-red-300 hover:text-red-200 transition duration-300 cursor-pointer">Logout</a>
       <a routerLink="/contact" routerLinkActive="text-blue-400"

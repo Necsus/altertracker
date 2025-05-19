@@ -8,32 +8,42 @@ import { ToastService } from '../shared/services/toast/toast.service';
 
 @Injectable({ providedIn: 'root' })
 export class AuthViewService {
-  private refreshTimeout: any;
   loggedIn = new BehaviorSubject<boolean>(this.isTokenValid());
+  isLoggedIn$ = this.loggedIn.asObservable();
+  private refreshTimeout: any;
 
   constructor(
-    private authService: AuthService,
     private authStorageService: AuthStorageService,
+    private authService: AuthService,
     private toastService: ToastService,
     private router: Router) { }
 
-  // Vérifie si l'access token existe
-  private isTokenValid(): boolean {
+  isAdmin(): boolean {
     const token = localStorage.getItem('access_token');
     if (!token) return false;
 
     try {
-      const decoded: JwtPayload = jwtDecode(token);
-      const currentTime = Date.now() / 1000;
-      return decoded.exp !== undefined && decoded.exp > currentTime;
+      const decoded: any = jwtDecode(token);
+      return decoded.is_admin || false;
     } catch (err) {
-      console.error('Invalid token', err);
+      console.error('Error decoding token', err);
       return false;
     }
   }
 
-  // Observable pour les composants
-  isLoggedIn$ = this.loggedIn.asObservable();
+  // Récupérer le username
+  getUsername(): string | null {
+    const token = localStorage.getItem('access_token');
+    if (!token) return null;
+
+    try {
+      const decoded: any = jwtDecode(token);
+      return decoded.username || null;
+    } catch (err) {
+      console.error('Error decoding token', err);
+      return null;
+    }
+  }
 
   logout() {
     clearTimeout(this.refreshTimeout);
@@ -44,7 +54,7 @@ export class AuthViewService {
   }
 
   startTokenRefresh(): void {
-    const token = this.authStorageService.getToken();
+    const token = localStorage.getItem('access_token');
     if (!token) {
       this.logout();
       return;
@@ -68,8 +78,22 @@ export class AuthViewService {
     }
   }
 
+  // Vérifie si l'access token existe
+  private isTokenValid(): boolean {
+    const token = localStorage.getItem('access_token');
+    if (!token) return false;
+    try {
+      const decoded: JwtPayload = jwtDecode(token);
+      const currentTime = Date.now() / 1000;
+      return decoded.exp !== undefined && decoded.exp > currentTime;
+    } catch (err) {
+      console.error('Invalid token', err);
+      return false;
+    }
+  }
+
   private refreshToken(): void {
-    const refreshToken = this.authStorageService.getRefreshToken();
+    const refreshToken = localStorage.getItem('refresh_token');
     if (!refreshToken) {
       this.logout();
       return;
