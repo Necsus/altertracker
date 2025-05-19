@@ -19,7 +19,8 @@ export class AlteredService {
       map((response: any) => {
         // Mettre à jour les propriétés de la carte avec les données de l'API
         if (response['hydra:totalItems'] && response['hydra:totalItems'] > 0) {
-          card.price = Number(response['hydra:member'][0]['convertedPrice']);
+          card.price = Number(response['hydra:member'][0]['price']);
+          card.price_currency = response['hydra:member'][0]['currency'];
           card.url_offer = `https://www.altered.gg/fr-fr/cards/${card.reference}/offers`;
           card.visible = true;
 
@@ -28,11 +29,12 @@ export class AlteredService {
             reference: card.reference,
             status: response['hydra:member'][0]['status'],
             offerId: response['hydra:member'][0]['offerId'],
-            convertedPrice: card.price,
-            convertedCurrency: response['hydra:member'][0]['convertedCurrency'],
+            price: card.price,
+            currency: response['hydra:member'][0]['currency'],
           };
         } else {
           card.price = undefined;
+          card.price_currency = undefined;
           card.url_offer = undefined;
           card.visible = false;
 
@@ -41,18 +43,13 @@ export class AlteredService {
             reference: card.reference,
             status: 'unavailable',
             offerId: undefined,
-            convertedPrice: undefined,
-            convertedCurrency: undefined,
+            price: undefined,
+            currency: undefined,
           };
         }
       }),
       catchError((error) => {
         if (error.status === 401 && error.error.message == "Expired JWT Token") {
-          console.error('Erreur 401 détectée : Redirection vers la page /token.');
-          sessionStorage.removeItem('altered_token');
-          sessionStorage.removeItem('cgu_altered_token');
-          this.loaderService.hide();
-          this.router.navigate(['/token']); // Redirige l'utilisateur vers la page /token
           return throwError(() => new Error('Token invalide ou expiré. Veuillez le réinsérer.'));
         }
         return throwError(() => error); // Propager les autres erreurs

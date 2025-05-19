@@ -20,6 +20,7 @@ export interface CardModel {
   created_at?: string; // ISO date string
   edited_at?: string; // ISO date string
   price?: number;
+  price_currency?: string;
   price_updated_at?: string; // ISO date string
   url_offer?: string;
 

@@ -1,14 +1,19 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from flask_socketio import SocketIO
 from app.extensions import db, migrate
 from app.routes.global_routes import global_bp
 from app.routes.card_routes import card_bp
 from app.routes.offer_routes import offer_bp
 from app.routes.user_routes import user_bp
-from app.routes.auth_routes import auth_bp, mail
+from app.routes.auth_routes import auth_bp
+from app.routes.script_routes import script_bp
 from app.config import Config, ConfigEnv
 from flask_jwt_extended import JWTManager, get_jwt, verify_jwt_in_request
 from app.models.token_blacklist import TokenBlacklist
+from app.extensions import socketio
+
+
 
 def create_app():
     app = Flask(__name__)
@@ -16,15 +21,16 @@ def create_app():
     app.config.from_object(Config)
 
     db.init_app(app)
-    #mail.init_app(app)
     jwt = JWTManager(app)
     migrate.init_app(app, db)
+    socketio.init_app(app, cors_allowed_origins=ConfigEnv.CORS_ORIGINS, async_mode='eventlet')
 
     app.register_blueprint(global_bp, url_prefix="/api/global")
     app.register_blueprint(auth_bp, url_prefix="/api/auth")
     app.register_blueprint(card_bp, url_prefix="/api/card")
     app.register_blueprint(offer_bp, url_prefix="/api/offer")
     app.register_blueprint(user_bp, url_prefix="/api/user")
+    app.register_blueprint(script_bp, url_prefix="/api/script")
 
     @app.before_request
     def handle_options():

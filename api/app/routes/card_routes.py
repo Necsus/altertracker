@@ -70,8 +70,8 @@ class OfferLiveMarketSchema(Schema):
     reference = fields.Str(required=True)
     status = fields.Str(required=True)
     offerId = fields.Str()
-    convertedPrice = fields.Float()
-    convertedCurrency = fields.Str()
+    price = fields.Float()
+    currency = fields.Str()
 
 @card_bp.route('/offerlivemarket', methods=['POST'])
 def post_offer_live_market():

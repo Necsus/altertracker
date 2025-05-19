@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { TokenGuard } from './00_common/guards/token.guard';
+import { AboutComponent } from './about/about.component';
 import { ForgotPasswordComponent } from './authentication/forgot-password.component';
 import { LoginComponent } from './authentication/login.component';
 import { RegisterComponent } from './authentication/register.component';
@@ -23,7 +24,7 @@ export const routes: Routes = [
   { path: 'forgotpassword', component: ForgotPasswordComponent },
   { path: 'token', component: TokenComponent },
   { path: 'contact', component: ContactComponent, canActivate: [TokenGuard] },
-  { path: 'about', component: UnderConstructionComponent },
+  { path: 'about', component: AboutComponent },
   { path: 'purchaseoffers', component: UnderConstructionComponent, canActivate: [TokenGuard] },
   { path: '**', component: NotFoundComponent }
 ];

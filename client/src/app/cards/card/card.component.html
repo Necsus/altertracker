@@ -15,7 +15,8 @@
     </div>
     <div class="flex items-center py-2">
       @if (card.price) {
-      <p class="text-gray-300 mr-2" title="{{card.price_updated_at}}">Market : {{card.price}}{{card.price?'€':''}}</p>
+      <p class="text-gray-300 mr-2" title="{{card.price_updated_at}}">Market :
+        {{card.price}}{{card.price?card.price_currency:''}}</p>
       <button (click)="goToOffer()" class="text-blue-500 hover:text-blue-700 transition duration-300">
         <i class="fas fa-external-link-alt"></i>
       </button>
