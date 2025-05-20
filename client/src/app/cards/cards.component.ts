@@ -80,7 +80,11 @@ export class CardsComponent implements OnInit {
   onVisibleCardsChange(visibleCards: CardModel[]): void {
     // Exécute les requêtes pour les cartes visibles
     if (this.searchOffers) {
-      this.getMarketOffer(visibleCards);
+      if (this.isLoggedIn) {
+        this.getMarketOffer(visibleCards);
+      } else {
+        this.router.navigate(['/login']);
+      }
     }
   }
 

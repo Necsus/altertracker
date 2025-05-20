@@ -12,7 +12,7 @@ import { HomeComponent } from './home/home.component';
 import { NotFoundComponent } from './shared/error-pages/not-found/not-found.component';
 import { UnauthorizedComponent } from './shared/error-pages/unauthorized/unauthorized.component';
 import { UnderConstructionComponent } from './shared/under-construction/under-construction.component';
-import { TokenComponent } from './user/altered-token/token.component';
+import { AlteredTokenComponent } from './user/altered-token/altered-token.component';
 import { ContactComponent } from './user/contact/contact.component';
 import { UserAlertsComponent } from './user/user-alerts/user-alerts.component';
 import { UserSearchesComponent } from './user/user-searches/user-searches.component';
@@ -29,7 +29,7 @@ export const routes: Routes = [
   { path: 'validate-email/:token', component: ValidateEmailComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password/:token', component: ResetPasswordComponent },
-  { path: 'token', component: TokenComponent },
+  { path: 'token', component: AlteredTokenComponent, canActivate: [TokenGuard] },
   { path: 'contact', component: ContactComponent, canActivate: [TokenGuard] },
   { path: 'about', component: AboutComponent },
   { path: 'purchase-offers', component: UnderConstructionComponent, canActivate: [TokenGuard] },
