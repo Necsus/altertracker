@@ -64,13 +64,14 @@ with app.app_context():
         k, m = divmod(len(data), n)
         return [data[i * k + min(i, m):(i + 1) * k + min(i + 1, m)] for i in range(n)]
 
-    def process_unique_cards(subset, sets, mainCosts, recallCosts, forestPowers, total_cards, start_index):
+    def process_unique_cards(subset, mainCosts, recallCosts, forestPowers, total_cards, start_index, count):
         """Traite un sous-ensemble de cartes pour la tâche `get_unique`."""
         session = Session()
         try:
             for index, dbcard in enumerate(subset, start=start_index):
+                count += 1
                 # Afficher la progression au format "1/34"
-                print(f"\033[94mProgression : {index}/{total_cards}\033[0m")  # En bleu pour plus de visibilité
+                print(f"\033[94mProgression : {count}/{len(subset)}\033[0m")  # En bleu pour plus de visibilité
                 # for set in sets:
                     # if dbcard.set == 'ALIZE' and set != 'ALIZE':
                     #     continue
@@ -84,14 +85,13 @@ with app.app_context():
                             dbcard.name_en, dbcard.faction, dbcard.set, mainCost, recallCost, forestPowers, 1
                         )
 
-                        if test_result['hydra:totalItems'] >= 1000:
-                            print(f"\033[91mATTENTION TROP DE RESULTATS MANQUE DES CARTES")
-
                         if test_result and test_result.get('hydra:totalItems', 0) > 0:
+                            if test_result.get('hydra:totalItems', 0) >= 1000:
+                              print(f"\033[91mATTENTION TROP DE RESULTATS MANQUE DES CARTES")
                             page = 1
                             while True:
                                 cards = card_routine.get_unique_cards_name_faction(
-                                    dbcard.name_en, dbcard.faction, set, mainCost, recallCost, forestPowers, page
+                                    dbcard.name_en, dbcard.faction, dbcard.set, mainCost, recallCost, forestPowers, page
                                 )
 
                                 if not cards or 'hydra:member' not in cards or not cards['hydra:member']:
@@ -157,7 +157,7 @@ with app.app_context():
 
     def get_unique():
         print("----------- GET UNIQUE -----------")
-        sets = ['COREKS', 'CORE', 'ALIZE', 'BISE']
+        # sets = ['COREKS', 'CORE', 'ALIZE', 'BISE']
         mainCosts = list(range(1, 11))
         recallCosts = list(range(1, 11))
         forestPowers = list(range(0, 11))
@@ -184,8 +184,9 @@ with app.app_context():
         with ThreadPoolExecutor(max_workers=3) as executor:
             futures = []
             for i, subset in enumerate(subsets):
+                count = 0
                 start_index = sum(len(subsets[j]) for j in range(i)) + 1
-                futures.append(executor.submit(process_unique_cards, subset, sets, mainCosts, recallCosts, forestPowers, total_cards, start_index))
+                futures.append(executor.submit(process_unique_cards, subset, mainCosts, recallCosts, forestPowers, total_cards, start_index, count))
 
             for future in futures:
                 future.result()  # Attendre que toutes les tâches soient terminées

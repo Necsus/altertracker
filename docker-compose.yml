@@ -18,6 +18,7 @@ services:
     restart: always
     depends_on:
       - db
+      - redis
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
       CORS_ORIGINS: ${CORS_ORIGINS}
@@ -26,10 +27,19 @@ services:
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
       BREVO_API_KEY: ${BREVO_API_KEY}
       ANGULAR_URL: ${ANGULAR_URL}
+      FLASK_ENV: ${FLASK_ENV}
+      REDIS_HOST: redis
     expose:
       - "5000"
     networks:
       - backend
+
+    redis:
+      image: redis:alpine
+      ports:
+        - "6379:6379"
+      networks:
+        - backend
 
   web:
     image: nginx:latest

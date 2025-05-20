@@ -1,8 +1,25 @@
-<div>
-  <button (click)="startScript()" [disabled]="isRunning">Start Test Script</button>
-  {{ isRunning ? 'Exécution en cours...' : 'Exécuter le script' }}
-  <h1>Logs du script</h1>
-  <pre>{{ logs }}</pre>
-  <p *ngIf="error" class="error">Erreur : {{ error }}</p>
-  <p *ngIf="finished" class="success">Script terminé !</p>
+<div class="bg-gray-900 p-6 rounded-2xl shadow-lg max-w-3xl mx-auto text-gray-100 space-y-4">
+  <div class="flex justify-between items-center">
+    <h2 class="text-xl font-semibold">Exécution de Script</h2>
+    <span class="text-sm font-medium px-3 py-1 rounded-full" [ngClass]="{
+        'bg-yellow-500 text-black': status === 'running',
+        'bg-green-600': status === 'success',
+        'bg-red-600': status === 'error',
+        'bg-gray-700': status === 'idle'
+      }">
+      {{ status }}
+    </span>
+  </div>
+
+  <div class="flex gap-2">
+    <button (click)="runScript()"
+      class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-4 py-2 rounded-xl transition duration-200 disabled:opacity-50"
+      [disabled]="status === 'running'">
+      Lancer le script
+    </button>
+  </div>
+
+  <div class="bg-gray-800 p-4 rounded-xl h-64 overflow-auto text-sm font-mono border border-gray-700">
+    <pre>{{ logs }}</pre>
+  </div>
 </div>

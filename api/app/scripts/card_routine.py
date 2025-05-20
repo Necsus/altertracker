@@ -32,9 +32,6 @@ def get_cards(page: int, rarity: str):
         
         if data['hydra:totalItems'] <= 0:
             return None
-        
-        if data['hydra:totalItems'] >= 1000:
-            print(f"\033[91mATTENTION TROP DE RESULTATS MANQUE DES CARTES")
 
         # Retourner les données
         return data
@@ -73,15 +70,12 @@ def get_unique_cards_name_faction(name: str, faction: str, set: str, mainCost: i
 
         if data['hydra:totalItems'] <= 0:
             return None
-        
-        if data['hydra:totalItems'] >= 1000:
-            print(f"\033[91mATTENTION TROP DE RESULTATS MANQUE DES CARTES")
 
         # Retourner les données
         return data
     except requests.exceptions.RequestException as e:
         # Gérer les erreurs de requête
-        print(f"\033[91mErreur lors de la requête : {e}\033[0m")
+        # print(f"\033[91mErreur lors de la requête : {e}\033[0m")
         return None
 
 def get_card_by_reference(card_reference: str, en: bool = False):

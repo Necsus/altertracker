@@ -18,3 +18,4 @@ class ConfigEnv:
     CORS_ORIGINS = os.getenv('CORS_ORIGINS', '').split(',')
     BREVO_API_KEY = os.getenv('BREVO_API_KEY')
     ANGULAR_URL = os.getenv('ANGULAR_URL')
+    FLASK_ENV = os.getenv('FLASK_ENV')

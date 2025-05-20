@@ -21,14 +21,14 @@ def run_script():
 
         for line in process.stdout:
             print(line)
-            socketio.emit('script_output', {'data': line}, broadcast=True)
+            socketio.emit('script_output', {'data': line})
 
         process.stdout.close()
         process.wait()
     except Exception as e:
-        socketio.emit('script_error', {'error': str(e)}, broadcast=True)
+        socketio.emit('script_error', {'error': str(e)})
     finally:
-        socketio.emit('script_finished', {'status': 'done'}, broadcast=True)
+        socketio.emit('script_finished', {'status': 'done'})
 
 @script_bp.route('/start-script')
 @jwt_required()

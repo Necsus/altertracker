@@ -13,3 +13,4 @@ sib_api_v3_sdk==7.6.0
 Flask-SocketIO==5.5.1
 eventlet==0.40.0
 Flask-Limiter==3.12
+redis==6.1.0
