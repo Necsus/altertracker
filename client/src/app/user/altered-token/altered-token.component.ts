@@ -2,21 +2,33 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ToastService } from '../shared/services/toast/toast.service';
+import { AuthViewService } from '../../authentication/auth-view.service';
+import { ModalService } from '../../shared/services/modal/modal.service';
+import { ToastService } from '../../shared/services/toast/toast.service';
+import { CguTokenComponent } from './cgu-token.component';
 
 @Component({
-  selector: 'app-token',
-  templateUrl: './token.component.html',
+  selector: 'app-altered-token',
+  templateUrl: './altered-token.component.html',
   imports: [CommonModule, FormsModule]
 })
-export class TokenComponent {
+export class AlteredTokenComponent {
   token: string = '';
   acceptedCGU: boolean = false;
   formSubmitted: boolean = false;
 
-  constructor(private router: Router, private toastService: ToastService) { }
+  constructor(
+    private router: Router,
+    private toastService: ToastService,
+    private modalService: ModalService,
+    private authViewService: AuthViewService) { }
 
   ngOnInit() {
+    this.authViewService.isLoggedIn$.subscribe(status => {
+      if (!status) {
+        this.router.navigate(['/login']);
+      }
+    });
     const storedToken = sessionStorage.getItem('altered_token');
     const storedCGU = sessionStorage.getItem('cgu_altered_token');
 
@@ -30,7 +42,7 @@ export class TokenComponent {
   }
 
   cguClick(): void {
-    this.toastService.show('Fonctionnalité en construction...', 'error', 5000);
+    this.modalService.open(CguTokenComponent, undefined);
   }
 
   onSubmit() {
@@ -51,7 +63,7 @@ export class TokenComponent {
   }
 
   isFormValid(): boolean {
-    return this.isTokenValid() && this.acceptedCGU;
+    return this.acceptedCGU;
   }
 
   isTokenValid(): boolean {

@@ -3,6 +3,7 @@ import subprocess
 import threading
 from flask import Blueprint
 from flask_jwt_extended import jwt_required
+from flask_socketio import emit
 from app.extensions import socketio
 from app.decorators.auth_decorator import admin_required
 
@@ -11,7 +12,7 @@ script_bp = Blueprint('script', __name__)
 def run_script():
     try:
         process = subprocess.Popen(
-            ['python3', 'app/scripts/script_get_no_unique.py'],
+            ['python3', 'app/scripts/test-script.py'],
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,
@@ -19,6 +20,7 @@ def run_script():
         )
 
         for line in process.stdout:
+            print(line)
             socketio.emit('script_output', {'data': line})
 
         process.stdout.close()
@@ -35,3 +37,12 @@ def start_script():
     thread = threading.Thread(target=run_script)
     thread.start()
     return {'status': 'started'}
+
+@socketio.on('connect')
+def handle_connect():
+    print('Client connected')
+    emit('server_message', {'data': 'Welcome to the server!'})
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    print('Client disconnected')

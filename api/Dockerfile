@@ -13,4 +13,4 @@ ENTRYPOINT ["./entrypoint.sh"]
 
 ENV FLASK_APP=run.py
 
-CMD ["flask", "run", "--host=0.0.0.0"]
+CMD ["gunicorn", "-w", "4", "-k", "eventlet", "-b", "0.0.0.0:5000", "run:app"]

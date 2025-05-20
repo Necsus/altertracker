@@ -110,6 +110,10 @@ with app.app_context():  # Activer le contexte de l'application
             print(f"Récupération des cartes de la page {page}...")
             cards = card_routine.get_cards(page, rarity)
 
+            if cards and cards.get('hydra:totalItems', 0) >= 1000:
+                print(f"\033[91mATTENTION TROP DE RESULTATS MANQUE DES CARTES")
+
+
             if not cards or 'hydra:member' not in cards or not cards['hydra:member']:
                 break
 

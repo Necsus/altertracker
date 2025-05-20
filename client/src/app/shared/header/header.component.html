@@ -32,8 +32,6 @@
         </li>
         <li><a routerLink="/about" routerLinkActive="text-blue-400" style="user-select: none;"
             class="hover:text-blue-300 transition duration-300 cursor-pointer">À propos</a></li>
-        <li><a routerLink="/token" routerLinkActive="text-blue-400" style="user-select: none;"
-            class="hover:text-blue-300 transition duration-300 cursor-pointer">Token</a></li>
         <!-- Dropdown for logged-in users -->
         @if (isLoggedIn) {
         <li class="relative">
@@ -48,6 +46,7 @@
             <li><a routerLink="/admin" class="block px-4 py-2 hover:bg-gray-600 rounded-t-lg">Admin</a></li>
             }
             <li><a routerLink="/me" class="block px-4 py-2 hover:bg-gray-600 rounded-t-lg">Profil</a></li>
+            <li><a routerLink="/token" class="block px-4 py-2 hover:bg-gray-600">Token Altered</a></li>
             <li><a routerLink="/searches" class="block px-4 py-2 hover:bg-gray-600">Mes recherches</a></li>
             <li><a routerLink="/alerts" class="block px-4 py-2 hover:bg-gray-600">Mes alertes</a></li>
             <li><a routerLink="/purchaseoffers" class="block px-4 py-2 hover:bg-gray-600">Offres
@@ -79,6 +78,8 @@
       <a routerLink="/cards" routerLinkActive="text-blue-400" [routerLinkActiveOptions]="{ exact: true }"
         class="block hover:text-blue-300 transition duration-300">Cartes</a>
       @if (isLoggedIn) {
+      <a routerLink="/token" routerLinkActive="text-blue-400"
+        class="block hover:text-blue-300 transition duration-300">Token Altered</a>
       <a routerLink="/purchaseoffers" routerLinkActive="text-blue-400"
         class="block hover:text-blue-300 transition duration-300">Offres d'achat</a>
       <a routerLink="/searches" routerLinkActive="text-blue-400"
@@ -88,8 +89,6 @@
       }
       <a routerLink="/about" routerLinkActive="text-blue-400"
         class="block hover:text-blue-300 transition duration-300">À propos</a>
-      <a routerLink="/token" routerLinkActive="text-blue-400"
-        class="block hover:text-blue-300 transition duration-300">Token</a>
       @if (isLoggedIn) {
 
       <a routerLink="/me" routerLinkActive="text-blue-400" class="block hover:text-blue-300 transition duration-300">{{

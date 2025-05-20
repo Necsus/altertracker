@@ -1,7 +1,7 @@
 import os
 from typing import List, Optional
-
 import sib_api_v3_sdk
+from app.config import ConfigEnv
 from app.utils.emails import render_template_with_data
 from app.models.offer import Offer
 from app.models.card import Card
@@ -164,7 +164,7 @@ def send_user_alert(card: Card, type_changement: str):
                         "PRICE": f"{card.price} {card.price_currency}" if card.price and card.price_currency else "N/A",
                         "DATE_EFFECTIVE": card.price_updated_at.strftime("%d/%m/%Y %H:%M"),
                         "URL_IMAGE_CARD": image_url,
-                        "LIEN_VERS_ALERTS": "https://altertracker.com/alerts",
+                        "LIEN_VERS_ALERTS": f"{ConfigEnv.ANGULAR_URL}/alerts",
                         "YEAR": str(datetime.now().year)
                     }),
                     sender={"name": "AlterTracker", "email": "noreply@altertracker.com"}

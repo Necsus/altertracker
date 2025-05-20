@@ -5,7 +5,7 @@ def get_cards(page: int, rarity: str):
     base_url = "https://api.altered.gg/cards"
     params = {
         "page": page,
-        "cardSet[]": ["CORE", "ALIZE", "BISE"],
+        "cardSet[]": ["COREKS", "CORE", "ALIZE", "BISE"],
         "cardType[]": [
             "EXPEDITION_PERMANENT",
             "CHARACTER",
@@ -75,7 +75,7 @@ def get_unique_cards_name_faction(name: str, faction: str, set: str, mainCost: i
         return data
     except requests.exceptions.RequestException as e:
         # Gérer les erreurs de requête
-        print(f"\033[91mErreur lors de la requête : {e}\033[0m")
+        # print(f"\033[91mErreur lors de la requête : {e}\033[0m")
         return None
 
 def get_card_by_reference(card_reference: str, en: bool = False):

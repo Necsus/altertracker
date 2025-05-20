@@ -3,11 +3,13 @@ import { ApplicationConfig, EnvironmentInjector, importProvidersFrom, Injector, 
 import { provideRouter } from '@angular/router';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { routes } from './app.routes';
 
 const createTranslateLoader = (http: HttpClient): TranslateHttpLoader => {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 };
+const config: SocketIoConfig = { url: 'http://localhost:5000', options: {} };
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,7 +22,8 @@ export const appConfig: ApplicationConfig = {
           useFactory: createTranslateLoader,
           deps: [HttpClient]
         }
-      })
+      }),
+      SocketIoModule.forRoot(config),
     ),
     {
       provide: LOCALE_ID, useValue: navigator.language
