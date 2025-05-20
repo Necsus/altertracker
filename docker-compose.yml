@@ -26,6 +26,8 @@ services:
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
       BREVO_API_KEY: ${BREVO_API_KEY}
       ANGULAR_URL: ${ANGULAR_URL}
+    expose:
+      - "5000"
     networks:
       - backend
 
