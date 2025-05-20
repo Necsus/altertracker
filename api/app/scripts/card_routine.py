@@ -5,7 +5,7 @@ def get_cards(page: int, rarity: str):
     base_url = "https://api.altered.gg/cards"
     params = {
         "page": page,
-        "cardSet[]": ["CORE", "ALIZE", "BISE"],
+        "cardSet[]": ["COREKS", "CORE", "ALIZE", "BISE"],
         "cardType[]": [
             "EXPEDITION_PERMANENT",
             "CHARACTER",
@@ -32,6 +32,9 @@ def get_cards(page: int, rarity: str):
         
         if data['hydra:totalItems'] <= 0:
             return None
+        
+        if data['hydra:totalItems'] >= 1000:
+            print(f"\033[91mATTENTION TROP DE RESULTATS MANQUE DES CARTES")
 
         # Retourner les données
         return data
@@ -70,6 +73,9 @@ def get_unique_cards_name_faction(name: str, faction: str, set: str, mainCost: i
 
         if data['hydra:totalItems'] <= 0:
             return None
+        
+        if data['hydra:totalItems'] >= 1000:
+            print(f"\033[91mATTENTION TROP DE RESULTATS MANQUE DES CARTES")
 
         # Retourner les données
         return data

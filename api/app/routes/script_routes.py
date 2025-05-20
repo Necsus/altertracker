@@ -3,6 +3,7 @@ import subprocess
 import threading
 from flask import Blueprint
 from flask_jwt_extended import jwt_required
+from flask_socketio import emit
 from app.extensions import socketio
 from app.decorators.auth_decorator import admin_required
 
@@ -20,14 +21,14 @@ def run_script():
 
         for line in process.stdout:
             print(line)
-            socketio.emit('script_output', {'data': line})
+            socketio.emit('script_output', {'data': line}, broadcast=True)
 
         process.stdout.close()
         process.wait()
     except Exception as e:
-        socketio.emit('script_error', {'error': str(e)})
+        socketio.emit('script_error', {'error': str(e)}, broadcast=True)
     finally:
-        socketio.emit('script_finished', {'status': 'done'})
+        socketio.emit('script_finished', {'status': 'done'}, broadcast=True)
 
 @script_bp.route('/start-script')
 @jwt_required()
@@ -36,3 +37,12 @@ def start_script():
     thread = threading.Thread(target=run_script)
     thread.start()
     return {'status': 'started'}
+
+@socketio.on('connect')
+def handle_connect():
+    print('Client connected')
+    emit('server_message', {'data': 'Welcome to the server!'})
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    print('Client disconnected')

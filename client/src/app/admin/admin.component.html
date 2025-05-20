@@ -1,2 +1,8 @@
-<button (click)="startScript()">Lancer le script</button>
-<pre>{{ log }}</pre>
+<div>
+  <button (click)="startScript()" [disabled]="isRunning">Start Test Script</button>
+  {{ isRunning ? 'Exécution en cours...' : 'Exécuter le script' }}
+  <h1>Logs du script</h1>
+  <pre>{{ logs }}</pre>
+  <p *ngIf="error" class="error">Erreur : {{ error }}</p>
+  <p *ngIf="finished" class="success">Script terminé !</p>
+</div>
