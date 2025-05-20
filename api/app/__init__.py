@@ -12,6 +12,8 @@ from app.config import Config, ConfigEnv
 from flask_jwt_extended import JWTManager, get_jwt, verify_jwt_in_request
 from app.models.token_blacklist import TokenBlacklist
 from app.extensions import socketio
+from app.extensions import limiter
+
 
 
 
@@ -24,6 +26,7 @@ def create_app():
     jwt = JWTManager(app)
     migrate.init_app(app, db)
     socketio.init_app(app, cors_allowed_origins=ConfigEnv.CORS_ORIGINS, async_mode='eventlet')
+    limiter.init_app(app)
 
     app.register_blueprint(global_bp, url_prefix="/api/global")
     app.register_blueprint(auth_bp, url_prefix="/api/auth")

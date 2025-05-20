@@ -11,7 +11,7 @@ script_bp = Blueprint('script', __name__)
 def run_script():
     try:
         process = subprocess.Popen(
-            ['python3', '-u', '../scripts/test-script.py'],
+            ['python3', 'app/scripts/test-script.py'],
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT,
             text=True,

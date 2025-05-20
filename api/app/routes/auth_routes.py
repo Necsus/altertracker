@@ -14,7 +14,7 @@ from app.extensions import db
 from app.utils.security import hash_password, check_password
 import itsdangerous
 from datetime import datetime
-from app.extensions import mail_api, ApiException
+from app.extensions import mail_api, ApiException, limiter
 
 auth_bp = Blueprint('auth', __name__)
 serializer = itsdangerous.URLSafeTimedSerializer('secret-reset-token')
@@ -74,6 +74,7 @@ def register():
     return jsonify({"message": "Un email vient de vous être envoyé pour la suite de l'inscription"}), 201
 
 @auth_bp.route('/validate-email/<token>', methods=['GET'])
+@limiter.limit("5 per minute")
 def validate_email(token):
     try:
         email = serializer.loads(token, salt=Config.SECRET_KEY, max_age=3600)  # 1 heure
@@ -94,6 +95,7 @@ def validate_email(token):
     return jsonify({"message": "Email validated successfully"}), 200
 
 @auth_bp.route('/resend-validation/<token>', methods=['GET'])
+@limiter.limit("5 per minute")
 def resend_validation_email(token):
     try:
         email = serializer.loads(token, salt=Config.SECRET_KEY, max_age=3600)  # 1 heure
@@ -137,6 +139,7 @@ def resend_validation_email(token):
     return jsonify({"message": "Validation email resent successfully"}), 200
 
 @auth_bp.route('/login', methods=['POST'])
+@limiter.limit("5 per minute")
 def login():
     data = request.get_json()
     user = User.query.filter_by(email=data['email']).first()
@@ -153,6 +156,7 @@ def login():
     return jsonify(access_token=access_token, refresh_token=refresh_token)
 
 @auth_bp.route('/refresh', methods=['POST'])
+@limiter.limit("5 per minute")
 @jwt_required(refresh=True)
 def refresh():
     identity = get_jwt_identity()
@@ -175,6 +179,7 @@ def logout():
     return response
 
 @auth_bp.route('/forgot-password', methods=['POST'])
+@limiter.limit("5 per minute")
 def forgot_password():
     data = request.get_json()
     user = User.query.filter_by(email=data['email']).first()
@@ -204,6 +209,7 @@ def forgot_password():
     return jsonify({"message": "Reset Password email sent"}), 200
 
 @auth_bp.route('/reset-password/<token>', methods=['POST'])
+@limiter.limit("5 per minute")
 def reset_password(token):
     try:
         email = serializer.loads(token, salt=Config.SECRET_KEY, max_age=3600)
