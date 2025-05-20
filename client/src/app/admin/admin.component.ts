@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { environment } from '../../environments/environment';
 import { SocketService } from './socket.service';
 
 @Component({
@@ -38,7 +39,7 @@ export class AdminComponent implements OnInit {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${localStorage.getItem('access_token')}` // Remplacez 'your-token-here' par le token réel
     });
-    this.http.get('http://localhost:5000/api/script/start-script', { headers }).subscribe({
+    this.http.get(`${environment.socketio_url}/api/script/start-script`, { headers }).subscribe({
       next: (response) => {
         this.logs = ''; // Réinitialiser les logs
         this.status = 'idle'; // Réinitialiser l'erreur
