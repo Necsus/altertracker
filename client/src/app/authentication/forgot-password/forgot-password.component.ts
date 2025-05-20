@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../03_business/auth.service';
-import { ToastService } from '../shared/services/toast/toast.service';
-import { AuthViewService } from './auth-view.service';
-
+import { AuthService } from '../../03_business/auth.service';
+import { ToastService } from '../../shared/services/toast/toast.service';
+import { AuthViewService } from '../auth-view.service';
 
 @Component({
   selector: 'app-forgot-password',

@@ -33,6 +33,7 @@ jobs:
           export SECRET_KEY=${{ secrets.SECRET_KEY }}
           export JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
           export BREVO_API_KEY=${{ secrets.BREVO_API_KEY }}
+          export ANGULAR_URL=${{ vars.ANGULAR_URL }}
 
           echo "[+] Début du déploiement à $(date)"
           cd ~/geekom/uniquetracker

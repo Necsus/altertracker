@@ -169,9 +169,9 @@ with app.app_context():
             session.close()
 
         total_cards = len(existing_cards)
-        subsets = split_list(list(existing_cards.values()), 6)  # Divise en 5 sous-listes
+        subsets = split_list(list(existing_cards.values()), 3)  # Divise en 5 sous-listes
 
-        with ThreadPoolExecutor(max_workers=6) as executor:
+        with ThreadPoolExecutor(max_workers=3) as executor:
             futures = []
             for i, subset in enumerate(subsets):
                 start_index = sum(len(subsets[j]) for j in range(i)) + 1

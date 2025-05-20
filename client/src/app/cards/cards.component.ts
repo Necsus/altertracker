@@ -8,6 +8,7 @@ import { AlteredService } from '../03_business/altered.service';
 import { CardService } from '../03_business/card.service';
 import { AuthViewService } from '../authentication/auth-view.service';
 import { LoaderService } from '../shared/services/loader/loader.service';
+import { ToastService } from '../shared/services/toast/toast.service';
 import { CardGroupComponent } from './card-group/card-group.component';
 import { SaveSearchComponent } from './save-search/save-search.component';
 import { SearchPanelComponent } from './search-panel/search-panel.component';
@@ -32,7 +33,8 @@ export class CardsComponent implements OnInit {
     private alteredService: AlteredService,
     private router: Router,
     private loaderService: LoaderService,
-    private authViewService: AuthViewService) { }
+    private authViewService: AuthViewService,
+    private toastService: ToastService) { }
 
   ngOnInit(): void {
     this.authViewService.isLoggedIn$.subscribe(status => {
@@ -98,11 +100,13 @@ export class CardsComponent implements OnInit {
             updatedCards.push(offerRequest);
           }),
           catchError((error) => {
+
             if (error.message === 'Token invalide ou expiré. Veuillez le réinsérer.') {
               console.error('Erreur 401 détectée : Redirection vers la page /token.');
               sessionStorage.removeItem('altered_token');
               sessionStorage.removeItem('cgu_altered_token');
               this.loaderService.hide();
+              this.toastService.show(error.message, 'error', 5000);
               this.router.navigate(['/token']); // Redirige l'utilisateur vers la page /token
               return of(); // Arrête la propagation des requêtes
             }

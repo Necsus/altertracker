@@ -6,19 +6,17 @@ from flask_jwt_extended import (
     create_access_token, create_refresh_token, jwt_required,
     get_jwt_identity, get_jwt, unset_jwt_cookies
 )
-from app.config import Config
+from app.config import Config, ConfigEnv
 from app.utils.emails import render_template_with_data
 from app.models.user import User
 from app.models.token_blacklist import TokenBlacklist
 from app.extensions import db
 from app.utils.security import hash_password, check_password
-from flask_mail import Message, Mail
 import itsdangerous
 from datetime import datetime
 from app.extensions import mail_api, ApiException
 
 auth_bp = Blueprint('auth', __name__)
-mail = Mail()
 serializer = itsdangerous.URLSafeTimedSerializer('secret-reset-token')
 
 @auth_bp.route('/register', methods=['POST'])
@@ -54,7 +52,7 @@ def register():
 
     # Générer un jeton de validation
     token = serializer.dumps(user.email, salt=Config.SECRET_KEY)
-    validation_url = f"https://altertracker.com/validate-email/{token}"
+    validation_url = f"{ConfigEnv.ANGULAR_URL}/validate-email/{token}"
 
     # Envoi d'un email de bienvenue
     template_path = os.path.join(os.path.dirname(__file__), '../templates/register.html')
@@ -111,12 +109,18 @@ def resend_validation_email(token):
 
         # Générer un nouveau jeton de validation
         token = serializer.dumps(user.email, salt=Config.SECRET_KEY)
-        validation_url = f"https://altertracker.com/validate-email/{token}"
+        validation_url = f"{ConfigEnv.ANGULAR_URL}/validate-email/{token}"
 
+        # Envoi d'un email de bienvenue
+        template_path = os.path.join(os.path.dirname(__file__), '../templates/register.html')
         send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
-            to=[{"email": email, "name": user.username}],
+            to=[{"email": user.email, "name": user.username}],
             subject="Bienvenue sur AlterTracker.com",
-            html_content=f"Bonjour {user.username},\n\nClique sur le lien pour valier ton email: {validation_url}\n\nCe lien expire dans 1h.",
+            html_content=render_template_with_data(template_path, {
+                "USERNAME": user.username,
+                "LIEN_DE_VALIDATION": validation_url,
+                "YEAR": str(datetime.now().year)
+            }),
             sender={"name": "AlterTracker", "email": "noreply@altertracker.com"}
         )
         try:
@@ -176,17 +180,33 @@ def forgot_password():
     user = User.query.filter_by(email=data['email']).first()
     if not user:
         return jsonify({"message": "Email not found"}), 404
-    token = serializer.dumps(user.email, salt='reset')
-    reset_url = f"http://frontend/reset-password/{token}"
-    msg = Message("Password Reset", recipients=[user.email])
-    msg.body = f"Click to reset: {reset_url}"
-    mail.send(msg)
-    return jsonify({"message": "Reset email sent"}), 200
+
+    # Générer un nouveau jeton de validation
+    token = serializer.dumps(user.email, salt=Config.SECRET_KEY)
+    reset_url = f"{ConfigEnv.ANGULAR_URL}/reset-password/{token}"
+
+    template_path = os.path.join(os.path.dirname(__file__), '../templates/reset-password.html')
+    send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
+        to=[{"email": user.email, "name": user.username}],
+        subject="Changement de mot de passe AlterTracker",
+        html_content=render_template_with_data(template_path, {
+            "USERNAME": user.username,
+            "RESET_LINK": reset_url,
+            "YEAR": str(datetime.now().year)
+        }),
+        sender={"name": "AlterTracker", "email": "noreply@altertracker.com"}
+    )
+    try:
+        response = mail_api.send_transac_email(send_smtp_email)
+        print(response)
+    except ApiException as e:
+        print("Exception lors de l'appel à l’API Sendinblue: %s\n" % e)
+    return jsonify({"message": "Reset Password email sent"}), 200
 
 @auth_bp.route('/reset-password/<token>', methods=['POST'])
 def reset_password(token):
     try:
-        email = serializer.loads(token, salt='reset', max_age=3600)
+        email = serializer.loads(token, salt=Config.SECRET_KEY, max_age=3600)
     except itsdangerous.BadSignature:
         return jsonify({"message": "Invalid or expired token"}), 400
     data = request.get_json()

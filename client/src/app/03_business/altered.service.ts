@@ -49,7 +49,7 @@ export class AlteredService {
         }
       }),
       catchError((error) => {
-        if (error.status === 401 && error.error.message == "Expired JWT Token") {
+        if ((error.status === 401 && error.error.message == "Expired JWT Token") || error.status === 500) {
           return throwError(() => new Error('Token invalide ou expiré. Veuillez le réinsérer.'));
         }
         return throwError(() => error); // Propager les autres erreurs

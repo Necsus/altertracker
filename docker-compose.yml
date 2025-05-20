@@ -25,6 +25,7 @@ services:
       SECRET_KEY: ${SECRET_KEY}
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
       BREVO_API_KEY: ${BREVO_API_KEY}
+      ANGULAR_URL: ${ANGULAR_URL}
     networks:
       - backend
 

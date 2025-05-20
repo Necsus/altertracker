@@ -2,8 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { ModalService } from '../shared/services/modal/modal.service';
-import { ToastService } from '../shared/services/toast/toast.service';
+import { ModalService } from '../../shared/services/modal/modal.service';
+import { ToastService } from '../../shared/services/toast/toast.service';
 import { CguTokenComponent } from './cgu-token.component';
 
 @Component({
@@ -56,7 +56,7 @@ export class TokenComponent {
   }
 
   isFormValid(): boolean {
-    return this.isTokenValid() && this.acceptedCGU;
+    return this.acceptedCGU;
   }
 
   isTokenValid(): boolean {

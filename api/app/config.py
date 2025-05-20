@@ -14,11 +14,7 @@ class Config:
     JWT_HEADER_NAME = 'Authorization'
     JWT_HEADER_TYPE = 'Bearer'
     PASSWORD_PEPPER = os.getenv('PASSWORD_PEPPER') or 'ultra-secret-pepper'
-    MAIL_DEFAULT_SENDER = 'noreply@yourapp.com'
-    MAIL_SERVER = 'smtp.mailtrap.io'
-    MAIL_PORT = 2525
-    MAIL_USERNAME = 'your_user'
-    MAIL_PASSWORD = 'your_pass'
 class ConfigEnv:
     CORS_ORIGINS = os.getenv('CORS_ORIGINS', '').split(',')
     BREVO_API_KEY = os.getenv('BREVO_API_KEY')
+    ANGULAR_URL = os.getenv('ANGULAR_URL')
