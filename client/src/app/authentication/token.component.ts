@@ -2,7 +2,9 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ModalService } from '../shared/services/modal/modal.service';
 import { ToastService } from '../shared/services/toast/toast.service';
+import { CguTokenComponent } from './cgu-token.component';
 
 @Component({
   selector: 'app-token',
@@ -14,7 +16,10 @@ export class TokenComponent {
   acceptedCGU: boolean = false;
   formSubmitted: boolean = false;
 
-  constructor(private router: Router, private toastService: ToastService) { }
+  constructor(
+    private router: Router,
+    private toastService: ToastService,
+    private modalService: ModalService) { }
 
   ngOnInit() {
     const storedToken = sessionStorage.getItem('altered_token');
@@ -30,7 +35,7 @@ export class TokenComponent {
   }
 
   cguClick(): void {
-    this.toastService.show('Fonctionnalité en construction...', 'error', 5000);
+    this.modalService.open(CguTokenComponent, undefined);
   }
 
   onSubmit() {
