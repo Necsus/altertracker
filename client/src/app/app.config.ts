@@ -4,12 +4,13 @@ import { provideRouter } from '@angular/router';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
+import { environment } from '../environments/environment';
 import { routes } from './app.routes';
 
 const createTranslateLoader = (http: HttpClient): TranslateHttpLoader => {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 };
-const config: SocketIoConfig = { url: 'http://localhost:5000', options: {} };
+const config: SocketIoConfig = { url: environment.socketio_url, options: {} };
 
 export const appConfig: ApplicationConfig = {
   providers: [
