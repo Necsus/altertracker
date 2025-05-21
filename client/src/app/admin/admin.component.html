@@ -13,16 +13,56 @@
   </div>
 
   <div class="flex gap-2">
-    <button (click)="runScript('script_get_no_unique')"
-      class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-4 py-2 rounded-xl transition duration-200 disabled:opacity-50"
+    <!-- <button (click)="runScript('script_get_no_unique')"
+      [ngClass]="{'bg-gray-500 cursor-not-allowed': status === 'running', 'bg-blue-600 hover:bg-blue-700': status !== 'running'}"
+      class="md:col-span-3 w-full text-white py-2 px-4 rounded-md transition duration-300"
       [disabled]="status === 'running'">
       script_get_no_unique
-    </button>
-    <button (click)="runScript('script_get_unique')"
-      class="bg-blue-600 hover:bg-blue-500 text-white font-medium px-4 py-2 rounded-xl transition duration-200 disabled:opacity-50"
+    </button> -->
+
+    <select [(ngModel)]="selectedScript" (change)="onScriptChange($event)"
+      class="w-full bg-gray-700 text-white p-2 rounded-md">
+      <option *ngFor="let script of scripts" [value]="script">{{ script }}</option>
+    </select>
+    @if (selectedScript === 'script_get_unique') {
+    <select [(ngModel)]="selectedFaction" class="w-full bg-gray-700 text-white p-2 rounded-md">
+      <option value="">-- Faction --</option>
+      <option value="AX">Axiom</option>
+      <option value="BR">Bravos</option>
+      <option value="LY">Lyra</option>
+      <option value="MU">Muna</option>
+      <option value="OR">Ordis</option>
+      <option value="YZ">Yzmir</option>
+    </select>
+    <select [(ngModel)]="selectedWorkers" class="w-full bg-gray-700 text-white p-2 rounded-md">
+      <option value="0">-- Workers --</option>
+      <option>1</option>
+      <option>2</option>
+      <option>3</option>
+      <option>4</option>
+      <option>5</option>
+      <option>6</option>
+      <option>7</option>
+      <option>8</option>
+      <option>9</option>
+      <option>10</option>
+    </select>
+    <button (click)="runScript()"
+      [ngClass]="{'bg-gray-500 cursor-not-allowed': status === 'running', 'bg-blue-600 hover:bg-blue-700': status !== 'running'}"
+      class="md:col-span-3 w-full text-white py-2 px-4 rounded-md transition duration-300"
       [disabled]="status === 'running'">
-      script_get_unique
+      Start
     </button>
+    }
+    @else {
+    <button (click)="runScript()"
+      [ngClass]="{'bg-gray-500 cursor-not-allowed': status === 'running', 'bg-blue-600 hover:bg-blue-700': status !== 'running'}"
+      class="md:col-span-3 w-full text-white py-2 px-4 rounded-md transition duration-300"
+      [disabled]="status === 'running'">
+      Start
+    </button>
+    }
+
   </div>
 
   <div class="scroll-container bg-gray-800 p-4 rounded-xl h-64 overflow-auto text-sm font-mono border border-gray-700">

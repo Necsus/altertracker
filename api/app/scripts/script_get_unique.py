@@ -1,4 +1,3 @@
-import argparse
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime
 import time
@@ -7,13 +6,7 @@ from app.scripts import card_routine
 from app.models.card import Card
 from app.extensions import db, socketio
 
-# Configuration des arguments
-parser = argparse.ArgumentParser(description="Script pour traiter les cartes uniques.")
-parser.add_argument('--faction', type=str, help="Filtrer les cartes par faction (ex: 'CORE', 'ALIZE').")
-args = parser.parse_args()
-
-
-def run_script():
+def run_script(faction=None, workers=3):
     # Démarrer le timer
     start_time = time.time()
     Session = scoped_session(sessionmaker(bind=db.engine))
@@ -165,9 +158,9 @@ def run_script():
             query = session.query(Card).filter(Card.rarity == 'RARE', Card.type == 'CHARACTER')
 
             # Appliquer le filtre de faction si fourni
-            if args.faction:
-                socketio.emit('script_output', {'data': f"Filtrage des cartes pour la faction : {args.faction}"})
-                query = query.filter(Card.faction == args.faction)
+            if faction:
+                socketio.emit('script_output', {'data': f"Filtrage des cartes pour la faction : {faction}"})
+                query = query.filter(Card.faction == faction)
 
             existing_cards = {
                 card.id: card
@@ -177,9 +170,9 @@ def run_script():
             session.close()
 
         total_cards = len(existing_cards)
-        subsets = split_list(list(existing_cards.values()), 3)  # Divise en 5 sous-listes
+        subsets = split_list(list(existing_cards.values()), workers)  # Divise en 5 sous-listes
 
-        with ThreadPoolExecutor(max_workers=3) as executor:
+        with ThreadPoolExecutor(max_workers=workers) as executor:
             futures = []
             for i, subset in enumerate(subsets):
                 count = 0

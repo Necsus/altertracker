@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { SocketService } from './socket.service';
@@ -9,11 +10,18 @@ import { SocketService } from './socket.service';
   selector: 'app-admin',
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css'],
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
 })
 export class AdminComponent implements OnInit {
   socketConnected: boolean = false;
   status: 'idle' | 'running' | 'success' | 'error' = 'idle';
+  scripts: string[] = [
+    'script_get_unique',
+    'script_get_no_unique',
+  ];
+  selectedScript: string = 'script_get_no_unique';
+  selectedFaction: string = '';
+  selectedWorkers: number = 0;
   logs: string = '';
   subscriptions: Subscription[] = [];
 
@@ -88,11 +96,21 @@ export class AdminComponent implements OnInit {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
-  runScript(script_name: string) {
+  onScriptChange(event: any): void {
+    const selectedScript = event.target.value;
+    console.log('Script sélectionné :', selectedScript);
+    // this.runScript(selectedScript);
+  }
+
+  runScript() {
+    let url = `${environment.api_url}/script/start/${this.selectedScript}`;
+    if (this.selectedScript === 'script_get_unique') {
+      url += `/${Number(this.selectedWorkers)}/${this.selectedFaction}`;
+    }
     const headers = new HttpHeaders({
       Authorization: `Bearer ${localStorage.getItem('access_token')}` // Remplacez 'your-token-here' par le token réel
     });
-    this.http.get(`${environment.api_url}/script/start/${script_name}`, { headers }).subscribe({
+    this.http.get(`${environment.api_url}/script/start/${this.selectedScript}`, { headers }).subscribe({
       next: () => {
         this.status = 'running';
       }
