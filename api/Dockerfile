@@ -3,9 +3,9 @@ FROM python:3.11-slim
 WORKDIR /api
 COPY . .
 
-RUN apt-get update && apt-get install -y netcat-openbsd dos2unix && \
-    dos2unix entrypoint.sh && \
-    chmod +x entrypoint.sh
+# RUN apt-get update && apt-get install -y netcat-openbsd dos2unix && \
+#     dos2unix entrypoint.sh && \
+#     chmod +x entrypoint.sh
 
 RUN pip install -r requirements.txt
 
