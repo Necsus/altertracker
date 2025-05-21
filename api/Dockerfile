@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y netcat-openbsd dos2unix && \
 
 RUN pip install -r requirements.txt
 
-ENTRYPOINT ["./entrypoint.sh"]
+# ENTRYPOINT ["./entrypoint.sh"]
 
 ENV FLASK_APP=run.py
 
