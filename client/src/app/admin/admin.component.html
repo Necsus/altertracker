@@ -21,12 +21,12 @@
     </button> -->
 
     <select [(ngModel)]="selectedScript" class="w-full bg-gray-700 text-white p-2 rounded-md"
-      [disabled]="status === 'running'">
+      [disabled]="status === 'running' || !socketConnected">
       <option *ngFor="let script of scripts" [value]="script">{{ script }}</option>
     </select>
     @if (selectedScript === 'script_get_unique') {
     <select [(ngModel)]="selectedFaction" class="w-full bg-gray-700 text-white p-2 rounded-md"
-      [disabled]="status === 'running'">
+      [disabled]="status === 'running' || !socketConnected">
       <option value="">-- Faction --</option>
       <option value="AX">Axiom</option>
       <option value="BR">Bravos</option>
@@ -36,7 +36,7 @@
       <option value="YZ">Yzmir</option>
     </select>
     <select [(ngModel)]="selectedWorkers" class="w-full bg-gray-700 text-white p-2 rounded-md"
-      [disabled]="status === 'running'">
+      [disabled]="status === 'running' || !socketConnected">
       <option value="0">-- Workers --</option>
       <option>1</option>
       <option>2</option>
@@ -51,9 +51,9 @@
     </select>
     }
     <button (click)="runScript()"
-      [ngClass]="{'bg-gray-500 cursor-not-allowed': status === 'running', 'bg-blue-600 hover:bg-blue-700': status !== 'running'}"
+      [ngClass]="{'bg-gray-500 cursor-not-allowed': status === 'running' || !socketConnected, 'bg-blue-600 hover:bg-blue-700': status !== 'running' || !socketConnected}"
       class="md:col-span-3 w-full text-white py-2 px-4 rounded-md transition duration-300"
-      [disabled]="status === 'running'">
+      [disabled]="status === 'running' || !socketConnected">
       Start
     </button>
 
