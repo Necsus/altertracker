@@ -1,21 +1,13 @@
 from datetime import datetime
 import time
-from app import create_app
-from app.scripts import auth, card_routine
+from app.scripts import card_routine
 from app.models.card import Card
-from app.extensions import db
+from app.extensions import db, socketio
 
-# Créer l'application Flask
-app = create_app()
-
-# Démarrer le timer
-start_time = time.time()
-
-with app.app_context():  # Activer le contexte de l'application
-    token = auth.get_token()
+def run_script():
+    start_time = time.time()
 
     nb_cards = 0
-
     def map_jsoncard_to_card(jsonCard, name_en = None) -> Card:
         card = Card(
             id_card = jsonCard['id'],
@@ -37,7 +29,7 @@ with app.app_context():  # Activer le contexte de l'application
             ECHO_EFFECT = None,
         )
         return card
-    
+
     def map_name_en(card: Card, jsonCard) -> Card:
         card.name_en = jsonCard['name']
         return card
@@ -46,7 +38,7 @@ with app.app_context():  # Activer le contexte de l'application
         card.MAIN_EFFECT = None if 'MAIN_EFFECT' not in jsonCard['elements'] else jsonCard['elements']['MAIN_EFFECT'],
         card.ECHO_EFFECT = None if 'ECHO_EFFECT' not in jsonCard['elements'] else jsonCard['elements']['ECHO_EFFECT'],
         return card
-    
+
     def map_names(card: Card, name_fr: str, name_en: str):
         card.name = name_fr
         card.name_en = name_en
@@ -91,24 +83,36 @@ with app.app_context():  # Activer le contexte de l'application
             # Valider la transaction
             db.session.commit()
             nb_cards += len(cards)
-            print(f"\033[92mCartes insérées : {add_card_len}\033[0m")
-            print(f"\033[92mCartes modifiées : {edit_card_len}\033[0m")
-            print(f"\033[92mNombre total de cartes : {nb_cards}\033[0m")
+            socketio.emit('script_output', {'data': f"\033[92mCartes insérées : {add_card_len}\033[0m"})
+            socketio.emit('script_output', {'data': f"\033[92mCartes modifiées : {edit_card_len}\033[0m"})
+            socketio.emit('script_output', {'data': f"\033[92mNombre total de cartes : {nb_cards}\033[0m"})
+            # print(f"\033[92mCartes insérées : {add_card_len}\033[0m")
+            # print(f"\033[92mCartes modifiées : {edit_card_len}\033[0m")
+            # print(f"\033[92mNombre total de cartes : {nb_cards}\033[0m")
         except Exception as e:
             # Gérer les erreurs et annuler la transaction en cas d'échec
-            print(f"\033[91mErreur lors de l'insertion ou de la mise à jour des cartes : {e}\033[0m")
+            socketio.emit('script_error', {'data': f"\033[91mErreur lors de l'insertion ou de la mise à jour des cartes : {e}\033[0m"})
+            # print(f"\033[91mErreur lors de l'insertion ou de la mise à jour des cartes : {e}\033[0m")
             try:
                 db.session.rollback()
             except Exception as rollback_error:
-                print(f"\033[91mErreur lors du rollback : {rollback_error}\033[0m")
+                socketio.emit('script_error', {'data': f"\033[91mErreur lors du rollback : {rollback_error}\033[0m"})
+                # print(f"\033[91mErreur lors du rollback : {rollback_error}\033[0m")
 
     def get_no_unique(rarity: str):
+        socketio.emit('script_output', {'data': f"----------- GET {rarity} -----------"})
         print(f"----------- GET {rarity} -----------")
         page = 1
         cardToInsert = []
         while True:
-            print(f"Récupération des cartes de la page {page}...")
+            socketio.emit('script_output', {'data': f"Récupération des cartes de la page {page}..."})
+            # print(f"Récupération des cartes de la page {page}...")
             cards = card_routine.get_cards(page, rarity)
+
+            if cards and cards.get('hydra:totalItems', 0) >= 1000:
+                socketio.emit('script_output', {'data': f"\033[91mATTENTION TROP DE RESULTATS MANQUE DES CARTES"})
+                # print(f"\033[91mATTENTION TROP DE RESULTATS MANQUE DES CARTES")
+
 
             if not cards or 'hydra:member' not in cards or not cards['hydra:member']:
                 break
@@ -120,7 +124,8 @@ with app.app_context():  # Activer le contexte de l'application
                 tempCard = map_jsoncard_to_card(card)
                 card_to_update = db.session.query(Card).filter_by(reference=tempCard.reference).first()
                 if card_to_update:
-                    print(f"\rCarte {tempCard.reference} déjà existante. Passage à la suivante.", end="", flush=True)
+                    socketio.emit('script_output', {'data': f"\rCarte {tempCard.reference} déjà existante. Passage à la suivante.[flush=True]"})
+                    # print(f"\rCarte {tempCard.reference} déjà existante. Passage à la suivante.", end="", flush=True)
                     # Initialiser un drapeau pour suivre les modifications
                     has_updated = False
 
@@ -154,15 +159,16 @@ with app.app_context():  # Activer le contexte de l'application
                     if has_updated:
                         card_to_update.edited_at = datetime.now()
                     continue
-
-                print(f"\rRécupération des stats de la carte {tempCard.reference}...", end="", flush=True)
+                
+                socketio.emit('script_output', {'data': f"\rRécupération des stats de la carte {tempCard.reference}...[flush=True]"})
+                # print(f"\rRécupération des stats de la carte {tempCard.reference}...", end="", flush=True)
                 detailsCard = card_routine.get_card_by_reference(tempCard.reference)
                 tempCard = map_effect_to_card(tempCard, detailsCard)
                 name_en = card_routine.get_card_by_reference(tempCard.reference, True)
                 tempCard = map_name_en(tempCard, name_en)
                 cardToInsert.append(tempCard)
 
-            print()
+            # print()
             page += 1
 
         if cardToInsert:
@@ -171,15 +177,21 @@ with app.app_context():  # Activer le contexte de l'application
     get_no_unique('COMMON')
     get_no_unique('RARE')
 
-    print(f"Fin de l'insertion des cartes.")
-    print(f"Cartes scannées : {nb_cards}")
+    socketio.emit('script_output', {'data': f"Fin de l'insertion des cartes."})
+    socketio.emit('script_output', {'data': f"Cartes scannées : {nb_cards}"})
+    # print(f"Fin de l'insertion des cartes.")
+    # print(f"Cartes scannées : {nb_cards}")
 
-# Fin du timer
-end_time = time.time()
-execution_time = end_time - start_time
+    # Fin du timer
+    end_time = time.time()
+    execution_time = end_time - start_time
 
-# Conversion en heures, minutes et secondes
-hours, remainder = divmod(execution_time, 3600)
-minutes, seconds = divmod(remainder, 60)
+    # Conversion en heures, minutes et secondes
+    hours, remainder = divmod(execution_time, 3600)
+    minutes, seconds = divmod(remainder, 60)
 
-print(f"Temps d'exécution : {int(hours):02}:{int(minutes):02}:{int(seconds):02}")
+    socketio.emit('script_output', {'data': f"Temps d'exécution : {int(hours):02}:{int(minutes):02}:{int(seconds):02}"})
+    print(f"Temps d'exécution : {int(hours):02}:{int(minutes):02}:{int(seconds):02}")
+    socketio.emit('script_finished', {'status': 'done'})
+    print(f"GET UNIQUE terminé")
+
