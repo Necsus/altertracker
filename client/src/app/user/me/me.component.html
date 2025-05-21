@@ -1,0 +1,47 @@
+<!-- user-profile.component.html -->
+<div class="container mx-auto p-6 text-white">
+  <div class="bg-gray-800 p-6 rounded-2xl shadow-md">
+    <h2 class="text-2xl font-bold mb-4">Profil Utilisateur</h2>
+
+    <form (ngSubmit)="updateProfile()" #profileForm="ngForm">
+      <div class="mb-4">
+        <label class="block mb-1">Pseudo</label>
+        <input type="text" [(ngModel)]="user.username" name="username" class="w-full p-2 bg-gray-700 rounded"
+          required />
+      </div>
+
+      <!-- <div class="mb-4">
+        <label class="block mb-1">Statistiques</label>
+        <textarea [(ngModel)]="user.stats" name="stats" class="w-full p-2 bg-gray-700 rounded" rows="3"></textarea>
+      </div> -->
+
+      <button type="submit" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">Sauvegarder</button>
+    </form>
+
+    <hr class="my-6 border-gray-600" />
+
+    <form (ngSubmit)="changePassword()">
+      <h3 class="text-xl font-semibold mb-2">Changer de mot de passe</h3>
+      <div class="mb-2">
+        <label class="block mb-1">Ancien mot de passe</label>
+        <input type="password" name="oldPassword" class="w-full p-2 bg-gray-700 rounded" required />
+      </div>
+
+      <div class="mb-2">
+        <label class="block mb-1">Nouveau mot de passe</label>
+        <input type="password" name="newPassword" class="w-full p-2 bg-gray-700 rounded" required />
+      </div>
+
+      <button type="submit" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded">Changer le mot de passe</button>
+    </form>
+
+    <hr class="my-6 border-gray-600" />
+
+    <div>
+      <h3 class="text-xl font-semibold mb-2 text-red-400">Supprimer le compte</h3>
+      <p class="mb-4">Cette action est <strong>irréversible</strong>.</p>
+      <button (click)="deleteAccount()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded">Supprimer mon
+        compte</button>
+    </div>
+  </div>
+</div>

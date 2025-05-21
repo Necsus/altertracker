@@ -14,6 +14,7 @@ import { UnauthorizedComponent } from './shared/error-pages/unauthorized/unautho
 import { UnderConstructionComponent } from './shared/under-construction/under-construction.component';
 import { AlteredTokenComponent } from './user/altered-token/altered-token.component';
 import { ContactComponent } from './user/contact/contact.component';
+import { MeComponent } from './user/me/me.component';
 import { UserAlertsComponent } from './user/user-alerts/user-alerts.component';
 import { UserSearchesComponent } from './user/user-searches/user-searches.component';
 import { ValidateEmailComponent } from './user/validate-email/validate-email.component';
@@ -23,7 +24,7 @@ export const routes: Routes = [
   { path: 'cards', component: CardsComponent },
   { path: 'searches', component: UserSearchesComponent, canActivate: [TokenGuard] },
   { path: 'alerts', component: UserAlertsComponent, canActivate: [TokenGuard] },
-  { path: 'me', component: UnderConstructionComponent, canActivate: [TokenGuard] },
+  { path: 'me', component: MeComponent, canActivate: [TokenGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'validate-email/:token', component: ValidateEmailComponent },
