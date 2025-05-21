@@ -110,7 +110,8 @@ def run_script():
             cards = card_routine.get_cards(page, rarity)
 
             if cards and cards.get('hydra:totalItems', 0) >= 1000:
-                socketio.emit('script_output', {'data': f"\033[91mATTENTION TROP DE RESULTATS MANQUE DES CARTES"})
+                socketio.emit('script_output', {'data': f"\033[91mATTENTION TROP DE RESULTATS MANQUE DES CARTES\033[0m"})
+                socketio.emit('script_output', {'data': f"\033[91mPage: {page} | rarity: {rarity}\033[0m"})
                 # print(f"\033[91mATTENTION TROP DE RESULTATS MANQUE DES CARTES")
 
 

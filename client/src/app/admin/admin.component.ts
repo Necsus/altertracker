@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -13,6 +13,7 @@ import { SocketService } from './socket.service';
   imports: [CommonModule, FormsModule],
 })
 export class AdminComponent implements OnInit {
+  @ViewChild('logsContainer') logsContainer!: ElementRef;
   socketConnected: boolean = false;
   status: 'idle' | 'running' | 'success' | 'error' = 'idle';
   scripts: string[] = [
@@ -55,7 +56,9 @@ export class AdminComponent implements OnInit {
         if (lastLineIndex !== -1) {
           this.logs = this.logs.substring(0, lastLineIndex + 1) + cleanMessage; // Remplace la dernière ligne
         } else {
-          this.logs += cleanMessage + '\n'; // Si aucune ligne, remplace tout
+          const cleanMessage = this.parseAnsiToHtml(message.data);
+          // Ajouter une nouvelle ligne pour les autres messages
+          this.logs += + '\n' + cleanMessage + '\n';
         }
       } else {
         const cleanMessage = this.parseAnsiToHtml(message.data);
@@ -65,6 +68,7 @@ export class AdminComponent implements OnInit {
 
       this.status = 'running';
       this.cdr.detectChanges();
+      this.scrollToBottom(); // Faire défiler vers le bas
     });
     this.subscriptions.push(serverLogsSub);
 
@@ -96,12 +100,6 @@ export class AdminComponent implements OnInit {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
   }
 
-  onScriptChange(event: any): void {
-    const selectedScript = event.target.value;
-    console.log('Script sélectionné :', selectedScript);
-    // this.runScript(selectedScript);
-  }
-
   runScript() {
     let url = `${environment.api_url}/script/start/${this.selectedScript}`;
     if (this.selectedScript === 'script_get_unique') {
@@ -110,10 +108,15 @@ export class AdminComponent implements OnInit {
     const headers = new HttpHeaders({
       Authorization: `Bearer ${localStorage.getItem('access_token')}` // Remplacez 'your-token-here' par le token réel
     });
-    this.http.get(`${environment.api_url}/script/start/${this.selectedScript}`, { headers }).subscribe({
+    this.http.get(url, { headers }).subscribe({
       next: () => {
         this.status = 'running';
       }
     });
+  }
+  private scrollToBottom(): void {
+    if (this.logsContainer) {
+      this.logsContainer.nativeElement.scrollTop = this.logsContainer.nativeElement.scrollHeight;
+    }
   }
 }

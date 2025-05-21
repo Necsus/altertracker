@@ -23,11 +23,11 @@ def dispatch_script(script: str, workers: int = 3, faction: str = None):
         finally:
             socketio.emit('script_finished', {'status': 'done'})
 
-def run_with_app_context(app, script_name: str):
+def run_with_app_context(app, script_name: str, workers: int = None, faction: str = None):
     def task():
         with app.app_context():
             try:
-                dispatch_script(script_name)
+                dispatch_script(script_name, workers, faction)
             except Exception as e:
                 socketio.emit('script_error', {'error': str(e)})
             finally:
@@ -35,11 +35,13 @@ def run_with_app_context(app, script_name: str):
 
     socketio.start_background_task(task)
 
-@script_bp.route('/start/<script_name>/<workers>/<faction>')
+@script_bp.route('/start/<script_name>', defaults={'workers': None, 'faction': None})
+@script_bp.route('/start/<script_name>/<int:workers>', defaults={'faction': None})
+@script_bp.route('/start/<script_name>/<int:workers>/<faction>')
 @jwt_required()
 @admin_required
 @limiter.limit("5 per minute")
-def start_script(script_name: str, workers: int, faction: str):
+def start_script(script_name: str, workers: int = None, faction: str = None):
     if script_name not in ALLOWED_SCRIPTS or '.' in script_name or '/' in script_name:
         return {'error': 'Script not allowed'}, 403 # Refuser les scripts non autorisés
     app = current_app._get_current_object()

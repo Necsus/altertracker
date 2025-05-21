@@ -77,7 +77,8 @@ def run_script(faction=None, workers=3):
 
                         if test_result and test_result.get('hydra:totalItems', 0) > 0:
                             if test_result.get('hydra:totalItems', 0) >= 1000:
-                              socketio.emit('script_output', {'data': f"\033[91mATTENTION TROP DE RESULTATS MANQUE DES CARTES"})
+                              socketio.emit('script_output', {'data': f"\033[91mATTENTION TROP DE RESULTATS MANQUE DES CARTES\033[0m"})
+                              socketio.emit('script_output', {'data': f"\033[91mName: {dbcard.name_en} | faction: {dbcard.faction} | set: {dbcard.set} | mainCost: {mainCost} | recallCost: {recallCost} | forestPower: {forestPowers}\033[0m"})
                             page = 1
                             while True:
                                 cards = card_routine.get_unique_cards_name_faction(
