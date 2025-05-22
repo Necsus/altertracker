@@ -116,7 +116,7 @@ def post_offer_live_market_service(data: List[dict]) -> None:
                 db.session.commit()
                 continue
         else:
-            if existing_offer:
+            if existing_offer and not existing_offer.is_deleted:
                 # si l'offre n'est pas disponible et qu'il existe une offre
                 # on met à jour l'ancienne offre
                 existing_offer.is_deleted = True
