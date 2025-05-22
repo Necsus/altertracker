@@ -7,7 +7,8 @@ from app.services.card_service import (
   get_cards_count_service,
   get_cards_in_market_count_service,
   post_offer_live_market_service,
-  get_last_added_cards_service
+  get_last_added_cards_service,
+  get_count_cards_created_today_service
 )
 
 card_bp = Blueprint('card', __name__)
@@ -90,7 +91,8 @@ def post_offer_live_market():
 @card_bp.route('/lastadded', methods=['GET'])
 def get_last_added_cards():
     try:
+        count = get_count_cards_created_today_service()
         cards = get_last_added_cards_service()
-        return jsonify([card.json() for card in cards]), 201
+        return jsonify({ "cards": [card.json() for card in cards], "count" : count }), 201
     except Exception as e:
         return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)

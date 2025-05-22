@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { CardModel } from '../01_models/03_business/card.model';
-import { OfferViewModel } from '../01_models/home/home-view.model';
+import { OfferViewModel } from '../01_models/home/offer-view.model';
 import { CardService } from '../03_business/card.service';
 import { OfferService } from '../03_business/offer.service';
 import { UserService } from '../03_business/user.service';
@@ -13,7 +14,7 @@ import { ToastService } from '../shared/services/toast/toast.service';
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
-  imports: [CommonModule]
+  imports: [CommonModule, RouterModule]
 })
 export class HomeComponent implements OnInit {
   newCardsLoading: boolean = false;
@@ -40,36 +41,36 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.newCardsLoading = true;
     this.cardService.get_last_added_cards$().subscribe({
-      next: (response: CardModel[]) => {
-        this.newCardsCount = response.length;
-        this.newCards = response.slice(0, 20);
+      next: (response: { count: number, cards: CardModel[] }) => {
+        this.newCardsCount = response.count;
+        this.newCards = response.cards;
       },
       complete: () => this.newCardsLoading = false,
       error: (err: any) => this.toastService.show(err.message, 'error', 5000)
     });
     this.newOffersLoading = true;
     this.offerService.get_last_added_offers$().subscribe({
-      next: (response: OfferViewModel[]) => {
-        this.newOffersCount = response.length;
-        this.newOffers = response.slice(0, 20);
+      next: (response: { count: number, offers: OfferViewModel[] }) => {
+        this.newOffersCount = response.count;
+        this.newOffers = response.offers;
       },
       complete: () => this.newOffersLoading = false,
       error: (err: any) => this.toastService.show(err.message, 'error', 5000)
     });
     this.editedOffersLoading = true;
     this.offerService.get_last_edited_offers$().subscribe({
-      next: (response: OfferViewModel[]) => {
-        this.editedOffersCount = response.length;
-        this.editedOffers = response.slice(0, 20);
+      next: (response: { count: number, offers: OfferViewModel[] }) => {
+        this.editedOffersCount = response.count;
+        this.editedOffers = response.offers;
       },
       complete: () => this.editedOffersLoading = false,
       error: (err: any) => this.toastService.show(err.message, 'error', 5000)
     });
     this.deletedOffersLoading = true;
     this.offerService.get_last_deleted_offers$().subscribe({
-      next: (response: OfferViewModel[]) => {
-        this.deletedOffersCount = response.length;
-        this.deletedOffers = response.slice(0, 20);
+      next: (response: { count: number, offers: OfferViewModel[] }) => {
+        this.deletedOffersCount = response.count;
+        this.deletedOffers = response.offers;
       },
       complete: () => this.deletedOffersLoading = false,
       error: (err: any) => this.toastService.show(err.message, 'error', 5000)

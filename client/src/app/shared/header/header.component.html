@@ -59,14 +59,13 @@
         </li>
         <li><a routerLink="/contact" routerLinkActive="text-blue-400" style="user-select: none;"
             class="hover:text-blue-300 transition duration-300 cursor-pointer"><i class="fas fa-bug"></i></a></li>
-
         }
         @else {
         <li><a routerLink="/login" routerLinkActive="text-blue-400"
             class="hover:text-blue-300 transition duration-300 cursor-pointer">Login</a></li>
+        <li><a routerLink="/register" routerLinkActive="text-blue-400"
+            class="hover:text-blue-300 transition duration-300 cursor-pointer">Inscription</a></li>
         }
-
-
       </ul>
     </nav>
 
@@ -104,6 +103,8 @@
       @else {
       <a routerLink="/login" routerLinkActive="text-blue-400"
         class="block hover:text-blue-300 transition duration-300">Login</a>
+      <a routerLink="/register" routerLinkActive="text-blue-400"
+        class="block hover:text-blue-300 transition duration-300">Inscription</a>
       }
     </div>
     }

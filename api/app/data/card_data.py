@@ -173,8 +173,11 @@ def prepare_like_query(text: str) -> str:
     # Remplacer les espaces insécables par un espace normal
     return text.replace(' ', '_')
 
-def get_last_added_cards_data() -> list[dict]:
+def get_count_cards_created_today_data() -> int:
     today_utc = datetime.now(timezone.utc).date()
-    return db.session.query(Card).filter(
+    return db.session.query(func.count(Card.id)).filter(
         func.date(Card.created_at) == today_utc
-    ).all()
+    ).scalar()
+
+def get_last_added_cards_data() -> list[dict]:
+    return db.session.query(Card).order_by(Card.created_at.desc()).limit(20).all()
