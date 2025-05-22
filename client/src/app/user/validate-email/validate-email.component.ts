@@ -13,11 +13,11 @@ export class ValidateEmailComponent implements OnInit {
   token: string | null = null;
 
   constructor(
-    private route: ActivatedRoute, private authService: AuthService) { }
+    private route: ActivatedRoute,
+    private authService: AuthService) { }
 
   ngOnInit(): void {
     this.token = this.route.snapshot.paramMap.get('token');
-    console.log(this.token);
     if (this.token) {
       this.authService.validateEmail$(this.token).subscribe({
         next: () => {

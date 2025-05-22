@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { environment } from '../../environments/environment';
@@ -28,8 +28,7 @@ export class AdminComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private socketService: SocketService,
-    private cdr: ChangeDetectorRef
+    private socketService: SocketService
   ) { }
 
   ngOnInit() {
@@ -49,25 +48,8 @@ export class AdminComponent implements OnInit {
 
     // Écouter les logs
     const serverLogsSub = this.socketService.getScriptOutput().subscribe((message: any) => {
-      if (message.data.includes('[flush=True]')) {
-        // Remplacer ou ajouter sur la même ligne
-        const cleanMessage = this.parseAnsiToHtml(message.data);
-        const lastLineIndex = this.logs.lastIndexOf('\n');
-        if (lastLineIndex !== -1) {
-          this.logs = this.logs.substring(0, lastLineIndex + 1) + cleanMessage; // Remplace la dernière ligne
-        } else {
-          const cleanMessage = this.parseAnsiToHtml(message.data);
-          // Ajouter une nouvelle ligne pour les autres messages
-          this.logs += + '\n' + cleanMessage + '\n';
-        }
-      } else {
-        const cleanMessage = this.parseAnsiToHtml(message.data);
-        // Ajouter une nouvelle ligne pour les autres messages
-        this.logs += cleanMessage + '\n';
-      }
-
+      this.logs += this.parseAnsiToHtml(message.data) + '\n';
       this.status = 'running';
-      this.cdr.detectChanges();
       this.scrollToBottom(); // Faire défiler vers le bas
     });
     this.subscriptions.push(serverLogsSub);

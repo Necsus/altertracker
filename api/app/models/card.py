@@ -14,6 +14,7 @@ class Card(db.Model):
     type = db.Column(db.String(20))
     set = db.Column(db.String(100))
     imagePath = db.Column(db.Text)
+    image_path_en = db.Column(db.Text, default=None)
     isSuspended = db.Column(db.Boolean, default=False)
     MAIN_COST = db.Column(db.Integer, default=0)
     RECALL_COST = db.Column(db.Integer, default=0)
@@ -21,7 +22,9 @@ class Card(db.Model):
     OCEAN_POWER = db.Column(db.Integer, default=None)
     FOREST_POWER = db.Column(db.Integer, default=None)
     MAIN_EFFECT = db.Column(db.Text, default=None)
+    main_effect_en = db.Column(db.Text, default=None)
     ECHO_EFFECT = db.Column(db.Text, default=None)
+    echo_effect_en = db.Column(db.Text, default=None)
     created_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
     edited_at = db.Column(db.DateTime, default=None)
     price = db.Column(db.Float, default=None)
@@ -44,6 +47,7 @@ class Card(db.Model):
             'type': self.type,
             'set': self.set,
             'imagePath': self.imagePath,
+            'image_path_en': self.image_path_en,
             'isSuspended': self.isSuspended,
             'MAIN_COST': self.MAIN_COST,
             'RECALL_COST': self.RECALL_COST,
@@ -51,7 +55,9 @@ class Card(db.Model):
             'OCEAN_POWER': self.OCEAN_POWER,
             'FOREST_POWER': self.FOREST_POWER,
             'MAIN_EFFECT': self.MAIN_EFFECT,
+            'main_effect_en': self.main_effect_en,
             'ECHO_EFFECT': self.ECHO_EFFECT,
+            'echo_effect_en': self.echo_effect_en,
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'edited_at': self.edited_at.isoformat() if self.edited_at else None,
             'price': self.price,
@@ -60,7 +66,10 @@ class Card(db.Model):
             'url_offer': self.url_offer
         }
     
-    def __init__(self, id_card, reference, name, name_en, faction, rarity, type, set, imagePath, isSuspended, MAIN_COST, RECALL_COST, MOUNTAIN_POWER, OCEAN_POWER, FOREST_POWER, MAIN_EFFECT, ECHO_EFFECT, created_at=None, edited_at=None, price=None, price_currency=None, price_updated_at=None, url_offer=None):
+    def __init__(self, id_card, reference, name, name_en, faction, rarity, type, set, imagePath,
+                image_path_en, isSuspended, MAIN_COST, RECALL_COST, MOUNTAIN_POWER, OCEAN_POWER, FOREST_POWER,
+                MAIN_EFFECT, main_effect_en, ECHO_EFFECT, echo_effect_en, created_at=None, edited_at=None,
+                price=None, price_currency=None, price_updated_at=None, url_offer=None):
         self.id_card = id_card
         self.reference = reference
         self.name = name
@@ -70,6 +79,7 @@ class Card(db.Model):
         self.type = type
         self.set = set
         self.imagePath = imagePath
+        self.image_path_en = image_path_en
         self.isSuspended = isSuspended
         self.MAIN_COST = MAIN_COST
         self.RECALL_COST = RECALL_COST
@@ -77,7 +87,9 @@ class Card(db.Model):
         self.OCEAN_POWER = OCEAN_POWER
         self.FOREST_POWER = FOREST_POWER
         self.MAIN_EFFECT = MAIN_EFFECT
+        self.main_effect_en = main_effect_en
         self.ECHO_EFFECT = ECHO_EFFECT
+        self.echo_effect_en = echo_effect_en
         self.created_at = created_at if created_at else datetime.datetime.now(datetime.timezone.utc)
         self.edited_at = edited_at if edited_at else datetime.datetime.now(datetime.timezone.utc)
         self.price = price

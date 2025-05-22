@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { OfferLiveMarketRequest } from '../01_models/02_api/card/offer-live-market-request.model';
 import { CardModel } from '../01_models/03_business/card.model';
+import { OfferModel } from '../01_models/03_business/offer.model';
 import { CardApiService } from '../02_api/card-api.service';
 
 @Injectable({
@@ -43,6 +44,12 @@ export class CardService {
 
   get_last_added_cards$(): Observable<{ count: number, cards: CardModel[] }> {
     return this.cardApiService.get_last_added_cards$().pipe(map((dbModel: any) => {
+      return dbModel;
+    }));
+  }
+
+  get_card_stats$(reference: string): Observable<{ card: CardModel, offers: OfferModel[] }> {
+    return this.cardApiService.get_card_stats$(reference).pipe(map((dbModel: { card: CardModel, offers: OfferModel[] }) => {
       return dbModel;
     }));
   }

@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { OfferLiveMarketRequest } from '../01_models/02_api/card/offer-live-market-request.model';
+import { CardModel } from '../01_models/03_business/card.model';
+import { OfferModel } from '../01_models/03_business/offer.model';
 import { WebApiService } from './web-api.service';
 
 @Injectable({
@@ -49,5 +51,9 @@ export class CardApiService {
 
   get_last_added_cards$(): Observable<any> {
     return this.wabApiService.callGet$(this.controller, 'lastadded');
+  }
+
+  get_card_stats$(reference: string): Observable<{ card: CardModel, offers: OfferModel[] }> {
+    return this.wabApiService.callGet$(this.controller, `${reference}/offers`);
   }
 }

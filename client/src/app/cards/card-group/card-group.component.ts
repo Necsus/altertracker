@@ -56,7 +56,6 @@ export class CardGroupComponent implements OnChanges {
   private emitVisibleCards() {
     const indexToLoad: number = this.displayedCards - 100; // Index de la première carte à charger
     const visibleCards = this.cards.slice(indexToLoad, this.displayedCards); // Cartes actuellement visibles
-    console.log(visibleCards);
     if (this.isGroupOpen) {
       this.visibleCardsChange.emit(visibleCards);
     }

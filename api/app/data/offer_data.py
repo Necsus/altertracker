@@ -64,8 +64,8 @@ def update_offer_by_id(offer_id: int, updates: dict) -> None:
         print(f"Erreur lors de la mise à jour de l'offre avec l'ID {offer_id} : {e}")
 
 
-def select_offers_by_reference(reference: str) -> List[Offer]:
-    return db.session.query(Offer).filter_by(reference=reference).all()
+def get_offers_by_reference_data(reference: str) -> List[Offer]:
+    return db.session.query(Offer).filter_by(reference_card=reference).all()
 
 
 def select_offers_by_id(offer_id: int) -> List[Offer]:

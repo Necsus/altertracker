@@ -10,6 +10,8 @@ from app.services.card_service import (
   get_last_added_cards_service,
   get_count_cards_created_today_service
 )
+from app.services.offer_service import get_offers_by_reference_service
+
 
 card_bp = Blueprint('card', __name__)
 
@@ -94,5 +96,23 @@ def get_last_added_cards():
         count = get_count_cards_created_today_service()
         cards = get_last_added_cards_service()
         return jsonify({ "cards": [card.json() for card in cards], "count" : count }), 201
+    except Exception as e:
+        return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
+
+@card_bp.route('/<string:reference>/offers', methods=['GET'])
+def get_card_with_offers(reference):
+    try:
+        # Récupérer la carte par référence
+        card = get_card_by_reference_service(reference)
+        if not card:
+            return make_response(jsonify({'message': f'Card with reference {reference} not found'}), 404)
+
+        # Récupérer les offres associées à la carte
+        offers = get_offers_by_reference_service(reference)
+        # Retourner la carte et ses offres
+        return jsonify({
+            "card": card.json(),
+            "offers": [offer.json() for offer in offers]
+        }), 200
     except Exception as e:
         return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
