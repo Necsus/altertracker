@@ -13,6 +13,7 @@ export class CardGroupComponent implements OnChanges {
   @Input() cards: CardModel[] = [];
   @Input() autoOpen: boolean = false;
   @Input() allGroupsOpen: boolean = false;
+  @Input() getMarketComplete: boolean = true; // Indique si le marché est complet
   @Output() visibleCardsChange = new EventEmitter<CardModel[]>(); // Émet les cartes visibles
   isGroupOpen: boolean = false;
   displayedCards: number = 100;
@@ -34,11 +35,12 @@ export class CardGroupComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['autoOpen'] && this.autoOpen) {
       this.isGroupOpen = true; // Ouvre automatiquement le groupe
+      this.emitVisibleCards();
     }
     if (changes['allGroupsOpen'] && !this.autoOpen) {
       this.isGroupOpen = this.allGroupsOpen; // Ouvre ou ferme en fonction de l'état global
+      this.emitVisibleCards();
     }
-    this.emitVisibleCards();
   }
 
   toggleGroup() {
@@ -52,7 +54,9 @@ export class CardGroupComponent implements OnChanges {
   }
 
   private emitVisibleCards() {
-    const visibleCards = this.cards.slice(0, this.displayedCards); // Cartes actuellement visibles
+    const indexToLoad: number = this.displayedCards - 100; // Index de la première carte à charger
+    const visibleCards = this.cards.slice(indexToLoad, this.displayedCards); // Cartes actuellement visibles
+    console.log(visibleCards);
     if (this.isGroupOpen) {
       this.visibleCardsChange.emit(visibleCards);
     }
