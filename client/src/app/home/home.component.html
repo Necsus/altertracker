@@ -7,8 +7,9 @@
           AlterTracker – Analyse et Suivi du Marché pour Altered TCG
         </h1>
         <p class="text-lg text-gray-300 mb-8">
-          AlterTracker est l’outil incontournable pour les joueurs d’<span class="text-indigo-400 font-semibold">Altered
-            TCG</span>.
+          AlterTracker est l’outil incontournable pour les joueurs d’<a href="https://www.altered.gg/" target="_blank"
+            class="text-indigo-400 font-semibold">Altered
+            TCG</a>.
           Explorez les cartes du jeu grâce à une recherche avancée, des statistiques complètes et un suivi du marché en
           temps réel.
         </p>
@@ -44,8 +45,9 @@
           <ul class="list-disc list-inside text-gray-300 space-y-1">
             <li>Statistiques détaillées à la carte (popularité, historique, graphique...) </li>
             <li>Visualisation graphique de l’historique des prix</li>
-            <li>Gestion intelligente de collection</li>
-            <li>Favoris partagés et listes communautaires</li>
+            <li>Importation de collection, decks</li>
+            <li>Scan ta carte et estimation de prix</li>
+            <li>Facilitation des échanges pour des uniques AAA</li>
           </ul>
         </div>
       </div>
@@ -54,8 +56,9 @@
     <!-- Section : Nouvelles Cartes -->
     <section>
       <div class="mt-8">
-        <h2 class="text-2xl font-semibold mb-4">🃏 Nouvelles cartes scannées <span class="text-green-400">+{{
-            newCardsCount }}</span></h2>
+        <h2 class="text-2xl font-semibold mb-4">🃏 Nouvelles cartes scannées (aujourd'hui &nbsp;<span
+            class="text-green-400">+{{
+            newCardsCount }}</span>)</h2>
         <ng-container *ngIf="!newCardsLoading; else cardsLoadingSection">
           <div class="scroll-container flex flex-nowrap space-x-4 overflow-x-auto pb-2">
             <div *ngFor="let card of newCards" class="flex-shrink-0 w-48 bg-gray-800 rounded-xl shadow">
@@ -78,8 +81,9 @@
 
     <!-- Section : Nouvelles Offres -->
     <section>
-      <h2 class="text-2xl font-semibold mb-4">💰 Nouvelles offres de vente&nbsp;<span class="text-green-400">+{{
-          newOffersCount }}</span></h2>
+      <h2 class="text-2xl font-semibold mb-4">💰 Nouvelles offres de vente (aujourd'hui &nbsp;<span
+          class="text-green-400">+{{
+          newOffersCount }}</span>)</h2>
       <ng-container *ngIf="!newOffersLoading; else cardsLoadingSection">
         <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
           <div *ngFor="let offer of newOffers" class="w-48 bg-gray-800 rounded-xl shadow">
@@ -103,8 +107,8 @@
 
     <!-- Section : Offres disparues -->
     <section>
-      <h2 class="text-2xl font-semibold mb-4">❌ Offres disparues&nbsp;<span class="text-green-400">+{{
-          deletedOffersCount }}</span></h2>
+      <h2 class="text-2xl font-semibold mb-4">❌ Offres disparues (aujourd'hui &nbsp;<span class="text-green-400">+{{
+          deletedOffersCount }}</span>)</h2>
       <ng-container *ngIf="!deletedOffersLoading; else cardsLoadingSection">
         <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
           <div *ngFor="let offer of deletedOffers" class="w-48 bg-gray-800 rounded-xl shadow">
@@ -127,8 +131,8 @@
 
     <!-- Section : Offres modifiées -->
     <section>
-      <h2 class="text-2xl font-semibold mb-4">✏️ Offres modifiées&nbsp;<span class="text-green-400">+{{
-          editedOffersCount }}</span></h2>
+      <h2 class="text-2xl font-semibold mb-4">✏️ Offres modifiées (aujourd'hui &nbsp;<span class="text-green-400">+{{
+          editedOffersCount }}</span>)</h2>
       <ng-container *ngIf="!editedOffersLoading; else cardsLoadingSection">
         <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
           <div *ngFor="let offer of editedOffers" class="w-48 bg-gray-800 rounded-xl shadow">

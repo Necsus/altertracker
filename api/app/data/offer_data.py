@@ -72,17 +72,23 @@ def select_offers_by_id(offer_id: int) -> List[Offer]:
     return db.session.query(Offer).filter_by(id=offer_id).all()
 
 def get_last_added_offers_data() -> list[dict]:
-    today_utc = datetime.now(timezone.utc).date()
     return db.session.query(Offer, Card).join(
-        Card, Offer.reference_card == Card.reference
-    ).filter(
+            Card, Offer.reference_card == Card.reference
+        ).filter(
+            Offer.is_deleted == False  # Exclure les offres supprimées
+        ).order_by(
+            Offer.created_at.desc()  # Trier par date de création décroissante
+        ).limit(20).all()
+
+def get_count_offers_added_today_data() -> int:
+    today_utc = datetime.now(timezone.utc).date()
+    return db.session.query(func.count(Offer.id)).filter(
         func.date(Offer.created_at) == today_utc,
         Offer.is_deleted == False
-    )
+    ).scalar()
 
 # a revoir avec le 
 def get_last_edited_offers_data() -> list[dict]:
-    today_utc = datetime.now(timezone.utc).date()
     try:
         # Alias pour la jointure avec la previous_offer
         previous_offer_alias = db.aliased(Offer)
@@ -97,10 +103,11 @@ def get_last_edited_offers_data() -> list[dict]:
         ).outerjoin(
             previous_offer_alias, Offer.previous_offer == previous_offer_alias.id  # Jointure avec l'offre précédente
         ).filter(
-            func.date(Offer.created_at) == today_utc,  # Filtrer par date de création
             Offer.is_deleted == False,  # Exclure les offres supprimées
             Offer.previous_offer != None  # Inclure uniquement les offres avec une previous_offer
-        ).all()
+        ).order_by(
+            Offer.created_at.desc()  # Trier par date de création décroissante
+        ).limit(20).all()  # Limiter les résultats aux 20 dernières offres
 
         # Formater les résultats en liste de dictionnaires
         return [
@@ -114,24 +121,29 @@ def get_last_edited_offers_data() -> list[dict]:
     except Exception as e:
         print(f"Erreur lors de la récupération des offres éditées : {e}")
         return []
+    
+def get_count_offers_edited_today_data() -> int:
+    today_utc = datetime.now(timezone.utc).date()
+    return db.session.query(func.count(Offer.id)).filter(
+        func.date(Offer.created_at) == today_utc,
+        Offer.is_deleted == False,
+        Offer.previous_offer != None
+    ).scalar()
 
 def get_last_deleted_offers_data() -> list[dict]:
-    today_utc = datetime.now(timezone.utc).date()
     try:
         # Sous-requête pour récupérer les IDs présents dans previous_offer
         subquery = db.session.query(Offer.previous_offer).filter(Offer.previous_offer != None).subquery()
-
-        # Convertir la sous-requête en select()
-        subquery_select = db.select(subquery)
 
         # Requête principale
         results = db.session.query(Offer, Card).join(
             Card, Offer.reference_card == Card.reference
         ).filter(
-            func.date(Offer.deleted_at) == today_utc,  # Filtrer par date de suppression
             Offer.is_deleted == True,  # Vérifier que l'offre est supprimée
-            ~Offer.id.in_(subquery_select)  # Vérifier que l'ID n'est pas dans previous_offer
-        ).all()
+            ~Offer.id.in_(subquery)  # Vérifier que l'ID n'est pas dans previous_offer
+        ).order_by(
+            Offer.deleted_at.desc()  # Trier par date de suppression décroissante
+        ).limit(20).all()  # Limiter les résultats aux 20 dernières offres
 
         # Formater les résultats en liste de dictionnaires
         return [
@@ -144,3 +156,10 @@ def get_last_deleted_offers_data() -> list[dict]:
     except Exception as e:
         print(f"Erreur lors de la récupération des offres supprimées : {e}")
         return []
+    
+def get_count_offers_deleted_today_data() -> int:
+    today_utc = datetime.now(timezone.utc).date()
+    return db.session.query(func.count(Offer.id)).filter(
+        func.date(Offer.deleted_at) == today_utc,
+        Offer.is_deleted == True
+    ).scalar()

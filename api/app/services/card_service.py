@@ -12,7 +12,8 @@ from app.data.card_data import (
   get_card_by_reference_data,
   search_cards_data,
   get_cards_count_data,
-  get_last_added_cards_data
+  get_last_added_cards_data,
+  get_count_cards_created_today_data
 )
 from app.data.offer_data import (
   get_last_offer_by_reference_data,
@@ -134,6 +135,9 @@ def post_offer_live_market_service(data: List[dict]) -> None:
         
 def get_last_added_cards_service() -> List[dict]:
     return get_last_added_cards_data()
+
+def get_count_cards_created_today_service() -> int:
+    return get_count_cards_created_today_data()
 
 def is_image_url_accessible(url: str) -> bool:
     try:
