@@ -1,11 +1,16 @@
+from typing import List
 from app.data.offer_data import (
   get_last_added_offers_data,
   get_last_edited_offers_data,
   get_last_deleted_offers_data,
   get_count_offers_added_today_data,
   get_count_offers_edited_today_data,
-  get_count_offers_deleted_today_data
+  get_count_offers_deleted_today_data,
+  get_offers_by_reference_data
 )
+
+def get_offers_by_reference_service(reference: str) -> List[dict]:
+    return get_offers_by_reference_data(reference)
 
 def get_last_added_offers_service():
     return get_last_added_offers_data()

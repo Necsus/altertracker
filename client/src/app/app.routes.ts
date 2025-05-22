@@ -12,6 +12,7 @@ import { HomeComponent } from './home/home.component';
 import { NotFoundComponent } from './shared/error-pages/not-found/not-found.component';
 import { UnauthorizedComponent } from './shared/error-pages/unauthorized/unauthorized.component';
 import { UnderConstructionComponent } from './shared/under-construction/under-construction.component';
+import { StatsComponent } from './stats/stats.component';
 import { AlteredTokenComponent } from './user/altered-token/altered-token.component';
 import { ContactComponent } from './user/contact/contact.component';
 import { MeComponent } from './user/me/me.component';
@@ -22,6 +23,8 @@ import { ValidateEmailComponent } from './user/validate-email/validate-email.com
 export const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'cards', component: CardsComponent },
+  { path: 'stats', component: StatsComponent },
+  { path: 'stats/:reference', component: StatsComponent },
   { path: 'searches', component: UserSearchesComponent, canActivate: [TokenGuard] },
   { path: 'alerts', component: UserAlertsComponent, canActivate: [TokenGuard] },
   { path: 'me', component: MeComponent, canActivate: [TokenGuard] },

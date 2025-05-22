@@ -29,6 +29,8 @@
         </li>
         <li><a routerLink="/cards" routerLinkActive="text-blue-400" [routerLinkActiveOptions]="{ exact: true }"
             style="user-select: none;" class="hover:text-blue-300 transition duration-300 cursor-pointer">Cartes</a>
+        <li><a routerLink="/stats" routerLinkActive="text-blue-400" style=" user-select: none;"
+            class="hover:text-blue-300 transition duration-300 cursor-pointer">Stats</a>
         </li>
         <li><a routerLink="/about" routerLinkActive="text-blue-400" style="user-select: none;"
             class="hover:text-blue-300 transition duration-300 cursor-pointer">À propos</a></li>
@@ -76,6 +78,8 @@
         class="block hover:text-blue-300 transition duration-300">Accueil</a>
       <a routerLink="/cards" routerLinkActive="text-blue-400" [routerLinkActiveOptions]="{ exact: true }"
         class="block hover:text-blue-300 transition duration-300">Cartes</a>
+      <a routerLink="/stats" routerLinkActive="text-blue-400"
+        class="block hover:text-blue-300 transition duration-300">Stats</a>
       @if (isLoggedIn) {
       <a routerLink="/token" routerLinkActive="text-blue-400"
         class="block hover:text-blue-300 transition duration-300">Token Altered</a>

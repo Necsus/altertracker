@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { CardModel } from '../../01_models/03_business/card.model';
 import { UserAlertModel } from '../../01_models/03_business/user-alert.model';
 import { UserService } from '../../03_business/user.service';
@@ -9,7 +10,8 @@ import { CardImgComponent } from './card-img.component';
 
 @Component({
   selector: 'app-card',
-  templateUrl: './card.component.html'
+  templateUrl: './card.component.html',
+  imports: [RouterModule],
 })
 export class CardComponent {
   @Input() card!: CardModel; // Données de la carte

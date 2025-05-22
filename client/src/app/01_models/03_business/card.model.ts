@@ -9,6 +9,7 @@ export interface CardModel {
   type: string;
   set: string;
   imagePath: string;
+  image_path_en?: string;
   isSuspended: boolean;
   MAIN_COST: number;
   RECALL_COST: number;
@@ -16,7 +17,9 @@ export interface CardModel {
   OCEAN_POWER?: number;
   FOREST_POWER?: number;
   MAIN_EFFECT?: string;
+  main_effect_en?: string;
   ECHO_EFFECT?: string;
+  echo_effect_en?: string;
   created_at?: string; // ISO date string
   edited_at?: string; // ISO date string
   price?: number;

@@ -1,0 +1,101 @@
+<div class="max-w-7xl mx-auto space-y-12 p-6 bg-gray-900 text-white min-h-screen space-y-8 font-sans">
+
+  <!-- Top Bar: Search | Title | Language -->
+  <div class="flex items-center justify-between">
+
+    <!-- Left: Search -->
+    <form [formGroup]="searchForm" (ngSubmit)="onSubmit()" class="relative w-1/3 max-w-sm">
+      <input type="text" placeholder="Search cards..." formControlName="reference"
+        class="w-full bg-gray-800 text-white placeholder-gray-400 rounded-lg py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      <svg xmlns="http://www.w3.org/2000/svg"
+        class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24"
+        stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+    </form>
+
+    <!-- Center: Title -->
+    <h1 *ngIf="card" class="text-xl font-bold text-center w-1/3">{{ card.name }}</h1>
+
+    <!-- Right: Language Toggle -->
+    <div class="w-1/3 flex justify-end">
+      <button id="langToggle" class="text-sm text-gray-400 hover:text-white transition">
+        EN
+      </button>
+    </div>
+  </div>
+  @if (reference) {
+  <!-- Card Main Section -->
+
+  <div class="flex flex-col md:flex-row gap-6">
+    @if (card) {
+    <!-- Left: Image & Actions -->
+    <div class="md:w-1/3 bg-gray-800 rounded-2xl p-4">
+      <img [src]="card.imagePath" onerror="this.onerror=null; this.src='/assets/img/cardback.webp';" alt="Card"
+        class="rounded-xl w-full object-cover" />
+      <div class="flex justify-between items-center mt-4">
+        @if (isLoggedIn) {
+        <button class="text-pink-500 hover:text-pink-400 transition text-xl">
+          ♥
+        </button>
+        }
+        <button class="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg transition">
+          Make an Offer
+        </button>
+      </div>
+    </div>
+    }
+
+
+    <!-- Right: Stats & Chart -->
+    <div class="md:w-2/3 space-y-6">
+      @if (card) {
+      <!-- Stats -->
+      <div class="bg-gray-800 rounded-xl p-4">
+        <h2 class="text-xl font-semibold mb-3">Statistics</h2>
+        <ul class="grid grid-cols-2 gap-4 text-sm text-gray-300">
+          <li><strong>Rarity:</strong> {{ card.rarity }}</li>
+          <li><strong>Set:</strong> {{ card.set }}</li>
+          <li *ngIf="card.MAIN_EFFECT"><strong>main effect:</strong><br />{{ card.MAIN_EFFECT }}</li>
+          <li *ngIf="card.ECHO_EFFECT"><strong>echo effect:</strong><br />{{ card.ECHO_EFFECT }}</li>
+        </ul>
+      </div>
+      }
+
+      <!-- Price History Chart (placeholder) -->
+      <div class="bg-gray-800 rounded-xl p-4 h-64 flex items-center justify-center">
+        <span class="text-gray-500">[Price History Graph Here]</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Similar Cards & Estimation -->
+  <div class="bg-gray-800 rounded-xl p-4">
+    <h2 class="text-xl font-semibold mb-4">Similar Cards</h2>
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+      <div class="bg-gray-700 rounded-lg p-2">
+        <img src="/assets/img/cardback.webp" class="rounded-md w-full mb-2" />
+        <div class="text-sm text-gray-300">Dark Mage</div>
+        <div class="text-sm text-green-400">$82.50</div>
+      </div>
+      <div class="bg-gray-700 rounded-lg p-2">
+        <img src="/assets/img/cardback.webp" class="rounded-md w-full mb-2" />
+        <div class="text-sm text-gray-300">Arcane Fire</div>
+        <div class="text-sm text-green-400">$74.00</div>
+      </div>
+      <div class="bg-gray-700 rounded-lg p-2">
+        <img src="/assets/img/cardback.webp" class="rounded-md w-full mb-2" />
+        <div class="text-sm text-gray-300">Spectral Fury</div>
+        <div class="text-sm text-green-400">$65.20</div>
+      </div>
+      <div class="bg-gray-700 rounded-lg p-2">
+        <img src="/assets/img/cardback.webp" class="rounded-md w-full mb-2" />
+        <div class="text-sm text-gray-300">Ancient Root</div>
+        <div class="text-sm text-green-400">$79.90</div>
+      </div>
+    </div>
+  </div>
+  }
+
+</div>
