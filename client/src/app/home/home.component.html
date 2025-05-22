@@ -98,7 +98,8 @@
                 offer.card.reference }}&nbsp;<i class="fas fa-up-right-from-square text-xs"></i></a>
               <div class="font-medium">{{ offer.card.name }}</div>
               <div class="text-sm text-gray-400">Prix : {{ offer.offer.price }} {{offer.offer.currency}}</div>
-              <div class="text-sm text-gray-500">Vendeur : {{ offer.offer.user_altered }}</div>
+              <p class="text-xs text-gray-500">détecté le : {{ offer.offer.created_at | date:'short' }}</p>
+              <!-- <div class="text-sm text-gray-500">Vendeur : {{ offer.offer.user_altered }}</div> -->
             </div>
           </div>
         </div>
@@ -123,6 +124,7 @@
                 offer.card.reference }}&nbsp;<i class="fas fa-up-right-from-square text-xs"></i></a>
               <div class="font-medium">{{ offer.card.name }}</div>
               <div class="text-sm text-gray-400">Ancien prix : {{ offer.offer.price }} {{offer.offer.currency}}</div>
+              <p class="text-xs text-gray-500">détecté le : {{ offer.offer.deleted_at | date:'short' }}</p>
             </div>
           </div>
         </div>
@@ -151,7 +153,8 @@
                   {{offer.previous_offer?.currency}}</span>
                 → <span class="text-green-400">{{ offer.offer.price }} {{offer.offer.currency}}</span>
               </div>
-              <div class="text-sm text-gray-500">Vendeur : {{ offer.offer.user_altered }}</div>
+              <p class="text-xs text-gray-500">détecté le : {{ offer.offer.created_at | date:'short' }}</p>
+              <!-- <div class="text-sm text-gray-500">Vendeur : {{ offer.offer.user_altered }}</div> -->
             </div>
           </div>
         </div>
