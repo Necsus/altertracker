@@ -6,8 +6,7 @@
     <form (ngSubmit)="updateProfile()" #profileForm="ngForm">
       <div class="mb-4">
         <label class="block mb-1">Pseudo</label>
-        <input type="text" [(ngModel)]="user.username" name="username" class="w-full p-2 bg-gray-700 rounded"
-          required />
+        <input type="text" [(ngModel)]="username" name="username" class="w-full p-2 bg-gray-700 rounded" required />
       </div>
 
       <!-- <div class="mb-4">
@@ -24,12 +23,14 @@
       <h3 class="text-xl font-semibold mb-2">Changer de mot de passe</h3>
       <div class="mb-2">
         <label class="block mb-1">Ancien mot de passe</label>
-        <input type="password" name="oldPassword" class="w-full p-2 bg-gray-700 rounded" required />
+        <input type="password" [(ngModel)]="oldPassword" name="oldPassword" class="w-full p-2 bg-gray-700 rounded"
+          required />
       </div>
 
       <div class="mb-2">
         <label class="block mb-1">Nouveau mot de passe</label>
-        <input type="password" name="newPassword" class="w-full p-2 bg-gray-700 rounded" required />
+        <input type="password" [(ngModel)]="newPassword" name="newPassword" class="w-full p-2 bg-gray-700 rounded"
+          required />
       </div>
 
       <button type="submit" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded">Changer le mot de passe</button>
@@ -40,7 +41,23 @@
     <div>
       <h3 class="text-xl font-semibold mb-2 text-red-400">Supprimer le compte</h3>
       <p class="mb-4">Cette action est <strong>irréversible</strong>.</p>
-      <button (click)="deleteAccount()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded">Supprimer mon
+      <div class="mb-2">
+        <label class="block mb-1">Mot de passe</label>
+        <input type="password" [(ngModel)]="passwordForDelete" name="passwordForDelete"
+          class="w-full p-2 bg-gray-700 rounded" required />
+      </div>
+      <div class="mb-2">
+        <label style="user-select: none;" class="block mb-1">Voulez-vous vraiment supprimer votre compte ?
+          Tapez&nbsp;<strong>"Oui je
+            veux
+            supprimer mon compte"</strong></label>
+        <input type="text" [(ngModel)]="yesIWantToDelete" name="yesIWantToDelete" class="w-full p-2 bg-gray-700 rounded"
+          required />
+      </div>
+      <button (click)="deleteAccount()"
+        [ngClass]="{'bg-gray-500 cursor-not-allowed': !validateDeleteAccount, 'bg-red-600 hover:bg-red-700': validateDeleteAccount}"
+        class="px-4 py-2 rounded" [disabled]="!validateDeleteAccount">Supprimer
+        mon
         compte</button>
     </div>
   </div>

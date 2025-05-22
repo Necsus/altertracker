@@ -92,7 +92,7 @@ export class AuthViewService {
     }
   }
 
-  private refreshToken(): void {
+  refreshToken(): void {
     const refreshToken = localStorage.getItem('refresh_token');
     if (!refreshToken) {
       this.logout();

@@ -10,11 +10,10 @@ from app.config import Config, ConfigEnv
 from app.utils.emails import render_template_with_data
 from app.models.user import User
 from app.models.token_blacklist import TokenBlacklist
-from app.extensions import db
+from app.extensions import db, mail_api, ApiException, limiter
 from app.utils.security import hash_password, check_password
 import itsdangerous
 from datetime import datetime
-from app.extensions import mail_api, ApiException, limiter
 
 auth_bp = Blueprint('auth', __name__)
 serializer = itsdangerous.URLSafeTimedSerializer('secret-reset-token')

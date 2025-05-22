@@ -1,7 +1,8 @@
 import sib_api_v3_sdk
 from flask import Blueprint, jsonify, request, make_response
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from app.extensions import mail_api, ApiException
+from app.utils.security import check_password, hash_password
+from app.extensions import mail_api, ApiException, limiter
 from app.services.user_service import (
     get_user_search_service,
     save_user_search_service,
@@ -11,7 +12,12 @@ from app.services.user_service import (
     save_user_alert_service,
     delete_user_alert_service,
     edit_user_alert_service,
-    get_user_alert_with_card_service
+    get_user_alert_with_card_service,
+    get_user_by_id_service,
+    put_user_password_service,
+    delete_user_service,
+    get_user_by_username_service,
+    put_username_service
 )
 
 user_bp = Blueprint('user', __name__)
@@ -147,3 +153,102 @@ def contact_form():
         return jsonify({"message": "Votre message a été envoyé avec succès"}), 200
     except Exception as e:
         return jsonify({"message": f"Erreur lors de l'envoi de l'email : {str(e)}"}), 500
+    
+@user_bp.route('/change-username', methods=['PUT'])
+@limiter.limit("3 per minute")  # Limite les requêtes pour éviter les abus
+@jwt_required()
+def change_username():
+    try:
+        user_id = get_jwt_identity()  # Récupère l'ID utilisateur depuis le token JWT
+        data = request.get_json()
+
+        # Vérification des champs requis
+        if not data.get('new_username'):
+            return jsonify({"message": "Le champ 'new_username' est requis"}), 400
+
+        new_username = data['new_username']
+
+        # Validation du nouveau username (exemple : longueur minimale et caractères autorisés)
+        if len(new_username) < 3 or len(new_username) > 50:
+            return jsonify({"message": "Le nom d'utilisateur doit contenir entre 3 et 20 caractères"}), 400
+        if not new_username.isalnum():
+            return jsonify({"message": "Le nom d'utilisateur ne peut contenir que des lettres et des chiffres"}), 400
+
+        # Vérification de l'unicité du username
+        existing_user = get_user_by_username_service(new_username)
+        if existing_user:
+            return jsonify({"message": "Ce nom d'utilisateur est déjà pris"}), 409
+
+        # Mise à jour du username dans la base de données
+        put_username_service(user_id, new_username)
+
+        return jsonify({"message": "Nom d'utilisateur mis à jour avec succès"}), 200
+
+    except Exception as e:
+        return jsonify({"message": f"Erreur lors de la mise à jour du nom d'utilisateur : {str(e)}"}), 500
+    
+
+@user_bp.route('/change-password', methods=['PUT'])
+@limiter.limit("3 per minute")
+@jwt_required()
+def update_user_password():
+    try:
+        user_id = get_jwt_identity()  # Récupère l'ID utilisateur depuis le token JWT
+        data = request.get_json()
+
+        # Vérification des champs requis
+        if not data.get('old_password') or not data.get('new_password'):
+            return jsonify({"message": "Les champs 'old_password' et 'new_password' sont requis"}), 400
+
+        # Récupération de l'utilisateur
+        user = get_user_by_id_service(user_id)
+        if not user:
+            return jsonify({"message": "Utilisateur non trouvé"}), 404
+
+        # Vérification de l'ancien mot de passe
+        if not check_password(data['old_password'], user['password_hash']):
+            return jsonify({"message": "L'ancien mot de passe est incorrect"}), 403
+
+        # Validation du nouveau mot de passe (exemple : longueur minimale)
+        if len(data['new_password']) < 8:
+            return jsonify({"message": "Le nouveau mot de passe doit contenir au moins 8 caractères"}), 400
+
+        # Hachage du nouveau mot de passe
+        hashed_password = hash_password(data['new_password'])
+
+        # Mise à jour du mot de passe dans la base de données
+        put_user_password_service(user_id, hashed_password)
+
+        return jsonify({"message": "Mot de passe mis à jour avec succès"}), 200
+
+    except Exception as e:
+        return jsonify({"message": f"Erreur lors de la mise à jour du mot de passe : {str(e)}"}), 500
+    
+@user_bp.route('/delete-account', methods=['PUT'])
+@limiter.limit("3 per minute")  # Limite les requêtes pour éviter les abus
+@jwt_required()
+def delete_user_account():
+    try:
+        user_id = get_jwt_identity()  # Récupère l'ID utilisateur depuis le token JWT
+        data = request.get_json()
+
+        # Vérification du mot de passe pour confirmer l'identité
+        if not data.get('password'):
+            return jsonify({"message": "Le mot de passe est requis pour supprimer le compte"}), 400
+
+        # Récupération de l'utilisateur
+        user = get_user_by_id_service(user_id)
+        if not user:
+            return jsonify({"message": "Utilisateur non trouvé"}), 404
+
+        # Vérification du mot de passe
+        if not check_password(data['password'], user['password_hash']):
+            return jsonify({"message": "Mot de passe incorrect"}), 403
+
+        # Suppression de l'utilisateur
+        delete_user_service(user_id)
+
+        return jsonify({"message": "Compte utilisateur supprimé avec succès"}), 200
+
+    except Exception as e:
+        return jsonify({"message": f"Erreur lors de la suppression du compte : {str(e)}"}), 500

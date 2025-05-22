@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import List, Dict
 from app.data.user_data import (
   get_user_search_data,
   save_user_search_data,
@@ -8,10 +9,36 @@ from app.data.user_data import (
   get_user_alert_with_card_data,
   save_user_alert_data,
   delete_user_alert_data,
-  edit_user_alert_data
+  edit_user_alert_data,
+  put_user_password_data,
+  get_user_by_username_data,
+  put_user_username_data,
+  get_user_by_id_data,
+  delete_user_data
 )
 
-from typing import List, Dict
+def get_user_by_id_service(id_user: int) -> Dict:
+    # Récupère l'utilisateur depuis la base de données
+    user = get_user_by_id_data(id_user)
+    return user.json() if user else None
+
+def get_user_by_username_service(username: str) -> Dict:
+    # Récupère l'utilisateur depuis la base de données
+    user = get_user_by_username_data(username)
+    # Transformation du résultat en JSON
+    return user.json() if user else None
+
+def put_username_service(id_user: int, username: str) -> None:
+    # Met à jour le nom d'utilisateur de l'utilisateur
+    put_user_username_data(id_user, username)
+
+def put_user_password_service(id_user: int, hashed_password: str) -> None:
+    # Met à jour le mot de passe de l'utilisateur
+    put_user_password_data(id_user, hashed_password)
+    
+def delete_user_service(id_user: int) -> None:
+    # Supprime l'utilisateur de la base de données
+    delete_user_data(id_user)
 
 def get_user_count_services() -> int:
     return get_user_count_data()
