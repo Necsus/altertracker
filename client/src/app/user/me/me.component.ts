@@ -39,25 +39,21 @@ export class MeComponent implements OnInit {
       this.toastService.show('Username must be at least 3 characters long', 'error', 5000);
       return;
     }
-    this.userService.put_user_username$({ username: this.username }).subscribe({
+    this.userService.put_user_username$({ new_username: this.username }).subscribe({
       next: (response) => {
         console.log(response);
-        this.authViewService.logout();
-        this.toastService.show('Username updated successfully', 'success', 5000);
+        this.authViewService.refreshToken();
       },
-      error: (error) => {
-        console.error(error);
-        this.toastService.show('Error updating username', 'error', 5000);
-      }
+      error: (err: any) => this.toastService.show(`Error: ${err.message}`, 'error', 5000)
     });
   }
 
   changePassword(): void {
-    this.userService.put_user_password$({ old_password: '', new_password: '' }).subscribe({
+    this.userService.put_user_password$({ old_password: this.oldPassword, new_password: this.newPassword }).subscribe({
       next: (response) => {
         console.log(response);
-        this.toastService.show('Password changed successfully', 'success', 5000);
-      }
+      },
+      error: (err: any) => this.toastService.show(`Error: ${err.message}`, 'error', 5000)
     });
   }
 
@@ -70,8 +66,8 @@ export class MeComponent implements OnInit {
       next: (response) => {
         console.log(response);
         this.authViewService.logout();
-        this.toastService.show('Account deleted successfully', 'success', 5000);
-      }
+      },
+      error: (err: any) => this.toastService.show(`Error: ${err.message}`, 'error', 5000)
     });
   }
 

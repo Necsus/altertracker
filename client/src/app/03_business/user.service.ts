@@ -54,7 +54,7 @@ export class UserService {
       return response;
     }));
   }
-  put_user_username$(request: { username: string }): Observable<any> {
+  put_user_username$(request: { new_username: string }): Observable<any> {
     return this.userApiService.put_user_username$(request).pipe(map((response: any) => {
       return response;
     }));

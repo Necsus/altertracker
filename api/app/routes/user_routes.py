@@ -1,8 +1,8 @@
 import sib_api_v3_sdk
 from flask import Blueprint, jsonify, request, make_response
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from app.utils.security import check_password, hash_password
 from app.extensions import mail_api, ApiException, limiter
-from werkzeug.security import check_password_hash, generate_password_hash
 from app.services.user_service import (
     get_user_search_service,
     save_user_search_service,
@@ -169,7 +169,7 @@ def change_username():
         new_username = data['new_username']
 
         # Validation du nouveau username (exemple : longueur minimale et caractères autorisés)
-        if len(new_username) < 3 or len(new_username) > 20:
+        if len(new_username) < 3 or len(new_username) > 50:
             return jsonify({"message": "Le nom d'utilisateur doit contenir entre 3 et 20 caractères"}), 400
         if not new_username.isalnum():
             return jsonify({"message": "Le nom d'utilisateur ne peut contenir que des lettres et des chiffres"}), 400
@@ -206,7 +206,7 @@ def update_user_password():
             return jsonify({"message": "Utilisateur non trouvé"}), 404
 
         # Vérification de l'ancien mot de passe
-        if not check_password_hash(user['password'], data['old_password']):
+        if not check_password(data['old_password'], user['password_hash']):
             return jsonify({"message": "L'ancien mot de passe est incorrect"}), 403
 
         # Validation du nouveau mot de passe (exemple : longueur minimale)
@@ -214,7 +214,7 @@ def update_user_password():
             return jsonify({"message": "Le nouveau mot de passe doit contenir au moins 8 caractères"}), 400
 
         # Hachage du nouveau mot de passe
-        hashed_password = generate_password_hash(data['new_password'])
+        hashed_password = hash_password(data['new_password'])
 
         # Mise à jour du mot de passe dans la base de données
         put_user_password_service(user_id, hashed_password)
@@ -224,7 +224,7 @@ def update_user_password():
     except Exception as e:
         return jsonify({"message": f"Erreur lors de la mise à jour du mot de passe : {str(e)}"}), 500
     
-@user_bp.route('/delete-account', methods=['DELETE'])
+@user_bp.route('/delete-account', methods=['PUT'])
 @limiter.limit("3 per minute")  # Limite les requêtes pour éviter les abus
 @jwt_required()
 def delete_user_account():
@@ -242,7 +242,7 @@ def delete_user_account():
             return jsonify({"message": "Utilisateur non trouvé"}), 404
 
         # Vérification du mot de passe
-        if not check_password_hash(user['password'], data['password']):
+        if not check_password(data['password'], user['password_hash']):
             return jsonify({"message": "Mot de passe incorrect"}), 403
 
         # Suppression de l'utilisateur

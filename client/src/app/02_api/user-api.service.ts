@@ -41,15 +41,13 @@ export class UserApiService {
   post_user_contact$(request: UserContactModel): Observable<any> {
     return this.wabApiService.callPost$(this.controller, 'contact', request);
   }
-  put_user_username$(request: { username: string }): Observable<any> {
-    return this.wabApiService.callPut$(this.controller, 'username', request);
+  put_user_username$(request: { new_username: string }): Observable<any> {
+    return this.wabApiService.callPut$(this.controller, 'change-username', request);
   }
   put_user_password$(request: { old_password: string, new_password: string }): Observable<any> {
     return this.wabApiService.callPut$(this.controller, 'change-password', request);
   }
   delete_user_account$(request: { password: string }): Observable<any> {
-    return this.wabApiService.callDelete$(this.controller, 'delete-account', [
-      { name: 'password', value: request.password }
-    ]);
+    return this.wabApiService.callPut$(this.controller, 'delete-account', request);
   }
 }

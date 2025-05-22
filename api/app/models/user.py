@@ -23,9 +23,12 @@ class User(db.Model):
             'id': self.id,
             'username': self.username,
             'email': self.email,
+            'password_hash': self.password_hash,
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'edited_at': self.edited_at.isoformat() if self.edited_at else None,
             'is_admin': self.is_admin,
+            'is_email_verified': self.is_email_verified,
+            'email_verified_at': self.email_verified_at.isoformat() if self.email_verified_at else None
         }
     
     def __init__(self, username, email, password_hash, created_at=None, edited_at=None, is_email_verified=False, email_verified_at=None):
