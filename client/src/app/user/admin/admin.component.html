@@ -63,4 +63,10 @@
     class="scroll-container bg-gray-800 p-4 rounded-xl h-96 overflow-auto text-sm font-mono border border-gray-700">
     <pre [innerHTML]="logs"></pre>
   </div>
+  <button (click)="clearLogs()"
+    [ngClass]="{'bg-gray-500 cursor-not-allowed': !logs || logs.length <= 0, 'bg-blue-600 hover:bg-blue-700': logs && logs.length >= 0}"
+    class="md:col-span-3 w-full text-white py-2 px-4 rounded-md transition duration-300"
+    [disabled]="!logs || logs.length === 0">
+    clear logs
+  </button>
 </div>
