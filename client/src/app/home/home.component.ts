@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { CardModel } from '../01_models/03_business/card.model';
 import { OfferViewModel } from '../01_models/home/home-view.model';
 import { CardService } from '../03_business/card.service';
@@ -13,7 +14,7 @@ import { ToastService } from '../shared/services/toast/toast.service';
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
-  imports: [CommonModule]
+  imports: [CommonModule, RouterModule]
 })
 export class HomeComponent implements OnInit {
   newCardsLoading: boolean = false;
