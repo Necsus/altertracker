@@ -27,6 +27,7 @@ export class CardsComponent implements OnInit {
   searchOffers: boolean = false;
   isLoggedIn = false;
   allGroupsOpen: boolean = false;
+  getMarketComplete: boolean = true;
 
   constructor(
     private cardService: CardService,
@@ -91,6 +92,7 @@ export class CardsComponent implements OnInit {
   private getMarketOffer(cards: CardModel[]): void {
     const alteredToken = sessionStorage.getItem('altered_token');
     if (alteredToken) {
+      this.getMarketComplete = false;
       const maxConcurrentRequests = 5; // Limite de requêtes simultanées
       const updatedCards: OfferLiveMarketRequest[] = [];
       from(cards)
@@ -104,12 +106,12 @@ export class CardsComponent implements OnInit {
             updatedCards.push(offerRequest);
           }),
           catchError((error) => {
-
             if (error.message === 'Token invalide ou expiré. Veuillez le réinsérer.') {
               console.error('Erreur 401 détectée : Redirection vers la page /token.');
               sessionStorage.removeItem('altered_token');
               sessionStorage.removeItem('cgu_altered_token');
               this.loaderService.hide();
+              this.getMarketComplete = true;
               this.toastService.show(error.message, 'error', 5000);
               this.router.navigate(['/token']); // Redirige l'utilisateur vers la page /token
               return of(); // Arrête la propagation des requêtes
@@ -120,10 +122,10 @@ export class CardsComponent implements OnInit {
         .subscribe({
           next: () => { },
           error: (error) => {
+            this.getMarketComplete = true;
             console.error('Erreur lors de la récupération des offres :', error);
           },
           complete: () => {
-            console.log('Toutes les offres visibles ont été récupérées.');
             // Appeler post_offer_live_market$ avec les cartes mises à jour
             if (updatedCards.length > 0) {
               this.cardService.post_offer_live_market$(updatedCards).subscribe({
@@ -133,7 +135,9 @@ export class CardsComponent implements OnInit {
                 error: (error) => {
                   console.error('Erreur lors de la mise à jour des offres live market :', error);
                 },
-                complete: () => { }
+                complete: () => {
+                  this.getMarketComplete = true;
+                }
               });
             }
           }
