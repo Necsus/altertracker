@@ -6,6 +6,7 @@ import { OfferViewModel } from '../01_models/home/offer-view.model';
 import { CardService } from '../03_business/card.service';
 import { OfferService } from '../03_business/offer.service';
 import { UserService } from '../03_business/user.service';
+import { AuthViewService } from '../authentication/auth-view.service';
 import { CardImgComponent } from '../cards/card/card-img.component';
 import { ModalService } from '../shared/services/modal/modal.service';
 import { ToastService } from '../shared/services/toast/toast.service';
@@ -17,6 +18,7 @@ import { ToastService } from '../shared/services/toast/toast.service';
   imports: [CommonModule, RouterModule]
 })
 export class HomeComponent implements OnInit {
+  isLoggedIn: boolean = false;
   newCardsLoading: boolean = false;
   newCardsCount: Number = 0;
   newCards: CardModel[] = [];
@@ -37,8 +39,12 @@ export class HomeComponent implements OnInit {
     private offerService: OfferService,
     private userService: UserService,
     private toastService: ToastService,
-    private modalService: ModalService) { }
+    private modalService: ModalService,
+    private authViewService: AuthViewService) { }
   ngOnInit(): void {
+    this.authViewService.isLoggedIn$.subscribe(status => {
+      this.isLoggedIn = status;
+    });
     this.newCardsLoading = true;
     this.cardService.get_last_added_cards$().subscribe({
       next: (response: { count: number, cards: CardModel[] }) => {
