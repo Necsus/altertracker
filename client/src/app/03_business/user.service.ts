@@ -54,4 +54,19 @@ export class UserService {
       return response;
     }));
   }
+  put_user_username$(request: { username: string }): Observable<any> {
+    return this.userApiService.put_user_username$(request).pipe(map((response: any) => {
+      return response;
+    }));
+  }
+  put_user_password$(request: { old_password: string, new_password: string }): Observable<any> {
+    return this.userApiService.put_user_password$(request).pipe(map((response: any) => {
+      return response;
+    }));
+  }
+  delete_user_account$(request: { password: string }): Observable<any> {
+    return this.userApiService.delete_user_account$(request).pipe(map((response: any) => {
+      return response;
+    }));
+  }
 }

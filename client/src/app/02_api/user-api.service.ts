@@ -26,7 +26,6 @@ export class UserApiService {
   delete_user_search$(id_search: number): Observable<void> {
     return this.wabApiService.callDelete$(this.controller, `searches/${id_search}`);
   }
-
   get_user_alerts$(): Observable<UserAlertModel[]> {
     return this.wabApiService.callGet$(this.controller, 'alerts');
   }
@@ -41,5 +40,16 @@ export class UserApiService {
   }
   post_user_contact$(request: UserContactModel): Observable<any> {
     return this.wabApiService.callPost$(this.controller, 'contact', request);
+  }
+  put_user_username$(request: { username: string }): Observable<any> {
+    return this.wabApiService.callPut$(this.controller, 'username', request);
+  }
+  put_user_password$(request: { old_password: string, new_password: string }): Observable<any> {
+    return this.wabApiService.callPut$(this.controller, 'change-password', request);
+  }
+  delete_user_account$(request: { password: string }): Observable<any> {
+    return this.wabApiService.callDelete$(this.controller, 'delete-account', [
+      { name: 'password', value: request.password }
+    ]);
   }
 }

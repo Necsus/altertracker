@@ -1,3 +1,4 @@
+from typing import Optional
 from sqlalchemy import func
 from app.models.card import Card
 from app.models.user_alert import UserAlert
@@ -9,11 +10,32 @@ from sqlalchemy.exc import SQLAlchemyError
 def get_user_count_data() -> int:
     return db.session.query(func.count(User.id)).scalar()
 
-def get_user_by_id_data(id_user: int) -> User:
-    user = db.session.query(User).filter_by(id=id_user).first()
-    if not user:
-        raise Exception(f"Aucun utilisateur trouvé avec l'ID {id_user}")
-    return user
+def get_user_by_id_data(id_user: int) -> Optional[User]:
+    return db.session.query(User).filter_by(id=id_user).first()
+
+def get_user_by_username_data(username: str) -> Optional[User]:
+    return db.session.query(User).filter_by(username=username).first()
+
+def put_user_password_data(user_id: int, username: str):
+    # Met à jour le nom d'utilisateur de l'utilisateur dans la base de données
+    user = db.session.query(User).filter_by(id=user_id).first()
+    if user:
+        user.username = username
+        db.session.commit()
+
+def put_user_password_data(user_id, hashed_password):
+    # Met à jour le mot de passe de l'utilisateur dans la base de données
+    user = db.session.query(User).filter_by(id=user_id).first()
+    if user:
+        user.password = hashed_password
+        db.session.commit()
+
+def delete_user_service(user_id):
+    # Supprime l'utilisateur de la base de données
+    user = db.session.query(User).filter_by(id=user_id).first()
+    if user:
+        db.session.delete(user)
+        db.session.commit()
 
 def get_user_search_data(id_user: int) -> list[dict]:
     return db.session.query(UserSearch).filter_by(id_user=id_user).order_by(UserSearch.created_at.desc()).all()
