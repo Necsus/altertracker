@@ -42,7 +42,6 @@ export class StatsComponent implements OnInit {
     this.searchForm = this.fb.group({
       reference: [this.reference || ''],
     });
-
     if (this.reference) {
       this.loadCardStats(this.reference);
     }
@@ -62,8 +61,10 @@ export class StatsComponent implements OnInit {
 
   onSubmit(): void {
     const reference = this.searchForm.get('reference')?.value;
-    if (reference) {
-      this.router.navigate(['/stats', reference]);
+    this.reference = reference;
+    if (this.reference) {
+      // this.router.navigate(['/stats', reference]);
+      this.loadCardStats(this.reference);
     }
   }
 
