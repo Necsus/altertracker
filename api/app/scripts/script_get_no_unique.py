@@ -68,6 +68,7 @@ def run_script():
                     existing_card.type = card.type
                     existing_card.set = card.set
                     existing_card.imagePath = card.imagePath
+                    existing_card.image_path_en=card.image_path_en
                     existing_card.isSuspended = card.isSuspended
                     existing_card.MAIN_COST = card.MAIN_COST
                     existing_card.RECALL_COST = card.RECALL_COST
@@ -75,7 +76,9 @@ def run_script():
                     existing_card.OCEAN_POWER = card.OCEAN_POWER
                     existing_card.FOREST_POWER = card.FOREST_POWER
                     existing_card.MAIN_EFFECT = card.MAIN_EFFECT
+                    existing_card.main_effect_en = card.main_effect_en
                     existing_card.ECHO_EFFECT = card.ECHO_EFFECT
+                    existing_card.echo_effect_en = card.echo_effect_en
                     existing_card.edited_at = datetime.now()
                     edit_card_len += 1
                 else:
