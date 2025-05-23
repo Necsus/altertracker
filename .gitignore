@@ -1,6 +1,7 @@
 # Environnement virtuel Python
 venv/
 .env
+!config/production.env
 
 # Fichiers Python
 __pycache__/
