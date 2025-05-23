@@ -22,7 +22,7 @@ jobs:
 
     - name: Deploy to server
       run: |
-        ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
+        ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
           set -euo pipefail
 
           export POSTGRES_USER="${{ secrets.POSTGRES_USER }}"
