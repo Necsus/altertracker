@@ -25,16 +25,30 @@ jobs:
         ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
           set -euo pipefail
 
-          export POSTGRES_USER=${{ secrets.POSTGRES_USER }}
-          export POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
-          export POSTGRES_DB=${{ secrets.POSTGRES_DB }}
-          export CORS_ORIGINS=${{ vars.CORS_ORIGINS }}
-          export PASSWORD_PEPPER=${{ secrets.PASSWORD_PEPPER }}
-          export SECRET_KEY=${{ secrets.SECRET_KEY }}
-          export JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
-          export BREVO_API_KEY=${{ secrets.BREVO_API_KEY }}
-          export ANGULAR_URL=${{ vars.ANGULAR_URL }}
-          export FLASK_ENV=${{ vars.FLASK_ENV }}
+          export POSTGRES_USER="${{ secrets.POSTGRES_USER }}"
+          export POSTGRES_PASSWORD="${{ secrets.POSTGRES_PASSWORD }}"
+          export POSTGRES_DB="${{ secrets.POSTGRES_DB }}"
+          export CORS_ORIGINS="${{ vars.CORS_ORIGINS }}"
+          export PASSWORD_PEPPER="${{ secrets.PASSWORD_PEPPER }}"
+          export SECRET_KEY="${{ secrets.SECRET_KEY }}"
+          export JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}"
+          export BREVO_API_KEY="${{ secrets.BREVO_API_KEY }}"
+          export ANGULAR_URL="${{ vars.ANGULAR_URL }}"
+          export FLASK_ENV="${{ vars.FLASK_ENV }}"
+
+          echo "[+] Génération du fichier config/production.env"
+          cat > config/production.env <<EOL
+          POSTGRES_USER=$POSTGRES_USER
+          POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+          POSTGRES_DB=$POSTGRES_DB
+          CORS_ORIGINS=$CORS_ORIGINS
+          PASSWORD_PEPPER=$PASSWORD_PEPPER
+          SECRET_KEY=$SECRET_KEY
+          JWT_SECRET_KEY=$JWT_SECRET_KEY
+          BREVO_API_KEY=$BREVO_API_KEY
+          ANGULAR_URL=$ANGULAR_URL
+          FLASK_ENV=$FLASK_ENV
+          EOL
 
           echo "[+] Début du déploiement à $(date)"
           cd ~/geekom/uniquetracker
