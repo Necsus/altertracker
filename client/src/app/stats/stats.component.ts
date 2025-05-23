@@ -63,7 +63,7 @@ export class StatsComponent implements OnInit {
     const reference = this.searchForm.get('reference')?.value;
     this.reference = reference;
     if (this.reference) {
-      this.router.navigate(['/stats', reference]);
+      this.loadCardStats(this.reference);
     }
   }
 
@@ -73,6 +73,7 @@ export class StatsComponent implements OnInit {
         this.card = response.card;
         this.is_favorite = !!this.card.alert_id;
         this.offers = response.offers;
+        this.router.navigate(['/stats', reference]);
       },
       error: (err: any) => {
         console.error(err);
