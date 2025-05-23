@@ -19,6 +19,7 @@ def run_script():
             type = jsonCard['cardType']['reference'],
             set = jsonCard['cardSet']['reference'],
             imagePath = jsonCard['imagePath'],
+            image_path_en=None,
             isSuspended = jsonCard['isSuspended'],
             MAIN_COST = jsonCard['elements']['MAIN_COST'],
             RECALL_COST = jsonCard['elements']['RECALL_COST'],
@@ -26,7 +27,9 @@ def run_script():
             OCEAN_POWER = None if jsonCard['cardType']['reference'] != "CHARACTER" else jsonCard['elements']['OCEAN_POWER'],
             FOREST_POWER = None if jsonCard['cardType']['reference'] != "CHARACTER" else jsonCard['elements']['FOREST_POWER'],
             MAIN_EFFECT = None,
+            main_effect_en=None,
             ECHO_EFFECT = None,
+            echo_effect_en=None
         )
         return card
 
@@ -65,6 +68,7 @@ def run_script():
                     existing_card.type = card.type
                     existing_card.set = card.set
                     existing_card.imagePath = card.imagePath
+                    existing_card.image_path_en=card.image_path_en
                     existing_card.isSuspended = card.isSuspended
                     existing_card.MAIN_COST = card.MAIN_COST
                     existing_card.RECALL_COST = card.RECALL_COST
@@ -72,7 +76,9 @@ def run_script():
                     existing_card.OCEAN_POWER = card.OCEAN_POWER
                     existing_card.FOREST_POWER = card.FOREST_POWER
                     existing_card.MAIN_EFFECT = card.MAIN_EFFECT
+                    existing_card.main_effect_en = card.main_effect_en
                     existing_card.ECHO_EFFECT = card.ECHO_EFFECT
+                    existing_card.echo_effect_en = card.echo_effect_en
                     existing_card.edited_at = datetime.now()
                     edit_card_len += 1
                 else:
