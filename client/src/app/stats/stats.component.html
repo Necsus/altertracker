@@ -16,7 +16,9 @@
       </div>
 
       <!-- Search Button -->
-      <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white px-4 rounded-r-lg transition">
+      <button type="submit" [disabled]="!isFormValid()"
+        [ngClass]="{'bg-gray-500 cursor-not-allowed': !isFormValid(), 'bg-blue-600 hover:bg-blue-700': isFormValid()}"
+        class="text-white px-4 rounded-r-lg transition">
         <i class="fa-solid fa-magnifying-glass"></i>
       </button>
     </form>
@@ -33,11 +35,10 @@
   <div *ngIf="card" class="mt-6 text-center">
     <h1 class="text-3xl md:text-4xl font-extrabold">{{ card.name }}</h1>
   </div>
-  @if (reference) {
+  @if (card) {
   <!-- Card Main Section -->
 
   <div class="flex flex-col md:flex-row gap-6">
-    @if (card) {
     <!-- Left: Image & Actions -->
     <div class="md:w-1/3 bg-gray-800 rounded-2xl p-4">
       <img [src]="card.imagePath" onerror="this.onerror=null; this.src='/assets/img/cardback.webp';" alt="Card"
@@ -53,12 +54,10 @@
         </button>
       </div>
     </div>
-    }
 
 
     <!-- Right: Stats & Chart -->
     <div class="md:w-2/3 space-y-6">
-      @if (card) {
       <!-- Stats -->
       <div class="bg-gray-800 rounded-xl p-4">
         <h2 class="text-xl font-semibold mb-3">Statistics</h2>
@@ -69,7 +68,6 @@
           <li *ngIf="card.ECHO_EFFECT"><strong>echo effect:</strong><br />{{ card.ECHO_EFFECT }}</li>
         </ul>
       </div>
-      }
 
       <!-- Price History Chart (placeholder) -->
       <div class="bg-gray-800 rounded-xl p-4 h-64 flex items-center justify-center">
@@ -156,5 +154,17 @@
     </div>
   </div>
   }
-
+  @else {
+  @if (reference) {
+  <div class="mt-6 text-center">
+    <h1 class="text-xl md:text-xl font-extrabold">Pas de resultat trouvé pour la référence {{ reference }}.</h1>
+  </div>
+  }
+  @else {
+  <div class="mt-6 text-center">
+    <h1 class="text-xl md:text-xl font-extrabold">Veuillez entrer une référence pour afficher les détails de la carte.
+    </h1>
+  </div>
+  }
+  }
 </div>

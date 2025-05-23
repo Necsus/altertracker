@@ -52,6 +52,14 @@ export class StatsComponent implements OnInit {
     });
   }
 
+  isFormValid(): boolean {
+    const { reference } = this.searchForm.value;
+    // Vérifie si au moins un champ est rempli ou si forest_power, mountain_power ou ocean_power est égal à 0
+    return !!(
+      reference
+    );
+  }
+
   onSubmit(): void {
     const reference = this.searchForm.get('reference')?.value;
     if (reference) {
