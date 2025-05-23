@@ -37,6 +37,7 @@ jobs:
           export FLASK_ENV="${{ vars.FLASK_ENV }}"
 
           echo "[+] Génération du fichier config/production.env"
+          mkdir -p config
           cat > config/production.env <<EOL
           POSTGRES_USER=$POSTGRES_USER
           POSTGRES_PASSWORD=$POSTGRES_PASSWORD
