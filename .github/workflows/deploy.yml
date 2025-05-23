@@ -22,7 +22,7 @@ jobs:
 
     - name: Deploy to server
       run: |
-        ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+        ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
           set -euo pipefail
 
           export POSTGRES_USER="${{ secrets.POSTGRES_USER }}"
@@ -39,17 +39,17 @@ jobs:
           echo "[+] Génération du fichier config/production.env"
           mkdir -p config
           cat > config/production.env <<EOL
-          POSTGRES_USER=$POSTGRES_USER
-          POSTGRES_PASSWORD=$POSTGRES_PASSWORD
-          POSTGRES_DB=$POSTGRES_DB
-          CORS_ORIGINS=$CORS_ORIGINS
-          PASSWORD_PEPPER=$PASSWORD_PEPPER
-          SECRET_KEY=$SECRET_KEY
-          JWT_SECRET_KEY=$JWT_SECRET_KEY
-          BREVO_API_KEY=$BREVO_API_KEY
-          ANGULAR_URL=$ANGULAR_URL
-          FLASK_ENV=$FLASK_ENV
-          EOL
+        POSTGRES_USER=$POSTGRES_USER
+        POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+        POSTGRES_DB=$POSTGRES_DB
+        CORS_ORIGINS=$CORS_ORIGINS
+        PASSWORD_PEPPER=$PASSWORD_PEPPER
+        SECRET_KEY=$SECRET_KEY
+        JWT_SECRET_KEY=$JWT_SECRET_KEY
+        BREVO_API_KEY=$BREVO_API_KEY
+        ANGULAR_URL=$ANGULAR_URL
+        FLASK_ENV=$FLASK_ENV
+        EOL
 
           echo "[+] Début du déploiement à $(date)"
           cd ~/geekom/uniquetracker
