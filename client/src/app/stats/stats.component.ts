@@ -63,8 +63,7 @@ export class StatsComponent implements OnInit {
     const reference = this.searchForm.get('reference')?.value;
     this.reference = reference;
     if (this.reference) {
-      // this.router.navigate(['/stats', reference]);
-      this.loadCardStats(this.reference);
+      this.router.navigate(['/stats', reference]);
     }
   }
 
