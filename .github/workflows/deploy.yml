@@ -36,6 +36,12 @@ jobs:
           export ANGULAR_URL="${{ vars.ANGULAR_URL }}"
           export FLASK_ENV="${{ vars.FLASK_ENV }}"
 
+          echo "[+] Début du déploiement à $(date)"
+          cd ~/geekom/uniquetracker
+
+          echo "[+] Pull du code depuis GitHub"
+          git pull origin production
+
           echo "[+] Génération du fichier config/production.env"
           mkdir -p config
           cat > config/production.env <<EOL
@@ -50,12 +56,6 @@ jobs:
         ANGULAR_URL=$ANGULAR_URL
         FLASK_ENV=$FLASK_ENV
         EOL
-
-          echo "[+] Début du déploiement à $(date)"
-          cd ~/geekom/uniquetracker
-
-          echo "[+] Pull du code depuis GitHub"
-          git pull origin production
 
           echo "[+] Execute npm install et build"
           cd ~/geekom/uniquetracker/client
