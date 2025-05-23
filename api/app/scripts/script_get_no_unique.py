@@ -19,6 +19,7 @@ def run_script():
             type = jsonCard['cardType']['reference'],
             set = jsonCard['cardSet']['reference'],
             imagePath = jsonCard['imagePath'],
+            image_path_en=None,
             isSuspended = jsonCard['isSuspended'],
             MAIN_COST = jsonCard['elements']['MAIN_COST'],
             RECALL_COST = jsonCard['elements']['RECALL_COST'],
@@ -26,7 +27,9 @@ def run_script():
             OCEAN_POWER = None if jsonCard['cardType']['reference'] != "CHARACTER" else jsonCard['elements']['OCEAN_POWER'],
             FOREST_POWER = None if jsonCard['cardType']['reference'] != "CHARACTER" else jsonCard['elements']['FOREST_POWER'],
             MAIN_EFFECT = None,
+            main_effect_en=None,
             ECHO_EFFECT = None,
+            echo_effect_en=None
         )
         return card
 
