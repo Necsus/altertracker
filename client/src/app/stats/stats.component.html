@@ -1,29 +1,37 @@
 <div class="max-w-7xl mx-auto space-y-12 p-6 bg-gray-900 text-white min-h-screen space-y-8 font-sans">
 
-  <!-- Top Bar: Search | Title | Language -->
-  <div class="flex items-center justify-between">
+  <!-- Top Bar: Search + Button | Language -->
+  <div class="flex items-center justify-between gap-4">
+    <!-- Search Form -->
+    <form [formGroup]="searchForm" (ngSubmit)="onSubmit()" class="flex flex-1 relative">
+      <div class="relative w-full">
+        <input type="text" placeholder="Reference... (ALT_)" formControlName="reference"
+          class="w-full bg-gray-800 text-white placeholder-gray-400 rounded-l-lg py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        <svg xmlns="http://www.w3.org/2000/svg"
+          class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+      </div>
 
-    <!-- Left: Search -->
-    <form [formGroup]="searchForm" (ngSubmit)="onSubmit()" class="relative w-1/3 max-w-sm">
-      <input type="text" placeholder="Search cards..." formControlName="reference"
-        class="w-full bg-gray-800 text-white placeholder-gray-400 rounded-lg py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-      <svg xmlns="http://www.w3.org/2000/svg"
-        class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24"
-        stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-      </svg>
+      <!-- Search Button -->
+      <button type="submit" class="bg-blue-600 hover:bg-blue-500 text-white px-4 rounded-r-lg transition">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </button>
     </form>
 
-    <!-- Center: Title -->
-    <h1 *ngIf="card" class="text-xl font-bold text-center w-1/3">{{ card.name }}</h1>
-
-    <!-- Right: Language Toggle -->
-    <div class="w-1/3 flex justify-end">
-      <button id="langToggle" class="text-sm text-gray-400 hover:text-white transition">
-        EN
+    <!-- Language Toggle -->
+    <div class="flex-shrink-0">
+      <button class="text-sm text-gray-400 hover:text-white transition">
+        FR
       </button>
     </div>
+  </div>
+
+  <!-- Title centered below -->
+  <div *ngIf="card" class="mt-6 text-center">
+    <h1 class="text-3xl md:text-4xl font-extrabold">{{ card.name }}</h1>
   </div>
   @if (reference) {
   <!-- Card Main Section -->
@@ -36,8 +44,8 @@
         class="rounded-xl w-full object-cover" />
       <div class="flex justify-between items-center mt-4">
         @if (isLoggedIn) {
-        <button class="text-pink-500 hover:text-pink-400 transition text-xl">
-          ♥
+        <button (click)="toggleFavorite()" class="text-gray-400 hover:text-red-500 transition duration-300">
+          <i [class]="is_favorite ? 'fas fa-heart text-red-500' : 'far fa-heart'"></i>
         </button>
         }
         <button class="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg transition">
@@ -67,6 +75,57 @@
       <div class="bg-gray-800 rounded-xl p-4 h-64 flex items-center justify-center">
         <span class="text-gray-500">[Price History Graph Here]</span>
       </div>
+    </div>
+  </div>
+
+  <!-- Offers Section: Market Offer & User Offers -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+    <!-- Market Offers -->
+    <div class="bg-gray-800 rounded-xl p-4">
+      <h2 class="text-xl font-semibold mb-3">Offres du Marché</h2>
+      <ul class="space-y-2 text-sm text-gray-300">
+        <li *ngFor="let offer of offers" class="flex justify-between border-b border-gray-700 pb-1">
+          <span class="text-gray-400">
+            {{ offer.created_at | date:'dd/MM/yyyy hh:mm' }}
+          </span>
+          <span [ngClass]="{
+            'text-green-400': !offer.is_deleted,
+            'text-red-400 line-through': offer.is_deleted,
+            'font-medium': true
+          }">
+            {{ offer.price | currency:(offer.currency || 'USD'):'symbol':'1.2-2' }}
+          </span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- User Offers -->
+    <div class="bg-gray-800 rounded-xl p-4">
+      <h2 class="text-xl font-semibold mb-3">Offres d'Achat</h2>
+      <ul class="space-y-2 text-gray-300 text-sm">
+        <li class="flex flex-col border-b border-gray-700 pb-2">
+          <div class="flex justify-between">
+            <span class="font-medium">JeanCardGeek</span>
+            <span class="text-green-400 font-semibold">$75.00</span>
+          </div>
+          <div class="text-gray-500 text-xs">21/05/2025</div>
+        </li>
+        <li class="flex flex-col border-b border-gray-700 pb-2">
+          <div class="flex justify-between">
+            <span class="font-medium">SoraTcg</span>
+            <span class="text-green-400 font-semibold">$77.00</span>
+          </div>
+          <div class="text-gray-500 text-xs">20/05/2025</div>
+        </li>
+        <li class="flex flex-col border-b border-gray-700 pb-2">
+          <div class="flex justify-between">
+            <span class="font-medium">MikaCollector</span>
+            <span class="text-green-400 font-semibold">$73.25</span>
+          </div>
+          <div class="text-gray-500 text-xs">18/05/2025</div>
+        </li>
+      </ul>
     </div>
   </div>
 

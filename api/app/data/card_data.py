@@ -9,8 +9,25 @@ from datetime import datetime, timezone
 def get_cards_count_data() -> int:
     return db.session.query(func.count(Card.id)).scalar()
 
-def get_card_by_reference_data(reference) -> Optional[Card]:
-    return db.session.query(Card).filter_by(reference=reference).first()
+def get_card_by_reference_data(reference: str, user_id: int) -> Optional[dict]:
+    query = db.session.query(
+        Card,
+        UserAlert.id.label("alert_id")  # Ajoute l'alert_id si une alerte existe
+    ).outerjoin(
+        UserAlert, (UserAlert.reference_card == Card.reference) & (UserAlert.id_user == user_id)
+    ).filter(
+        Card.reference == reference
+    )
+
+    result = query.first()
+
+    if result:
+        card, alert_id = result
+        return {
+            **card.json(),
+            "alert_id": alert_id
+        }
+    return None
 
 def search_cards_data(name, rarity, faction, set, main_effect, main_effect_2,
     echo_effect, main_cost, recall_cost, forest_power, mountain_power, ocean_power,

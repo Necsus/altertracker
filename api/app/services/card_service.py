@@ -31,8 +31,8 @@ def get_cards_count_service() -> int:
 def get_cards_in_market_count_service() -> int:
     return get_cards_in_market_count_data()
 
-def get_card_by_reference_service(reference) -> Optional[Card]:
-    return get_card_by_reference_data(reference)
+def get_card_by_reference_service(reference: str, user_id: int) -> Optional[Card]:
+    return get_card_by_reference_data(reference, user_id)
 
 def search_cards_service(name, rarity, faction, set, main_effect, main_effect_2,
     echo_effect, main_cost, recall_cost, forest_cost, mountain_cost, ocean_cost,

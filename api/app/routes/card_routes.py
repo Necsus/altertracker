@@ -100,10 +100,12 @@ def get_last_added_cards():
         return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
 
 @card_bp.route('/<string:reference>/offers', methods=['GET'])
+@jwt_required(optional=True)
 def get_card_with_offers(reference):
     try:
+        user_id = get_jwt_identity()
         # Récupérer la carte par référence
-        card = get_card_by_reference_service(reference)
+        card = get_card_by_reference_service(reference, user_id)
         if not card:
             return make_response(jsonify({'message': f'Card with reference {reference} not found'}), 404)
 
@@ -111,7 +113,7 @@ def get_card_with_offers(reference):
         offers = get_offers_by_reference_service(reference)
         # Retourner la carte et ses offres
         return jsonify({
-            "card": card.json(),
+            "card": card,  # Pas besoin d'appeler .json() ici, car `card` est déjà un dictionnaire
             "offers": [offer.json() for offer in offers]
         }), 200
     except Exception as e:
