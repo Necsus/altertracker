@@ -13,7 +13,8 @@ from app.data.card_data import (
   search_cards_data,
   get_cards_count_data,
   get_last_added_cards_data,
-  get_count_cards_created_today_data
+  get_count_cards_created_today_data,
+  get_card_by_reference_with_alert_data
 )
 from app.data.offer_data import (
   get_last_offer_by_reference_data,
@@ -31,8 +32,12 @@ def get_cards_count_service() -> int:
 def get_cards_in_market_count_service() -> int:
     return get_cards_in_market_count_data()
 
-def get_card_by_reference_service(reference: str, user_id: int) -> Optional[Card]:
-    return get_card_by_reference_data(reference, user_id)
+
+def get_card_by_reference_with_alert_service(reference: str, user_id: int) -> Optional[Card]:
+    return get_card_by_reference_with_alert_data(reference, user_id)
+
+def get_card_by_reference_service(reference: str) -> Optional[Card]:
+    return get_card_by_reference_data(reference)
 
 def search_cards_service(name, rarity, faction, set, main_effect, main_effect_2,
     echo_effect, main_cost, recall_cost, forest_cost, mountain_cost, ocean_cost,
