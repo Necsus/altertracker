@@ -3,11 +3,14 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CardModel } from '../01_models/03_business/card.model';
+import { OfferPurchase } from '../01_models/03_business/offer-purchase.model';
 import { OfferModel } from '../01_models/03_business/offer.model';
 import { UserAlertModel } from '../01_models/03_business/user-alert.model';
 import { CardService } from '../03_business/card.service';
 import { UserService } from '../03_business/user.service';
 import { AuthViewService } from '../authentication/auth-view.service';
+import { PurchaseOfferComponent } from '../shared/purchase-offer/purchase-offer.component';
+import { ModalService } from '../shared/services/modal/modal.service';
 import { ToastService } from '../shared/services/toast/toast.service';
 
 @Component({
@@ -22,6 +25,7 @@ export class StatsComponent implements OnInit {
   searchForm!: FormGroup;
   card!: CardModel | null;
   offers!: OfferModel[] | null;
+  purchases!: OfferPurchase[] | null; // Ajouté pour les achats
   is_favorite: boolean = false; // État favori de la carte
 
   constructor(
@@ -31,9 +35,15 @@ export class StatsComponent implements OnInit {
     private cardService: CardService,
     private router: Router,
     private userService: UserService,
-    private toastService: ToastService
+    private toastService: ToastService,
+    private modalService: ModalService
   ) { }
-
+  get availableInMarket(): boolean {
+    if (this.offers && this.offers.length > 0) {
+      return this.offers[0].is_deleted === false;
+    }
+    return false;
+  }
   ngOnInit(): void {
     this.authViewService.isLoggedIn$.subscribe(status => {
       this.isLoggedIn = status;
@@ -69,10 +79,11 @@ export class StatsComponent implements OnInit {
 
   loadCardStats(reference: string): void {
     this.cardService.get_card_stats$(reference).subscribe({
-      next: (response: { card: CardModel, offers: OfferModel[] }) => {
+      next: (response: { card: CardModel, offers: OfferModel[], purchases: OfferPurchase[] }) => {
         this.card = response.card;
         this.is_favorite = !!this.card.alert_id;
         this.offers = response.offers;
+        this.purchases = response.purchases;
         this.router.navigate(['/stats', reference]);
       },
       error: (err: any) => {
@@ -124,6 +135,18 @@ export class StatsComponent implements OnInit {
           });
         }
       }
+    }
+  }
+
+  openPurchaseOfferModal(): void {
+    if (this.isLoggedIn) {
+      if (this.card) {
+        this.modalService.open(PurchaseOfferComponent, { model: { card: this.card, purchases: this.purchases } });
+      } else {
+        this.toastService.show('Aucune carte sélectionnée', 'warning', 5000);
+      }
+    } else {
+      this.toastService.show('Veuillez vous connecter pour déposer une offre d\'achat', 'warning', 5000);
     }
   }
 }
