@@ -32,7 +32,7 @@ def get_purchases_by_user_route():
     except Exception as e:
         return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
 
-@purchase_bp.route('/', methods=['POST'])
+@purchase_bp.route('/add', methods=['POST'])
 @jwt_required()
 def add_purchase_offer_route():
     try:
