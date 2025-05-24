@@ -171,6 +171,22 @@ def update_cards_bulk_data(cards: list[dict]) -> None:
         db.session.rollback()
         print(f"Erreur lors de la mise à jour des cartes : {e}")
 
+def update_card_data(card: dict) -> None:
+    if not card:
+        return
+    try:
+        existing_card = db.session.query(Card).filter_by(reference=card.get('reference')).first()
+        if existing_card:
+            for key, value in card.items():
+                if getattr(existing_card, key, None) is None:
+                    setattr(existing_card, key, value)
+            db.session.commit()
+        else:
+            print(f"Carte avec la référence {card['reference']} introuvable.")
+    except Exception as e:
+        db.session.rollback()
+        print(f"Erreur lors de la mise à jour de la carte : {e}")
+
 
 def lower_strip(text: str) -> str:
     return str.lower(text.strip())

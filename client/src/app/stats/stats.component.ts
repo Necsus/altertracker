@@ -2,10 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { OfferLiveMarketRequest } from '../01_models/02_api/card/offer-live-market-request.model';
 import { CardModel } from '../01_models/03_business/card.model';
 import { OfferPurchase } from '../01_models/03_business/offer-purchase.model';
 import { OfferModel } from '../01_models/03_business/offer.model';
 import { UserAlertModel } from '../01_models/03_business/user-alert.model';
+import { AlteredService } from '../03_business/altered.service';
 import { CardService } from '../03_business/card.service';
 import { UserService } from '../03_business/user.service';
 import { AuthViewService } from '../authentication/auth-view.service';
@@ -36,7 +38,8 @@ export class StatsComponent implements OnInit {
     private router: Router,
     private userService: UserService,
     private toastService: ToastService,
-    private modalService: ModalService
+    private modalService: ModalService,
+    private alteredService: AlteredService
   ) { }
   get availableInMarket(): boolean {
     if (this.offers && this.offers.length > 0) {
@@ -84,6 +87,7 @@ export class StatsComponent implements OnInit {
         this.is_favorite = !!this.card.alert_id;
         this.offers = response.offers;
         this.purchases = response.purchases;
+        this.refreshCardFromAltered();
         this.router.navigate(['/stats', reference]);
       },
       error: (err: any) => {
@@ -149,4 +153,29 @@ export class StatsComponent implements OnInit {
       this.toastService.show('Veuillez vous connecter pour déposer une offre d\'achat', 'warning', 5000);
     }
   }
+  refreshCardFromAltered(): void {
+    const alteredToken = sessionStorage.getItem('altered_token');
+    if (alteredToken && this.card) {
+      let offerLiveMarket: OfferLiveMarketRequest;
+      this.alteredService.getMarketOffer$(this.card, alteredToken).subscribe({
+        next: (offer: OfferLiveMarketRequest) => {
+          offerLiveMarket = offer;
+        },
+        complete: () => {
+          if (this.card) {
+            this.alteredService.getEnglishCardByReference$(this.card).subscribe({
+              complete: () => {
+                if (this.card) {
+                  this.cardService.updateCard$(this.card, offerLiveMarket).subscribe({
+                    next: () => { }
+                  });
+                }
+              }
+            });
+          }
+        }
+      });
+    }
+  }
 }
+

@@ -57,4 +57,8 @@ export class CardApiService {
   get_card_stats$(reference: string): Observable<{ card: CardModel, offers: OfferModel[], purchases: OfferPurchase[] }> {
     return this.wabApiService.callGet$(this.controller, `${reference}/offers`);
   }
+
+  update_card$(card: CardModel, offer: OfferLiveMarketRequest): Observable<CardModel> {
+    return this.wabApiService.callPut$(this.controller, card.reference, { card: card, offer: offer });
+  }
 }

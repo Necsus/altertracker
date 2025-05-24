@@ -1,21 +1,17 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { OfferLiveMarketRequest } from '../01_models/02_api/card/offer-live-market-request.model';
 import { CardModel } from '../01_models/03_business/card.model';
 import { AlteredApiService } from '../02_api/altered-api.service';
-import { LoaderService } from '../shared/services/loader/loader.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AlteredService {
   constructor(
-    private alteredApiService: AlteredApiService,
-    private router: Router,
-    private loaderService: LoaderService) { }
+    private alteredApiService: AlteredApiService) { }
   getMarketOffer$(card: CardModel, token: string): Observable<OfferLiveMarketRequest> {
-    return this.alteredApiService.getOfferByReference(card.reference, token).pipe(
+    return this.alteredApiService.getOfferByReference$(card.reference, token).pipe(
       map((response: any) => {
         // Mettre à jour les propriétés de la carte avec les données de l'API
         if (response['hydra:totalItems'] && response['hydra:totalItems'] > 0) {
@@ -55,5 +51,42 @@ export class AlteredService {
         return throwError(() => error); // Propager les autres erreurs
       })
     );
+  }
+  getEnglishCardByReference$(card: CardModel): Observable<CardModel> {
+    return this.alteredApiService.getCardByReferenceEnglish$(card.reference).pipe(
+      map((response: any) => {
+        // Mettre à jour les propriétés de la carte avec les données de l'API
+        if (response['cardType']) {
+          card.image_path_en = response['imagePath'] ?? null;
+          card.main_effect_en = response['elements']['MAIN_EFFECT'] ?? null;
+          card.echo_effect_en = response['elements']['ECHO_EFFECT'] ?? null;
+        }
+
+        return card; // Retourner la carte mise à jour
+      }),
+      catchError((error) => {
+        if ((error.status === 401 && error.error.message == "Expired JWT Token") || error.status === 500) {
+          return throwError(() => new Error('Token invalide ou expiré. Veuillez le réinsérer.'));
+        }
+        return throwError(() => error); // Propager les autres erreurs
+      }));
+  }
+  getAccessToken$(): Observable<string> {
+    return this.alteredApiService.getAccessToken$().pipe(
+      map((response: any) => {
+        if (response && response.token) {
+          return response.token; // Retourner le token
+        } else {
+          throw new Error('Token non trouvé dans la réponse');
+        }
+      }),
+      catchError((error) => {
+        if (error.status === 404) {
+          console.error('Token non trouvé');
+        }
+        return throwError(() => error); // Propager les autres erreurs
+      })
+    );
+
   }
 }

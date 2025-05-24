@@ -11,11 +11,11 @@ import { CardsComponent } from './cards/cards.component';
 import { HomeComponent } from './home/home.component';
 import { NotFoundComponent } from './shared/error-pages/not-found/not-found.component';
 import { UnauthorizedComponent } from './shared/error-pages/unauthorized/unauthorized.component';
-import { UnderConstructionComponent } from './shared/under-construction/under-construction.component';
 import { StatsComponent } from './stats/stats.component';
 import { AlteredTokenComponent } from './user/altered-token/altered-token.component';
 import { ContactComponent } from './user/contact/contact.component';
 import { MeComponent } from './user/me/me.component';
+import { PurchaseOffersComponent } from './user/purchase-offers/purchase-offers.component';
 import { UserAlertsComponent } from './user/user-alerts/user-alerts.component';
 import { UserSearchesComponent } from './user/user-searches/user-searches.component';
 import { ValidateEmailComponent } from './user/validate-email/validate-email.component';
@@ -36,7 +36,7 @@ export const routes: Routes = [
   { path: 'token', component: AlteredTokenComponent, canActivate: [TokenGuard] },
   { path: 'contact', component: ContactComponent, canActivate: [TokenGuard] },
   { path: 'about', component: AboutComponent },
-  { path: 'purchase-offers', component: UnderConstructionComponent, canActivate: [TokenGuard] },
+  { path: 'purchase-offers', component: PurchaseOffersComponent, canActivate: [TokenGuard] },
   { path: 'admin', component: AdminComponent, canActivate: [AdminGuard] },
   { path: 'unauthorized', component: UnauthorizedComponent },
   { path: '**', component: NotFoundComponent }

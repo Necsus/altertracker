@@ -1,5 +1,7 @@
+import { CardModel } from "./card.model";
+
 export interface OfferPurchase {
-  id: string;
+  id: number;
   reference_card: string;
   id_user: number;
   price: number;
@@ -9,4 +11,5 @@ export interface OfferPurchase {
   accepted_at: string | null;
 
   username?: string;
+  card?: CardModel
 }
