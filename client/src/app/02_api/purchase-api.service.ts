@@ -21,7 +21,7 @@ export class PurchaseApiService {
   }
 
   postNewPurchase$(request: any): Observable<OfferPurchase> {
-    return this.wabApiService.callPost$(this.controller, '/', request);
+    return this.wabApiService.callPost$(this.controller, '/add', request);
   }
 
   deletePurchase$(purchase_id: number): Observable<void> {
