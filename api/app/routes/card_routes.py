@@ -8,7 +8,8 @@ from app.services.card_service import (
   get_cards_in_market_count_service,
   post_offer_live_market_service,
   get_last_added_cards_service,
-  get_count_cards_created_today_service
+  get_count_cards_created_today_service,
+  get_card_by_reference_with_alert_service
 )
 from app.services.offer_service import get_offers_by_reference_service
 from app.services.purchase_service import get_purchases_by_reference_service
@@ -106,7 +107,7 @@ def get_card_with_offers(reference):
     try:
         user_id = get_jwt_identity()
         # Récupérer la carte par référence
-        card = get_card_by_reference_service(reference, user_id)
+        card = get_card_by_reference_with_alert_service(reference, user_id)
         if not card:
             return make_response(jsonify({'message': f'Card with reference {reference} not found'}), 404)
 
