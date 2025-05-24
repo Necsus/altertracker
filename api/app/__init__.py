@@ -8,6 +8,7 @@ from app.routes.offer_routes import offer_bp
 from app.routes.user_routes import user_bp
 from app.routes.auth_routes import auth_bp
 from app.routes.script_routes import script_bp
+from app.routes.purchase_routes import purchase_bp
 from app.config import Config, ConfigEnv
 from flask_jwt_extended import JWTManager, get_jwt, verify_jwt_in_request
 from app.models.token_blacklist import TokenBlacklist
@@ -34,6 +35,7 @@ def create_app():
     app.register_blueprint(offer_bp, url_prefix="/api/offer")
     app.register_blueprint(user_bp, url_prefix="/api/user")
     app.register_blueprint(script_bp, url_prefix="/api/script")
+    app.register_blueprint(purchase_bp, url_prefix="/api/purchase")
 
     @app.before_request
     def handle_options():

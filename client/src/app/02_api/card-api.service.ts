@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { OfferLiveMarketRequest } from '../01_models/02_api/card/offer-live-market-request.model';
 import { CardModel } from '../01_models/03_business/card.model';
+import { OfferPurchase } from '../01_models/03_business/offer-purchase.model';
 import { OfferModel } from '../01_models/03_business/offer.model';
 import { WebApiService } from './web-api.service';
 
@@ -53,7 +54,7 @@ export class CardApiService {
     return this.wabApiService.callGet$(this.controller, 'lastadded');
   }
 
-  get_card_stats$(reference: string): Observable<{ card: CardModel, offers: OfferModel[] }> {
+  get_card_stats$(reference: string): Observable<{ card: CardModel, offers: OfferModel[], purchases: OfferPurchase[] }> {
     return this.wabApiService.callGet$(this.controller, `${reference}/offers`);
   }
 }
