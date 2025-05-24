@@ -14,7 +14,8 @@ from app.data.card_data import (
   get_cards_count_data,
   get_last_added_cards_data,
   get_count_cards_created_today_data,
-  get_card_by_reference_with_alert_data
+  get_card_by_reference_with_alert_data,
+  update_card_data
 )
 from app.data.offer_data import (
   get_last_offer_by_reference_data,
@@ -31,7 +32,6 @@ def get_cards_count_service() -> int:
 
 def get_cards_in_market_count_service() -> int:
     return get_cards_in_market_count_data()
-
 
 def get_card_by_reference_with_alert_service(reference: str, user_id: int) -> Optional[Card]:
     return get_card_by_reference_with_alert_data(reference, user_id)
@@ -183,3 +183,6 @@ def send_user_alert(card: Card, type_changement: str):
                     print(response)
                 except ApiException as e:
                     print("Exception lors de l'appel à l’API Sendinblue: %s\n" % e)
+
+def update_card_service(data: dict) -> Optional[Card]:
+    return update_card_data(data)

@@ -54,4 +54,10 @@ export class CardService {
       return dbModel;
     }));
   }
+
+  updateCard$(card: CardModel, offer: OfferLiveMarketRequest): Observable<CardModel> {
+    return this.cardApiService.update_card$(card, offer).pipe(map((dbModel: CardModel) => {
+      return dbModel;
+    }));
+  }
 }

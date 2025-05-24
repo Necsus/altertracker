@@ -9,7 +9,8 @@ from app.services.card_service import (
   post_offer_live_market_service,
   get_last_added_cards_service,
   get_count_cards_created_today_service,
-  get_card_by_reference_with_alert_service
+  get_card_by_reference_with_alert_service,
+  update_card_service
 )
 from app.services.offer_service import get_offers_by_reference_service
 from app.services.purchase_service import get_purchases_by_reference_service
@@ -84,7 +85,6 @@ def post_offer_live_market():
         data = request.get_json()
         schema = OfferLiveMarketSchema(many=True)
         validated_data = schema.load(data)
-        print('post_offer_live_market_service')
         post_offer_live_market_service(validated_data)
         return jsonify({'message': 'Offres mises à jour avec succès'}), 201
     except ValidationError as ve:
@@ -106,6 +106,7 @@ def get_last_added_cards():
 def get_card_with_offers(reference):
     try:
         user_id = get_jwt_identity()
+        
         # Récupérer la carte par référence
         card = get_card_by_reference_with_alert_service(reference, user_id)
         if not card:
@@ -116,11 +117,37 @@ def get_card_with_offers(reference):
 
         #Récupérer les offres d'achats associées à la carte
         purchases = get_purchases_by_reference_service(reference)
+
         # Retourner la carte et ses offres
         return jsonify({
             "card": card,  # Pas besoin d'appeler .json() ici, car `card` est déjà un dictionnaire
             "offers": [offer.json() for offer in offers],
             "purchases": purchases
         }), 200
+    except Exception as e:
+        return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
+    
+@card_bp.route('/<string:reference>', methods=['PUT'])
+def update_card(reference: str):
+    try:
+        data = request.get_json()
+
+        schema = OfferLiveMarketSchema()
+        offer_data = schema.load(data.get('offer'))
+        if offer_data['reference'] not in reference:
+            return make_response(jsonify({'message': 'Reference mismatch'}), 400)
+        post_offer_live_market_service([offer_data])
+
+        card_data = data.get('card')
+        if card_data['reference'] not in reference:
+            return make_response(jsonify({'message': 'Reference mismatch'}), 400)
+        if not card_data:
+            return make_response(jsonify({'message': 'Card is required'}), 400)
+
+        update_card_service(card_data)
+
+        return jsonify({'message': 'Carte mise à jour avec succès'}), 201
+    except ValidationError as ve:
+        return make_response(jsonify({'message': 'Invalid data', 'errors': ve.messages}), 400)
     except Exception as e:
         return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
