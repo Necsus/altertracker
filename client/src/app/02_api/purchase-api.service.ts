@@ -13,18 +13,18 @@ export class PurchaseApiService {
   constructor(private wabApiService: WebApiService) { }
 
   getPurchasesByReference$(reference: string): Observable<OfferPurchase[]> {
-    return this.wabApiService.callGet$(this.controller, `/reference/${reference}`);
+    return this.wabApiService.callGet$(this.controller, `reference/${reference}`);
   }
 
   getUserPurchases$(): Observable<OfferPurchase[]> {
-    return this.wabApiService.callGet$(this.controller, '/mine');
+    return this.wabApiService.callGet$(this.controller, 'mine');
   }
 
   postNewPurchase$(request: any): Observable<OfferPurchase> {
-    return this.wabApiService.callPost$(this.controller, '/add', request);
+    return this.wabApiService.callPost$(this.controller, '', request);
   }
 
   deletePurchase$(purchase_id: number): Observable<void> {
-    return this.wabApiService.callDelete$(this.controller, `/${purchase_id}`);
+    return this.wabApiService.callDelete$(this.controller, `${purchase_id}`);
   }
 }
