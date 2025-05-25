@@ -47,6 +47,7 @@ def search_cards_service(name, rarity, faction, set, main_effect, main_effect_2,
         in_market, no_condition, user_id)
 
 def post_offer_live_market_service(data: List[dict]) -> None:
+    response = []
     for item in data:
         new_offer = Offer (
             reference_card=item['reference'],
@@ -137,6 +138,8 @@ def post_offer_live_market_service(data: List[dict]) -> None:
                     card_to_update.url_offer = None
                     send_user_alert(card_to_update, "expired")
                 db.session.commit()
+        response.append(new_offer.json())
+    return response
         
 def get_last_added_cards_service() -> List[dict]:
     return get_last_added_cards_data()
