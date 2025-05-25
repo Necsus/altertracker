@@ -33,11 +33,11 @@ export class SearchPanelComponent implements OnInit {
       main_effect: [''],
       main_effect_2: [''],
       echo_effect: [''],
-      main_cost: [''],
-      recall_cost: [''],
-      forest_power: [''],
-      mountain_power: [''],
-      ocean_power: [''],
+      main_cost_range: [''],
+      recall_cost_range: [''],
+      forest_power_range: [''],
+      mountain_power_range: [''],
+      ocean_power_range: [''],
       in_market: [''],
       no_condition: [''],
       search_offers: [sessionStorage.getItem('altered_token') ? true : false]
@@ -55,11 +55,11 @@ export class SearchPanelComponent implements OnInit {
         main_effect: queryParams['main_effect'] || '',
         main_effect_2: queryParams['main_effect_2'] || '',
         echo_effect: queryParams['echo_effect'] || '',
-        main_cost: queryParams['main_cost'] || '',
-        recall_cost: queryParams['recall_cost'] || '',
-        forest_power: queryParams['forest_power'] || '',
-        mountain_power: queryParams['mountain_power'] || '',
-        ocean_power: queryParams['ocean_power'] || '',
+        main_cost_range: queryParams['main_cost_range'] || '',
+        recall_cost_range: queryParams['recall_cost_range'] || '',
+        forest_power_range: queryParams['forest_power_range'] || '',
+        mountain_power_range: queryParams['mountain_power_range'] || '',
+        ocean_power_range: queryParams['ocean_power_range'] || '',
         in_market: queryParams['in_market'] || '',
         no_condition: queryParams['no_condition'] || ''
       });
@@ -67,13 +67,15 @@ export class SearchPanelComponent implements OnInit {
   }
 
   isFormValid(): boolean {
-    const { name, rarity, faction, set, main_effect, main_effect_2, echo_effect, main_cost, recall_cost, forest_power, mountain_power, ocean_power, in_market, no_condition } = this.searchForm.value;
+    const { name, rarity, faction, set, main_effect, main_effect_2, echo_effect,
+      main_cost_range, recall_cost_range, forest_power_range, mountain_power_range, ocean_power_range,
+      in_market, no_condition } = this.searchForm.value;
     // Vérifie si au moins un champ est rempli ou si forest_power, mountain_power ou ocean_power est égal à 0
     return !!(
-      name || rarity || faction || set || main_effect || main_effect_2 || echo_effect || main_cost || recall_cost ||
-      forest_power !== '' && forest_power !== null && forest_power !== undefined ||
-      mountain_power !== '' && mountain_power !== null && mountain_power !== undefined ||
-      ocean_power !== '' && ocean_power !== null && ocean_power !== undefined ||
+      name || rarity || faction || set || main_effect || main_effect_2 || echo_effect || main_cost_range || recall_cost_range ||
+      forest_power_range !== '' && forest_power_range !== null && forest_power_range !== undefined ||
+      mountain_power_range !== '' && mountain_power_range !== null && mountain_power_range !== undefined ||
+      ocean_power_range !== '' && ocean_power_range !== null && ocean_power_range !== undefined ||
       in_market || no_condition
     );
   }
@@ -97,12 +99,23 @@ export class SearchPanelComponent implements OnInit {
   }
 
   searchCards(criteria: any): void {
-    let searchObservable = this.cardService.search_cards$(
-      criteria.name, criteria.rarity, criteria.faction,
-      criteria.set, criteria.main_effect, criteria.main_effect_2, criteria.echo_effect,
-      criteria.main_cost, criteria.recall_cost, criteria.forest_power, criteria.mountain_power,
-      criteria.ocean_power, criteria.in_market, criteria.no_condition
-    );
+    const request = {
+      name: criteria.name,
+      rarity: criteria.rarity,
+      faction: criteria.faction,
+      set: criteria.set,
+      main_effect: criteria.main_effect,
+      main_effect_2: criteria.main_effect_2,
+      echo_effect: criteria.echo_effect,
+      main_cost_range: this.buildRange(criteria.main_cost_range),
+      recall_cost_range: this.buildRange(criteria.recall_cost_range),
+      forest_power_range: this.buildRange(criteria.forest_power_range),
+      mountain_power_range: this.buildRange(criteria.mountain_power_range),
+      ocean_power_range: this.buildRange(criteria.ocean_power_range),
+      in_market: criteria.in_market,
+      no_condition: criteria.no_condition
+    }
+    let searchObservable = this.cardService.search_cards$(request);
     // Appliquer conditionnellement le pipe `withLoader`
     searchObservable = searchObservable.pipe(withLoader(this.loaderService));
     searchObservable.subscribe({
@@ -118,12 +131,38 @@ export class SearchPanelComponent implements OnInit {
   private cleanFormValues(values: any): any {
     // Conserve les valeurs 0 et remplace uniquement null ou false par une chaîne vide
     return Object.keys(values).reduce((acc: any, key) => {
-      if (key === 'forest_power' || key === 'mountain_power' || key === 'ocean_power') {
+      if (key === 'forest_power_range' || key === 'mountain_power_range' || key === 'ocean_power_range') {
         acc[key] = values[key]; // Conserve la valeur telle quelle, y compris 0
       } else {
         acc[key] = values[key] === null || values[key] === false ? '' : values[key];
       }
       return acc;
     }, {});
+  }
+
+  private buildRange(range: string): { min: number, max: number } | null {
+    if ((typeof range === 'string' && range.trim() === '') || range === null || range === undefined) {
+      return null;
+    }
+
+    // Si range est un nombre, définir min et max à cette valeur
+    if (typeof range === 'number' || !isNaN(Number(range))) {
+      const value = Number(range);
+      return { min: value, max: value };
+    }
+
+    // Si range est une chaîne, traiter comme une plage
+    const parts = range.split('-').map(part => part.trim());
+    if (parts.length !== 2) {
+      return null; // Format de plage invalide
+    }
+
+    const min = parseInt(parts[0], 10);
+    const max = parseInt(parts[1], 10);
+    if (isNaN(min) || isNaN(max)) {
+      return null; // Nombres invalides
+    }
+
+    return { min, max };
   }
 }

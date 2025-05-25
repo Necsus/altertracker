@@ -24,27 +24,8 @@ export class CardApiService {
   get_card_by_reference$(reference: string): Observable<any> {
     return this.wabApiService.callGet$(this.controller, reference);
   }
-  search_cards$(name: string, rarity: string, faction: string, set: string,
-    main_effect: string, main_effect_2: string, echo_effect: string, main_cost: string,
-    recall_cost: string, forest_power: string, mountain_power: string, ocean_power: string,
-    in_market: string, no_condition: string): Observable<any> {
-    return this.wabApiService.callGet$(this.controller, 'search',
-      [
-        { name: 'name', value: name },
-        { name: 'rarity', value: rarity },
-        { name: 'faction', value: faction },
-        { name: 'set', value: set },
-        { name: 'main_effect', value: main_effect },
-        { name: 'main_effect_2', value: main_effect_2 },
-        { name: 'echo_effect', value: echo_effect },
-        { name: 'main_cost', value: main_cost },
-        { name: 'recall_cost', value: recall_cost },
-        { name: 'forest_power', value: forest_power },
-        { name: 'mountain_power', value: mountain_power },
-        { name: 'ocean_power', value: ocean_power },
-        { name: 'in_market', value: in_market },
-        { name: 'no_condition', value: no_condition },
-      ]);
+  search_cards$(request: any): Observable<any> {
+    return this.wabApiService.callPost$(this.controller, 'search', request);
   }
   post_offer_live_market$(request: OfferLiveMarketRequest[]): Observable<void> {
     return this.wabApiService.callPost$(this.controller, 'offerlivemarket', request);
