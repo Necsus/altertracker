@@ -44,28 +44,29 @@ def get_card_by_reference_route(reference):
     except Exception as e:
         return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
     
-@card_bp.route('/search', methods=['GET'])
+@card_bp.route('/search', methods=['POST'])
 @jwt_required(optional=True)
 def search_cards_route():
     try:
         user_id = get_jwt_identity()
-        name = request.args.get('name')
-        rarity = request.args.get('rarity')
-        faction = request.args.get('faction')
-        set = request.args.get('set')
-        main_effect = request.args.get('main_effect')
-        main_effect_2 = request.args.get('main_effect_2')
-        echo_effect = request.args.get('echo_effect')
-        main_cost = request.args.get('main_cost')
-        recall_cost = request.args.get('recall_cost')
-        forest_power = request.args.get('forest_power')
-        mountain_power = request.args.get('mountain_power')
-        ocean_power = request.args.get('ocean_power')
-        in_market = request.args.get('in_market')
-        no_condition = request.args.get('no_condition')
+        data = request.get_json()
+        name = data.get('name')
+        rarity = data.get('rarity')
+        faction = data.get('faction')
+        set = data.get('set')
+        main_effect = data.get('main_effect')
+        main_effect_2 = data.get('main_effect_2')
+        echo_effect = data.get('echo_effect')
+        main_cost_range = data.get('main_cost_range')
+        recall_cost_range = data.get('recall_cost_range')
+        forest_power_range = data.get('forest_power_range')
+        mountain_power_range = data.get('mountain_power_range')
+        ocean_power_range = data.get('ocean_power_range')
+        in_market = data.get('in_market')
+        no_condition = data.get('no_condition')
         cards = search_cards_service(
-            name, rarity, faction, set, main_effect, main_effect_2,
-            echo_effect, main_cost, recall_cost, forest_power, mountain_power, ocean_power,
+            name, rarity, faction, set, main_effect, main_effect_2, echo_effect,
+            main_cost_range, recall_cost_range, forest_power_range, mountain_power_range, ocean_power_range,
             in_market, no_condition, user_id
         )
         return jsonify(cards), 200
@@ -85,8 +86,8 @@ def post_offer_live_market():
         data = request.get_json()
         schema = OfferLiveMarketSchema(many=True)
         validated_data = schema.load(data)
-        offersLiveMarket = post_offer_live_market_service(validated_data)
-        return jsonify({'message': 'Offres mises à jour avec succès','offersLiverMarket': offersLiveMarket}), 201
+        post_offer_live_market_service(validated_data)
+        return jsonify({'message': 'Offres mises à jour avec succès'}), 201
     except ValidationError as ve:
         return make_response(jsonify({'message': 'Invalid data', 'errors': ve.messages}), 400)
     except Exception as e:

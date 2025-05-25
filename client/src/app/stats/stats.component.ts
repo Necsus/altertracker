@@ -167,7 +167,9 @@ export class StatsComponent implements OnInit {
               complete: () => {
                 if (this.card) {
                   this.cardService.updateCard$(this.card, offerLiveMarket).subscribe({
-                    next: () => { }
+                    next: (response: any) => {
+                      console.log(response);
+                    }
                   });
                 }
               }
