@@ -111,6 +111,8 @@ def search_cards_data(name, rarity, faction, set, main_effect, main_effect_2,
 
     # Recherche par plage pour main_cost
     if main_cost_range:
+        if 'min' in main_cost_range and 'max' in main_cost_range and main_cost_range['min'] == main_cost_range['max']:
+            query = query.filter(Card.MAIN_COST == main_cost_range['min'])
         if 'min' in main_cost_range:
             query = query.filter(Card.MAIN_COST >= main_cost_range['min'])
         if 'max' in main_cost_range:
@@ -118,31 +120,43 @@ def search_cards_data(name, rarity, faction, set, main_effect, main_effect_2,
 
     # Recherche par plage pour recall_cost
     if recall_cost_range:
-        if 'min' in recall_cost_range:
-            query = query.filter(Card.RECALL_COST >= recall_cost_range['min'])
-        if 'max' in recall_cost_range:
-            query = query.filter(Card.RECALL_COST <= recall_cost_range['max'])
+        if 'min' in recall_cost_range and 'max' in recall_cost_range and recall_cost_range['min'] == recall_cost_range['max']:
+            query = query.filter(Card.RECALL_COST == recall_cost_range['min'])
+        else:
+            if 'min' in recall_cost_range:
+                query = query.filter(Card.RECALL_COST >= recall_cost_range['min'])
+            if 'max' in recall_cost_range:
+                query = query.filter(Card.RECALL_COST <= recall_cost_range['max'])
 
     # Recherche par plage pour forest_power
     if forest_power_range:
-        if 'min' in forest_power_range:
-            query = query.filter(Card.FOREST_POWER >= forest_power_range['min'])
-        if 'max' in forest_power_range:
-            query = query.filter(Card.FOREST_POWER <= forest_power_range['max'])
+        if 'min' in forest_power_range and 'max' in forest_power_range and forest_power_range['min'] == forest_power_range['max']:
+            query = query.filter(Card.FOREST_POWER == forest_power_range['min'])
+        else:
+            if 'min' in forest_power_range:
+                query = query.filter(Card.FOREST_POWER >= forest_power_range['min'])
+            if 'max' in forest_power_range:
+                query = query.filter(Card.FOREST_POWER <= forest_power_range['max'])
 
     # Recherche par plage pour mountain_power
     if mountain_power_range:
-        if 'min' in mountain_power_range:
-            query = query.filter(Card.MOUNTAIN_POWER >= mountain_power_range['min'])
-        if 'max' in mountain_power_range:
-            query = query.filter(Card.MOUNTAIN_POWER <= mountain_power_range['max'])
+        if 'min' in mountain_power_range and 'max' in mountain_power_range and mountain_power_range['min'] == mountain_power_range['max']:
+            query = query.filter(Card.MOUNTAIN_POWER == mountain_power_range['min'])
+        else:
+            if 'min' in mountain_power_range:
+                query = query.filter(Card.MOUNTAIN_POWER >= mountain_power_range['min'])
+            if 'max' in mountain_power_range:
+                query = query.filter(Card.MOUNTAIN_POWER <= mountain_power_range['max'])
 
     # Recherche par plage pour ocean_power
     if ocean_power_range:
-        if 'min' in ocean_power_range:
-            query = query.filter(Card.OCEAN_POWER >= ocean_power_range['min'])
-        if 'max' in ocean_power_range:
-            query = query.filter(Card.OCEAN_POWER <= ocean_power_range['max'])
+        if 'min' in ocean_power_range and 'max' in ocean_power_range and ocean_power_range['min'] == ocean_power_range['max']:
+            query = query.filter(Card.OCEAN_POWER == ocean_power_range['min'])
+        else:
+            if 'min' in ocean_power_range:
+                query = query.filter(Card.OCEAN_POWER >= ocean_power_range['min'])
+            if 'max' in ocean_power_range:
+                query = query.filter(Card.OCEAN_POWER <= ocean_power_range['max'])
 
     if in_market:
         query = query.filter(Card.price.isnot(None))
