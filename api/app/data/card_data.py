@@ -167,6 +167,9 @@ def search_cards_data(name, rarity, faction, set, main_effect, main_effect_2,
             ~func.lower(Card.MAIN_EFFECT).like('% s\'il %')
         )
 
+    # Limiter à 10 000 résultats
+    query = query.limit(10000)
+
     # Exécution de la requête
     results = query.all()
 
