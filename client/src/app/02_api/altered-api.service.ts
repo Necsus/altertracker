@@ -57,4 +57,20 @@ export class AlteredApiService {
       })
     );
   }
+  getCollection$(token: string): Observable<any> {
+    const url = `${this.baseUrl}/cards?cardType%5B%5D=CHARACTER&collection=true&rarity%5B%5D=UNIQUE&itemsPerPage=36&locale=fr-fr`;
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Accept': '*/*'
+    });
+
+    return this.http.get<any>(url, { headers }).pipe(
+      catchError((error) => {
+        if (error.status === 401) {
+          console.error(error.message ?? 'Unauthorized');
+        }
+        return throwError(() => error);
+      })
+    );
+  }
 }

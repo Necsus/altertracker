@@ -87,7 +87,7 @@ def run_script(faction=None, workers=3):
                             test_result = card_routine.get_unique_cards_name_faction(
                                 dbcard.name_en, dbcard.faction, dbcard.set, mainCost, recallCost, forestPowers, 1
                             )
-                            socketio.emit('script_output', {'data': f"\033[93mName: {dbcard.name_en} OK POUR forestPower: {forestPowers} results : {test_result.get('hydra:totalItems', 0)}\033[0m"})
+                            socketio.emit('script_output', {'data': f"\033[92mName: {dbcard.name_en} OK POUR forestPower: {forestPowers} results : {test_result.get('hydra:totalItems', 0)}\033[0m"})
 
                         if test_result and test_result.get('hydra:totalItems', 0) > 0:
                             page = 1
@@ -171,17 +171,18 @@ def run_script(faction=None, workers=3):
                                 page += 1
 
                             if goToForestPowerFilter:
-                                socketio.emit('script_output', {'data': f"\033[91mATTENTION TROP DE RESULTATS MANQUE DES CARTES\033[0m"})
-                                socketio.emit('script_output', {'data': f"\033[91mName: {dbcard.name_en} | faction: {dbcard.faction} | set: {dbcard.set} | mainCost: {mainCost} | recallCost: {recallCost} | forestPower: {forestPowers}\033[0m"})
                                 page = 1
                                 forestPowers = list(range(0, 11))
                                 while True:
+                                    
                                     cards = card_routine.get_unique_cards_name_faction(
                                         dbcard.name_en, dbcard.faction, dbcard.set, mainCost, recallCost, [fp for fp in forestPowers if fp != mainCost], page
                                     )
 
                                     if not cards or 'hydra:member' not in cards or not cards['hydra:member']:
                                         break
+                                    
+                                    socketio.emit('script_output', {'data': f"\033[92mName: {dbcard.name_en} OK POUR forestPower: {[fp for fp in forestPowers if fp != mainCost]} results : {cards.get('hydra:totalItems', 0)}\033[0m"})
 
                                     for card in cards['hydra:member']:
                                         tempCard = map_jsoncard_to_card(card, dbcard.name_en)

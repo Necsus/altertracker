@@ -87,6 +87,22 @@ export class AlteredService {
         return throwError(() => error); // Propager les autres erreurs
       })
     );
-
+  }
+  getCollection$(token: string): Observable<any> {
+    return this.alteredApiService.getCollection$(token).pipe(
+      map((response: any) => {
+        if (response && response['hydra:member']) {
+          return response['hydra:member']; // Retourner la collection
+        } else {
+          throw new Error('Collection vide ou non trouvée');
+        }
+      }),
+      catchError((error) => {
+        if ((error.status === 401 && error.error.message == "Expired JWT Token") || error.status === 500) {
+          return throwError(() => new Error('Token invalide ou expiré. Veuillez le réinsérer.'));
+        }
+        return throwError(() => error); // Propager les autres erreurs
+      })
+    );
   }
 }

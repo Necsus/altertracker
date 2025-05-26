@@ -1,5 +1,7 @@
+import datetime
 from typing import Optional
 from sqlalchemy import func
+from app.models.user_collection import UserCollection
 from app.models.card import Card
 from app.models.user_alert import UserAlert
 from app.models.user import User
@@ -131,4 +133,61 @@ def edit_user_alert_data(id_alert: int, data: dict) -> UserAlert:
     except SQLAlchemyError as e:
         db.session.rollback()
         raise Exception(f"Erreur lors de la modification de l'alerte utilisateur : {str(e)}")
+
+def get_user_collections_data(id_user: int) -> list[dict]:
+    try:
+        # Jointure entre UserCollection et Card sur reference_card
+        collections = db.session.query(
+            UserCollection,
+            Card
+        ).join(
+            Card, UserCollection.reference_card == Card.reference
+        ).filter(
+            UserCollection.id_user == id_user
+        ).all()
+
+        # Transformation des résultats en JSON
+        return [
+            {
+                **collection.json(),
+                "card": card.json() if card else None  # Inclut les données de la carte si elle existe
+            }
+            for collection, card in collections
+        ]
+    except SQLAlchemyError as e:
+        raise Exception(f"Erreur lors de la récupération des collections utilisateur : {str(e)}")
+
+def save_user_collections_bulk(id_user: int, collections: list[str]) -> list[dict]:
+    try:
+        # Supprimer les collections existantes pour cet utilisateur
+        db.session.query(UserCollection).filter_by(id_user=id_user).delete()
+        # Préparer les objets UserCollection pour l'insertion
+        user_collections = [
+            UserCollection(id_user=id_user, reference_card=reference_card, added_at = datetime.datetime.now(datetime.timezone.utc))
+            for reference_card in collections
+        ]
+        # Ajouter les objets à la session
+        db.session.bulk_save_objects(user_collections)
+        db.session.commit()
+        # Récupérer les collections insérées avec les informations des cartes
+        inserted_collections = db.session.query(
+            UserCollection,
+            Card
+        ).join(
+            Card, UserCollection.reference_card == Card.reference
+        ).filter(
+            UserCollection.id_user == id_user
+        ).all()
+
+        # Transformation des résultats en JSON
+        return [
+            {
+                **collection.json(),
+                "card": card.json() if card else None  # Inclut les données de la carte si elle existe
+            }
+            for collection, card in inserted_collections
+        ]
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        raise Exception(f"Erreur lors de la sauvegarde des collections utilisateur : {str(e)}")
 

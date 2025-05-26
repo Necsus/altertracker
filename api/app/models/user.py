@@ -13,6 +13,9 @@ class User(db.Model):
     is_admin = db.Column(db.Boolean, default=False)
     is_email_verified = db.Column(db.Boolean, default=False)
     email_verified_at = db.Column(db.DateTime, nullable=True)
+    is_banned = db.Column(db.Boolean, nullable=True)
+    banned_at = db.Column(db.DateTime, nullable=True)
+    sub = db.Column(db.String(255), nullable=True)
 
 
     def __repr__(self):
@@ -28,14 +31,21 @@ class User(db.Model):
             'edited_at': self.edited_at.isoformat() if self.edited_at else None,
             'is_admin': self.is_admin,
             'is_email_verified': self.is_email_verified,
-            'email_verified_at': self.email_verified_at.isoformat() if self.email_verified_at else None
+            'email_verified_at': self.email_verified_at.isoformat() if self.email_verified_at else None,
+            'is_banned': self.is_banned,
+            'banned_at': self.banned_at.isoformat() if self.banned_at else None,
+            'sub': self.sub
         }
     
-    def __init__(self, username, email, password_hash, created_at=None, edited_at=None, is_email_verified=False, email_verified_at=None):
+    def __init__(self, username, email, password_hash, created_at=None, edited_at=None, is_email_verified=False,
+                email_verified_at=None, is_banned=False, banned_at=None, sub=None):
         self.username = username
         self.email = email
         self.password_hash = password_hash
         self.created_at = created_at if created_at else datetime.datetime.now(datetime.timezone.utc)
-        self.edited_at = edited_at if edited_at else datetime.datetime.now(datetime.timezone.utc)
+        self.edited_at = edited_at
         self.is_email_verified = is_email_verified
         self.email_verified_at = email_verified_at
+        self.is_banned = is_banned
+        self.banned_at = banned_at
+        self.sub = sub

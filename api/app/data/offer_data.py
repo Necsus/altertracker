@@ -65,7 +65,7 @@ def update_offer_by_id(offer_id: int, updates: dict) -> None:
 
 
 def get_offers_by_reference_data(reference: str) -> List[Offer]:
-    return db.session.query(Offer).filter_by(reference_card=reference).all()
+    return db.session.query(Offer).filter_by(reference_card=reference).order_by(Offer.created_at.desc()).all()
 
 
 def select_offers_by_id(offer_id: int) -> List[Offer]:
