@@ -69,4 +69,14 @@ export class UserService {
       return response;
     }));
   }
+  get_user_collection$(): Observable<any> {
+    return this.userApiService.get_user_collection$().pipe(map((response: any) => {
+      return response;
+    }));
+  }
+  post_user_collection$(request: any): Observable<any> {
+    return this.userApiService.post_user_collection$(request).pipe(map((response: any) => {
+      return response;
+    }));
+  }
 }

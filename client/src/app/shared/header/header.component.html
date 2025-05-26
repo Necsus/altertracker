@@ -51,11 +51,12 @@
             <li><a routerLink="/token" class="block px-4 py-2 hover:bg-gray-600">Token Altered</a></li>
             <li><a routerLink="/searches" class="block px-4 py-2 hover:bg-gray-600">Mes recherches</a></li>
             <li><a routerLink="/alerts" class="block px-4 py-2 hover:bg-gray-600">Mes alertes</a></li>
+            <li><a routerLink="/collection" class="block px-4 py-2 hover:bg-gray-600">Ma collection</a></li>
             <li><a routerLink="/purchase-offers" class="block px-4 py-2 hover:bg-gray-600">Offres
                 d'achat</a>
             </li>
             <li><a (click)="onLogout()"
-                class="block px-4 py-2 text-red-300 hover:bg-gray-600 cursor-pointer rounded-b-lg">Logout</a>
+                class="block px-4 py-2 text-red-300 hover:bg-gray-600 cursor-pointer rounded-b-lg">Déconnexion</a>
             </li>
           </ul>
         </li>
@@ -89,6 +90,8 @@
         class="block hover:text-blue-300 transition duration-300">Mes recherches</a>
       <a routerLink="/alerts" routerLinkActive="text-blue-400"
         class="block hover:text-blue-300 transition duration-300">Mes alertes</a>
+      <a routerLink="/collection" routerLinkActive="text-blue-400"
+        class="block hover:text-blue-300 transition duration-300">Ma collection</a>
       }
       <a routerLink="/about" routerLinkActive="text-blue-400"
         class="block hover:text-blue-300 transition duration-300">À propos</a>
@@ -100,7 +103,7 @@
       <a routerLink="/admin" class="block hover:text-blue-300 transition duration-300">Admin</a>
       }
       <a (click)="onLogout()"
-        class="block text-red-300 hover:text-red-200 transition duration-300 cursor-pointer">Logout</a>
+        class="block text-red-300 hover:text-red-200 transition duration-300 cursor-pointer">Déconnexion</a>
       <a routerLink="/contact" routerLinkActive="text-blue-400"
         class="block hover:text-blue-300 transition duration-300"><i class="fas fa-bug"></i></a>
       }

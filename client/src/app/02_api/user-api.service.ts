@@ -50,4 +50,10 @@ export class UserApiService {
   delete_user_account$(request: { password: string }): Observable<any> {
     return this.wabApiService.callPut$(this.controller, 'delete-account', request);
   }
+  get_user_collection$(): Observable<any> {
+    return this.wabApiService.callGet$(this.controller, 'collection');
+  }
+  post_user_collection$(request: any): Observable<any> {
+    return this.wabApiService.callPost$(this.controller, 'collection', request);
+  }
 }

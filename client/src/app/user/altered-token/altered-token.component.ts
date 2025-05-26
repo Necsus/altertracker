@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthViewService } from '../../authentication/auth-view.service';
 import { ModalService } from '../../shared/services/modal/modal.service';
 import { ToastService } from '../../shared/services/toast/toast.service';
@@ -16,9 +16,11 @@ export class AlteredTokenComponent {
   token: string = '';
   acceptedCGU: boolean = false;
   formSubmitted: boolean = false;
+  callbackUrl: string | null = null;
 
   constructor(
     private router: Router,
+    private activatedRoute: ActivatedRoute,
     private toastService: ToastService,
     private modalService: ModalService,
     private authViewService: AuthViewService) { }
@@ -39,6 +41,8 @@ export class AlteredTokenComponent {
     if (storedCGU === 'true') {
       this.acceptedCGU = true;
     }
+
+    this.callbackUrl = this.activatedRoute.snapshot.queryParamMap.get('callback');
   }
 
   cguClick(): void {
@@ -54,10 +58,14 @@ export class AlteredTokenComponent {
       const lastSearchUrl = sessionStorage.getItem('lastSearchUrl');
       this.toastService.show('Token enregistré avec succès', 'success', 5000);
       // Rediriger vers /cards avec les paramètres de recherche si disponibles
-      if (lastSearchUrl) {
-        this.router.navigateByUrl(lastSearchUrl);
+      if (this.callbackUrl) {
+        this.router.navigateByUrl(this.callbackUrl);
       } else {
-        this.router.navigate(['/cards']);
+        if (lastSearchUrl) {
+          this.router.navigateByUrl(lastSearchUrl);
+        } else {
+          this.router.navigate(['/cards']);
+        }
       }
     }
   }

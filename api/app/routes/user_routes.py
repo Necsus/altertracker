@@ -2,7 +2,7 @@ import sib_api_v3_sdk
 from flask import Blueprint, jsonify, request, make_response
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.utils.security import check_password, hash_password
-from app.extensions import mail_api, ApiException, limiter
+from app.extensions import mail_api, ApiException, limiter, db
 from app.services.user_service import (
     get_user_search_service,
     save_user_search_service,
@@ -17,7 +17,9 @@ from app.services.user_service import (
     put_user_password_service,
     delete_user_service,
     get_user_by_username_service,
-    put_username_service
+    put_username_service,
+    save_user_collections_service,
+    get_user_collections_service
 )
 
 user_bp = Blueprint('user', __name__)
@@ -249,6 +251,45 @@ def delete_user_account():
         delete_user_service(user_id)
 
         return jsonify({"message": "Compte utilisateur supprimé avec succès"}), 200
+
+    except Exception as e:
+        return jsonify({"message": f"Erreur lors de la suppression du compte : {str(e)}"}), 500
+
+@user_bp.route('/collection', methods=['POST'])
+@jwt_required()
+def post_collection():
+    try:
+        user_id = get_jwt_identity()  # Récupère l'ID utilisateur depuis le token JWT
+        data = request.get_json()
+
+        # Récupération de l'utilisateur
+        user = get_user_by_id_service(user_id)
+        if not user:
+            return jsonify({"message": "Utilisateur non trouvé"}), 404
+        
+        if user.sub is None:
+            user.sub = data['sub']
+            db.session.commit()
+
+        collection = save_user_collections_service(user_id, data['collection'])
+        return jsonify(collection), 200
+
+    except Exception as e:
+        return jsonify({"message": f"Erreur lors de la suppression du compte : {str(e)}"}), 500
+    
+@user_bp.route('/collection', methods=['GET'])
+@jwt_required()
+def get_collection():
+    try:
+        user_id = get_jwt_identity()  # Récupère l'ID utilisateur depuis le token JWT
+
+        # Récupération de l'utilisateur
+        user = get_user_by_id_service(user_id)
+        if not user:
+            return jsonify({"message": "Utilisateur non trouvé"}), 404
+        
+        collection = get_user_collections_service(user_id)
+        return jsonify(collection), 200
 
     except Exception as e:
         return jsonify({"message": f"Erreur lors de la suppression du compte : {str(e)}"}), 500

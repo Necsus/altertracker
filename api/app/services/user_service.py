@@ -14,7 +14,9 @@ from app.data.user_data import (
   get_user_by_username_data,
   put_user_username_data,
   get_user_by_id_data,
-  delete_user_data
+  delete_user_data,
+  get_user_collections_data,
+  save_user_collections_bulk
 )
 
 def get_user_by_id_service(id_user: int) -> Dict:
@@ -87,3 +89,9 @@ def delete_user_alert_service(id_alert: int) -> None:
 def edit_user_alert_service(id_alert: int, data: Dict) -> Dict:
     updated_alert = edit_user_alert_data(id_alert, data)
     return updated_alert.json()
+
+def get_user_collections_service(id_user: int) -> List[Dict]:
+    return get_user_collections_data(id_user)
+
+def save_user_collections_service(id_user: int, data: List[Dict]) -> None:
+    return save_user_collections_bulk(id_user, data)
