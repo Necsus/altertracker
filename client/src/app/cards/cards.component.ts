@@ -93,7 +93,7 @@ export class CardsComponent implements OnInit {
     const alteredToken = sessionStorage.getItem('altered_token');
     if (alteredToken) {
       this.getMarketComplete = false;
-      const maxConcurrentRequests = 5; // Limite de requêtes simultanées
+      const maxConcurrentRequests = 2; // Limite de requêtes simultanées
       const updatedCards: OfferLiveMarketRequest[] = [];
       from(cards)
         .pipe(
