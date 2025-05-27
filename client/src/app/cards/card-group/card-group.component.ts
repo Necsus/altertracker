@@ -16,7 +16,7 @@ export class CardGroupComponent implements OnChanges {
   @Input() getMarketComplete: boolean = true; // Indique si le marché est complet
   @Output() visibleCardsChange = new EventEmitter<CardModel[]>(); // Émet les cartes visibles
   isGroupOpen: boolean = false;
-  displayedCards: number = 100;
+  displayedCards: number = 50;
   onlyCardsWithPrice: boolean = false;
 
   get visibleCards(): CardModel[] {
