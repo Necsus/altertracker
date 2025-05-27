@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, concatMap, delay, from, map, of, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, delay, map, of, throwError } from 'rxjs';
 import { OfferLiveMarketRequest } from '../01_models/02_api/card/offer-live-market-request.model';
 import { CardModel } from '../01_models/03_business/card.model';
 import { AlteredService } from '../03_business/altered.service';
@@ -16,9 +16,10 @@ import { SearchPanelComponent } from './search-panel/search-panel.component';
 @Component({
   selector: 'app-cards',
   templateUrl: './cards.component.html',
+  styleUrls: ['./cards.component.css'],
   imports: [CommonModule, SearchPanelComponent, CardGroupComponent, SaveSearchComponent]
 })
-export class CardsComponent implements OnInit {
+export class CardsComponent implements OnInit, OnDestroy {
   cards: CardModel[] = [];
   groupedCards: { [key: string]: CardModel[] } = {};
   nbCards: number = 0;
@@ -27,7 +28,13 @@ export class CardsComponent implements OnInit {
   searchOffers: boolean = false;
   isLoggedIn = false;
   allGroupsOpen: boolean = false;
-  getMarketComplete: boolean = true;
+  remainingCards: CardModel[] = []; // Cartes restantes à traiter
+  queueProcessing = false; // Indique si la file d'attente est en cours de traitement
+  private requestQueue: OfferLiveMarketRequest[] = []; // File d'attente des requêtes
+  private progressSubject = new BehaviorSubject<number>(0);
+  progress$ = this.progressSubject.asObservable();
+
+
 
   constructor(
     private cardService: CardService,
@@ -82,70 +89,10 @@ export class CardsComponent implements OnInit {
     // Exécute les requêtes pour les cartes visibles
     if (this.searchOffers) {
       if (this.isLoggedIn) {
-        this.getMarketOffer(visibleCards);
+        this.addCardsToQueue(visibleCards);
       } else {
         this.router.navigate(['/login']);
       }
-    }
-  }
-
-  private getMarketOffer(cards: CardModel[]): void {
-    const alteredToken = sessionStorage.getItem('altered_token');
-    if (alteredToken) {
-      this.getMarketComplete = false;
-      const maxConcurrentRequests = 1; // Limite de requêtes simultanées
-      const updatedCards: OfferLiveMarketRequest[] = [];
-      // avec le concatMap je souhaite faire une queue, a chaque fois que j'ouvre un groupe ca rajoute dans la queue, et enregistrer toutes avec post_offer_live_market toutes les 10 requetes
-      from(cards)
-        .pipe(
-          concatMap(
-            (card) => this.alteredService.getMarketOffer$(card, alteredToken).pipe(
-              delay(1000)
-            )
-          ),
-          map((offerRequest) => {
-            // Ajouter chaque objet OfferLiveMarketRequest à updatedCards
-            updatedCards.push(offerRequest);
-          }),
-          catchError((error) => {
-            if (error.message === 'Token invalide ou expiré. Veuillez le réinsérer.') {
-              console.error('Erreur 401 détectée : Redirection vers la page /token.');
-              sessionStorage.removeItem('altered_token');
-              sessionStorage.removeItem('cgu_altered_token');
-              this.loaderService.hide();
-              this.getMarketComplete = true;
-              this.toastService.show(error.message, 'error', 5000);
-              this.router.navigate(['/token']); // Redirige l'utilisateur vers la page /token
-              return of(); // Arrête la propagation des requêtes
-            }
-            return throwError(() => error);
-          })
-        )
-        .subscribe({
-          next: () => { },
-          error: (error) => {
-            this.getMarketComplete = true;
-            console.error('Erreur lors de la récupération des offres :', error);
-          },
-          complete: () => {
-            // Appeler post_offer_live_market$ avec les cartes mises à jour
-            if (updatedCards.length > 0) {
-              this.cardService.post_offer_live_market$(updatedCards).subscribe({
-                next: () => {
-                  console.log('Mise à jour des offres live market réussie.');
-                },
-                error: (error) => {
-                  console.error('Erreur lors de la mise à jour des offres live market :', error);
-                },
-                complete: () => {
-                  this.getMarketComplete = true;
-                }
-              });
-            }
-          }
-        });
-    } else {
-      this.router.navigate(['/token']);
     }
   }
 
@@ -158,5 +105,87 @@ export class CardsComponent implements OnInit {
       groups[name].push(card);
       return groups;
     }, {} as { [key: string]: CardModel[] });
+  }
+
+  addCardsToQueue(cards: CardModel[]): void {
+    cards.map((card) => card.isProcessing = true);
+    this.remainingCards.push(...cards); // Ajoute les nouvelles cartes à la file d'attente
+    if (!this.queueProcessing) {
+      this.processQueue(); // Démarre le traitement de la file d'attente si ce n'est pas déjà en cours
+    }
+  }
+
+  private processQueue(): void {
+    const alteredToken = sessionStorage.getItem('altered_token');
+    if (!alteredToken) {
+      this.router.navigate(['/token']);
+      return;
+    }
+
+    if (this.remainingCards.length === 0) {
+      this.progressSubject.next(0); // Réinitialise la progression si la file d'attente est vide
+      this.queueProcessing = false; // Arrête le traitement si la file est vide
+      return;
+    }
+
+    this.queueProcessing = true; // Indique que le traitement de la file d'attente est en cours
+
+    const card = this.remainingCards.shift(); // Récupère la première carte de la file d'attente
+    if (card) {
+      this.alteredService.getMarketOffer$(card, alteredToken)
+        .pipe(
+          delay(750), // Respecte le délai entre les requêtes
+          map((offerRequest) => {
+            this.requestQueue.push(offerRequest); // Ajoute la requête à la file d'attente
+            this.progressSubject.next(this.requestQueue.length); // Met à jour la progression
+            if (this.requestQueue.length >= 10) {
+              this.flushRequestQueue(); // Enregistre toutes les 10 requêtes
+            }
+          }),
+          catchError((error) => {
+            if (error.message === 'Token invalide ou expiré. Veuillez le réinsérer.') {
+              this.handleTokenError(error);
+              return of();
+            }
+            return throwError(() => error);
+          })
+        )
+        .subscribe({
+          complete: () => {
+            card.isProcessing = false;
+            this.processQueue(); // Relance le traitement pour la prochaine carte
+          }
+        });
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.flushRequestQueue(); // Vide la file d'attente des requêtes
+    this.queueProcessing = false; // Arrête le traitement des requêtes
+    this.remainingCards = []; // Vide la file d'attente des cartes
+  }
+
+  private flushRequestQueue(): void {
+    if (this.requestQueue.length > 0) {
+      const requestsToSend = [...this.requestQueue];
+      this.requestQueue = []; // Vide la file d'attente des requêtes
+      this.cardService.post_offer_live_market$(requestsToSend).subscribe({
+        next: () => {
+          console.log('Mise à jour des offres live market réussie.');
+        },
+        error: (error) => {
+          console.error('Erreur lors de la mise à jour des offres live market :', error);
+        }
+      });
+    }
+  }
+
+  private handleTokenError(error: any): void {
+    console.error('Erreur 401 détectée : Redirection vers la page /token.');
+    sessionStorage.removeItem('altered_token');
+    sessionStorage.removeItem('cgu_altered_token');
+    this.loaderService.hide();
+    this.toastService.show(error.message, 'error', 5000);
+    this.router.navigate(['/token']);
   }
 }
