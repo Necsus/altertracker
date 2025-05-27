@@ -11,9 +11,9 @@ import { CardsComponent } from './cards/cards.component';
 import { HomeComponent } from './home/home.component';
 import { NotFoundComponent } from './shared/error-pages/not-found/not-found.component';
 import { UnauthorizedComponent } from './shared/error-pages/unauthorized/unauthorized.component';
+import { UnderConstructionComponent } from './shared/under-construction/under-construction.component';
 import { StatsComponent } from './stats/stats.component';
 import { AlteredTokenComponent } from './user/altered-token/altered-token.component';
-import { CollectionComponent } from './user/collection/collection.component';
 import { ContactComponent } from './user/contact/contact.component';
 import { MeComponent } from './user/me/me.component';
 import { PurchaseOffersComponent } from './user/purchase-offers/purchase-offers.component';
@@ -38,7 +38,7 @@ export const routes: Routes = [
   { path: 'contact', component: ContactComponent, canActivate: [TokenGuard] },
   { path: 'about', component: AboutComponent },
   { path: 'purchase-offers', component: PurchaseOffersComponent, canActivate: [TokenGuard] },
-  { path: 'collection', component: CollectionComponent, canActivate: [TokenGuard] },
+  { path: 'collection', component: UnderConstructionComponent, canActivate: [TokenGuard] },
   { path: 'admin', component: AdminComponent, canActivate: [AdminGuard] },
   { path: 'unauthorized', component: UnauthorizedComponent },
   { path: '**', component: NotFoundComponent }
