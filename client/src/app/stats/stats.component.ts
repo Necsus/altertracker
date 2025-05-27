@@ -29,6 +29,7 @@ export class StatsComponent implements OnInit {
   offers!: OfferModel[] | null;
   purchases!: OfferPurchase[] | null; // Ajouté pour les achats
   is_favorite: boolean = false; // État favori de la carte
+  is_mine: boolean = false; // Indique si l'utilisateur est le propriétaire de la carte
 
   constructor(
     private route: ActivatedRoute,
@@ -74,21 +75,20 @@ export class StatsComponent implements OnInit {
 
   onSubmit(): void {
     const reference = this.searchForm.get('reference')?.value;
-    this.reference = reference;
-    if (this.reference) {
-      this.loadCardStats(this.reference);
-    }
+    this.router.navigate(['/stats', reference]).then(() => {
+      window.location.reload(); // Recharge complètement la page
+    });
   }
 
   loadCardStats(reference: string): void {
     this.cardService.get_card_stats$(reference).subscribe({
-      next: (response: { card: CardModel, offers: OfferModel[], purchases: OfferPurchase[] }) => {
+      next: (response: { card: CardModel, offers: OfferModel[], purchases: OfferPurchase[], is_mine: boolean }) => {
         this.card = response.card;
         this.is_favorite = !!this.card.alert_id;
         this.offers = response.offers;
         this.purchases = response.purchases;
+        this.is_mine = response.is_mine;
         this.refreshCardFromAltered();
-        this.router.navigate(['/stats', reference]);
       },
       error: (err: any) => {
         console.error(err);
@@ -178,6 +178,9 @@ export class StatsComponent implements OnInit {
         }
       });
     }
+  }
+  sendMessage(): void {
+    this.toastService.show('Cette fonctionnalité n\'est pas encore implémentée.', 'info', 5000);
   }
 }
 

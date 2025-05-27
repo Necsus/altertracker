@@ -12,7 +12,7 @@ def get_purchases_by_reference_data(reference: str) -> List[dict]:
     ).filter(
         OfferPurchase.reference_card == reference
     ).order_by(
-        OfferPurchase.created_at.desc()  # Trier par date descendante
+        OfferPurchase.price.desc()  # Trier par date descendante
     ).all()
     
     return [

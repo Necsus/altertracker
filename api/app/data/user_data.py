@@ -156,6 +156,15 @@ def get_user_collections_data(id_user: int) -> list[dict]:
         ]
     except SQLAlchemyError as e:
         raise Exception(f"Erreur lors de la récupération des collections utilisateur : {str(e)}")
+    
+
+def get_card_is_in_collection_data(id_user: int, reference_card: str) -> bool:
+    try:
+        # Vérifie si une collection existe pour l'utilisateur avec la référence de carte donnée
+        exists = db.session.query(UserCollection).filter_by(id_user=id_user, reference_card=reference_card).first() is not None
+        return exists
+    except SQLAlchemyError as e:
+        raise Exception(f"Erreur lors de la vérification de la collection utilisateur : {str(e)}")
 
 def save_user_collections_bulk(id_user: int, collections: list[str]) -> list[dict]:
     try:

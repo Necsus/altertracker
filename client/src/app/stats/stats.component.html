@@ -52,11 +52,19 @@
       <div class="bg-gray-800 rounded-xl p-4">
         <div class="flex justify-between items-center mb-3">
           <h2 class="text-xl font-semibold">Statistics</h2>
-          @if (isLoggedIn) {
-          <button (click)="toggleFavorite()" class="text-gray-400 hover:text-red-500 transition duration-300">
-            <i [class]="is_favorite ? 'fas fa-heart text-red-500' : 'far fa-heart'"></i>
-          </button>
-          }
+          <div class="flex items-center space-x-4">
+            <!-- Voir sur Altered.gg Button -->
+            <a href="https://altered.gg/fr-fr/cards/{{card.reference}}" target="_blank"
+              class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg transition">
+              Voir sur Altered.gg&nbsp;<i class="fas fa-up-right-from-square text-xs"></i>
+            </a>
+            <!-- Toggle Favorite Button -->
+            @if (isLoggedIn) {
+            <button (click)="toggleFavorite()" class="text-gray-400 hover:text-red-500 transition duration-300">
+              <i [class]="is_favorite ? 'fas fa-heart text-red-500' : 'far fa-heart'"></i>
+            </button>
+            }
+          </div>
         </div>
         <ul class="grid grid-cols-2 gap-4 text-sm text-gray-300">
           <li><strong>Rarity:</strong> {{ card.rarity }}</li>
@@ -83,7 +91,7 @@
         @if (availableInMarket) {
         <a href="https://altered.gg/fr-fr/cards/{{card.reference}}/offers" target="_blank"
           class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg transition">
-          Acheter sur Altered.gg
+          Acheter sur Altered.gg&nbsp;<i class="fas fa-up-right-from-square text-xs"></i>
         </a>
         }
       </div>
@@ -98,7 +106,7 @@
             'text-red-400 line-through': offer.is_deleted,
             'font-medium': true
           }">
-            {{ offer.price | currency:(offer.currency || 'USD'):'symbol':'1.2-2' }}
+            {{ offer.price | currency:(offer.currency || ''):'symbol':'1.2-2' }}
           </span>
         </li>
       </ul>
@@ -112,7 +120,7 @@
     <div class="bg-gray-800 rounded-xl p-4">
       <div class="flex justify-between items-center mb-3">
         <h2 class="text-xl font-semibold">Offres d'Achat</h2>
-        @if (isLoggedIn) {
+        @if (isLoggedIn && !is_mine) {
         <button (click)="openPurchaseOfferModal()"
           class="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg transition">
           Make an Offer
@@ -121,13 +129,23 @@
       </div>
       @if (purchases && purchases.length > 0) {
       <ul class="space-y-2 text-gray-300 text-sm">
-        <li *ngFor="let purchase of purchases" class="flex flex-col border-b border-gray-700 pb-2">
-          <div class="flex justify-between">
+        <li *ngFor="let purchase of purchases" class="flex items-center border-b border-gray-700 pb-2">
+          <!-- Username and Date -->
+          <div class="flex flex-col">
             <span class="font-medium">{{ purchase.username }}</span>
-            <span class="text-green-400 font-semibold"> {{ purchase.price | currency:(purchase.currency ||
-              'USD'):'symbol':'1.2-2' }}</span>
+            <span class="text-gray-500 text-xs">{{ purchase.created_at | date:'dd/MM/yyyy HH:mm' }}</span>
           </div>
-          <div class="text-gray-500 text-xs"> {{ purchase.created_at | date:'dd/MM/yyyy HH:mm' }}</div>
+          <!-- Button -->
+          <div class="flex justify-center items-center mx-4" *ngIf="isLoggedIn && is_mine">
+            <button (click)="sendMessage()"
+              class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded-lg transition">
+              Envoyer un message
+            </button>
+          </div>
+          <!-- Price -->
+          <div class="text-green-400 font-semibold text-right flex-grow">
+            {{ purchase.price | currency:(purchase.currency || ''):'symbol':'1.2-2' }}
+          </div>
         </li>
       </ul>
       }

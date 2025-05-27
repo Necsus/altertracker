@@ -14,6 +14,7 @@ from app.services.card_service import (
 )
 from app.services.offer_service import get_offers_by_reference_service
 from app.services.purchase_service import get_purchases_by_reference_service
+from app.services.user_service import get_card_is_in_collection_service
 
 
 card_bp = Blueprint('card', __name__)
@@ -116,14 +117,20 @@ def get_card_with_offers(reference):
         # Récupérer les offres associées à la carte
         offers = get_offers_by_reference_service(reference)
 
-        #Récupérer les offres d'achats associées à la carte
+        # Récupérer les offres d'achats associées à la carte
         purchases = get_purchases_by_reference_service(reference)
+
+        # Si l'utilisateur est authentifié, verifier que la carte est presente dans sa collection
+        is_in_collection = False
+        if user_id:
+            is_in_collection = get_card_is_in_collection_service(user_id, reference)
 
         # Retourner la carte et ses offres
         return jsonify({
             "card": card,  # Pas besoin d'appeler .json() ici, car `card` est déjà un dictionnaire
             "offers": [offer.json() for offer in offers],
-            "purchases": purchases
+            "purchases": purchases,
+            "is_mine": is_in_collection
         }), 200
     except Exception as e:
         return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
