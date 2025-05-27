@@ -117,16 +117,22 @@ export class StatsComponent implements OnInit {
   prepareChartData(): void {
     if (this.offers) {
       // Extraire les prix et les dates des offres
+      const copiedOffers = this.offers.slice();
+      const sortedOffers = copiedOffers.sort((a, b) => {
+        const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+        const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+        return dateA - dateB; // Tri croissant
+      });
       this.chartData = [
         {
-          data: this.offers.map(offer => offer.price || 0),
+          data: sortedOffers.map(offer => offer.price || 0),
           label: 'Prix des offres',
           borderColor: '#4caf50',
           backgroundColor: 'rgba(76, 175, 80, 0.2)',
           fill: true
         }
       ];
-      this.chartLabels = this.offers.map(offer => offer.created_at ? new Date(offer.created_at).toLocaleDateString() : '');
+      this.chartLabels = sortedOffers.map(offer => offer.created_at ? new Date(offer.created_at).toLocaleDateString() : '');
     }
   }
 
