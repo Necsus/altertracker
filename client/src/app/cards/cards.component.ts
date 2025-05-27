@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { catchError, from, map, mergeMap, of, throwError } from 'rxjs';
+import { catchError, concatMap, delay, from, map, of, throwError } from 'rxjs';
 import { OfferLiveMarketRequest } from '../01_models/02_api/card/offer-live-market-request.model';
 import { CardModel } from '../01_models/03_business/card.model';
 import { AlteredService } from '../03_business/altered.service';
@@ -93,13 +93,15 @@ export class CardsComponent implements OnInit {
     const alteredToken = sessionStorage.getItem('altered_token');
     if (alteredToken) {
       this.getMarketComplete = false;
-      const maxConcurrentRequests = 2; // Limite de requêtes simultanées
+      const maxConcurrentRequests = 1; // Limite de requêtes simultanées
       const updatedCards: OfferLiveMarketRequest[] = [];
+      // avec le concatMap je souhaite faire une queue, a chaque fois que j'ouvre un groupe ca rajoute dans la queue, et enregistrer toutes avec post_offer_live_market toutes les 10 requetes
       from(cards)
         .pipe(
-          mergeMap(
-            (card) => this.alteredService.getMarketOffer$(card, alteredToken),
-            maxConcurrentRequests
+          concatMap(
+            (card) => this.alteredService.getMarketOffer$(card, alteredToken).pipe(
+              delay(1000)
+            )
           ),
           map((offerRequest) => {
             // Ajouter chaque objet OfferLiveMarketRequest à updatedCards
