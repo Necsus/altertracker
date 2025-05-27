@@ -49,12 +49,12 @@ export class CardGroupComponent implements OnChanges {
   }
 
   loadMore() {
-    this.displayedCards += 100;
+    this.displayedCards += 50;
     this.emitVisibleCards();
   }
 
   private emitVisibleCards() {
-    const indexToLoad: number = this.displayedCards - 100; // Index de la première carte à charger
+    const indexToLoad: number = this.displayedCards - 50; // Index de la première carte à charger
     const visibleCards = this.cards.slice(indexToLoad, this.displayedCards); // Cartes actuellement visibles
     if (this.isGroupOpen) {
       this.visibleCardsChange.emit(visibleCards);
