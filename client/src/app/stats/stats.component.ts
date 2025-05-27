@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ChartConfiguration, ChartOptions } from 'chart.js';
+import { BaseChartDirective } from 'ng2-charts';
 import { OfferLiveMarketRequest } from '../01_models/02_api/card/offer-live-market-request.model';
 import { CardModel } from '../01_models/03_business/card.model';
 import { OfferPurchase } from '../01_models/03_business/offer-purchase.model';
@@ -19,7 +21,7 @@ import { ToastService } from '../shared/services/toast/toast.service';
   selector: 'app-stats',
   templateUrl: './stats.component.html',
   styleUrls: ['./stats.component.css'],
-  imports: [CommonModule, ReactiveFormsModule]
+  imports: [CommonModule, ReactiveFormsModule, BaseChartDirective]
 })
 export class StatsComponent implements OnInit {
   reference: string | null = null;
@@ -30,6 +32,19 @@ export class StatsComponent implements OnInit {
   purchases!: OfferPurchase[] | null; // Ajouté pour les achats
   is_favorite: boolean = false; // État favori de la carte
   is_mine: boolean = false; // Indique si l'utilisateur est le propriétaire de la carte
+
+  // Propriétés pour le graphique
+  chartData: ChartConfiguration['data']['datasets'] = [];
+  chartLabels: string[] = [];
+  chartOptions: ChartOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'top'
+      }
+    }
+  };
 
   constructor(
     private route: ActivatedRoute,
@@ -86,6 +101,7 @@ export class StatsComponent implements OnInit {
         this.card = response.card;
         this.is_favorite = !!this.card.alert_id;
         this.offers = response.offers;
+        this.prepareChartData();
         this.purchases = response.purchases;
         this.is_mine = response.is_mine;
         this.refreshCardFromAltered();
@@ -96,6 +112,22 @@ export class StatsComponent implements OnInit {
         this.offers = null;
       }
     });
+  }
+
+  prepareChartData(): void {
+    if (this.offers) {
+      // Extraire les prix et les dates des offres
+      this.chartData = [
+        {
+          data: this.offers.map(offer => offer.price || 0),
+          label: 'Prix des offres',
+          borderColor: '#4caf50',
+          backgroundColor: 'rgba(76, 175, 80, 0.2)',
+          fill: true
+        }
+      ];
+      this.chartLabels = this.offers.map(offer => offer.created_at ? new Date(offer.created_at).toLocaleDateString() : '');
+    }
   }
 
   toggleFavorite(): void {

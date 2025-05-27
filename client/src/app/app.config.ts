@@ -3,6 +3,7 @@ import { ApplicationConfig, EnvironmentInjector, importProvidersFrom, Injector, 
 import { provideRouter } from '@angular/router';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { environment } from '../environments/environment';
 import { routes } from './app.routes';
@@ -34,6 +35,7 @@ export const appConfig: ApplicationConfig = {
       provide: EnvironmentInjector,
       useFactory: (injector: Injector) => injector.get(EnvironmentInjector),
       deps: [Injector]
-    }
+    },
+    provideCharts(withDefaultRegisterables())
   ]
 };

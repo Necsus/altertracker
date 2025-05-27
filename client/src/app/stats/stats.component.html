@@ -75,8 +75,10 @@
       </div>
 
       <!-- Price History Chart (placeholder) -->
-      <div class="bg-gray-800 rounded-xl p-4 h-64 flex items-center justify-center">
-        <span class="text-gray-500">[Price History Graph Here]</span>
+      <div class="bg-gray-800 rounded-xl p-4 h-64">
+        <canvas baseChart [datasets]="chartData" [labels]="chartLabels" [options]="chartOptions" [legend]="true"
+          [type]="'line'">
+        </canvas>
       </div>
     </div>
   </div>
@@ -123,7 +125,7 @@
         @if (isLoggedIn && !is_mine) {
         <button (click)="openPurchaseOfferModal()"
           class="bg-green-600 hover:bg-green-500 text-white px-4 py-2 rounded-lg transition">
-          Make an Offer
+          Faire une offre
         </button>
         }
       </div>
