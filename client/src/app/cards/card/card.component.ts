@@ -11,6 +11,7 @@ import { CardImgComponent } from './card-img.component';
 @Component({
   selector: 'app-card',
   templateUrl: './card.component.html',
+  styleUrls: ['./card.component.css'],
   imports: [RouterModule],
 })
 export class CardComponent {

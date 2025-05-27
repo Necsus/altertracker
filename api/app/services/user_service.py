@@ -16,7 +16,8 @@ from app.data.user_data import (
   get_user_by_id_data,
   delete_user_data,
   get_user_collections_data,
-  save_user_collections_bulk
+  save_user_collections_bulk,
+  set_user_sub_data
 )
 
 def get_user_by_id_service(id_user: int) -> Dict:
@@ -95,3 +96,6 @@ def get_user_collections_service(id_user: int) -> List[Dict]:
 
 def save_user_collections_service(id_user: int, data: List[Dict]) -> None:
     return save_user_collections_bulk(id_user, data)
+
+def set_sub_to_user_service(id_user: int, sub: str) -> None:
+    set_user_sub_data(id_user, sub)

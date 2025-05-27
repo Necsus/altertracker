@@ -29,4 +29,5 @@ export interface CardModel {
 
   alert_id?: number;
   visible?: boolean;
+  isProcessing?: boolean;
 }

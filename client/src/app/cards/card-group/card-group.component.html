@@ -17,10 +17,9 @@
       <!-- Card -->
       <app-card *ngFor="let card of visibleCards | slice:0:displayedCards" [card]="card"></app-card>
     </div>
-    <button *ngIf="cards.length > displayedCards" [disabled]="!getMarketComplete" (click)="loadMore()"
-      [ngClass]="{'bg-gray-500 cursor-not-allowed': !getMarketComplete, 'bg-blue-600 hover:bg-blue-700': getMarketComplete}"
-      class="w-full text-white py-2 px-4 rounded-md transition duration-300 mt-4 flex items-center justify-center">
-      <ng-container *ngIf="getMarketComplete; else loading">
+    <button *ngIf="cards.length > displayedCards" (click)="loadMore()"
+      class="bg-blue-600 hover:bg-blue-700 w-full text-white py-2 px-4 rounded-md transition duration-300 mt-4 flex items-center justify-center">
+      <!-- <ng-container *ngIf="getMarketComplete; else loading">
         Charger plus
       </ng-container>
       <ng-template #loading>
@@ -30,7 +29,8 @@
           <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
         </svg>
         Chargement...
-      </ng-template>
+      </ng-template> -->
+      Charger plus
     </button>
     }
   </div>

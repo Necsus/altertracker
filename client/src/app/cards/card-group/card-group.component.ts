@@ -13,10 +13,9 @@ export class CardGroupComponent implements OnChanges {
   @Input() cards: CardModel[] = [];
   @Input() autoOpen: boolean = false;
   @Input() allGroupsOpen: boolean = false;
-  @Input() getMarketComplete: boolean = true; // Indique si le marché est complet
   @Output() visibleCardsChange = new EventEmitter<CardModel[]>(); // Émet les cartes visibles
   isGroupOpen: boolean = false;
-  displayedCards: number = 100;
+  displayedCards: number = 30;
   onlyCardsWithPrice: boolean = false;
 
   get visibleCards(): CardModel[] {
@@ -49,12 +48,12 @@ export class CardGroupComponent implements OnChanges {
   }
 
   loadMore() {
-    this.displayedCards += 100;
+    this.displayedCards += 30;
     this.emitVisibleCards();
   }
 
   private emitVisibleCards() {
-    const indexToLoad: number = this.displayedCards - 100; // Index de la première carte à charger
+    const indexToLoad: number = this.displayedCards - 30; // Index de la première carte à charger
     const visibleCards = this.cards.slice(indexToLoad, this.displayedCards); // Cartes actuellement visibles
     if (this.isGroupOpen) {
       this.visibleCardsChange.emit(visibleCards);

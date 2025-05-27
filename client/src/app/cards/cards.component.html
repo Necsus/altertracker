@@ -23,11 +23,14 @@
 
   <div *ngFor="let group of groupedCards | keyvalue" class="mb-8">
     <app-card-group [groupName]="group.key" [cards]="group.value" [autoOpen]="group.key === autoOpenGroup"
-      [allGroupsOpen]="allGroupsOpen" [getMarketComplete]="getMarketComplete"
-      (visibleCardsChange)="onVisibleCardsChange($event)">
+      [allGroupsOpen]="allGroupsOpen" (visibleCardsChange)="onVisibleCardsChange($event)">
     </app-card-group>
   </div>
   @if (isLoggedIn) {
   <app-save-search [canSaveSearch]="cards && cards.length > 0"></app-save-search>
   }
+</div>
+
+<div *ngIf="progress$ | async as progress" class="progress-tooltip">
+  <p>Progression : {{remainingCards.length + 1}} cartes restantes...</p>
 </div>

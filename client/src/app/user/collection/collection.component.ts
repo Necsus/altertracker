@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { jwtDecode } from 'jwt-decode';
-import { CardModel } from '../../01_models/03_business/card.model';
+import { UserCollectionModel } from '../../01_models/03_business/user-collection.model';
 import { AlteredService } from '../../03_business/altered.service';
 import { UserService } from '../../03_business/user.service';
 import { AuthViewService } from '../../authentication/auth-view.service';
@@ -13,7 +13,7 @@ import { AuthViewService } from '../../authentication/auth-view.service';
   imports: [CommonModule, RouterModule]
 })
 export class CollectionComponent implements OnInit {
-  cards!: CardModel[]; // Remplacez any par le type approprié pour vos cartes
+  cards!: UserCollectionModel[]; // Remplacez any par le type approprié pour vos cartes
   constructor(
     private authViewService: AuthViewService,
     private router: Router,
@@ -29,7 +29,7 @@ export class CollectionComponent implements OnInit {
   importCollection(): void {
     const alteredToken = sessionStorage.getItem('altered_token');
     if (!alteredToken) {
-      this.router.navigate(['/token?callback=collection']);
+      this.router.navigate(['/token'], { queryParams: { callback: 'collection' } });
       return;
     }
     // Décoder le token
@@ -42,7 +42,7 @@ export class CollectionComponent implements OnInit {
         }
         this.userService.post_user_collection$(request).subscribe({
           next: (response: any) => {
-            console.log(response);
+            this.cards = response;
           }
         });
       },
