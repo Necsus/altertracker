@@ -1,3 +1,4 @@
+import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CardModel } from '../../01_models/03_business/card.model';
@@ -12,7 +13,7 @@ import { CardImgComponent } from './card-img.component';
   selector: 'app-card',
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.css'],
-  imports: [RouterModule],
+  imports: [CommonModule, RouterModule],
 })
 export class CardComponent {
   @Input() card!: CardModel; // Données de la carte
@@ -81,5 +82,14 @@ export class CardComponent {
 
   openModal(): void {
     this.modalService.open(CardImgComponent, { src: this.card.imagePath });
+  }
+
+  copyToClipboard(reference: string): void {
+    navigator.clipboard.writeText(reference).then(() => {
+      this.toastService.show('Référence copiée dans le presse-papiers !', 'success', 5000);
+    }).catch((error) => {
+      console.error('Erreur lors de la copie dans le presse-papiers :', error);
+      this.toastService.show('Erreur lors de la copie.', 'error', 5000);
+    });
   }
 }

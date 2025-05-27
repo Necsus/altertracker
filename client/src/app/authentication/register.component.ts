@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../03_business/auth.service';
+import { withLoader } from '../shared/services/loader/loader.operator';
+import { LoaderService } from '../shared/services/loader/loader.service';
 import { ToastService } from '../shared/services/toast/toast.service';
 import { AuthViewService } from './auth-view.service';
 
@@ -18,7 +20,8 @@ export class RegisterComponent implements OnInit {
     private authService: AuthService,
     private toastService: ToastService,
     private router: Router,
-    private authViewService: AuthViewService) { }
+    private authViewService: AuthViewService,
+    private loaderService: LoaderService) { }
 
   ngOnInit(): void {
     this.authViewService.isLoggedIn$.subscribe(status => {
@@ -35,11 +38,13 @@ export class RegisterComponent implements OnInit {
 
   onSubmit(): void {
     const formValues = this.registerForm.value;
-    this.authService.register$(formValues.username, formValues.email, formValues.password).subscribe({
-      next: () => {
-        this.router.navigate(['/login']);
-      },
-      error: (err: any) => this.toastService.show(`Error: ${err.message}`, 'error', 5000)
-    });
+    this.authService.register$(formValues.username, formValues.email, formValues.password)
+      .pipe(withLoader(this.loaderService))
+      .subscribe({
+        next: () => {
+          this.router.navigate(['/login']);
+        },
+        error: (err: any) => this.toastService.show(`Error: ${err.message}`, 'error', 5000)
+      });
   }
 }

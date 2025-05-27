@@ -9,7 +9,7 @@
         <p class="text-lg text-gray-300 mb-8">
           AlterTracker est l’outil incontournable pour les joueurs d’<a href="https://www.altered.gg/" target="_blank"
             class="text-indigo-400 font-semibold">Altered
-            TCG</a>.
+            TCG&nbsp;<i class="fas fa-up-right-from-square text-xs"></i></a>.
           Explorez les cartes du jeu grâce à une recherche avancée, des statistiques complètes et un suivi du marché en
           temps réel.
         </p>
@@ -54,11 +54,12 @@
         <div>
           <h2 class="text-3xl font-semibold text-white mb-4">🧭 Ce qui arrive bientôt</h2>
           <ul class="list-disc list-inside text-gray-300 space-y-1">
-            <li>Statistiques détaillées à la carte (popularité, historique, graphique...) </li>
-            <li>Visualisation graphique de l’historique des prix</li>
-            <li>Importation de collection, decks</li>
+            <li>Statistiques détaillées à la carte (popularité, <s>historique</s>...) </li>
+            <li><s>Visualisation graphique de l’historique des prix</s></li>
+            <li><s>Importation de collection</s>, decks</li>
             <li>Scan ta carte et estimation de prix</li>
-            <li>Facilitation des échanges pour des uniques AAA</li>
+            <li>Facilitation des échanges pour des uniques AAA (<s>offres d'achat</s>, systeme de messagerie)
+            </li>
           </ul>
         </div>
       </div>
@@ -81,7 +82,7 @@
               <div class="mt-2 text-center text-white p-2">
                 <a routerLink="/stats/{{card.reference}}"
                   class="text-xs text-blue-400 underline hover:text-blue-300 cursor-pointer">{{
-                  card.reference }}&nbsp;<i class="fas fa-up-right-from-square text-xs"></i></a>
+                  card.reference }}</a>
                 <p class="font-semibold">{{ card.name }}</p>
               </div>
             </div>
@@ -106,9 +107,10 @@
             <div class="mt-2 text-center text-white p-2">
               <a routerLink="/stats/{{offer.card.reference}}"
                 class="text-xs text-blue-400 underline hover:text-blue-300 cursor-pointer">{{
-                offer.card.reference }}&nbsp;<i class="fas fa-up-right-from-square text-xs"></i></a>
+                offer.card.reference }}</a>
               <div class="font-medium">{{ offer.card.name }}</div>
-              <div class="text-sm text-gray-400">Prix : {{ offer.offer.price }} {{offer.offer.currency}}</div>
+              <div class="text-sm text-green-400">Prix : {{ offer.offer.price | currency:(offer.offer.currency ||
+                ''):'symbol':'1.2-2' }}</div>
               <p class="text-xs text-gray-500">détecté le : {{ offer.offer.created_at | date:'dd/MM/yyyy HH:mm' }}</p>
               <!-- <div class="text-sm text-gray-500">Vendeur : {{ offer.offer.user_altered }}</div> -->
             </div>
@@ -132,9 +134,10 @@
             <div class="mt-2 text-center text-white p-2">
               <a routerLink="/stats/{{offer.card.reference}}"
                 class="text-xs text-blue-400 underline hover:text-blue-300 cursor-pointer">{{
-                offer.card.reference }}&nbsp;<i class="fas fa-up-right-from-square text-xs"></i></a>
+                offer.card.reference }}</a>
               <div class="font-medium">{{ offer.card.name }}</div>
-              <div class="text-sm text-gray-400">Ancien prix : {{ offer.offer.price }} {{offer.offer.currency}}</div>
+              <div class="text-sm text-red-400">Ancien prix : {{ offer.offer.price | currency:(offer.offer.currency ||
+                ''):'symbol':'1.2-2' }}</div>
               <p class="text-xs text-gray-500">détecté le : {{ offer.offer.deleted_at | date:'dd/MM/yyyy HH:mm' }}</p>
             </div>
           </div>
@@ -157,12 +160,14 @@
             <div class="mt-2 text-center text-white p-2">
               <a routerLink="/stats/{{offer.card.reference}}"
                 class="text-xs text-blue-400 underline hover:text-blue-300 cursor-pointer">{{
-                offer.card.reference }}&nbsp;<i class="fas fa-up-right-from-square text-xs"></i></a>
+                offer.card.reference }}</a>
               <div class="font-medium">{{ offer.card.name }}</div>
               <div class="text-sm text-gray-400">
-                Prix : <span class="line-through text-red-400">{{ offer.previous_offer?.price }}
-                  {{offer.previous_offer?.currency}}</span>
-                → <span class="text-green-400">{{ offer.offer.price }} {{offer.offer.currency}}</span>
+                Prix : <span class="line-through text-red-400">{{ offer.previous_offer?.price |
+                  currency:(offer.previous_offer?.currency ||
+                  ''):'symbol':'1.2-2' }}</span>
+                → <span class="text-green-400">{{ offer.offer.price | currency:(offer.offer.currency ||
+                  ''):'symbol':'1.2-2' }}</span>
               </div>
               <p class="text-xs text-gray-500">détecté le : {{ offer.offer.created_at | date:'dd/MM/yyyy HH:mm' }}</p>
               <!-- <div class="text-sm text-gray-500">Vendeur : {{ offer.offer.user_altered }}</div> -->

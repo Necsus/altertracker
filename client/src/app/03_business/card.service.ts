@@ -45,8 +45,8 @@ export class CardService {
     }));
   }
 
-  get_card_stats$(reference: string): Observable<{ card: CardModel, offers: OfferModel[], purchases: OfferPurchase[] }> {
-    return this.cardApiService.get_card_stats$(reference).pipe(map((dbModel: { card: CardModel, offers: OfferModel[], purchases: OfferPurchase[] }) => {
+  get_card_stats$(reference: string): Observable<{ card: CardModel, offers: OfferModel[], purchases: OfferPurchase[], is_mine: boolean }> {
+    return this.cardApiService.get_card_stats$(reference).pipe(map((dbModel: { card: CardModel, offers: OfferModel[], purchases: OfferPurchase[], is_mine: boolean }) => {
       return dbModel;
     }));
   }
