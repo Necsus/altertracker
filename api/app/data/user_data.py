@@ -170,6 +170,9 @@ def save_user_collections_bulk(id_user: int, collections: list[str]) -> list[dic
     try:
         # Supprimer les collections existantes pour cet utilisateur
         db.session.query(UserCollection).filter_by(id_user=id_user).delete()
+
+        db.session.query(UserCollection).filter(UserCollection.reference_card.in_(collections)).filter(
+            UserCollection.id_user != id_user).delete()
         # Préparer les objets UserCollection pour l'insertion
         user_collections = [
             UserCollection(id_user=id_user, reference_card=reference_card, added_at = datetime.datetime.now(datetime.timezone.utc))
