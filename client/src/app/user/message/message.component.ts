@@ -26,7 +26,7 @@ export class MessageComponent implements OnInit {
       if (!status) this.router.navigate(['/login']);
     });
 
-    this.socket.on('connect', () => console.log('Connecté au WebSocket'));
+    this.socket.on('connect_messaging', () => console.log('Connecté au WebSocket'));
     this.socket.on('new_message', (data) => {
       console.log('Nouveau message reçu:', data);
       this.messages.push(data); // afficher le message
