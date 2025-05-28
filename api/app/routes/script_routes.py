@@ -3,25 +3,20 @@ from flask_jwt_extended import jwt_required
 from flask_socketio import emit
 from app.extensions import socketio, limiter
 from app.decorators.auth_decorator import admin_required
-from app.scripts import test_script, script_get_no_unique, script_get_unique
+from app.scripts import (
+  script_get_no_unique, script_get_unique, script_get_en
+)
 
 script_bp = Blueprint('script', __name__)
-ALLOWED_SCRIPTS = {'test_script', 'script_get_no_unique', 'script_get_unique'}
+ALLOWED_SCRIPTS = {'script_get_no_unique', 'script_get_unique', 'script_get_en'}
 
 def dispatch_script(script: str, workers: int = 3, faction: str = None):
-    app = current_app._get_current_object()
-    with app.app_context():
-        try:
-            if script == 'test_script':
-                test_script.run_script()
-            if script == 'script_get_unique':
-                script_get_unique.run_script(faction, workers)
-            if script == 'script_get_no_unique':
-                script_get_no_unique.run_script()
-        except Exception as e:
-            socketio.emit('script_error', {'error': str(e)})
-        finally:
-            socketio.emit('script_finished', {'status': 'done'})
+    if script == 'script_get_unique':
+        script_get_unique.run_script(faction, workers)
+    if script == 'script_get_no_unique':
+        script_get_no_unique.run_script()
+    if script == 'script_get_en':
+        script_get_en.run_script(faction, workers)
 
 def run_with_app_context(app, script_name: str, workers: int = None, faction: str = None):
     def task():
