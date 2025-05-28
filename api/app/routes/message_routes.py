@@ -30,3 +30,19 @@ def handle_private_message(data):
         'content': content,
         'timestamp': message.timestamp.isoformat()
     }, room=str(receiver_id))
+
+@socketio.on('update_message_status')
+@jwt_required()
+def update_message_status(data):
+    user_id = get_jwt_identity()
+    message_id = data['message_id']
+    status = data['status']  # 'delivered' ou 'read'
+
+    message = db.session.query(Message).filter_by(id=message_id, receiver_id=user_id).first()
+    if message:
+        message.status = status
+        db.session.commit()
+        emit('message_status_updated', {
+            'message_id': message_id,
+            'status': status
+        }, room=str(user_id))

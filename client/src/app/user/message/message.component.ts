@@ -31,13 +31,29 @@ export class MessageComponent implements OnInit {
       console.log('Nouveau message reçu:', data);
       this.messages.push(data); // afficher le message
     });
+
+    this.socket.on('message_status_updated', (data) => {
+      console.log('Statut du message mis à jour:', data);
+      const message = this.messages.find(msg => msg.id === data.message_id);
+      if (message) {
+        message.status = data.status;
+      }
+    });
   }
 
   sendMessage() {
-    this.socket.emit('private_message', {
-      to: this.selectedUserId,
-      content: this.messageText
-    });
+    if (this.messageText.trim()) {
+      this.socket.emit('private_message', {
+        to: this.selectedUserId,
+        content: this.messageText
+      });
+      this.messages.push({
+        from: 'me',
+        content: this.messageText,
+        timestamp: new Date().toISOString()
+      });
+      this.messageText = ''; // Réinitialiser le champ d'entrée
+    }
   }
 }
 
