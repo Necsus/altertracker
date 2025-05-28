@@ -57,8 +57,8 @@ export class AlteredApiService {
       })
     );
   }
-  getCollection$(token: string): Observable<any> {
-    const url = `${this.baseUrl}/cards?cardType%5B%5D=CHARACTER&collection=true&rarity%5B%5D=UNIQUE&itemsPerPage=36&locale=fr-fr`;
+  getCollection$(token: string, page: number): Observable<any> {
+    const url = `${this.baseUrl}/cards?cardType%5B%5D=CHARACTER&collection=true&rarity%5B%5D=UNIQUE&itemsPerPage=36&page=${page}&locale=fr-fr`;
     const headers = new HttpHeaders({
       'Authorization': `Bearer ${token}`,
       'Accept': '*/*'

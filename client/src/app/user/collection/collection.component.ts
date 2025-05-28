@@ -46,27 +46,46 @@ export class CollectionComponent implements OnInit {
     }
     // Décoder le token
     const decodedToken = jwtDecode(alteredToken);
-    this.alteredService.getCollection$(alteredToken)
-      .pipe(withLoader(this.loaderService)).subscribe({
-        next: (response) => {
-          const request = {
-            sub: decodedToken['sub'],
-            collection: response.map((card: any) => card['reference'])
-          }
-          this.userService.post_user_collection$(request).subscribe({
-            next: (response: any) => {
-              this.cards = response;
+    let page = 1;
+    const allCards: string[] = []; // Stocker toutes les références de cartes
+
+    const fetchPage = () => {
+      this.alteredService.getCollection$(alteredToken, page)
+        .pipe(withLoader(this.loaderService))
+        .subscribe({
+          next: (response) => {
+            // Ajouter les références de cartes à la liste
+            allCards.push(...response['hydra:member'].map((card: any) => card['reference']));
+
+            // Vérifier s'il reste des éléments à récupérer
+            if (response['hydra:totalItems'] > allCards.length) {
+              page++; // Passer à la page suivante
+              fetchPage(); // Récursivité pour récupérer la page suivante
+            } else {
+              // Envoyer la collection complète au backend
+              const request = {
+                sub: decodedToken['sub'],
+                collection: allCards
+              };
+              this.userService.post_user_collection$(request).subscribe({
+                next: (response: any) => {
+                  this.cards = response; // Mettre à jour les cartes affichées
+                }
+              });
             }
-          });
-        },
-        error: ((error) => {
-          if (error.message === 'Token invalide ou expiré. Veuillez le réinsérer.') {
-            console.error('Erreur 401 détectée : Redirection vers la page /token.');
-            sessionStorage.removeItem('altered_token');
-            sessionStorage.removeItem('cgu_altered_token');
-            this.router.navigate(['/token'], { queryParams: { callback: 'collection' } }); // Redirige l'utilisateur vers la page /token
+          },
+          error: (error) => {
+            if (error.message === 'Token invalide ou expiré. Veuillez le réinsérer.') {
+              console.error('Erreur 401 détectée : Redirection vers la page /token.');
+              sessionStorage.removeItem('altered_token');
+              sessionStorage.removeItem('cgu_altered_token');
+              this.router.navigate(['/token'], { queryParams: { callback: 'collection' } });
+            }
           }
-        })
-      });
+        });
+    };
+
+    // Démarrer la récupération avec la première page
+    fetchPage();
   }
 }

@@ -88,11 +88,11 @@ export class AlteredService {
       })
     );
   }
-  getCollection$(token: string): Observable<any> {
-    return this.alteredApiService.getCollection$(token).pipe(
+  getCollection$(token: string, page: number): Observable<any> {
+    return this.alteredApiService.getCollection$(token, page).pipe(
       map((response: any) => {
-        if (response && response['hydra:member']) {
-          return response['hydra:member']; // Retourner la collection
+        if (response && response['hydra:totalItems'] > 0) {
+          return response; // Retourner la collection
         } else {
           throw new Error('Collection vide ou non trouvée');
         }
