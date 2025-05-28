@@ -54,10 +54,10 @@
         <!-- Input -->
         <div class="border-t border-gray-800 p-4 bg-gray-950">
           <div class="flex items-center gap-3">
-            <input type="text" placeholder="Écris un message..."
+            <input type="text" [(ngModel)]="messageText" placeholder="Écris un message..."
+              (keydown.enter)="sendMessage()"
               class="flex-1 bg-gray-800 text-white placeholder-gray-500 rounded-full px-4 py-2 border border-gray-700 focus:outline-none" />
-            <button class="p-2 hover:bg-gray-800 rounded-full text-white" (click)="sendMessage()"
-              (keydown.enter)="sendMessage()">
+            <button class="p-2 hover:bg-gray-800 rounded-full text-white" (click)="sendMessage()">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M22 2L11 13"></path>
                 <path stroke-linecap="round" stroke-linejoin="round" d="M22 2L15 22l-4-9-9-4 20-7z"></path>

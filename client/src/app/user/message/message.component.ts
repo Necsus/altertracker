@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { Socket } from 'ngx-socket-io';
+import { MessageService } from '../../03_business/message.service';
 import { AuthViewService } from '../../authentication/auth-view.service';
 
 @Component({
@@ -18,15 +19,19 @@ export class MessageComponent implements OnInit {
   constructor(
     private authViewService: AuthViewService,
     private router: Router,
-    private socket: Socket
+    private socket: Socket,
+    private messageService: MessageService
   ) { }
 
   ngOnInit(): void {
     this.authViewService.isLoggedIn$.subscribe(status => {
       if (!status) this.router.navigate(['/login']);
     });
+    const token = localStorage.getItem('access_token');
 
-    this.socket.on('connect_messaging', () => console.log('Connecté au WebSocket'));
+    // Connexion WebSocket avec authentification
+    this.socket.emit('connect_messaging', { token: `Bearer ${token}` });
+
     this.socket.on('new_message', (data) => {
       console.log('Nouveau message reçu:', data);
       this.messages.push(data); // afficher le message
@@ -39,11 +44,25 @@ export class MessageComponent implements OnInit {
         message.status = data.status;
       }
     });
+
+    this.loadMessageHistory();
+  }
+
+  loadMessageHistory(): void {
+    if (this.selectedUserId) {
+      this.messageService.get_message_history$(this.selectedUserId).subscribe({
+        next: (messages) => {
+          this.messages = messages; // Charger l'historique dans la liste des messages
+        }
+      });
+    }
   }
 
   sendMessage() {
     if (this.messageText.trim()) {
+      const token = localStorage.getItem('access_token');
       this.socket.emit('private_message', {
+        token: `Bearer ${token}`,
         to: this.selectedUserId,
         content: this.messageText
       });
@@ -56,4 +75,3 @@ export class MessageComponent implements OnInit {
     }
   }
 }
-
