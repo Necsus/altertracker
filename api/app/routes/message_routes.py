@@ -6,7 +6,7 @@ from app.models.message import Message
 
 message_bp = Blueprint('message', __name__)
 
-@socketio.on('connect')
+@socketio.on('connect_messaging')
 @jwt_required()
 def handle_connect():
     user_id = get_jwt_identity()

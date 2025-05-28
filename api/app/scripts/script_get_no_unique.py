@@ -53,44 +53,15 @@ def run_script():
     def insert_cards_into_db(cards):
         global nb_cards
         try:
-            edit_card_len = 0
             add_card_len = 0
             for card in cards:
-                # Vérifier si une carte avec le même id existe déjà
-                existing_card = db.session.query(Card).filter_by(id_card=card.id_card).first()
-                if existing_card:
-                    # Mettre à jour les champs de la carte existante
-                    existing_card.reference = card.reference
-                    existing_card.name = card.name
-                    existing_card.name_en = card.name_en
-                    existing_card.faction = card.faction
-                    existing_card.rarity = card.rarity
-                    existing_card.type = card.type
-                    existing_card.set = card.set
-                    existing_card.imagePath = card.imagePath
-                    existing_card.image_path_en=card.image_path_en
-                    existing_card.isSuspended = card.isSuspended
-                    existing_card.MAIN_COST = card.MAIN_COST
-                    existing_card.RECALL_COST = card.RECALL_COST
-                    existing_card.MOUNTAIN_POWER = card.MOUNTAIN_POWER
-                    existing_card.OCEAN_POWER = card.OCEAN_POWER
-                    existing_card.FOREST_POWER = card.FOREST_POWER
-                    existing_card.MAIN_EFFECT = card.MAIN_EFFECT
-                    existing_card.main_effect_en = card.main_effect_en
-                    existing_card.ECHO_EFFECT = card.ECHO_EFFECT
-                    existing_card.echo_effect_en = card.echo_effect_en
-                    existing_card.edited_at = datetime.now()
-                    edit_card_len += 1
-                else:
-                    # Ajouter une nouvelle carte si elle n'existe pas
-                    card.created_at = datetime.now()
-                    db.session.add(card)
-                    add_card_len += 1
+                card.created_at = datetime.now()
+                db.session.add(card)
+                add_card_len += 1
             # Valider la transaction
             db.session.commit()
             nb_cards += len(cards)
             socketio.emit('script_output', {'data': f"\033[92mCartes insérées : {add_card_len}\033[0m"})
-            socketio.emit('script_output', {'data': f"\033[92mCartes modifiées : {edit_card_len}\033[0m"})
             socketio.emit('script_output', {'data': f"\033[92mNombre total de cartes : {nb_cards}\033[0m"})
             # print(f"\033[92mCartes insérées : {add_card_len}\033[0m")
             # print(f"\033[92mCartes modifiées : {edit_card_len}\033[0m")
@@ -108,78 +79,72 @@ def run_script():
     def get_no_unique(rarity: str):
         socketio.emit('script_output', {'data': f"----------- GET {rarity} -----------"})
         print(f"----------- GET {rarity} -----------")
-        page = 1
         cardToInsert = []
-        while True:
-            socketio.emit('script_output', {'data': f"Récupération des cartes de la page {page}..."})
-            # print(f"Récupération des cartes de la page {page}...")
-            cards = card_routine.get_cards(page, rarity)
+        sets = ['COREKS', 'CORE', 'ALIZE', 'BISE']
+        for set in sets:
+            page = 1
+            while True:
 
-            if cards and cards.get('hydra:totalItems', 0) >= 1000:
-                socketio.emit('script_output', {'data': f"\033[91mATTENTION TROP DE RESULTATS MANQUE DES CARTES\033[0m"})
-                socketio.emit('script_output', {'data': f"\033[91mPage: {page} | rarity: {rarity}\033[0m"})
-                # print(f"\033[91mATTENTION TROP DE RESULTATS MANQUE DES CARTES")
+                # print(f"Récupération des cartes de la page {page}...")
+                cards = card_routine.get_cards(page, set, rarity)
+                socketio.emit('script_output',
+                    {'data': f"Récupération des cartes de la page {page} {set} results : {cards['hydra:totalItems'] if cards and 'hydra:totalItems' in cards else 0}..."})
 
+                if cards and cards.get('hydra:totalItems', 0) >= 1000:
+                    socketio.emit('script_output', {'data': f"\033[91mATTENTION TROP DE RESULTATS MANQUE DES CARTES\033[0m"})
 
-            if not cards or 'hydra:member' not in cards or not cards['hydra:member']:
-                break
+                if not cards or 'hydra:member' not in cards or not cards['hydra:member']:
+                    break
 
-            references = [card['reference'] for card in cards['hydra:member']]
-            details = {ref: card_routine.get_card_by_reference(ref) for ref in references}
+                for card in cards['hydra:member']:
+                    tempCard = map_jsoncard_to_card(card)
+                    card_to_update = db.session.query(Card).filter_by(reference=tempCard.reference).first()
+                    if card_to_update:
+                        has_updated = False
+                        # Vérifiez et mettez à jour uniquement si les valeurs sont différentes
+                        if str(card_to_update.isSuspended) != str(tempCard.isSuspended):
+                            card_to_update.isSuspended = tempCard.isSuspended
+                            has_updated = True
+                        if str(card_to_update.imagePath) != str(tempCard.imagePath):
+                            card_to_update.imagePath = tempCard.imagePath
+                            has_updated = True
+                        if str(card_to_update.MAIN_COST) != str(tempCard.MAIN_COST):
+                            card_to_update.MAIN_COST = tempCard.MAIN_COST
+                            has_updated = True
+                        if str(card_to_update.RECALL_COST) != str(tempCard.RECALL_COST):
+                            card_to_update.RECALL_COST = tempCard.RECALL_COST
+                            has_updated = True
+                        if str(card_to_update.MOUNTAIN_POWER) != str(tempCard.MOUNTAIN_POWER):
+                            card_to_update.MOUNTAIN_POWER = tempCard.MOUNTAIN_POWER
+                            has_updated = True
+                        if str(card_to_update.OCEAN_POWER) != str(tempCard.OCEAN_POWER):
+                            card_to_update.OCEAN_POWER = tempCard.OCEAN_POWER
+                            has_updated = True
+                        if str(card_to_update.FOREST_POWER) != str(tempCard.FOREST_POWER):
+                            card_to_update.FOREST_POWER = tempCard.FOREST_POWER
+                            has_updated = True
+                        if card_to_update.created_at is None:
+                            card_to_update.created_at = datetime.now()
+                            has_updated = True
 
-            for card in cards['hydra:member']:
-                tempCard = map_jsoncard_to_card(card)
-                card_to_update = db.session.query(Card).filter_by(reference=tempCard.reference).first()
-                if card_to_update:
-                    socketio.emit('script_output', {'data': f"\rCarte {tempCard.reference} déjà existante. Passage à la suivante.[flush=True]"})
-                    # print(f"\rCarte {tempCard.reference} déjà existante. Passage à la suivante.", end="", flush=True)
-                    # Initialiser un drapeau pour suivre les modifications
-                    has_updated = False
+                        # Si une modification a été effectuée, mettre à jour `edited_at`
+                        if has_updated:
+                            socketio.emit('script_output', {'data': f"Mise à jour de la carte : {card_to_update.name_en} ({card_to_update.reference})"})
+                            card_to_update.edited_at = datetime.now()
+                            db.session.commit()
+                        continue
+                    socketio.emit('script_output', {'data': f"\rRécupération des stats de la carte {tempCard.reference}..."})
+                    # print(f"\rRécupération des stats de la carte {tempCard.reference}...", end="", flush=True)
+                    detailsCard = card_routine.get_card_by_reference(tempCard.reference)
+                    tempCard = map_effect_to_card(tempCard, detailsCard)
+                    name_en = card_routine.get_card_by_reference(tempCard.reference, True)
+                    tempCard = map_name_en(tempCard, name_en)
+                    cardToInsert.append(tempCard)
 
-                    # Vérifiez et mettez à jour uniquement si les valeurs sont différentes
-                    if card_to_update.isSuspended != tempCard.isSuspended:
-                        card_to_update.isSuspended = tempCard.isSuspended
-                        has_updated = True
-                    if card_to_update.imagePath != tempCard.imagePath:
-                        card_to_update.imagePath = tempCard.imagePath
-                        has_updated = True
-                    if card_to_update.MAIN_COST != tempCard.MAIN_COST:
-                        card_to_update.MAIN_COST = tempCard.MAIN_COST
-                        has_updated = True
-                    if card_to_update.RECALL_COST != tempCard.RECALL_COST:
-                        card_to_update.RECALL_COST = tempCard.RECALL_COST
-                        has_updated = True
-                    if card_to_update.MOUNTAIN_POWER != tempCard.MOUNTAIN_POWER:
-                        card_to_update.MOUNTAIN_POWER = tempCard.MOUNTAIN_POWER
-                        has_updated = True
-                    if card_to_update.OCEAN_POWER != tempCard.OCEAN_POWER:
-                        card_to_update.OCEAN_POWER = tempCard.OCEAN_POWER
-                        has_updated = True
-                    if card_to_update.FOREST_POWER != tempCard.FOREST_POWER:
-                        card_to_update.FOREST_POWER = tempCard.FOREST_POWER
-                        has_updated = True
-                    if card_to_update.created_at is None:
-                        card_to_update.created_at = datetime.now()
-                        has_updated = True
+                page += 1
 
-                    # Si une modification a été effectuée, mettre à jour `edited_at`
-                    if has_updated:
-                        card_to_update.edited_at = datetime.now()
-                    continue
-                
-                socketio.emit('script_output', {'data': f"\rRécupération des stats de la carte {tempCard.reference}...[flush=True]"})
-                # print(f"\rRécupération des stats de la carte {tempCard.reference}...", end="", flush=True)
-                detailsCard = card_routine.get_card_by_reference(tempCard.reference)
-                tempCard = map_effect_to_card(tempCard, detailsCard)
-                name_en = card_routine.get_card_by_reference(tempCard.reference, True)
-                tempCard = map_name_en(tempCard, name_en)
-                cardToInsert.append(tempCard)
-
-            # print()
-            page += 1
-
-        if cardToInsert:
-            insert_cards_into_db(cardToInsert)
+            if cardToInsert:
+                insert_cards_into_db(cardToInsert)
 
     get_no_unique('COMMON')
     get_no_unique('RARE')
@@ -200,5 +165,5 @@ def run_script():
     socketio.emit('script_output', {'data': f"Temps d'exécution : {int(hours):02}:{int(minutes):02}:{int(seconds):02}"})
     print(f"Temps d'exécution : {int(hours):02}:{int(minutes):02}:{int(seconds):02}")
     socketio.emit('script_finished', {'status': 'done'})
-    print(f"GET UNIQUE terminé")
+    print(f"GET NO UNIQUE terminé")
 

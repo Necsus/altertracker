@@ -1,11 +1,11 @@
 import requests
 from urllib.parse import urlencode
 
-def get_cards(page: int, rarity: str):
+def get_cards(page: int, set: str, rarity: str):
     base_url = "https://api.altered.gg/cards"
     params = {
         "page": page,
-        "cardSet[]": ["COREKS", "CORE", "ALIZE", "BISE"],
+        "cardSet[]": set,
         "cardType[]": [
             "EXPEDITION_PERMANENT",
             "CHARACTER",

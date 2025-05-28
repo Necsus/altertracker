@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 import time
 from app.scripts import card_routine
 from app.models.card import Card
@@ -33,30 +33,32 @@ def run_script(faction: str, workers: int):
             for index, dbcard in enumerate(subset, start=start_index):
                   socketio.emit('script_output', {'data': f"Card {dbcard.name_en} ({index}/{len(subset)}) | {dbcard.id}"})
                   if dbcard.image_path_en is None:
-                      detailsEn = card_routine.get_card_by_reference(tempCard.reference, True)
+                      detailsEn = card_routine.get_card_by_reference(dbcard.reference, True)
                       if detailsEn:
-                          tempCard = map_jsoncard_to_card_en(tempCard, detailsEn)
+                          tempCard = map_jsoncard_to_card_en(dbcard, detailsEn)
+                          card_to_update = session.query(Card).filter_by(reference=tempCard.reference).first()
                           # Initialiser un drapeau pour suivre les modifications
-                          has_updated = False
-                          if tempCard.image_path_en is not None:
-                              if str(dbcard.image_path_en) != str(tempCard.imagePath) or dbcard.image_path_en is None:
-                                  dbcard.image_path_en = tempCard.image_path_en
-                                  has_updated = True
-                          if tempCard.main_effect_en is not None:
-                              if str(dbcard.main_effect_en) != str(tempCard.main_effect_en) \
-                                  or dbcard.main_effect_en is None or tempCard.main_effect_en is None:
-                                  dbcard.main_effect_en = tempCard.main_effect_en
-                                  has_updated = True
-                          if tempCard.echo_effect_en is not None:
-                              if str(dbcard.echo_effect_en) != str(tempCard.echo_effect_en) \
-                                  or dbcard.echo_effect_en is None or tempCard.echo_effect_en is None:
-                                  dbcard.echo_effect_en = tempCard.echo_effect_en
-                                  has_updated = True
-                          # Si une modification a été effectuée, mettre à jour `edited_at`
-                          if has_updated:
-                              socketio.emit('script_output', {'data': f"Mise à jour de la carte : {dbcard.name_en} ({dbcard.reference})"})
-                              dbcard.edited_at = datetime.now()
-                              session.commit()
+                          if card_to_update:
+                              has_updated = False
+                              if tempCard.image_path_en is not None:
+                                  if str(card_to_update.image_path_en) != str(tempCard.imagePath) or card_to_update.image_path_en is None:
+                                      card_to_update.image_path_en = tempCard.image_path_en
+                                      has_updated = True
+                              if tempCard.main_effect_en is not None:
+                                  if str(card_to_update.main_effect_en) != str(tempCard.main_effect_en) \
+                                      or card_to_update.main_effect_en is None or tempCard.main_effect_en is None:
+                                      card_to_update.main_effect_en = tempCard.main_effect_en
+                                      has_updated = True
+                              if tempCard.echo_effect_en is not None:
+                                  if str(card_to_update.echo_effect_en) != str(tempCard.echo_effect_en) \
+                                      or card_to_update.echo_effect_en is None or tempCard.echo_effect_en is None:
+                                      card_to_update.echo_effect_en = tempCard.echo_effect_en
+                                      has_updated = True
+                              # Si une modification a été effectuée, mettre à jour `edited_at`
+                              if has_updated:
+                                  socketio.emit('script_output', {'data': f"Mise à jour de la carte : {card_to_update.name_en} ({card_to_update.reference})"})
+                                  card_to_update.edited_at = datetime.now()
+                                  session.commit()
                       time.sleep(0.85)
 
         except Exception as e:

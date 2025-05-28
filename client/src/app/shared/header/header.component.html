@@ -48,6 +48,7 @@
             <li><a routerLink="/admin" class="block px-4 py-2 hover:bg-gray-600 rounded-t-lg">Admin</a></li>
             }
             <li><a routerLink="/me" class="block px-4 py-2 hover:bg-gray-600 rounded-t-lg">Profil</a></li>
+            <li><a routerLink="/message" class="block px-4 py-2 hover:bg-gray-600 rounded-t-lg">Messages</a></li>
             <li><a routerLink="/token" class="block px-4 py-2 hover:bg-gray-600">Token Altered</a></li>
             <li><a routerLink="/searches" class="block px-4 py-2 hover:bg-gray-600">Mes recherches</a></li>
             <li><a routerLink="/alerts" class="block px-4 py-2 hover:bg-gray-600">Mes alertes</a></li>
@@ -99,6 +100,8 @@
 
       <a routerLink="/me" routerLinkActive="text-blue-400" class="block hover:text-blue-300 transition duration-300">{{
         username }}</a>
+      <a routerLink="/message" routerLinkActive="text-blue-400"
+        class="block hover:text-blue-300 transition duration-300">Messages</a>
       @if (isAdmin) {
       <a routerLink="/admin" class="block hover:text-blue-300 transition duration-300">Admin</a>
       }
