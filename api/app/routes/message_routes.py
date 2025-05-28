@@ -1,7 +1,10 @@
+from flask import Blueprint
 from flask_socketio import emit, join_room
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from app.extensions import socketio, db
 from app.models.message import Message
+
+message_bp = Blueprint('message', __name__)
 
 @socketio.on('connect')
 @jwt_required()
