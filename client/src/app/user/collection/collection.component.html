@@ -43,3 +43,7 @@
     }
   </div>
 </div>
+
+<div *ngIf="progress$ | async as progress" class="progress-tooltip">
+  <p>Progression : {{remainingCards.length + 1}} cartes restantes...</p>
+</div>

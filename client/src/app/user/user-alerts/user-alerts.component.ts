@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { BehaviorSubject, catchError, delay, map, of, throwError } from 'rxjs';
@@ -18,7 +18,7 @@ import { ToastService } from '../../shared/services/toast/toast.service';
   styleUrls: ['./user-alerts.component.css'],
   imports: [CommonModule, FormsModule, CardComponent]
 })
-export class UserAlertsComponent implements OnInit {
+export class UserAlertsComponent implements OnInit, OnDestroy {
   isLoading: boolean = false; // État de chargement
   alerts: UserAlertModel[] = []; // Liste des recherches
   remainingCards: UserAlertModel[] = []; // Cartes restantes à traiter
