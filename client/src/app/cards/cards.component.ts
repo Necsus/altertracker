@@ -125,6 +125,10 @@ export class CardsComponent implements OnInit, OnDestroy {
     if (this.remainingCards.length === 0) {
       this.progressSubject.next(0); // Réinitialise la progression si la file d'attente est vide
       this.queueProcessing = false; // Arrête le traitement si la file est vide
+      // Si la file d'attente des requêtes contient des éléments, les envoyer
+      if (this.requestQueue.length > 0) {
+        this.flushRequestQueue();
+      }
       return;
     }
 
