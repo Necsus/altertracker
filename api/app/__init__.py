@@ -47,7 +47,7 @@ def create_app():
 
           if origin in allowed_origins:
               response = jsonify({"message": "CORS preflight passed"})
-              response.headers.add("Access-Control-Allow-Origin", allowed_origins)
+              response.headers.add("Access-Control-Allow-Origin", origin)
               response.headers.add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
               response.headers.add("Access-Control-Allow-Headers", "Authorization, Content-Type")
               response.headers.add("Access-Control-Allow-Credentials", "true")
