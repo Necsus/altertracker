@@ -74,7 +74,7 @@ export class UserAlertsComponent implements OnInit, OnDestroy {
   private processQueue(): void {
     const alteredToken = sessionStorage.getItem('altered_token');
     if (!alteredToken) {
-      this.router.navigate(['/token']);
+      this.router.navigate(['/token'], { queryParams: { callback: 'alerts' } });
       return;
     }
 
@@ -154,6 +154,6 @@ export class UserAlertsComponent implements OnInit, OnDestroy {
     sessionStorage.removeItem('altered_token');
     sessionStorage.removeItem('cgu_altered_token');
     this.toastService.show(error.message, 'error', 5000);
-    this.router.navigate(['/token']);
+    this.router.navigate(['/token'], { queryParams: { callback: 'alerts' } });
   }
 }
