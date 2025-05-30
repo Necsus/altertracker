@@ -29,6 +29,7 @@ __pycache__/
 .vscode/
 *.swp
 *.swo
+config
 
 # Fichiers système
 .DS_Store

@@ -1,25 +1,32 @@
-<form [formGroup]="searchForm" (ngSubmit)="onSubmit()" class="bg-gray-800 p-4 rounded-lg shadow-lg mb-8">
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <div>
-      <label for="name" class="block text-sm font-medium text-gray-300">Nom ou référence (ALT_)</label>
-      <input type="text" id="name" formControlName="name"
-        class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm p-2 text-white">
+<form [formGroup]="searchForm" (ngSubmit)="onSubmit()"
+  class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-6 rounded-2xl shadow-xl text-white">
+
+  <div class="grid grid-cols-1 md:grid-cols-6 gap-6">
+    <!-- Nom / Référence -->
+    <div class="col-span-3">
+      <label for="name" class="block mb-1 text-sm font-semibold text-purple-200">Nom ou Réf (ALT_)</label>
+      <input id="name" formControlName="name" type="text"
+        class="w-full p-2 bg-gray-700 rounded-lg border border-purple-500 focus:ring-2 focus:ring-purple-400 outline-none transition" />
     </div>
-    <div>
-      <label for="rarity" class="block text-sm font-medium text-gray-300">Rarity</label>
+
+    <!-- Rareté -->
+    <div class="col-span-1">
+      <label for="rarity" class="block mb-1 text-sm font-semibold text-purple-200">Rareté</label>
       <select id="rarity" formControlName="rarity"
-        class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm p-2 text-white">
-        <option value="">-- Select Rarity --</option>
-        <option value="COMMON">COMMON</option>
-        <option value="RARE">RARE</option>
-        <option value="UNIQUE">UNIQUE</option>
+        class="w-full p-2 bg-gray-700 rounded-lg border border-purple-500 focus:ring-2 focus:ring-purple-400 outline-none transition">
+        <option value="">-- Rarity --</option>
+        <option value="COMMON">⚪ Commune</option>
+        <option value="RARE">🔵 Rare</option>
+        <option value="UNIQUE">🟡 Unique</option>
       </select>
     </div>
-    <div>
-      <label for="faction" class="block text-sm font-medium text-gray-300">Faction</label>
+
+    <!-- Faction -->
+    <div class="col-span-1">
+      <label for="faction" class="block mb-1 text-sm font-semibold text-purple-200">Faction</label>
       <select id="faction" formControlName="faction"
-        class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm p-2 text-white">
-        <option value="">-- Select Faction --</option>
+        class="w-full p-2 bg-gray-700 rounded-lg border border-purple-500 focus:ring-2 focus:ring-purple-400 outline-none transition">
+        <option value="">-- Faction --</option>
         <option value="AX">Axiom</option>
         <option value="BR">Bravos</option>
         <option value="LY">Lyra</option>
@@ -28,86 +35,100 @@
         <option value="YZ">Yzmir</option>
       </select>
     </div>
-    <div>
-      <label for="set" class="block text-sm font-medium text-gray-300">Set</label>
+
+    <!-- Set -->
+    <div class="col-span-1">
+      <label for="set" class="block mb-1 text-sm font-semibold text-purple-200">Set</label>
       <select id="set" formControlName="set"
-        class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm p-2 text-white">
-        <option value="">-- Select Set --</option>
+        class="w-full p-2 bg-gray-700 rounded-lg border border-purple-500 focus:ring-2 focus:ring-purple-400 outline-none transition">
+        <option value="">-- Set --</option>
         <option value="BISE">Murmures du labyrinthe</option>
         <option value="ALIZE">Epreuve du froid</option>
-        <option value="CORE">Au-dela des portes</option>
-        <option value="COREKS">Au-dela des portes - KS</option>
+        <option value="CORE">Au-delà des portes</option>
+        <option value="COREKS">Au-delà des portes - KS</option>
       </select>
     </div>
-    <div>
-      <label for="main_effect" class="block text-sm font-medium text-gray-300">Main Effect</label>
-      <input type="text" id="main_effect" formControlName="main_effect"
-        class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm p-2 text-white">
+
+    <!-- Effets -->
+    <div class="col-span-2">
+      <label class="block mb-1 text-sm font-semibold text-purple-200">Effet Principal</label>
+      <input id="main_effect" formControlName="main_effect" type="text"
+        class="w-full p-2 bg-gray-700 rounded-lg border border-purple-500 focus:ring-2 focus:ring-purple-400" />
     </div>
-    <div>
-      <label for="main_effect_2" class="block text-sm font-medium text-gray-300">et Main Effect 2</label>
-      <input type="text" id="main_effect_2" formControlName="main_effect_2"
-        class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm p-2 text-white">
+    <div class="col-span-2">
+      <label class="block mb-1 text-sm font-semibold text-purple-200">et Effet Principal 2</label>
+      <input id="main_effect_2" formControlName="main_effect_2" type="text"
+        class="w-full p-2 bg-gray-700 rounded-lg border border-purple-500 focus:ring-2 focus:ring-purple-400" />
     </div>
-    <div>
-      <label for="echo_effect" class="block text-sm font-medium text-gray-300">Echo Effect</label>
-      <input type="text" id="echo_effect" formControlName="echo_effect"
-        class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm p-2 text-white">
+    <div class="col-span-2">
+      <label class="block mb-1 text-sm font-semibold text-purple-200">Effet support</label>
+      <input id="echo_effect" formControlName="echo_effect" type="text"
+        class="w-full p-2 bg-gray-700 rounded-lg border border-purple-500 focus:ring-2 focus:ring-purple-400" />
     </div>
+
+    <!-- Coûts -->
     <div>
-      <label for="main_cost_range" class="block text-sm font-medium text-gray-300">Main Cost (range 1-3)</label>
-      <input type="text" id="main_cost_range" formControlName="main_cost_range"
-        class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm p-2 text-white">
-    </div>
-    <div>
-      <label for="recall_cost_range" class="block text-sm font-medium text-gray-300">Recall Cost (range 1-3)</label>
-      <input type="text" id="recall_cost_range" formControlName="recall_cost_range"
-        class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm p-2 text-white">
-    </div>
-    <div>
-      <label for="forest_power_range" class="block text-sm font-medium text-gray-300">Forest Power (range 1-3)</label>
-      <input type="text" id="forest_power_range" formControlName="forest_power_range"
-        class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm p-2 text-white">
+      <label class="block mb-1 text-sm text-purple-200 font-semibold">Coût Main (1-3)</label>
+      <input formControlName="main_cost_range" type="text"
+        class="w-full p-2 bg-gray-700 rounded-lg border border-purple-500 focus:ring-2 focus:ring-purple-400" />
     </div>
     <div>
-      <label for="mountain_power_range" class="block text-sm font-medium text-gray-300">Mountain Power (range
-        1-3)</label>
-      <input type="text" id="mountain_power_range" formControlName="mountain_power_range"
-        class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm p-2 text-white">
+      <label class="block mb-1 text-sm text-purple-200 font-semibold">Coût Réserve (1-3)</label>
+      <input formControlName="recall_cost_range" type="text"
+        class="w-full p-2 bg-gray-700 rounded-lg border border-purple-500 focus:ring-2 focus:ring-purple-400" />
+    </div>
+
+    <!-- Énergies -->
+    <div>
+      <label class="block mb-1 text-sm text-green-200 font-semibold">🌿 Forêt (1-3)</label>
+      <input formControlName="forest_power_range" type="text"
+        class="w-full p-2 bg-gray-700 rounded-lg border border-green-500 focus:ring-2 focus:ring-green-400" />
     </div>
     <div>
-      <label for="ocean_power_range" class="block text-sm font-medium text-gray-300">Ocean Power (range 1-3)</label>
-      <input type="text" id="ocean_power_range" formControlName="ocean_power_range"
-        class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm p-2 text-white">
+      <label class="block mb-1 text-sm text-red-200 font-semibold">🗻 Montagne (1-3)</label>
+      <input formControlName="mountain_power_range" type="text"
+        class="w-full p-2 bg-gray-700 rounded-lg border border-red-500 focus:ring-2 focus:ring-red-400" />
     </div>
-    <div class="flex items-center justify-center h-full space-x-4">
-      <label for="no_condition" class="inline-flex items-center text-sm font-medium text-gray-300"
-        style="user-select: none;">
-        <input type="checkbox" id="no_condition" formControlName="no_condition"
-          class="h-4 w-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-offset-gray-800">
-        <span class="ml-2">No Condition</span>
-      </label>
-      <label for="in_market" class="inline-flex items-center text-sm font-medium text-gray-300"
-        style="user-select: none;">
-        <input type="checkbox" id="in_market" formControlName="in_market"
-          class="h-4 w-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-offset-gray-800">
-        <span class="ml-2">Db Market</span>
-      </label>
-      <label for="search_offers" class="inline-flex items-center text-sm font-medium text-gray-300"
-        style="user-select: none;">
-        <input type="checkbox" id="search_offers" formControlName="search_offers"
-          class="h-4 w-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-offset-gray-800">
-        <span class="ml-2">Live Market</span>
-      </label>
+    <div>
+      <label class="block mb-1 text-sm text-blue-200 font-semibold">💧 Océan (1-3)</label>
+      <input formControlName="ocean_power_range" type="text"
+        class="w-full p-2 bg-gray-700 rounded-lg border border-blue-500 focus:ring-2 focus:ring-blue-400" />
     </div>
-    <div class="flex space-x-4 mt-4">
-      <button type="submit" [disabled]="!isFormValid()"
-        [ngClass]="{'bg-gray-500 cursor-not-allowed': !isFormValid(), 'bg-blue-600 hover:bg-blue-700': isFormValid()}"
-        class="md:col-span-3 w-full text-white py-2 px-4 rounded-md transition duration-300">Rechercher</button>
-      <!-- <button (click)="onSubmit(true); $event.preventDefault()" [disabled]="!isFormValid()"
-        [ngClass]="{'bg-gray-500 cursor-not-allowed': !isFormValid(), 'bg-green-600 hover:bg-green-700': isFormValid()}"
-        class="md:col-span-3 w-full text-white py-2 px-4 rounded-md transition duration-300">Rechercher Full Live
-        Market (si jeu de resultat <= {{ fullSearchLiveMarketLimit }})</button> -->
-    </div>
+  </div>
+
+  <!-- Checkboxes -->
+  <div class="flex flex-wrap justify-center gap-4 mt-6">
+    <label class="inline-flex items-center text-sm text-gray-300">
+      <input type="checkbox" formControlName="no_condition" class="form-checkbox bg-gray-600 text-purple-500 rounded" />
+      <span class="ml-2">Supprimer Si/S'il</span>
+    </label>
+    <label class="inline-flex items-center text-sm text-gray-300"
+      title="Cherche uniquement les cartes présente dans la Db AlterTracker">
+      <input type="checkbox" formControlName="in_market" class="form-checkbox bg-gray-600 text-purple-500 rounded" />
+      <span class="ml-2">
+        Db Market
+        <i class="fas fa-question-circle ml-2"
+          ngbTooltip="Cherche uniquement les cartes ayant un prix dans la Db AlterTracker, il peut manquer des données"></i>
+      </span>
+    </label>
+    <label class="inline-flex items-center text-sm text-gray-300">
+      <input type="checkbox" formControlName="search_offers"
+        class="form-checkbox bg-gray-600 text-purple-500 rounded" />
+      <span class="ml-2">
+        Live Market
+        <i class="fas fa-question-circle ml-2"
+          ngbTooltip="Cherche les données en direct sur l'api altered, token requis"></i>
+      </span>
+    </label>
+  </div>
+
+  <!-- Submit -->
+  <div class="mt-8 text-center">
+    <button type="submit" [disabled]="!isFormValid()" [ngClass]="{
+        'bg-gray-500 cursor-not-allowed': !isFormValid(),
+        'bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600': isFormValid()
+      }" class="px-6 py-3 text-white font-semibold rounded-lg shadow-lg transition">
+      🔍 Rechercher
+    </button>
   </div>
 </form>

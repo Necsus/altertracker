@@ -58,10 +58,7 @@ def create_app():
     @app.before_request
     def check_blacklist():
         if request.endpoint in ['auth.logout', 'auth.refresh']:
-            if request.endpoint == 'auth.logout':
-                verify_jwt_in_request()
-            else:
-                verify_jwt_in_request(refresh=True)
+            verify_jwt_in_request()
             jti = get_jwt().get("jti")
             if jti and TokenBlacklist.query.filter_by(jti=jti).first():
                 return jsonify({"message": "Token revoked"}), 401

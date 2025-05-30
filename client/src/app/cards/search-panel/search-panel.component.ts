@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { NgbTooltipModule } from '@ng-bootstrap/ng-bootstrap';
 import { CardModel } from '../../01_models/03_business/card.model';
 import { CardService } from '../../03_business/card.service';
 import { withLoader } from '../../shared/services/loader/loader.operator';
@@ -11,7 +12,7 @@ import { ToastService } from '../../shared/services/toast/toast.service';
 @Component({
   selector: 'app-search-panel',
   templateUrl: './search-panel.component.html',
-  imports: [CommonModule, ReactiveFormsModule]
+  imports: [CommonModule, ReactiveFormsModule, NgbTooltipModule]
 })
 export class SearchPanelComponent implements OnInit {
   @Output() cardsRetrieved = new EventEmitter<{ cards: CardModel[], searchOffers: boolean }>();

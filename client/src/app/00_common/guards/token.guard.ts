@@ -25,12 +25,6 @@ export class TokenGuard implements CanActivate {
     }
 
     if (this.isTokenExpired(token)) {
-      const refreshToken = this.authStorageService.getRefreshToken();
-      if (!refreshToken) {
-        this.authViewService.logout();
-        return of(false);
-      }
-
       // Tente de rafraîchir le token
       return this.authApiService.refresh$().pipe(
         map(() => {

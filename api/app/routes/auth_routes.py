@@ -1,5 +1,7 @@
 import os
 import re
+import uuid
+import jwt
 import sib_api_v3_sdk
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import (
@@ -10,13 +12,14 @@ from app.config import Config, ConfigEnv
 from app.utils.emails import render_template_with_data
 from app.models.user import User
 from app.models.token_blacklist import TokenBlacklist
-from app.extensions import db, mail_api, ApiException, limiter
+from app.extensions import db, mail_api, ApiException, limiter, redis_client
 from app.utils.security import hash_password, check_password
 import itsdangerous
 from datetime import datetime
 
 auth_bp = Blueprint('auth', __name__)
-serializer = itsdangerous.URLSafeTimedSerializer('secret-reset-token')
+REFRESH_TOKEN_EXPIRATION = 86400  # 30 jours
+serializer = itsdangerous.URLSafeTimedSerializer(Config.SECRET_KEY)
 
 @auth_bp.route('/register', methods=['POST'])
 def register():
@@ -151,28 +154,48 @@ def login():
         "username": user.username
     }
     access_token = create_access_token(identity=str(user.id), additional_claims=additional_claims)
-    refresh_token = create_refresh_token(identity=str(user.id))
-    return jsonify(access_token=access_token, refresh_token=refresh_token)
+    print(jwt.decode(access_token, options={"verify_signature": False}))
+    refresh_token = str(uuid.uuid4())
+    redis_client.setex(f"refresh_token:{access_token}", REFRESH_TOKEN_EXPIRATION, refresh_token)
+    return jsonify(access_token=access_token), 200
 
 @auth_bp.route('/refresh', methods=['POST'])
 @limiter.limit("5 per minute")
-@jwt_required(refresh=True)
+@jwt_required()
 def refresh():
+    # Récupérer le token Bearer depuis l'en-tête Authorization
+    auth_header = request.headers.get('Authorization')
+    if not auth_header or not auth_header.startswith('Bearer '):
+        return jsonify({"message": "Missing or invalid Authorization header"}), 401
+
+    # Extraire le token Bearer
+    access_token = auth_header.split(' ')[1]
+    refresh_token = redis_client.get(f"refresh_token:{access_token}")
+    if not refresh_token:
+        return jsonify({"message": "Invalid or expired access token"}), 401
+    
     identity = get_jwt_identity()
     user = User.query.filter_by(id=identity).first()
+    if not user:
+        return jsonify({"message": "User not found"}), 404
     additional_claims = {
         "is_admin": user.is_admin,
         "username": user.username
     }
-    access_token = create_access_token(identity=identity, additional_claims=additional_claims)
-    return jsonify(access_token=access_token)
+    new_access_token = create_access_token(identity=str(user.id), additional_claims=additional_claims)
+    new_refresh_token = str(uuid.uuid4())
+    redis_client.delete(f"refresh_token:{access_token}")
+    redis_client.setex(f"refresh_token:{new_access_token}", REFRESH_TOKEN_EXPIRATION, new_refresh_token)
+    return jsonify(access_token=access_token), 200
 
 @auth_bp.route('/logout', methods=['POST'])
-@jwt_required()
 def logout():
-    jti = get_jwt()["jti"]
-    db.session.add(TokenBlacklist(jti=jti))
-    db.session.commit()
+    # Récupérer le token Bearer depuis l'en-tête Authorization
+    auth_header = request.headers.get('Authorization')
+    # Extraire le token Bearer
+    access_token = auth_header.split(' ')[1]
+    if access_token:
+      redis_client.delete(f"refresh_token:{access_token}")
     response = jsonify({"message": "Logout successful"})
     unset_jwt_cookies(response)
     return response

@@ -8,3 +8,5 @@ docker compose up -d
 
 log cron
 /home/necsus/certbot-renew.log
+
+docker exec -it redis redis-cli

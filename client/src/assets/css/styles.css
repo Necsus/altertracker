@@ -116,3 +116,33 @@ footer img {
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
+
+.tooltip {
+  background-color: white !important;
+  /* Change la couleur de fond en blanc */
+  color: black !important;
+  /* Change la couleur du texte en noir */
+  border: 1px solid #ccc;
+  /* Ajoute une bordure grise */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  /* Ajoute une ombre subtile */
+
+}
+
+[title] {
+  pointer-events: none;
+}
+
+.tooltip-inner {
+  font-size: 0.875rem;
+  /* Ajuste la taille du texte */
+  font-weight: 500;
+  /* Rend le texte légèrement plus épais */
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.tooltip-arrow {
+  border-color: white !important;
+  /* Change la couleur de la flèche */
+}
