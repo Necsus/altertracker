@@ -49,10 +49,12 @@ export class AuthViewService {
     this.authService.logout$().subscribe({
       next: () => {
         clearTimeout(this.refreshTimeout);
-        this.authStorageService.clearAccessToken();
         // this.toastService.show('Session expirée. Veuillez vous reconnecter.', 'error', 5000);
         this.loggedIn.next(false);
         this.router.navigate(['/login']);
+      },
+      complete: () => {
+        this.authStorageService.clearAccessToken();
       }
     });
   }
