@@ -55,13 +55,13 @@ def create_app():
           else:
               return jsonify({"message": "Origin not allowed"}), 403
 
-    @app.before_request
-    def check_blacklist():
-        if request.endpoint in ['auth.logout', 'auth.refresh']:
-            verify_jwt_in_request()
-            jti = get_jwt().get("jti")
-            if jti and TokenBlacklist.query.filter_by(jti=jti).first():
-                return jsonify({"message": "Token revoked"}), 401
+    # @app.before_request
+    # def check_blacklist():
+    #     if request.endpoint in ['auth.refresh']:
+    #         verify_jwt_in_request()
+    #         jti = get_jwt().get("jti")
+    #         if jti and TokenBlacklist.query.filter_by(jti=jti).first():
+    #             return jsonify({"message": "Token revoked"}), 401
 
     # with app.app_context():
     #     db.create_all()
