@@ -4,74 +4,72 @@
     <section class="text-gray-100 bg-gray-900 px-6 py-12 md:px-12 lg:px-24">
       <div class="max-w-4xl mx-auto text-center">
         <h1 class="text-4xl md:text-5xl font-bold text-white mb-6">
-          AlterTracker – Analyse et Suivi du Marché pour Altered TCG
+          {{ 'home.title' | translate }}
         </h1>
         <p class="text-lg text-gray-300 mb-8">
-          AlterTracker est l’outil incontournable pour les joueurs d’<a href="https://www.altered.gg/" target="_blank"
-            class="text-indigo-400 font-semibold">Altered
-            TCG&nbsp;<i class="fas fa-up-right-from-square text-xs"></i></a>.
-          Explorez les cartes du jeu grâce à une recherche avancée, des statistiques complètes et un suivi du marché en
-          temps réel.
+          {{ 'home.description_part1' | translate }}
+          <a href="https://www.altered.gg/" target="_blank" class="text-indigo-400 font-semibold">
+            {{ 'home.description_link' | translate }}&nbsp;<i class="fas fa-up-right-from-square text-xs"></i>
+          </a>
+          {{ 'home.description_part2' | translate }}
         </p>
-        @if (!isLoggedIn) {
-        <a routerLink="/register"
+        <a *ngIf="!isLoggedIn" routerLink="/register"
           class="inline-block bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-3 px-6 rounded-2xl shadow-lg transition duration-200 cursor-pointer mb-8">
-          Créer un compte gratuitement
+          {{ 'home.create_account' | translate }}
         </a>
-        }
-        <h2 class="text-red-500">Des limitations ont été mises en place par Altered. Le processus de
-          récupération est actuellement géré en file d’attente, en attendant les directives officielles.
-          🙏 Merci pour votre compréhension et votre patience. Ce projet me tient à cœur, et je suis pleinement engagé à
-          le faire avancer.</h2>
+        <h2 class="text-red-500">
+          {{ 'home.limitations' | translate }}
+        </h2>
       </div>
     </section>
 
-
-
     <section class="bg-gray-950 px-6 py-16 md:px-12 lg:px-24 text-gray-100">
       <div class="max-w-5xl mx-auto space-y-16">
-        @if (!isLoggedIn) {
-        <div>
-          <h2 class="text-3xl font-semibold text-white mb-4">🔍 Recherche avancée de cartes</h2>
-          <p class="text-gray-300">
-            Filtrez les cartes par nom, faction, coût, rareté, effet et plus encore. Retrouvez facilement les cartes
-            Altered
-            qui
-            correspondent à votre style ou à votre collection.
-          </p>
+        <div *ngIf="!isLoggedIn">
+          <div>
+            <h2 class="text-3xl font-semibold text-white mb-4">
+              {{ 'home.advanced_search_title' | translate }}
+            </h2>
+            <p class="text-gray-300">
+              {{ 'home.advanced_search_description' | translate }}
+            </p>
+          </div>
+
+          <div>
+            <h2 class="text-3xl font-semibold text-white mb-4">
+              {{ 'home.market_tracking_title' | translate }}
+            </h2>
+            <p class="text-gray-300">
+              {{ 'home.market_tracking_description_part1' | translate }}
+              <span class="font-semibold text-indigo-400">
+                {{ 'home.market_tracking_description_highlight' | translate }}
+              </span>
+              {{ 'home.market_tracking_description_part2' | translate }}
+            </p>
+          </div>
         </div>
 
         <div>
-          <h2 class="text-3xl font-semibold text-white mb-4">💸 Suivi du marché en temps réel</h2>
-          <p class="text-gray-300">
-            Consultez les prix actuels des cartes Altered, identifiez les bonnes affaires, et utilisez les <span
-              class="font-semibold text-indigo-400">alertes de prix personnalisées</span>
-            pour ne rater aucune opportunité.
-          </p>
-        </div>
-        }
-
-        <div>
-          <h2 class="text-3xl font-semibold text-white mb-4">🧭 Ce qui arrive bientôt</h2>
+          <h2 class="text-3xl font-semibold text-white mb-4">
+            {{ 'home.coming_soon_title' | translate }}
+          </h2>
           <ul class="list-disc list-inside text-gray-300 space-y-1">
-            <li>Statistiques détaillées à la carte (popularité, <s>historique</s>...) </li>
-            <li><s>Visualisation graphique de l’historique des prix</s></li>
-            <li><s>Importation de collection</s>, decks</li>
-            <li>Scan ta carte et estimation de prix</li>
-            <li>Facilitation des échanges pour des uniques AAA (<s>offres d'achat</s>, systeme de messagerie)
-            </li>
-            <li>Traduction anglaise</li>
+            <li>{{ 'home.coming_soon_items.stats' | translate }}</li>
+            <li>{{ 'home.coming_soon_items.collection_import' | translate }}</li>
+            <li>{{ 'home.coming_soon_items.card_scan' | translate }}</li>
+            <li>{{ 'home.coming_soon_items.exchange_facilitation' | translate }}</li>
+            <li>{{ 'home.coming_soon_items.translation' | translate }}</li>
           </ul>
         </div>
       </div>
     </section>
 
-    <!-- Section : Nouvelles Cartes -->
     <section>
       <div class="mt-8">
-        <h2 class="text-2xl font-semibold mb-4">🃏 Nouvelles cartes scannées (aujourd'hui &nbsp;<span
-            class="text-green-400">+{{
-            newCardsCount }}</span>)</h2>
+        <h2 class="text-2xl font-semibold mb-4">
+          {{ 'home.new_cards_title' | translate }} &nbsp;<span class="text-green-400">+{{ newCardsCount
+            }}</span>
+        </h2>
         <ng-container *ngIf="!newCardsLoading; else cardsLoadingSection">
           <div class="scroll-container flex flex-nowrap space-x-4 overflow-x-auto pb-2">
             <div *ngFor="let card of newCards" class="flex-shrink-0 w-48 bg-gray-800 rounded-xl shadow">
@@ -82,8 +80,7 @@
               </div>
               <div class="mt-2 text-center text-white p-2">
                 <a routerLink="/stats/{{card.reference}}"
-                  class="text-xs text-blue-400 underline hover:text-blue-300 cursor-pointer">{{
-                  card.reference }}</a>
+                  class="text-xs text-blue-400 underline hover:text-blue-300 cursor-pointer">{{ card.reference }}</a>
                 <p class="font-semibold">{{ card.name }}</p>
               </div>
             </div>
@@ -92,11 +89,11 @@
       </div>
     </section>
 
-    <!-- Section : Nouvelles Offres -->
     <section>
-      <h2 class="text-2xl font-semibold mb-4">💰 Nouvelles offres de vente (aujourd'hui &nbsp;<span
-          class="text-green-400">+{{
-          newOffersCount }}</span>)</h2>
+      <h2 class="text-2xl font-semibold mb-4">
+        {{ 'home.new_offers_title' | translate }} &nbsp;<span class="text-green-400">+{{ newOffersCount
+          }}</span>
+      </h2>
       <ng-container *ngIf="!newOffersLoading; else cardsLoadingSection">
         <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
           <div *ngFor="let offer of newOffers" class="w-48 bg-gray-800 rounded-xl shadow">
@@ -107,23 +104,25 @@
             </div>
             <div class="mt-2 text-center text-white p-2">
               <a routerLink="/stats/{{offer.card.reference}}"
-                class="text-xs text-blue-400 underline hover:text-blue-300 cursor-pointer">{{
-                offer.card.reference }}</a>
+                class="text-xs text-blue-400 underline hover:text-blue-300 cursor-pointer">{{ offer.card.reference
+                }}</a>
               <div class="font-medium">{{ offer.card.name }}</div>
-              <div class="text-sm text-green-400">Prix : {{ offer.offer.price | currency:(offer.offer.currency ||
+              <div class="text-sm text-green-400">{{ 'home.price' | translate }} : {{ offer.offer.price |
+                currency:(offer.offer.currency ||
                 ''):'symbol':'1.2-2' }}</div>
-              <p class="text-xs text-gray-500">détecté le : {{ offer.offer.created_at | date:'dd/MM/yyyy HH:mm' }}</p>
-              <!-- <div class="text-sm text-gray-500">Vendeur : {{ offer.offer.user_altered }}</div> -->
+              <p class="text-xs text-gray-500">{{ 'home.detected_at' | translate }} : {{
+                offer.offer.created_at | date:'dd/MM/yyyy HH:mm' }}</p>
             </div>
           </div>
         </div>
       </ng-container>
     </section>
 
-    <!-- Section : Offres disparues -->
     <section>
-      <h2 class="text-2xl font-semibold mb-4">❌ Offres disparues (aujourd'hui &nbsp;<span class="text-green-400">+{{
-          deletedOffersCount }}</span>)</h2>
+      <h2 class="text-2xl font-semibold mb-4">
+        {{ 'home.deleted_offers_title' | translate }} &nbsp;<span class="text-green-400">+{{
+          deletedOffersCount }}</span>
+      </h2>
       <ng-container *ngIf="!deletedOffersLoading; else cardsLoadingSection">
         <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
           <div *ngFor="let offer of deletedOffers" class="w-48 bg-gray-800 rounded-xl shadow">
@@ -134,22 +133,24 @@
             </div>
             <div class="mt-2 text-center text-white p-2">
               <a routerLink="/stats/{{offer.card.reference}}"
-                class="text-xs text-blue-400 underline hover:text-blue-300 cursor-pointer">{{
-                offer.card.reference }}</a>
+                class="text-xs text-blue-400 underline hover:text-blue-300 cursor-pointer">{{ offer.card.reference
+                }}</a>
               <div class="font-medium">{{ offer.card.name }}</div>
-              <div class="text-sm text-red-400">Ancien prix : {{ offer.offer.price | currency:(offer.offer.currency ||
-                ''):'symbol':'1.2-2' }}</div>
-              <p class="text-xs text-gray-500">détecté le : {{ offer.offer.deleted_at | date:'dd/MM/yyyy HH:mm' }}</p>
+              <div class="text-sm text-red-400">{{ 'home.old_price' | translate }} : {{ offer.offer.price |
+                currency:(offer.offer.currency || ''):'symbol':'1.2-2' }}</div>
+              <p class="text-xs text-gray-500">{{ 'home.detected_at' | translate }} : {{
+                offer.offer.deleted_at | date:'dd/MM/yyyy HH:mm' }}</p>
             </div>
           </div>
         </div>
       </ng-container>
     </section>
 
-    <!-- Section : Offres modifiées -->
     <section>
-      <h2 class="text-2xl font-semibold mb-4">✏️ Offres modifiées (aujourd'hui &nbsp;<span class="text-green-400">+{{
-          editedOffersCount }}</span>)</h2>
+      <h2 class="text-2xl font-semibold mb-4">
+        {{ 'home.edited_offers_title' | translate }} &nbsp;<span class="text-green-400">+{{
+          editedOffersCount }}</span>
+      </h2>
       <ng-container *ngIf="!editedOffersLoading; else cardsLoadingSection">
         <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
           <div *ngFor="let offer of editedOffers" class="w-48 bg-gray-800 rounded-xl shadow">
@@ -160,66 +161,48 @@
             </div>
             <div class="mt-2 text-center text-white p-2">
               <a routerLink="/stats/{{offer.card.reference}}"
-                class="text-xs text-blue-400 underline hover:text-blue-300 cursor-pointer">{{
-                offer.card.reference }}</a>
+                class="text-xs text-blue-400 underline hover:text-blue-300 cursor-pointer">{{ offer.card.reference
+                }}</a>
               <div class="font-medium">{{ offer.card.name }}</div>
               <div class="text-sm text-gray-400">
-                Prix : <span class="line-through text-red-400">{{ offer.previous_offer?.price |
-                  currency:(offer.previous_offer?.currency ||
-                  ''):'symbol':'1.2-2' }}</span>
+                {{ 'home.price' | translate }} : <span class="line-through text-red-400">{{
+                  offer.previous_offer?.price |
+                  currency:(offer.previous_offer?.currency || ''):'symbol':'1.2-2' }}</span>
                 → <span class="text-green-400">{{ offer.offer.price | currency:(offer.offer.currency ||
                   ''):'symbol':'1.2-2' }}</span>
               </div>
-              <p class="text-xs text-gray-500">détecté le : {{ offer.offer.created_at | date:'dd/MM/yyyy HH:mm' }}</p>
-              <!-- <div class="text-sm text-gray-500">Vendeur : {{ offer.offer.user_altered }}</div> -->
+              <p class="text-xs text-gray-500">{{ 'home.detected_at' | translate }} : {{
+                offer.offer.created_at | date:'dd/MM/yyyy HH:mm' }}</p>
             </div>
           </div>
         </div>
       </ng-container>
     </section>
 
-    <!-- Section : Nouvelles offres du site -->
-    <!-- <section>
-      <h2 class="text-2xl font-semibold mb-4">📢 Nouvelles offres d'achat ajoutées sur le site</h2>
-      <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
-        <div *ngFor="let offer of purchaseOffers" class="w-48 bg-gray-800 rounded-xl shadow">
-          <div class="overflow-hidden w-48 rounded-xl bg-black">
-            <img [src]="offer.card.image" [alt]="offer.card.name" loading="lazy"
-              class="max-w-full object-contain rounded-md cursor-pointer" />
-          </div>
-          <div class="mt-2 text-center text-white p-2">
-            <div class="font-medium">{{ offer.card.name }}</div>
-            <div class="text-sm text-gray-400">Prix : {{ offer.price }} €</div>
-            <div class="text-sm text-gray-500">Acheteur : {{ offer.buyer }}</div>
-          </div>
-        </div>
-      </div>
-    </section> -->
-
     <section>
       <div class="mt-8">
-        <h2 class="text-2xl font-semibold mb-4">👥 Utilisateurs inscrits : <span class="text-green-400">{{
-            usersCount }}</span></h2>
+        <h2 class="text-2xl font-semibold mb-4">
+          {{ 'home.registered_users_title' | translate }} <span class="text-green-400">{{ usersCount
+            }}</span>
+        </h2>
       </div>
     </section>
 
-    @if (!isLoggedIn) {
-    <section class="text-gray-100 bg-gray-900 px-6 py-12 md:px-12 lg:px-24">
+    <section *ngIf="!isLoggedIn" class="text-gray-100 bg-gray-900 px-6 py-12 md:px-12 lg:px-24">
       <div class="max-w-4xl mx-auto text-center">
-        <div class="text-center">
-          <h2 class="text-3xl font-semibold text-white mb-4">🚀 Rejoignez la communauté</h2>
-          <p class="text-gray-300 mb-6">
-            AlterTracker est un projet indépendant construit avec passion. Vos idées, retours et suggestions le font
-            évoluer.
-          </p>
-          <a routerLink="/register"
-            class="inline-block bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-3 px-6 rounded-2xl shadow-lg transition duration-200">
-            Commencer maintenant
-          </a>
-        </div>
+        <h2 class="text-3xl font-semibold text-white mb-4">
+          {{ 'home.join_community_title' | translate }}
+        </h2>
+        <p class="text-gray-300 mb-6">
+          {{ 'home.join_community_description' | translate }}
+        </p>
+        <a routerLink="/register"
+          class="inline-block bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-3 px-6 rounded-2xl shadow-lg transition duration-200">
+          {{ 'home.start_now' | translate }}
+        </a>
       </div>
     </section>
-    }
+
   </div>
 </div>
 

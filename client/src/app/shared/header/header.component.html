@@ -25,15 +25,19 @@
       <!-- Menu links -->
       <ul class="hidden sm:flex space-x-6 items-center">
         <li><a routerLink="/" routerLinkActive="text-blue-400" [routerLinkActiveOptions]="{ exact: true }"
-            style="user-select: none;" class="hover:text-blue-300 transition duration-300 cursor-pointer">Accueil</a>
+            style="user-select: none;" class="hover:text-blue-300 transition duration-300 cursor-pointer">{{
+            'header.home' | translate }}</a>
         </li>
         <li><a routerLink="/cards" routerLinkActive="text-blue-400" [routerLinkActiveOptions]="{ exact: true }"
-            style="user-select: none;" class="hover:text-blue-300 transition duration-300 cursor-pointer">Cartes</a>
+            style="user-select: none;" class="hover:text-blue-300 transition duration-300 cursor-pointer">{{
+            'header.cards' | translate }}</a>
         <li><a routerLink="/stats" routerLinkActive="text-blue-400" style=" user-select: none;"
-            class="hover:text-blue-300 transition duration-300 cursor-pointer">Stats</a>
+            class="hover:text-blue-300 transition duration-300 cursor-pointer">{{
+            'header.stats' | translate }}</a>
         </li>
         <li><a routerLink="/about" routerLinkActive="text-blue-400" style="user-select: none;"
-            class="hover:text-blue-300 transition duration-300 cursor-pointer">À propos</a></li>
+            class="hover:text-blue-300 transition duration-300 cursor-pointer">{{
+            'header.about' | translate }}</a></li>
         <!-- Dropdown for logged-in users -->
         @if (isLoggedIn) {
         <li class="relative">
@@ -45,19 +49,27 @@
           <ul *ngIf="isDropdownOpen" class="absolute right-0 mt-2 w-48 bg-gray-700 text-white rounded-lg shadow-lg z-10"
             (mouseleave)="isDropdownOpen = false">
             @if (isAdmin) {
-            <li><a routerLink="/admin" class="block px-4 py-2 hover:bg-gray-600 rounded-t-lg">Admin</a></li>
+            <li><a routerLink="/admin" class="block px-4 py-2 hover:bg-gray-600 rounded-t-lg">{{
+                'header.admin' | translate }}</a></li>
             }
-            <li><a routerLink="/me" class="block px-4 py-2 hover:bg-gray-600 rounded-t-lg">Profil</a></li>
-            <li><a routerLink="/message" class="block px-4 py-2 hover:bg-gray-600">Messages</a></li>
-            <li><a routerLink="/token" class="block px-4 py-2 hover:bg-gray-600">Token Altered</a></li>
-            <li><a routerLink="/searches" class="block px-4 py-2 hover:bg-gray-600">Mes recherches</a></li>
-            <li><a routerLink="/alerts" class="block px-4 py-2 hover:bg-gray-600">Mes alertes</a></li>
-            <li><a routerLink="/collection" class="block px-4 py-2 hover:bg-gray-600">Ma collection</a></li>
-            <li><a routerLink="/purchase-offers" class="block px-4 py-2 hover:bg-gray-600">Offres
-                d'achat</a>
+            <li><a routerLink="/me" class="block px-4 py-2 hover:bg-gray-600 rounded-t-lg">{{
+                'header.profile' | translate }}</a></li>
+            <li><a routerLink="/message" class="block px-4 py-2 hover:bg-gray-600">{{
+                'header.messages' | translate }}</a></li>
+            <li><a routerLink="/token" class="block px-4 py-2 hover:bg-gray-600">{{
+                'header.token' | translate }}</a></li>
+            <li><a routerLink="/searches" class="block px-4 py-2 hover:bg-gray-600">{{
+                'header.searches' | translate }}</a></li>
+            <li><a routerLink="/alerts" class="block px-4 py-2 hover:bg-gray-600">{{
+                'header.alerts' | translate }}</a></li>
+            <li><a routerLink="/collection" class="block px-4 py-2 hover:bg-gray-600">{{
+                'header.collection' | translate }}</a></li>
+            <li><a routerLink="/purchase-offers" class="block px-4 py-2 hover:bg-gray-600">{{
+                'header.purchase_offers' | translate }}</a>
             </li>
             <li><a (click)="onLogout()"
-                class="block px-4 py-2 text-red-300 hover:bg-gray-600 cursor-pointer rounded-b-lg">Déconnexion</a>
+                class="block px-4 py-2 text-red-300 hover:bg-gray-600 cursor-pointer rounded-b-lg">{{
+                'header.logout' | translate }}</a>
             </li>
           </ul>
         </li>
@@ -66,56 +78,76 @@
         }
         @else {
         <li><a routerLink="/login" routerLinkActive="text-blue-400"
-            class="hover:text-blue-300 transition duration-300 cursor-pointer">Login</a></li>
+            class="hover:text-blue-300 transition duration-300 cursor-pointer">{{
+            'header.login' | translate }}</a></li>
         <li><a routerLink="/register" routerLinkActive="text-blue-400"
-            class="hover:text-blue-300 transition duration-300 cursor-pointer">Inscription</a></li>
+            class="hover:text-blue-300 transition duration-300 cursor-pointer">{{
+            'header.register' | translate }}</a></li>
         }
+        <li>
+          <app-language-selector></app-language-selector>
+        </li>
       </ul>
+
     </nav>
 
     <!-- Mobile menu -->
     @if (isMenuOpen) {
     <div class="sm:hidden mt-4 space-y-4">
       <a routerLink="/" routerLinkActive="text-blue-400" [routerLinkActiveOptions]="{ exact: true }"
-        class="block hover:text-blue-300 transition duration-300">Accueil</a>
+        class="block hover:text-blue-300 transition duration-300">{{
+        'header.home' | translate }}</a>
       <a routerLink="/cards" routerLinkActive="text-blue-400" [routerLinkActiveOptions]="{ exact: true }"
-        class="block hover:text-blue-300 transition duration-300">Cartes</a>
+        class="block hover:text-blue-300 transition duration-300">{{
+        'header.cards' | translate }}</a>
       <a routerLink="/stats" routerLinkActive="text-blue-400"
-        class="block hover:text-blue-300 transition duration-300">Stats</a>
+        class="block hover:text-blue-300 transition duration-300">{{
+        'header.stats' | translate }}</a>
       @if (isLoggedIn) {
       <a routerLink="/token" routerLinkActive="text-blue-400"
-        class="block hover:text-blue-300 transition duration-300">Token Altered</a>
+        class="block hover:text-blue-300 transition duration-300">{{
+        'header.token' | translate }}</a>
       <a routerLink="/purchase-offers" routerLinkActive="text-blue-400"
-        class="block hover:text-blue-300 transition duration-300">Offres d'achat</a>
+        class="block hover:text-blue-300 transition duration-300">{{
+        'header.purchase_offers' | translate }}</a>
       <a routerLink="/searches" routerLinkActive="text-blue-400"
-        class="block hover:text-blue-300 transition duration-300">Mes recherches</a>
+        class="block hover:text-blue-300 transition duration-300">{{
+        'header.searches' | translate }}</a>
       <a routerLink="/alerts" routerLinkActive="text-blue-400"
-        class="block hover:text-blue-300 transition duration-300">Mes alertes</a>
+        class="block hover:text-blue-300 transition duration-300">{{
+        'header.alerts' | translate }}</a>
       <a routerLink="/collection" routerLinkActive="text-blue-400"
-        class="block hover:text-blue-300 transition duration-300">Ma collection</a>
+        class="block hover:text-blue-300 transition duration-300">{{
+        'header.collection' | translate }}</a>
       }
       <a routerLink="/about" routerLinkActive="text-blue-400"
-        class="block hover:text-blue-300 transition duration-300">À propos</a>
+        class="block hover:text-blue-300 transition duration-300">{{
+        'header.about' | translate }}</a>
       @if (isLoggedIn) {
 
       <a routerLink="/me" routerLinkActive="text-blue-400" class="block hover:text-blue-300 transition duration-300">{{
         username }}</a>
       <a routerLink="/message" routerLinkActive="text-blue-400"
-        class="block hover:text-blue-300 transition duration-300">Messages</a>
+        class="block hover:text-blue-300 transition duration-300">{{
+        'header.messages' | translate }}</a>
       @if (isAdmin) {
-      <a routerLink="/admin" class="block hover:text-blue-300 transition duration-300">Admin</a>
+      <a routerLink="/admin" class="block hover:text-blue-300 transition duration-300">{{
+        'header.admin' | translate }}</a>
       }
-      <a (click)="onLogout()"
-        class="block text-red-300 hover:text-red-200 transition duration-300 cursor-pointer">Déconnexion</a>
+      <a (click)="onLogout()" class="block text-red-300 hover:text-red-200 transition duration-300 cursor-pointer">{{
+        'header.logout' | translate }}</a>
       <a routerLink="/contact" routerLinkActive="text-blue-400"
         class="block hover:text-blue-300 transition duration-300"><i class="fas fa-bug"></i></a>
       }
       @else {
       <a routerLink="/login" routerLinkActive="text-blue-400"
-        class="block hover:text-blue-300 transition duration-300">Login</a>
+        class="block hover:text-blue-300 transition duration-300">{{
+        'header.login' | translate }}</a>
       <a routerLink="/register" routerLinkActive="text-blue-400"
-        class="block hover:text-blue-300 transition duration-300">Inscription</a>
+        class="block hover:text-blue-300 transition duration-300">{{
+        'header.register' | translate }}</a>
       }
+      <app-language-selector></app-language-selector>
     </div>
     }
   </div>
