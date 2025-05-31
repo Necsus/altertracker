@@ -17,8 +17,14 @@ export class AuthService {
   }
 
   login$(email: string, password: string): Observable<void> {
-    return this.authApiService.login$(email, password).pipe(map((response: { access_token: string, refresh_token: string }) => {
-      this.authStorageService.storeTokens(response.access_token, response.refresh_token);
+    return this.authApiService.login$(email, password).pipe(map((response: { access_token: string }) => {
+      this.authStorageService.storeAccessToken(response.access_token);
+    }));
+  }
+
+  logout$(): Observable<any> {
+    return this.authApiService.logout$().pipe(map((response: any) => {
+      return response;
     }));
   }
 
@@ -37,6 +43,7 @@ export class AuthService {
   refresh$(): Observable<void> {
     return this.authApiService.refresh$().pipe(map((response: any) => {
       this.authStorageService.storeAccessToken(response.access_token);
+      return response.access_token;
     }));
   }
 

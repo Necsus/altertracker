@@ -16,6 +16,7 @@ import { ToastService } from '../../shared/services/toast/toast.service';
 export class SearchPanelComponent implements OnInit {
   @Output() cardsRetrieved = new EventEmitter<{ cards: CardModel[], searchOffers: boolean }>();
   searchForm!: FormGroup;
+  popoverIndex: number | null = null;
   constructor(
     private fb: FormBuilder,
     private loaderService: LoaderService,
@@ -164,5 +165,12 @@ export class SearchPanelComponent implements OnInit {
     }
 
     return { min, max };
+  }
+  showPopover(index: number) {
+    this.popoverIndex = index;
+  }
+
+  hidePopover() {
+    this.popoverIndex = null;
   }
 }

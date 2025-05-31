@@ -14,18 +14,11 @@ migrate = Migrate()
 mail_conf = sib_api_v3_sdk.Configuration()
 mail_conf.api_key['api-key'] = ConfigEnv.BREVO_API_KEY
 mail_api = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(mail_conf))
-socketio = SocketIO(cors_allowed_origins="*")
-redis_client = Redis(host='redis', port=6379)  # Assurez-vous que l'hôte et le port correspondent à votre configuration Docker
+socketio = SocketIO()
 # Configuration de Redis pour l'environnement de production
-if ConfigEnv.FLASK_ENV == 'production':
-    redis_client = Redis(host='redis', port=6379)  # Assurez-vous que l'hôte et le port correspondent à votre configuration Docker
-    limiter = Limiter(
-        key_func=get_remote_address,
-        storage_uri="redis://redis:6379"  # URI pour Redis
-    )
-else:
-    # Configuration pour l'environnement local (in-memory storage)
-    limiter = Limiter(
-        key_func=get_remote_address
-    )
-
+redis_url = 'redis' if ConfigEnv.FLASK_ENV == 'production' else '127.0.0.1'
+redis_client = Redis(host=redis_url, port=6379)  # Assurez-vous que l'hôte et le port correspondent à votre configuration Docker
+limiter = Limiter(
+    key_func=get_remote_address,
+    storage_uri=f"redis://{redis_url}:6379"  # URI pour Redis
+)

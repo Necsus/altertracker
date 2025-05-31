@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { AuthViewService } from '../../authentication/auth-view.service';
 
@@ -15,7 +15,10 @@ export class HeaderComponent implements OnInit {
   isAdmin = false;
   username: string | null = null;
 
-  constructor(private router: Router, private authViewService: AuthViewService) { }
+  constructor(
+    private router: Router,
+    private authViewService: AuthViewService,
+    private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     this.authViewService.isLoggedIn$.subscribe(status => {
@@ -27,6 +30,7 @@ export class HeaderComponent implements OnInit {
         this.isAdmin = false; // Réinitialiser si l'utilisateur n'est pas connecté
         this.username = null; // Réinitialiser si l'utilisateur n'est pas connecté
       }
+      this.cdr.detectChanges();
     });
   }
 

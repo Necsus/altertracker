@@ -37,8 +37,8 @@ export class WebApiService {
   }
 
   callPost$<Response>(controllerName: string, actionName: string, params: Object | undefined = undefined,
-    timeOutInMillisecond: number = 110000, useRefresToken: boolean = false): Observable<Response> {
-    const options = this.getOptions(undefined, useRefresToken);
+    timeOutInMillisecond: number = 110000): Observable<Response> {
+    const options = this.getOptions(undefined);
     return this.http.post<Response>(this.getUrl(controllerName, actionName), params, options)
       .pipe(
         switchMap((response: any) => {
@@ -88,19 +88,15 @@ export class WebApiService {
     return environment.api_url + '/' + controllerName + '/' + actionName;
   }
 
-  private getOptions(params: Array<Param> | undefined, useRefresToken: boolean = false): { headers: HttpHeaders, body: any } {
+  private getOptions(params: Array<Param> | undefined): { headers: HttpHeaders, body: any } {
     let headers = new HttpHeaders();
     headers = headers.set('Accept', 'application/json');
 
     let token = this.authStorageService.getToken();
-    if (useRefresToken) {
-      token = this.authStorageService.getRefreshToken();
-    }
     if (token) {
       headers = headers.set('Authorization', 'Bearer ' + token);
       const options = {
-        headers: <HttpHeaders>headers, body: <any>null, params: this.convertToParams(params),
-        withCredentials: true
+        headers: <HttpHeaders>headers, body: <any>null, params: this.convertToParams(params)
       };
       return options;
     }
