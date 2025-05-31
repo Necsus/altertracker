@@ -1,20 +1,20 @@
 <form [formGroup]="searchForm" (ngSubmit)="onSubmit()"
-  class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-6 rounded-2xl shadow-xl text-white">
+  class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-4 md:p-6 rounded-2xl shadow-xl text-white">
 
-  <div class="grid grid-cols-1 md:grid-cols-6 gap-6">
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
     <!-- Nom / Référence -->
-    <div class="col-span-3">
+    <div class="col-span-full md:col-span-3">
       <label for="name" class="block mb-1 text-sm font-semibold text-purple-200">Nom ou Réf (ALT_)</label>
       <input id="name" formControlName="name" type="text"
         class="w-full p-2 bg-gray-700 rounded-lg border border-purple-500 focus:ring-2 focus:ring-purple-400 outline-none transition" />
     </div>
 
     <!-- Rareté -->
-    <div class="col-span-1">
+    <div>
       <label for="rarity" class="block mb-1 text-sm font-semibold text-purple-200">Rareté</label>
       <select id="rarity" formControlName="rarity"
         class="w-full p-2 bg-gray-700 rounded-lg border border-purple-500 focus:ring-2 focus:ring-purple-400 outline-none transition">
-        <option value="">-- Rarity --</option>
+        <option value="">-- Rareté --</option>
         <option value="COMMON">⚪ Commune</option>
         <option value="RARE">🔵 Rare</option>
         <option value="UNIQUE">🟡 Unique</option>
@@ -22,7 +22,7 @@
     </div>
 
     <!-- Faction -->
-    <div class="col-span-1">
+    <div>
       <label for="faction" class="block mb-1 text-sm font-semibold text-purple-200">Faction</label>
       <select id="faction" formControlName="faction"
         class="w-full p-2 bg-gray-700 rounded-lg border border-purple-500 focus:ring-2 focus:ring-purple-400 outline-none transition">
@@ -37,7 +37,7 @@
     </div>
 
     <!-- Set -->
-    <div class="col-span-1">
+    <div>
       <label for="set" class="block mb-1 text-sm font-semibold text-purple-200">Set</label>
       <select id="set" formControlName="set"
         class="w-full p-2 bg-gray-700 rounded-lg border border-purple-500 focus:ring-2 focus:ring-purple-400 outline-none transition">
@@ -50,17 +50,17 @@
     </div>
 
     <!-- Effets -->
-    <div class="col-span-2">
+    <div class="sm:col-span-2">
       <label class="block mb-1 text-sm font-semibold text-purple-200">Effet Principal</label>
       <input id="main_effect" formControlName="main_effect" type="text"
         class="w-full p-2 bg-gray-700 rounded-lg border border-purple-500 focus:ring-2 focus:ring-purple-400" />
     </div>
-    <div class="col-span-2">
-      <label class="block mb-1 text-sm font-semibold text-purple-200">et Effet Principal 2</label>
+    <div class="sm:col-span-2">
+      <label class="block mb-1 text-sm font-semibold text-purple-200">Effet Principal 2</label>
       <input id="main_effect_2" formControlName="main_effect_2" type="text"
         class="w-full p-2 bg-gray-700 rounded-lg border border-purple-500 focus:ring-2 focus:ring-purple-400" />
     </div>
-    <div class="col-span-2">
+    <div class="sm:col-span-2">
       <label class="block mb-1 text-sm font-semibold text-purple-200">Effet support</label>
       <input id="echo_effect" formControlName="echo_effect" type="text"
         class="w-full p-2 bg-gray-700 rounded-lg border border-purple-500 focus:ring-2 focus:ring-purple-400" />
@@ -97,29 +97,44 @@
   </div>
 
   <!-- Checkboxes -->
-  <div class="flex flex-wrap justify-center gap-4 mt-6">
-    <label class="inline-flex items-center text-sm text-gray-300">
+  <div class="flex flex-col sm:flex-row flex-wrap justify-center gap-4 mt-6">
+    <label class="inline-flex items-center text-sm text-gray-300 select-none">
       <input type="checkbox" formControlName="no_condition" class="form-checkbox bg-gray-600 text-purple-500 rounded" />
       <span class="ml-2">Supprimer Si/S'il</span>
     </label>
-    <label class="inline-flex items-center text-sm text-gray-300"
-      title="Cherche uniquement les cartes présente dans la Db AlterTracker">
+    <label class="inline-flex items-center text-sm text-gray-300 select-none">
       <input type="checkbox" formControlName="in_market" class="form-checkbox bg-gray-600 text-purple-500 rounded" />
       <span class="ml-2">
         Db Market
-        <i class="fas fa-question-circle ml-2"
-          ngbTooltip="Cherche uniquement les cartes ayant un prix dans la Db AlterTracker, il peut manquer des données"></i>
       </span>
     </label>
-    <label class="inline-flex items-center text-sm text-gray-300">
+    <div class="relative inline-flex items-center">
+      <div *ngIf="popoverIndex === 1"
+        class="absolute z-50 mb-2 bottom-full left-1/2 -translate-x-1/2 bg-white text-black text-xs rounded shadow-lg px-3 py-2"
+        style="min-width: 180px;">
+        Uniquement les cartes ayant déjà été scannées par le Live Market
+      </div>
+      <i class="inline-flex items-center fas fa-question-circle text-sm text-gray-300 cursor-pointer"
+        (click)="showPopover(1)" (document:click)="hidePopover()" (click)="$event.stopPropagation()">
+      </i>
+    </div>
+    <label class="inline-flex items-center text-sm text-gray-300 select-none">
       <input type="checkbox" formControlName="search_offers"
         class="form-checkbox bg-gray-600 text-purple-500 rounded" />
       <span class="ml-2">
         Live Market
-        <i class="fas fa-question-circle ml-2"
-          ngbTooltip="Cherche les données en direct sur l'api altered, token requis"></i>
       </span>
     </label>
+    <div class="relative inline-flex items-center">
+      <div *ngIf="popoverIndex === 2"
+        class="absolute z-50 mb-2 bottom-full left-1/2 -translate-x-1/2 bg-white text-black text-xs rounded shadow-lg px-3 py-2"
+        style="min-width: 180px;">
+        Recherche en direct via API Altered
+      </div>
+      <i class="inline-flex items-center fas fa-question-circle text-sm text-gray-300 cursor-pointer"
+        (click)="showPopover(2)" (document:click)="hidePopover()" (click)="$event.stopPropagation()">
+      </i>
+    </div>
   </div>
 
   <!-- Submit -->
@@ -127,7 +142,7 @@
     <button type="submit" [disabled]="!isFormValid()" [ngClass]="{
         'bg-gray-500 cursor-not-allowed': !isFormValid(),
         'bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600': isFormValid()
-      }" class="px-6 py-3 text-white font-semibold rounded-lg shadow-lg transition">
+      }" class="w-full sm:w-auto px-6 py-3 text-white font-semibold rounded-lg shadow-lg transition">
       🔍 Rechercher
     </button>
   </div>

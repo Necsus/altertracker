@@ -77,13 +77,12 @@ export class AuthViewService {
 
     const currentTime = Date.now();
     const timeUntilRefresh = expirationTime - currentTime - 60000;
-    console.log(timeUntilRefresh);
     if (timeUntilRefresh > 0) {
       this.refreshTimeout = setTimeout(() => {
         this.refreshToken();
       }, timeUntilRefresh);
     } else {
-      this.logout();
+      this.refreshToken();
     }
   }
 
@@ -116,7 +115,6 @@ export class AuthViewService {
   private getTokenExpirationTime(token: string): number | null {
     try {
       const payload = JSON.parse(atob(token.split('.')[1]));
-      console.log('Decoded payload:', payload);
       return payload.exp ? payload.exp * 1000 : null; // Convertit en millisecondes
     } catch (e) {
       return null;

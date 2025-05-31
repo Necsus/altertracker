@@ -43,6 +43,7 @@ export class AuthService {
   refresh$(): Observable<void> {
     return this.authApiService.refresh$().pipe(map((response: any) => {
       this.authStorageService.storeAccessToken(response.access_token);
+      return response.access_token;
     }));
   }
 

@@ -186,7 +186,7 @@ def refresh():
     new_refresh_token = str(uuid.uuid4())
     redis_client.delete(f"refresh_token:{access_token}")
     redis_client.setex(f"refresh_token:{new_access_token}", REFRESH_TOKEN_EXPIRATION, new_refresh_token)
-    return jsonify(access_token=access_token), 200
+    return jsonify(access_token=new_access_token), 200
 
 @auth_bp.route('/logout', methods=['POST'])
 def logout():
@@ -194,6 +194,7 @@ def logout():
     auth_header = request.headers.get('Authorization')
     # Extraire le token Bearer
     access_token = auth_header.split(' ')[1]
+    print(access_token)
     if access_token:
       redis_client.delete(f"refresh_token:{access_token}")
     response = jsonify({"message": "Logout successful"})
