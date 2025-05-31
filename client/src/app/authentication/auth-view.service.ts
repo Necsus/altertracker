@@ -54,7 +54,10 @@ export class AuthViewService {
         this.router.navigate(['/login']);
       },
       error: (err: any) => {
+        clearTimeout(this.refreshTimeout);
         this.authStorageService.clearAccessToken();
+        this.loggedIn.next(false);
+        this.router.navigate(['/login']);
       }
     });
   }
