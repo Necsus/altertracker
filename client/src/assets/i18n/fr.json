@@ -2,8 +2,64 @@
   "translation": {
     "selectlanguage": "Langue",
     "language": {
-      "en": "Anglais",
-      "fr": "Français"
+      "en": "en",
+      "fr": "fr",
+      "english": "Anglais",
+      "french": "Français"
     }
+  },
+  "header": {
+    "home": "Accueil",
+    "cards": "Cartes",
+    "stats": "Stats",
+    "about": "À propos",
+    "admin": "Admin",
+    "profile": "Profil",
+    "messages": "Messages",
+    "token": "Token Altered",
+    "searches": "Mes recherches",
+    "alerts": "Mes alertes",
+    "collection": "Ma collection",
+    "purchase_offers": "Offres d'achat",
+    "logout": "Déconnexion",
+    "login": "Login",
+    "register": "Inscription"
+  },
+  "footer": {
+    "copyright": "© 2025 AlterTracker est un contenu non officiel créé par un fan d'Altered.",
+    "altered_tcg": "Altered TCG est la propriété d'Equinox."
+  },
+  "home": {
+    "title": "AlterTracker – Analyse et Suivi du Marché pour Altered TCG",
+    "description_part1": "AlterTracker est l’outil incontournable pour les joueurs d’",
+    "description_link": "Altered TCG",
+    "description_part2": ". Explorez les cartes du jeu grâce à une recherche avancée, des statistiques complètes et un suivi du marché en temps réel.",
+    "create_account": "Créer un compte gratuitement",
+    "limitations": "Des limitations ont été mises en place par Altered. Le processus de récupération est actuellement géré en file d’attente, en attendant les directives officielles. 🙏 Merci pour votre compréhension et votre patience. Ce projet me tient à cœur, et je suis pleinement engagé à le faire avancer.",
+    "advanced_search_title": "🔍 Recherche avancée de cartes",
+    "advanced_search_description": "Filtrez les cartes par nom, faction, coût, rareté, effet et plus encore. Retrouvez facilement les cartes Altered qui correspondent à votre style ou à votre collection.",
+    "market_tracking_title": "💸 Suivi du marché en temps réel",
+    "market_tracking_description_part1": "Consultez les prix actuels des cartes Altered, identifiez les bonnes affaires, et utilisez les ",
+    "market_tracking_description_highlight": "alertes de prix personnalisées",
+    "market_tracking_description_part2": " pour ne rater aucune opportunité.",
+    "coming_soon_title": "🧭 Ce qui arrive bientôt",
+    "coming_soon_items": {
+      "stats": "Statistiques détaillées à la carte (popularité...)",
+      "collection_import": "Importation decks",
+      "card_scan": "Scan ta carte et estimation de prix",
+      "exchange_facilitation": "Facilitation des échanges pour des uniques AAA (système de messagerie)",
+      "translation": "Traduction anglaise"
+    },
+    "new_cards_title": "🃏 Nouvelles cartes scannées (aujourd'hui)",
+    "new_offers_title": "💰 Nouvelles offres de vente (aujourd'hui)",
+    "deleted_offers_title": "❌ Offres disparues (aujourd'hui)",
+    "edited_offers_title": "✏️ Offres modifiées (aujourd'hui)",
+    "registered_users_title": "👥 Utilisateurs inscrits :",
+    "join_community_title": "🚀 Rejoignez la communauté",
+    "join_community_description": "AlterTracker est un projet indépendant construit avec passion. Vos idées, retours et suggestions le font évoluer.",
+    "start_now": "Commencer maintenant",
+    "old_price": "Ancien prix",
+    "detected_at": "détecté le",
+    "price": "Prix"
   }
 }

@@ -1,0 +1,7 @@
+<div class="flex items-center space-x-2">
+  <select [(ngModel)]="selectedLanguage" (change)="changeLanguage($event)"
+    class="bg-gray-700 text-gray-300 border border-gray-600 rounded-lg px-2 py-1 focus:ring-2 focus:ring-blue-400">
+    <option value="en">{{ 'translation.language.en' | translate }}</option>
+    <option value="fr">{{ 'translation.language.fr' | translate }}</option>
+  </select>
+</div>

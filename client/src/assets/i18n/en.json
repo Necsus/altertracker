@@ -2,8 +2,64 @@
   "translation": {
     "selectlanguage": "Language",
     "language": {
-      "en": "English",
-      "fr": "French"
+      "en": "en",
+      "fr": "fr",
+      "english": "English",
+      "french": "French"
     }
+  },
+  "header": {
+    "home": "Home",
+    "cards": "Cards",
+    "stats": "Stats",
+    "about": "About",
+    "admin": "Admin",
+    "profile": "Profile",
+    "messages": "Messages",
+    "token": "Token Altered",
+    "searches": "My Searches",
+    "alerts": "My Alerts",
+    "collection": "My Collection",
+    "purchase_offers": "Purchase Offers",
+    "logout": "Logout",
+    "login": "Login",
+    "register": "Register"
+  },
+  "footer": {
+    "copyright": "© 2025 AlterTracker is unofficial content created by a fan of Altered.",
+    "altered_tcg": "Altered TCG is the property of Equinox."
+  },
+  "home": {
+    "title": "AlterTracker – Market Analysis and Tracking for Altered TCG",
+    "description_part1": "AlterTracker is the essential tool for players of ",
+    "description_link": "Altered TCG",
+    "description_part2": ". Explore the game cards with advanced search, complete statistics, and real-time market tracking.",
+    "create_account": "Create a free account",
+    "limitations": "Limitations have been set by Altered. The retrieval process is currently managed in a queue, awaiting official guidance. 🙏 Thank you for your understanding and patience. This project is close to my heart, and I am fully committed to advancing it.",
+    "advanced_search_title": "🔍 Advanced card search",
+    "advanced_search_description": "Filter cards by name, faction, cost, rarity, effect and more. Easily find Altered cards that match your style or collection.",
+    "market_tracking_title": "💸 Real-time market tracking",
+    "market_tracking_description_part1": "Check the current prices of Altered cards, spot great deals, and use ",
+    "market_tracking_description_highlight": "custom price alerts",
+    "market_tracking_description_part2": " to never miss an opportunity.",
+    "coming_soon_title": "🧭 Coming soon",
+    "coming_soon_items": {
+      "stats": "Detailed card statistics (popularity...)",
+      "collection_import": "Deck import",
+      "card_scan": "Scan your card and get price estimation",
+      "exchange_facilitation": "Trade facilitation for unique AAA cards (messaging system)",
+      "translation": "English translation"
+    },
+    "new_cards_title": "🃏 New scanned cards (today)",
+    "new_offers_title": "💰 New sale offers (today)",
+    "deleted_offers_title": "❌ Removed offers (today)",
+    "edited_offers_title": "✏️ Edited offers (today)",
+    "registered_users_title": "👥 Registered users:",
+    "join_community_title": "🚀 Join the community",
+    "join_community_description": "AlterTracker is an independent project built with passion. Your ideas, feedback and suggestions help it grow.",
+    "start_now": "Start now",
+    "old_price": "Old price",
+    "detected_at": "Detected at",
+    "price": "Price"
   }
 }
