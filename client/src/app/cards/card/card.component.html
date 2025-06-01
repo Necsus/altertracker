@@ -24,7 +24,7 @@
     <div class="justify-center">
       @if (card.isSuspended) {
       <div class="flex items-center py-2">
-        <span class="text-red-500 font-bold">Carte suspendue</span>
+        <span class="text-red-500 font-bold">{{ 'cards.suspended' | translate }}</span>
       </div>
       }
 
@@ -39,7 +39,7 @@
         </div>
         } @else {
         @if (card.price) {
-        <p class="text-gray-300 mr-2" title="{{card.price_updated_at}}">Market :
+        <p class="text-gray-300 mr-2" title="{{card.price_updated_at}}">{{ 'home.price' | translate }}&nbsp;:
         </p>
         <button (click)="goToOffer()" class="text-green-500 hover:text-green-700 transition duration-300">
           {{ card.price | currency:(card.price_currency ||
