@@ -61,5 +61,58 @@
     "old_price": "Old price",
     "detected_at": "Detected at",
     "price": "Price"
+  },
+  "progress": {
+    "progress": "Progress:",
+    "remaining_cards": "cards remaining..."
+  },
+  "cards": {
+    "title": "🔍 Search cards",
+    "subtitle_1": "among the",
+    "subtitle_2": "Altered cards including",
+    "subtitle_3": "on the market",
+    "found_cards": "cards found",
+    "open_all_groups": "Open all groups",
+    "close_all_groups": "Close all groups",
+    "form_name": "Name or Reference (ALT_)",
+    "form_rarity": "Rarity",
+    "rarirty": {
+      "common": "Common",
+      "rare": "Rare",
+      "unik": "Unique"
+    },
+    "form_faction": "Faction",
+    "form_set": "Set",
+    "set": {
+      "coreks": "Beyond the Gates - KS",
+      "core": "Beyond the Gates",
+      "alize": "Trial by frost",
+      "bise": "Whispers from the maze"
+    },
+    "form_contain_effect": "Effect contains",
+    "form_and_contain_effect": "And effect contains",
+    "form_contain_echo_effect": "Echo effect contains",
+    "form_main_cost": "Main cost (1-3)",
+    "form_recall_cost": "Recall cost (1-3)",
+    "form_forest_power": "🌿 Forest (1-3)",
+    "form_mountain_power": "🗻 Mountain (1-3)",
+    "form_ocean_power": "💧 Ocean (1-3)",
+    "form_delete_condition": "Delete If/When",
+    "form_db_market": "Db Market",
+    "popover_db_market": "Only cards already scanned by the Live Market",
+    "form_live_market": "Live Market",
+    "popover_live_market": "Live search via Altered API",
+    "form_search": "🔍 Search",
+    "save_search": "Save search",
+    "my_searches": "My searches",
+    "name_search": "Search name",
+    "save": "Save",
+    "saved_searches": "Saved searches",
+    "no_search": "No saved search.",
+    "create_at": "Created at",
+    "only_in_market": "Only in market",
+    "in_market": "In market",
+    "load_more": "Load more",
+    "suspended": "Suspended"
   }
 }

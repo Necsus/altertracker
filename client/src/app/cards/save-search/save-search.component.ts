@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { UserSearchModel } from '../../01_models/03_business/user-search.model';
 import { UserService } from '../../03_business/user.service';
 import { ToastService } from '../../shared/services/toast/toast.service';
@@ -10,7 +11,7 @@ import { ToastService } from '../../shared/services/toast/toast.service';
   selector: 'app-save-search',
   templateUrl: './save-search.component.html',
   styleUrls: ['save-search.component.css'],
-  imports: [CommonModule, FormsModule]
+  imports: [CommonModule, FormsModule, TranslateModule]
 })
 export class SaveSearchComponent {
   @Input() canSaveSearch: boolean = false; // Indique si l'utilisateur peut sauvegarder une recherche

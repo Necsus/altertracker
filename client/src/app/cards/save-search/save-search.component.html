@@ -2,10 +2,10 @@
   class="absolute top-12 right-8 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow-lg flex items-center justify-center">
   <span class="hidden md:block">
     @if (canSaveSearch) {
-    Enregistrer la recherche
+    {{ 'cards.save_search' | translate }}
     }
     @else {
-    Mes recherches
+    {{ 'cards.my_searches' | translate }}
     }
   </span>
   <span class="block md:hidden">
@@ -21,17 +21,18 @@
   class="fixed top-0 right-0 h-full w-64 bg-gray-800 shadow-lg transform transition-transform duration-300 scroll-container overflow-auto z-50">
   <div class="p-4">
     @if (canSaveSearch) {
-    <h2 class="text-xl font-semibold text-white mb-4">Enregistrer la recherche</h2>
+    <h2 class="text-xl font-semibold text-white mb-4">{{ 'cards.save_search' | translate }}</h2>
     <form (ngSubmit)="saveSearch()">
       <div class="mb-4">
-        <label for="searchName" class="block text-sm font-medium text-gray-300">Nom de la recherche</label>
+        <label for="searchName" class="block text-sm font-medium text-gray-300">{{ 'cards.name_search' | translate
+          }}</label>
         <input type="text" id="searchName" [(ngModel)]="searchName" name="searchName"
           class="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm p-2 text-white">
       </div>
       <button type="submit" [disabled]="!lastSearchUrl || lastSearchUrl.length === 0"
         [ngClass]="{'bg-gray-500 cursor-not-allowed': !lastSearchUrl || lastSearchUrl.length === 0, 'bg-green-600 hover:bg-green-700': lastSearchUrl && lastSearchUrl.length > 0}"
         class="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-md transition duration-300">
-        Enregistrer
+        {{ 'cards.save' | translate }}
       </button>
     </form>
     }
@@ -44,20 +45,22 @@
 
     <!-- Liste des recherches -->
     <div *ngIf="!isLoading && searches.length > 0" class="mt-4 space-y-4">
-      <h3 class="text-lg font-semibold text-white">Recherches enregistrées</h3>
+      <h3 class="text-lg font-semibold text-white">{{ 'cards.saved_searches' | translate }}</h3>
       <ul class="space-y-2">
         <li *ngFor="let search of searches" (click)="goSearch(search.url_search)"
           class="bg-gray-700 p-3 rounded-lg shadow-md cursor-pointer hover:bg-gray-600">
           <h4 class="text-white font-medium">{{ search.name_search }}</h4>
           <p class="text-sm text-gray-400 break-words">{{ search.url_search }}</p>
-          <p class="text-xs text-gray-500">Créé le : {{ search.created_at | date:'short' }}</p>
+          <p class="text-xs text-gray-500">{{ 'cards.create_at' | translate }}&nbsp;:&nbsp;{{ search.created_at |
+            date:'short' }}
+          </p>
         </li>
       </ul>
     </div>
 
     <!-- Message si aucune recherche -->
     <div *ngIf="!isLoading && searches.length === 0" class="mt-4 text-center text-gray-400">
-      <p>Aucune recherche enregistrée.</p>
+      <p>{{ 'cards.no_search' | translate }}</p>
     </div>
   </div>
 </div>

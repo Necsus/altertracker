@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { CardModel } from '../../01_models/03_business/card.model';
 import { CardComponent } from '../card/card.component';
 
 @Component({
   selector: 'app-card-group',
   templateUrl: './card-group.component.html',
-  imports: [CommonModule, CardComponent]
+  imports: [CommonModule, CardComponent, TranslateModule]
 })
 export class CardGroupComponent implements OnChanges {
   @Input() groupName!: string;
@@ -15,7 +16,7 @@ export class CardGroupComponent implements OnChanges {
   @Input() allGroupsOpen: boolean = false;
   @Output() visibleCardsChange = new EventEmitter<CardModel[]>(); // Émet les cartes visibles
   isGroupOpen: boolean = false;
-  displayedCards: number = 30;
+  displayedCards: number = 50;
   onlyCardsWithPrice: boolean = false;
 
   get visibleCards(): CardModel[] {
@@ -48,12 +49,12 @@ export class CardGroupComponent implements OnChanges {
   }
 
   loadMore() {
-    this.displayedCards += 30;
+    this.displayedCards += 50;
     this.emitVisibleCards();
   }
 
   private emitVisibleCards() {
-    const indexToLoad: number = this.displayedCards - 30; // Index de la première carte à charger
+    const indexToLoad: number = this.displayedCards - 50; // Index de la première carte à charger
     const visibleCards = this.cards.slice(indexToLoad, this.displayedCards); // Cartes actuellement visibles
     if (this.isGroupOpen) {
       this.visibleCardsChange.emit(visibleCards);
