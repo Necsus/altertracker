@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, catchError, delay, map, of, throwError } from 'rxjs';
 import { OfferLiveMarketRequest } from '../01_models/02_api/card/offer-live-market-request.model';
 import { CardModel } from '../01_models/03_business/card.model';
@@ -17,7 +18,7 @@ import { SearchPanelComponent } from './search-panel/search-panel.component';
   selector: 'app-cards',
   templateUrl: './cards.component.html',
   styleUrls: ['./cards.component.css'],
-  imports: [CommonModule, SearchPanelComponent, CardGroupComponent, SaveSearchComponent]
+  imports: [CommonModule, SearchPanelComponent, CardGroupComponent, SaveSearchComponent, TranslateModule]
 })
 export class CardsComponent implements OnInit, OnDestroy {
   cards: CardModel[] = [];

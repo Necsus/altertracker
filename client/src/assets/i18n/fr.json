@@ -61,5 +61,58 @@
     "old_price": "Ancien prix",
     "detected_at": "détecté le",
     "price": "Prix"
+  },
+  "progress": {
+    "progress": "Progression :",
+    "remaining_cards": "cartes restantes..."
+  },
+  "cards": {
+    "title": "🔍 Recherche de cartes",
+    "subtitle_1": "parmis les",
+    "subtitle_2": "cartes d'Altered dont",
+    "subtitle_3": "sur le marché",
+    "found_cards": "cartes trouvées",
+    "open_all_groups": "Ouvrir tous les groupes",
+    "close_all_groups": "Fermer tous les groupes",
+    "form_name": "Nom ou Référence (ALT_)",
+    "form_rarity": "Rareté",
+    "rarirty": {
+      "common": "Commun",
+      "rare": "Rare",
+      "unique": "Unique"
+    },
+    "form_faction": "Faction",
+    "form_set": "Set",
+    "set": {
+      "coreks": "Au-delà des portes - KS",
+      "core": "Au-delà des portes",
+      "alize": "Epreuve du froid",
+      "bise": "Murmures du labyrinthe"
+    },
+    "form_contain_effect": "Effet contient",
+    "form_and_contain_effect": "Et effet contient",
+    "form_contain_echo_effect": "Effet support contient",
+    "form_main_cost": "Coût main (1-3)",
+    "form_recall_cost": "Coût réserve (1-3)",
+    "form_forest_power": "🌿 Forêt (1-3)",
+    "form_mountain_power": "🗻 Montagne (1-3)",
+    "form_ocean_power": "💧 Océan (1-3)",
+    "form_delete_condition": "Supprimer Si/S'il",
+    "form_db_market": "Db Market",
+    "popover_db_market": "Uniquement les cartes ayant déjà été scannées par le Live Market",
+    "form_live_market": "Live Market",
+    "popover_live_market": "Recherche en direct via API Altered",
+    "form_search": "🔍 Rechercher",
+    "save_search": "Enregistrer la recherche",
+    "my_searches": "Mes recherches",
+    "name_search": "Nom de la recherche",
+    "save": "Enregistrer",
+    "saved_searches": "Recherches enregistrées",
+    "no_search": "Aucune recherche enregistrée.",
+    "create_at": "Créé le",
+    "only_in_market": "Seulement en vente",
+    "in_market": "En vente",
+    "load_more": "Charger plus",
+    "suspended": "Suspendue"
   }
 }

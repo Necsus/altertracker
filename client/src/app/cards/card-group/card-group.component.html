@@ -4,13 +4,15 @@
     <!-- Case à cocher et bouton en haut à droite -->
     <div class="absolute top-4 right-4 flex items-center space-x-2">
       @if (cards.length > 0) {
-      <label for="{{ groupName }}-groupCheckbox" class="text-gray-300 text-sm">Only in market</label>
+      <label for="{{ groupName }}-groupCheckbox" class="text-gray-300 text-sm">{{ 'cards.only_in_market' | translate
+        }}</label>
       <input (change)="onOnlyCardsWithPrice($event)" type="checkbox" id="{{ groupName }}-groupCheckbox"
         class="h-4 w-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-offset-gray-800">
       }
     </div>
     <button (click)="toggleGroup()" class="w-full text-left text-2xl font-semibold mb-4 focus:outline-none">{{
-      groupName }} ({{ cards.length }})<span *ngIf="onlyCardsWithPrice">&nbsp;in market ({{ visibleCards.length
+      groupName }} ({{ cards.length }})<span *ngIf="onlyCardsWithPrice">&nbsp;{{ 'cards.in_market' | translate
+        }}&nbsp;({{ visibleCards.length
         }})</span></button>
     @if (isGroupOpen) {
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
@@ -30,7 +32,7 @@
         </svg>
         Chargement...
       </ng-template> -->
-      Charger plus
+      {{ 'cards.load_more' | translate }}
     </button>
     }
   </div>

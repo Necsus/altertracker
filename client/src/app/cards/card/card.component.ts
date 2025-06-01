@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { CardModel } from '../../01_models/03_business/card.model';
 import { UserAlertModel } from '../../01_models/03_business/user-alert.model';
 import { UserService } from '../../03_business/user.service';
@@ -13,7 +14,7 @@ import { CardImgComponent } from './card-img.component';
   selector: 'app-card',
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.css'],
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslateModule],
 })
 export class CardComponent {
   @Input() card!: CardModel; // Données de la carte
