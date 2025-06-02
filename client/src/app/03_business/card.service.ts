@@ -31,7 +31,12 @@ export class CardService {
 
   search_cards$(request: any): Observable<CardModel[]> {
     return this.cardApiService.search_cards$(request).pipe(map((dbModel: any) => {
-      return dbModel;
+      return dbModel.map((card: CardModel) => {
+        if (card.price && card.price > 0) {
+          card.visible = true;
+        }
+        return card;
+      });
     }));
   }
 

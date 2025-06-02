@@ -1,11 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { catchError, map, of, throwError } from 'rxjs';
 import { CardModel } from '../../01_models/03_business/card.model';
 import { UserAlertModel } from '../../01_models/03_business/user-alert.model';
+import { AlteredService } from '../../03_business/altered.service';
+import { CardService } from '../../03_business/card.service';
 import { UserService } from '../../03_business/user.service';
 import { AuthViewService } from '../../authentication/auth-view.service';
+import { LoaderService } from '../../shared/services/loader/loader.service';
 import { ModalService } from '../../shared/services/modal/modal.service';
 import { ToastService } from '../../shared/services/toast/toast.service';
 import { CardImgComponent } from './card-img.component';
@@ -25,7 +29,11 @@ export class CardComponent {
     private modalService: ModalService,
     private userService: UserService,
     private toastService: ToastService,
-    private authViewService: AuthViewService
+    private authViewService: AuthViewService,
+    private alteredService: AlteredService,
+    private router: Router,
+    private loaderService: LoaderService,
+    private cardService: CardService
   ) { }
 
   ngOnInit(): void {
@@ -92,5 +100,48 @@ export class CardComponent {
       console.error('Erreur lors de la copie dans le presse-papiers :', error);
       this.toastService.show('Erreur lors de la copie.', 'error', 5000);
     });
+  }
+
+  refreshOffer(): void {
+    const alteredToken = sessionStorage.getItem('altered_token');
+    if (!alteredToken) {
+      this.router.navigate(['/token']);
+      return;
+    }
+    if (this.card) {
+      this.alteredService.getMarketOffer$(this.card, alteredToken)
+        .pipe(
+          map((offerRequest) => {
+            let request = [];
+            request.push(offerRequest);
+            this.cardService.post_offer_live_market$(request).subscribe({
+              next: () => { },
+              error: (error) => {
+                console.error('Erreur lors de la mise à jour des offres live market :', error);
+              }
+            });
+          }),
+          catchError((error) => {
+            if (error.message === 'Token invalide ou expiré. Veuillez le réinsérer.') {
+              this.handleTokenError(error);
+              return of();
+            }
+            return throwError(() => error);
+          })
+        )
+        .subscribe({
+          complete: () => {
+            this.card.isProcessing = false;
+          }
+        });
+    }
+  }
+  private handleTokenError(error: any): void {
+    console.error('Erreur 401 détectée : Redirection vers la page /token.');
+    sessionStorage.removeItem('altered_token');
+    sessionStorage.removeItem('cgu_altered_token');
+    this.loaderService.hide();
+    this.toastService.show(error.message, 'error', 5000);
+    this.router.navigate(['/token']);
   }
 }

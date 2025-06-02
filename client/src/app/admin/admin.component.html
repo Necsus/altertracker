@@ -25,7 +25,8 @@
       [disabled]="status === 'running' || !socketConnected">
       <option *ngFor="let script of scripts" [value]="script">{{ script }}</option>
     </select>
-    @if (selectedScript === 'script_get_unique' || selectedScript === 'script_get_en') {
+    @if (selectedScript === 'script_get_unique' || selectedScript === 'script_get_en' || selectedScript ===
+    'script_get_offers') {
     <select [(ngModel)]="selectedFaction" class="w-full bg-gray-700 text-white p-2 rounded-md"
       [disabled]="status === 'running' || !socketConnected">
       <option value="">-- Faction --</option>

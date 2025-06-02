@@ -98,7 +98,7 @@
     "form_mountain_power": "🗻 Mountain (1-3)",
     "form_ocean_power": "💧 Ocean (1-3)",
     "form_delete_condition": "Delete If/When",
-    "form_db_market": "Db Market",
+    "form_db_market": "Available offers",
     "popover_db_market": "Only cards already scanned by the Live Market",
     "form_live_market": "Live Market",
     "popover_live_market": "Live search via Altered API",
@@ -113,7 +113,8 @@
     "only_in_market": "Only in market",
     "in_market": "In market",
     "load_more": "Load more",
-    "suspended": "Suspended"
+    "suspended": "Suspended",
+    "unavailable": "Unavailable"
   },
   "about": {
     "title": "About AlterTracker",
