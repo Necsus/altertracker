@@ -236,35 +236,34 @@ def is_image_url_accessible(url: str) -> bool:
 def send_user_alert(card: Card, type_changement: str):
     alerts = get_user_alert_by_reference_card_data(card.reference)
     for alert in alerts:
-        if alert.mail_active:
-            user = get_user_by_id_data(alert.id_user)
-            if user:
-                print(f"{card.price} {card.price_currency}")
-                # Vérification de l'image
-                image_url = card.imagePath if is_image_url_accessible(card.imagePath) else "/static/img/cardback.webp"
-                # Envoi de la notif de modif de prix
-                template_path = os.path.join(os.path.dirname(__file__), '../templates/user-alert.html')
-                send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
-                    to=[{"email": user.email, "name": user.username}],
-                    subject= f"Changement de prix de votre favoris : {card.name}",
-                    html_content=render_template_with_data(template_path, {
-                        "USERNAME": user.username,
-                        "CHANGEMENT_TYPE": type_changement,
-                        "NAME_CARD": card.name,
-                        "REFERENCE": card.reference,
-                        "PRICE": f"{card.price} {card.price_currency}" if card.price and card.price_currency else "N/A",
-                        "DATE_EFFECTIVE": card.price_updated_at.strftime("%d/%m/%Y %H:%M"),
-                        "URL_IMAGE_CARD": image_url,
-                        "LIEN_VERS_ALERTS": f"{ConfigEnv.ANGULAR_URL}/alerts",
-                        "YEAR": str(datetime.now().year)
-                    }),
-                    sender={"name": "AlterTracker", "email": "noreply@altertracker.com"}
-                )
-                try:
-                    response = mail_api.send_transac_email(send_smtp_email)
-                    print(response)
-                except ApiException as e:
-                    print("Exception lors de l'appel à l’API Sendinblue: %s\n" % e)
+        user = get_user_by_id_data(alert.id_user)
+        if user:
+            print(f"{card.price} {card.price_currency}")
+            # Vérification de l'image
+            image_url = card.imagePath if is_image_url_accessible(card.imagePath) else "/static/img/cardback.webp"
+            # Envoi de la notif de modif de prix
+            template_path = os.path.join(os.path.dirname(__file__), '../templates/user-alert.html')
+            send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
+                to=[{"email": user.email, "name": user.username}],
+                subject= f"Changement de prix de votre favoris : {card.name}",
+                html_content=render_template_with_data(template_path, {
+                    "USERNAME": user.username,
+                    "CHANGEMENT_TYPE": type_changement,
+                    "NAME_CARD": card.name,
+                    "REFERENCE": card.reference,
+                    "PRICE": f"{card.price} {card.price_currency}" if card.price and card.price_currency else "N/A",
+                    "DATE_EFFECTIVE": card.price_updated_at.strftime("%d/%m/%Y %H:%M"),
+                    "URL_IMAGE_CARD": image_url,
+                    "LIEN_VERS_ALERTS": f"{ConfigEnv.ANGULAR_URL}/alerts",
+                    "YEAR": str(datetime.now().year)
+                }),
+                sender={"name": "AlterTracker", "email": "noreply@altertracker.com"}
+            )
+            try:
+                response = mail_api.send_transac_email(send_smtp_email)
+                print(response)
+            except ApiException as e:
+                print("Exception lors de l'appel à l’API Sendinblue: %s\n" % e)
 
 def update_card_service(data: dict) -> Optional[Card]:
     return update_card_data(data)
