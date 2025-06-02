@@ -87,7 +87,12 @@ export class AdminComponent implements OnInit {
   runScript() {
     let url = `${environment.api_url}/script/start/${this.selectedScript}`;
     if (this.selectedScript === 'script_get_unique' || this.selectedScript === 'script_get_en' || this.selectedScript === 'script_get_offers') {
-      url += `/${Number(this.selectedWorkers)}/${this.selectedFaction}`;
+      if (this.selectedWorkers) {
+        url += `/${this.selectedWorkers}`;
+      }
+      if (this.selectedFaction) {
+        url += `/${this.selectedFaction}`;
+      }
     }
     const headers = new HttpHeaders({
       Authorization: `Bearer ${localStorage.getItem('access_token')}` // Remplacez 'your-token-here' par le token réel

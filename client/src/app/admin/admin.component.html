@@ -27,16 +27,6 @@
     </select>
     @if (selectedScript === 'script_get_unique' || selectedScript === 'script_get_en' || selectedScript ===
     'script_get_offers') {
-    <select [(ngModel)]="selectedFaction" class="w-full bg-gray-700 text-white p-2 rounded-md"
-      [disabled]="status === 'running' || !socketConnected">
-      <option value="">-- Faction --</option>
-      <option value="AX">Axiom</option>
-      <option value="BR">Bravos</option>
-      <option value="LY">Lyra</option>
-      <option value="MU">Muna</option>
-      <option value="OR">Ordis</option>
-      <option value="YZ">Yzmir</option>
-    </select>
     <select [(ngModel)]="selectedWorkers" class="w-full bg-gray-700 text-white p-2 rounded-md"
       [disabled]="status === 'running' || !socketConnected">
       <option value="0">-- Workers --</option>
@@ -50,6 +40,16 @@
       <option>8</option>
       <option>9</option>
       <option>10</option>
+    </select>
+    <select [(ngModel)]="selectedFaction" class="w-full bg-gray-700 text-white p-2 rounded-md"
+      [disabled]="status === 'running' || !socketConnected">
+      <option value="">-- Faction --</option>
+      <option value="AX">Axiom</option>
+      <option value="BR">Bravos</option>
+      <option value="LY">Lyra</option>
+      <option value="MU">Muna</option>
+      <option value="OR">Ordis</option>
+      <option value="YZ">Yzmir</option>
     </select>
     }
     <button (click)="runScript()"

@@ -13,7 +13,7 @@ class ApiOffer:
     lowerOfferId = 0
     reference = None
 
-def run_script(faction=None, workers=3):
+def run_script(faction=None, workers=1):
     # Démarrer le timer
     start_time = time.time()
     Session = scoped_session(sessionmaker(bind=db.engine))
@@ -49,6 +49,7 @@ def run_script(faction=None, workers=3):
                 offers = []
                 page = 1
                 while True:
+                    time.sleep(0.5)
                     cards = card_routine.get_unique_offers(
                         dbcard.name_en, dbcard.faction, dbcard.set, page
                     )
@@ -69,8 +70,9 @@ def run_script(faction=None, workers=3):
                         data['currency'] = "EUR"
                         data['status'] = "available"
                         offers.append(data)
+                    if len(cards['hydra:member']) < 36:
+                        break
                     page += 1
-                    time.sleep(0.5)  # Pause pour éviter de surcharger l'API
                 socketio.emit('script_output', {'data': f"Nb cards avec offres : {len(offers)}"})
                 offers += addNoOffers(offers, dbcard.name_en, dbcard.faction, dbcard.set)
                 socketio.emit('script_output', {'data': f"Nb cards : {len(offers)} -> Go To post_offer_live_market_service"})

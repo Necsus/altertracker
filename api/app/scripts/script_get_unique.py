@@ -167,7 +167,8 @@ def run_script(faction=None, workers=3):
                                         tempCard = map_effect_to_card(tempCard, detailsCard)
                                     socketio.emit('script_output', {'data': f"Ajout de la carte : {tempCard.name_en} ({tempCard.reference})"})
                                     cardToInsert.append(tempCard)
-
+                                if len(cards['hydra:member']) < 36:
+                                    break
                                 page += 1
 
                             if goToForestPowerFilter:
@@ -251,7 +252,8 @@ def run_script(faction=None, workers=3):
                                             tempCard = map_effect_to_card(tempCard, detailsCard)
                                         socketio.emit('script_output', {'data': f"Ajout de la carte : {tempCard.name_en} ({tempCard.reference})"})
                                         cardToInsert.append(tempCard)
-
+                                    if len(cards['hydra:member']) < 36:
+                                        break
                                     page += 1
 
                         if cardToInsert:
