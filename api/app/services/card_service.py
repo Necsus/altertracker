@@ -39,11 +39,12 @@ def get_card_by_reference_with_alert_service(reference: str, user_id: int) -> Op
 def get_card_by_reference_service(reference: str) -> Optional[Card]:
     return get_card_by_reference_data(reference)
 
-def search_cards_service(name, rarity, faction, set, main_effect, main_effect_2, echo_effect, main_cost_range, recall_cost_range, forest_cost_range, mountain_cost_range, ocean_cost_range,
-    in_market, no_condition, user_id) -> List[dict]:
+def search_cards_service(name, rarity, faction, set, main_effect, main_effect_2, echo_effect, main_cost_range, recall_cost_range,
+    forest_cost_range, mountain_cost_range, ocean_cost_range, no_condition,
+    in_market, price_range, user_id) -> List[dict]:
     return search_cards_data(name, rarity, faction, set, main_effect, main_effect_2, echo_effect,
         main_cost_range, recall_cost_range, forest_cost_range, mountain_cost_range, ocean_cost_range,
-        in_market, no_condition, user_id)
+        no_condition, in_market, price_range, user_id)
 
 def post_offer_live_market_service(data: List[dict]) -> None:
     """Optimisation de la gestion des offres pour réduire les appels à la base de données."""
@@ -98,7 +99,7 @@ def post_offer_live_market_service(data: List[dict]) -> None:
             existing_card.price = new_offer.price
             existing_card.url_offer = new_offer.link_offer
             existing_card.price_currency = new_offer.currency
-            cards_to_update.append(existing_card)  # Ajouter à la liste des mises à jour
+            existing_card.price_updated_at = datetime.now()
             send_user_alert(existing_card, "edited" if existing_offer else "added")
         else:
             if existing_offer and not existing_offer.is_deleted:
@@ -111,7 +112,7 @@ def post_offer_live_market_service(data: List[dict]) -> None:
                 existing_card.price = None
                 existing_card.price_currency = None
                 existing_card.url_offer = None
-                cards_to_update.append(existing_card)  # Ajouter à la liste des mises à jour
+                existing_card.price_updated_at = datetime.now()
                 send_user_alert(existing_card, "expired")
             else:
                 # Pas d'offre existante, rien à faire pour cette carte

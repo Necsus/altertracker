@@ -99,6 +99,7 @@
     "form_ocean_power": "💧 Océan (1-3)",
     "form_delete_condition": "Supprimer Si/S'il",
     "form_db_market": "Offres disponibles",
+    "form_price_range": "Prix (min-max)",
     "popover_db_market": "Uniquement les cartes ayant déjà été scannées par le Live Market",
     "form_live_market": "Live Market",
     "popover_live_market": "Recherche en direct via API Altered",

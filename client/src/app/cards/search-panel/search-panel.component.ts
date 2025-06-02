@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { CardModel } from '../../01_models/03_business/card.model';
 import { CardService } from '../../03_business/card.service';
+import { AuthViewService } from '../../authentication/auth-view.service';
 import { withLoader } from '../../shared/services/loader/loader.operator';
 import { LoaderService } from '../../shared/services/loader/loader.service';
-import { ToastService } from '../../shared/services/toast/toast.service';
 
 @Component({
   selector: 'app-search-panel',
@@ -18,15 +18,20 @@ export class SearchPanelComponent implements OnInit {
   @Output() cardsRetrieved = new EventEmitter<{ cards: CardModel[], searchOffers: boolean }>();
   searchForm!: FormGroup;
   popoverIndex: number | null = null;
+  isLoggedIn = false;
   constructor(
     private fb: FormBuilder,
     private loaderService: LoaderService,
     private cardService: CardService,
-    private toastService: ToastService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private authViewService: AuthViewService,
+    private router: Router
   ) { }
 
   ngOnInit() {
+    this.authViewService.isLoggedIn$.subscribe(status => {
+      this.isLoggedIn = status;
+    });
     this.searchForm = this.fb.group({
       name: [''],
       rarity: [''],
@@ -40,9 +45,9 @@ export class SearchPanelComponent implements OnInit {
       forest_power_range: [''],
       mountain_power_range: [''],
       ocean_power_range: [''],
-      in_market: [''],
       no_condition: [''],
-      search_offers: [false]
+      in_market: [''],
+      price_range: ['']
     });
 
     this.route.queryParams.subscribe((queryParams) => {
@@ -63,6 +68,7 @@ export class SearchPanelComponent implements OnInit {
         mountain_power_range: queryParams['mountain_power_range'] || '',
         ocean_power_range: queryParams['ocean_power_range'] || '',
         in_market: queryParams['in_market'] || '',
+        price_range: queryParams['price_range'] || '',
         no_condition: queryParams['no_condition'] || ''
       });
     });
@@ -71,13 +77,14 @@ export class SearchPanelComponent implements OnInit {
   isFormValid(): boolean {
     const { name, rarity, faction, set, main_effect, main_effect_2, echo_effect,
       main_cost_range, recall_cost_range, forest_power_range, mountain_power_range, ocean_power_range,
-      in_market, no_condition } = this.searchForm.value;
+      in_market, price_range, no_condition } = this.searchForm.value;
     // Vérifie si au moins un champ est rempli ou si forest_power, mountain_power ou ocean_power est égal à 0
     return !!(
       name || rarity || faction || set || main_effect || main_effect_2 || echo_effect || main_cost_range || recall_cost_range ||
       forest_power_range !== '' && forest_power_range !== null && forest_power_range !== undefined ||
       mountain_power_range !== '' && mountain_power_range !== null && mountain_power_range !== undefined ||
       ocean_power_range !== '' && ocean_power_range !== null && ocean_power_range !== undefined ||
+      price_range !== '' && price_range !== null && price_range !== undefined ||
       in_market || no_condition
     );
   }
@@ -101,6 +108,12 @@ export class SearchPanelComponent implements OnInit {
   }
 
   searchCards(criteria: any): void {
+    if (criteria.in_market) {
+      if (!this.isLoggedIn) {
+        this.router.navigate(['/login']);
+        return;
+      }
+    }
     const request = {
       name: criteria.name,
       rarity: criteria.rarity,
@@ -114,15 +127,16 @@ export class SearchPanelComponent implements OnInit {
       forest_power_range: this.buildRange(criteria.forest_power_range),
       mountain_power_range: this.buildRange(criteria.mountain_power_range),
       ocean_power_range: this.buildRange(criteria.ocean_power_range),
+      no_condition: criteria.no_condition,
       in_market: criteria.in_market,
-      no_condition: criteria.no_condition
+      price_range: this.buildRange(criteria.price_range)
     }
     let searchObservable = this.cardService.search_cards$(request);
     // Appliquer conditionnellement le pipe `withLoader`
     searchObservable = searchObservable.pipe(withLoader(this.loaderService));
     searchObservable.subscribe({
       next: (data: CardModel[]) => {
-        this.cardsRetrieved.emit({ cards: data, searchOffers: criteria.search_offers });
+        this.cardsRetrieved.emit({ cards: data, searchOffers: criteria.in_market });
       },
       error: (error) => {
         console.error('Error fetching card data:', error);

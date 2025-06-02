@@ -63,12 +63,13 @@ def search_cards_route():
         forest_power_range = data.get('forest_power_range')
         mountain_power_range = data.get('mountain_power_range')
         ocean_power_range = data.get('ocean_power_range')
-        in_market = data.get('in_market')
         no_condition = data.get('no_condition')
+        in_market = data.get('in_market')
+        price_range = data.get('price_range')
         cards = search_cards_service(
             name, rarity, faction, set, main_effect, main_effect_2, echo_effect,
             main_cost_range, recall_cost_range, forest_power_range, mountain_power_range, ocean_power_range,
-            in_market, no_condition, user_id
+            no_condition, in_market, price_range, user_id
         )
         return jsonify(cards), 200
     except Exception as e:
