@@ -70,6 +70,7 @@ def run_script(faction=None, workers=3):
                         data['status'] = "available"
                         offers.append(data)
                     page += 1
+                    time.sleep(0.5)  # Pause pour éviter de surcharger l'API
                 socketio.emit('script_output', {'data': f"Nb cards avec offres : {len(offers)}"})
                 offers += addNoOffers(offers, dbcard.name_en, dbcard.faction, dbcard.set)
                 socketio.emit('script_output', {'data': f"Nb cards : {len(offers)} -> Go To post_offer_live_market_service"})
@@ -151,4 +152,4 @@ def run_script(faction=None, workers=3):
 
     print(f"Temps d'exécution : {int(hours):02}:{int(minutes):02}:{int(seconds):02}")
     socketio.emit('script_output', {'data': f"Temps d'exécution : {int(hours):02}:{int(minutes):02}:{int(seconds):02}"})
-    print(f"GET UNIQUE terminé")
+    print(f"GET UNIQUE OFFERS terminé")

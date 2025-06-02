@@ -70,9 +70,9 @@ def run_script(faction=None, workers=3):
                 # Afficher la progression au format "1/34"
                 socketio.emit('script_output', {'data': f"\033[94mProgression : {count}/{len(subset)}\033[0m"})  # En bleu pour plus de visibilité
                 forestPowers = list(range(0, 11))
-                filtered_mainCosts = [cost for cost in mainCosts if dbcard.MAIN_COST - 4 <= cost <= dbcard.MAIN_COST + 4]
+                filtered_mainCosts = [cost for cost in mainCosts if dbcard.MAIN_COST - 3 <= cost <= dbcard.MAIN_COST + 3]
                 for mainCost in filtered_mainCosts:
-                    filtered_recallCosts = [cost for cost in recallCosts if dbcard.RECALL_COST - 4 <= cost <= dbcard.RECALL_COST + 4]
+                    filtered_recallCosts = [cost for cost in recallCosts if dbcard.RECALL_COST - 3 <= cost <= dbcard.RECALL_COST + 3]
                     for recallCost in filtered_recallCosts:
                         cardToInsert = []
                         goToForestPowerFilter = False

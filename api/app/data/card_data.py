@@ -34,7 +34,7 @@ def get_card_by_reference_data(reference: str) -> Optional[dict]:
 
 def search_cards_data(name, rarity, faction, set, main_effect, main_effect_2,
     echo_effect, main_cost_range, recall_cost_range, forest_power_range, mountain_power_range, ocean_power_range,
-    in_market, no_condition, user_id):
+    no_condition, in_market, price_range, user_id):
     # Vérifier si le nom correspond à la regexp ^ALT_
     if name and re.match(r'^ALT_', name):
         query = db.session.query(Card) if not user_id else db.session.query(
@@ -160,6 +160,14 @@ def search_cards_data(name, rarity, faction, set, main_effect, main_effect_2,
 
     if in_market:
         query = query.filter(Card.price.isnot(None))
+        if price_range:
+            if 'min' in price_range and 'max' in price_range and price_range['min'] == price_range['max']:
+                query = query.filter(Card.price == price_range['min'])
+            else:
+                if 'min' in price_range:
+                    query = query.filter(Card.price >= price_range['min'])
+                if 'max' in price_range:
+                    query = query.filter(Card.price <= price_range['max'])
 
     if no_condition:
         query = query.filter(

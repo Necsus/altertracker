@@ -121,6 +121,11 @@
         {{ 'cards.form_db_market' | translate }}
       </span>
     </label>
+    <div *ngIf="searchForm.get('in_market')?.value">
+      <label class="block mb-1 text-sm font-semibold">{{ 'cards.form_price_range' | translate
+        }}</label>
+      <input formControlName="price_range" type="text" class="w-full p-2 bg-gray-700 rounded-lg focus:ring-2" />
+    </div>
     <!-- <div class="relative inline-flex items-center">
       <div *ngIf="popoverIndex === 1"
         class="absolute z-50 mb-2 bottom-full left-1/2 -translate-x-1/2 bg-white text-black text-xs rounded shadow-lg px-3 py-2"
