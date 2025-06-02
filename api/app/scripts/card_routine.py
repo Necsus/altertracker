@@ -1,5 +1,11 @@
 import requests
 from urllib.parse import urlencode
+from app.extensions import db
+from app.models.cookie_manager import CookieManager
+
+_token = ''
+_token0 = ''
+_token1 = ''
 
 def get_cards(page: int, set: str, rarity: str):
     base_url = "https://api.altered.gg/cards"
@@ -132,4 +138,76 @@ def get_offer_by_reference(reference: str, token: str):
     except requests.exceptions.RequestException as e:
         # Gérer les erreurs de requête
         print(f"\033[91mErreur lors de la requête : {e}\033[0m")
+        return None
+    
+def getToken() -> str:
+    global _token
+    global _token0
+    global _token1
+    if _token:
+        return _token
+    try:
+        
+        headers = {
+            "Cookie": f"__Secure-next-auth.callback-url=https%3A%2F%2Fwww.altered.gg;__Secure-next-auth.session-token.0=={_token0};__Secure-next-auth.session-token.1={_token1}",
+            "accept": "*/*"
+        }
+        response = requests.get("https://api.altered.gg/api/auth/session", headers=headers)
+        response.raise_for_status()
+
+        for cookie in response.cookies:
+            if cookie.name == '__Secure-next-auth.session-token.0':
+                _token0 = cookie.value
+            elif cookie.name == '__Secure-next-auth.session-token.1':
+                _token1 = cookie.value
+        data = response.json()
+        _token = data['accessToken']
+        return _token
+    except requests.exceptions.RequestException as e:
+        print(f"\033[91mErreur lors de la récupération du token : {e}\033[0m")
+        return None
+
+def get_unique_offers(name: str, faction: str, set: str, mainCost: int, recallCost: int, forestPower: list[str], page: int):
+    
+    base_url = "https://api.altered.gg/cards/stats"
+    params = {
+        "page": page,
+        "cardSet[]": set,
+        "cardType[]": "CHARACTER",
+        "factions[]": faction,
+        "forestPower[]": forestPower,
+        "mainCost[]": mainCost,
+        "recallCost[]": recallCost,
+        "rarity[]": "UNIQUE",
+        "translations.name": f"\"{name}\"",
+        "inSale": True,
+        "itemsPerPage": 36,
+        "locale": "fr-fr"
+    }
+    token = getToken()
+    headers = {
+        "authorization": f"Bearer {token}",
+        "accept": "*/*"
+    }
+
+    # Construire l'URL avec les paramètres encodés
+    url = f"{base_url}?{urlencode(params, doseq=True)}"
+    try:
+        # Effectuer une requête GET vers l'URL
+        response = requests.get(url, headers=headers)
+        
+        # Vérifier si la requête a réussi (code 200)
+        response.raise_for_status()
+        
+        # Récupérer les données au format JSON
+        data = response.json()
+
+        if data['hydra:totalItems'] <= 0:
+            return None
+
+        # Retourner les données
+        return data
+    except requests.exceptions.RequestException as e:
+        # Gérer les erreurs de requête
+        # print(f"\033[91mErreur lors de la requête : {e}\033[0m")
         return None
