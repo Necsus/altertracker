@@ -116,7 +116,10 @@ def post_offer_live_market_service(data: List[dict]) -> None:
                 send_user_alert(existing_card, "expired")
             else:
                 # Pas d'offre existante, rien à faire pour cette carte
-                cards_to_update.append(existing_card)
+                existing_card.price = None
+                existing_card.price_currency = None
+                existing_card.url_offer = None
+                existing_card.price_updated_at = datetime.now()
 
     # Appliquer les mises à jour de `price_updated_at` en une seule fois
     now = datetime.now()
