@@ -35,7 +35,6 @@ export class CardGroupComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['autoOpen'] && this.autoOpen) {
       this.isGroupOpen = true; // Ouvre automatiquement le groupe
-      this.emitVisibleCards();
     }
     if (changes['allGroupsOpen'] && !this.autoOpen) {
       this.isGroupOpen = this.allGroupsOpen; // Ouvre ou ferme en fonction de l'état global
@@ -45,12 +44,14 @@ export class CardGroupComponent implements OnChanges {
 
   toggleGroup() {
     this.isGroupOpen = !this.isGroupOpen;
-    this.emitVisibleCards();
+    // this.emitVisibleCards();
   }
 
   loadMore() {
     this.displayedCards += 100;
-    this.emitVisibleCards();
+    if (this.allGroupsOpen) {
+      this.emitVisibleCards();
+    }
   }
 
   private emitVisibleCards() {

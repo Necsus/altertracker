@@ -1,11 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, catchError, delay, map, of, throwError } from 'rxjs';
+import { OfferLiveMarketRequest } from '../01_models/02_api/card/offer-live-market-request.model';
 import { CardModel } from '../01_models/03_business/card.model';
+import { AlteredService } from '../03_business/altered.service';
 import { CardService } from '../03_business/card.service';
 import { AuthViewService } from '../authentication/auth-view.service';
+import { LoaderService } from '../shared/services/loader/loader.service';
+import { ToastService } from '../shared/services/toast/toast.service';
 import { CardGroupComponent } from './card-group/card-group.component';
 import { SaveSearchComponent } from './save-search/save-search.component';
 import { SearchPanelComponent } from './search-panel/search-panel.component';
@@ -16,7 +20,7 @@ import { SearchPanelComponent } from './search-panel/search-panel.component';
   styleUrls: ['./cards.component.css'],
   imports: [CommonModule, SearchPanelComponent, CardGroupComponent, SaveSearchComponent, TranslateModule]
 })
-export class CardsComponent implements OnInit {
+export class CardsComponent implements OnInit, OnDestroy {
   cards: CardModel[] = [];
   groupedCards: { [key: string]: CardModel[] } = {};
   nbCards: number = 0;
@@ -26,14 +30,18 @@ export class CardsComponent implements OnInit {
   isLoggedIn = false;
   allGroupsOpen: boolean = false;
   remainingCards: CardModel[] = []; // Cartes restantes à traiter
-  queueProcessing = false; // Indique si la file d'attente est en cours de traitement
+  queueProcessing = false;
+  private requestQueue: OfferLiveMarketRequest[] = [];
   private progressSubject = new BehaviorSubject<number>(0);
   progress$ = this.progressSubject.asObservable();
 
   constructor(
     private cardService: CardService,
     private router: Router,
-    private authViewService: AuthViewService) { }
+    private authViewService: AuthViewService,
+    private alteredService: AlteredService,
+    private loaderService: LoaderService,
+    private toastService: ToastService) { }
 
   ngOnInit(): void {
     this.authViewService.isLoggedIn$.subscribe(status => {
@@ -61,6 +69,15 @@ export class CardsComponent implements OnInit {
     // Ouvre tous les groupes
     this.allGroupsOpen = !this.allGroupsOpen;
   }
+  onVisibleCardsChange(visibleCards: CardModel[]): void {
+    // Exécute les requêtes pour les cartes visibles
+    if (this.isLoggedIn) {
+      this.addCardsToQueue(visibleCards);
+    } else {
+      this.router.navigate(['/login']);
+    }
+  }
+
 
   onCardsRetrieved(event: { cards: CardModel[]; searchOffers: boolean }): void {
     if (this.allGroupsOpen) {
@@ -85,5 +102,91 @@ export class CardsComponent implements OnInit {
       groups[name].push(card);
       return groups;
     }, {} as { [key: string]: CardModel[] });
+  }
+
+  addCardsToQueue(cards: CardModel[]): void {
+    cards.map((card) => card.isProcessing = true);
+    this.remainingCards.push(...cards); // Ajoute les nouvelles cartes à la file d'attente
+    if (!this.queueProcessing) {
+      this.processQueue(); // Démarre le traitement de la file d'attente si ce n'est pas déjà en cours
+    }
+  }
+
+  private processQueue(): void {
+    const alteredToken = sessionStorage.getItem('altered_token');
+    if (!alteredToken) {
+      this.router.navigate(['/token']);
+      return;
+    }
+
+    if (this.remainingCards.length === 0) {
+      this.progressSubject.next(0); // Réinitialise la progression si la file d'attente est vide
+      this.queueProcessing = false; // Arrête le traitement si la file est vide
+      // Si la file d'attente des requêtes contient des éléments, les envoyer
+      if (this.requestQueue.length > 0) {
+        this.flushRequestQueue();
+      }
+      return;
+    }
+
+    this.queueProcessing = true; // Indique que le traitement de la file d'attente est en cours
+
+    const card = this.remainingCards.shift(); // Récupère la première carte de la file d'attente
+    if (card) {
+      this.alteredService.getMarketOffer$(card, alteredToken)
+        .pipe(
+          delay(750), // Respecte le délai entre les requêtes
+          map((offerRequest) => {
+            this.requestQueue.push(offerRequest); // Ajoute la requête à la file d'attente
+            this.progressSubject.next(this.requestQueue.length); // Met à jour la progression
+            if (this.requestQueue.length >= 10) {
+              this.flushRequestQueue(); // Enregistre toutes les 10 requêtes
+            }
+          }),
+          catchError((error) => {
+            if (error.message === 'Token invalide ou expiré. Veuillez le réinsérer.') {
+              this.handleTokenError(error);
+              return of();
+            }
+            return throwError(() => error);
+          })
+        )
+        .subscribe({
+          complete: () => {
+            card.isProcessing = false;
+            this.processQueue(); // Relance le traitement pour la prochaine carte
+          }
+        });
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.flushRequestQueue(); // Vide la file d'attente des requêtes
+    this.queueProcessing = false; // Arrête le traitement des requêtes
+    this.remainingCards = []; // Vide la file d'attente des cartes
+  }
+
+  private flushRequestQueue(): void {
+    if (this.requestQueue.length > 0) {
+      const requestsToSend = [...this.requestQueue];
+      this.requestQueue = []; // Vide la file d'attente des requêtes
+      this.cardService.post_offer_live_market$(requestsToSend).subscribe({
+        next: () => {
+          console.log('Mise à jour des offres live market réussie.');
+        },
+        error: (error) => {
+          console.error('Erreur lors de la mise à jour des offres live market :', error);
+        }
+      });
+    }
+  }
+
+  private handleTokenError(error: any): void {
+    console.error('Erreur 401 détectée : Redirection vers la page /token.');
+    sessionStorage.removeItem('altered_token');
+    sessionStorage.removeItem('cgu_altered_token');
+    this.loaderService.hide();
+    this.toastService.show(error.message, 'error', 5000);
+    this.router.navigate(['/token']);
   }
 }
