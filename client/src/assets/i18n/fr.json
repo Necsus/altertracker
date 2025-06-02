@@ -27,7 +27,7 @@
   },
   "footer": {
     "copyright": "© 2025 AlterTracker est un contenu non officiel créé par un fan d'Altered.",
-    "altered_tcg": "Altered TCG est la propriété d'Equinox."
+    "altered_tcg": "est la propriété d'Equinox."
   },
   "home": {
     "title": "AlterTracker – Analyse et Suivi du Marché pour Altered TCG",
@@ -98,7 +98,7 @@
     "form_mountain_power": "🗻 Montagne (1-3)",
     "form_ocean_power": "💧 Océan (1-3)",
     "form_delete_condition": "Supprimer Si/S'il",
-    "form_db_market": "Db Market",
+    "form_db_market": "Offres disponibles",
     "popover_db_market": "Uniquement les cartes ayant déjà été scannées par le Live Market",
     "form_live_market": "Live Market",
     "popover_live_market": "Recherche en direct via API Altered",
@@ -113,6 +113,23 @@
     "only_in_market": "Seulement en vente",
     "in_market": "En vente",
     "load_more": "Charger plus",
-    "suspended": "Suspendue"
+    "suspended": "Suspendue",
+    "unavailable": "Indisponible"
+  },
+  "about": {
+    "title": "À propos d'AlterTracker",
+    "intro_1": "AlterTracker est né d’un besoin réel au sein de la communauté Altered TCG : pouvoir référencer, rechercher et analyser efficacement les cartes du jeu.",
+    "intro_2": "En tant que passionné de TCG de longue date, j’ai découvert Altered depuis peu, et comme beaucoup, j’ai été immédiatement séduit par sa richesse et sa singularité.",
+    "intro_3": "L’objectif d’AlterTracker est simple : permettre à chaque joueur de trouver l'unique parfaite pour son deck. Grâce à un système de suivi du marché, des statistiques détaillées et une recherche avancée, l’application vous accompagne dans votre construction de deck et votre collection.",
+    "intro_4": "Aujourd’hui, AlterTracker se veut être un outil communautaire, évolutif, et en constante amélioration. Vos retours sont essentiels, et chaque nouvelle idée enrichit ce projet pensé **par un joueur, pour les joueurs**.",
+    "who_title": "Qui suis-je ?",
+    "who_1": "Je m'appelle Julien, je suis architecte logiciel et expert en pentesting d’applications web, certifié GIAC. Développeur full-stack de formation, je mets mes compétences techniques au service de projets qui me passionnent.",
+    "who_2": "Je suis le seul développeur d’AlterTracker, mais je ne suis pas seul dans cette aventure. Ma team — des amis, des joueurs, des testeurs — joue un rôle crucial en testant l’appli, en remontant les bugs et surtout, en proposant des idées de fonctionnalités qui rendent l’expérience meilleure pour tous.",
+    "who_3": "Ce projet est avant tout un acte de passion, nourri par la communauté Altered. Merci à vous tous pour votre soutien.",
+    "mission_title": "Notre mission",
+    "mission_1": "Fournir aux joueurs d’Altered TCG une plateforme fiable, rapide et riche pour explorer l’univers du jeu, optimiser leurs decks et suivre le marché des cartes — avec un accent fort sur l’accessibilité, la transparence et la communauté.",
+    "future_title": "Et la suite ?",
+    "future_1": "De nouvelles fonctionnalités sont en préparation : alertes de prix, decks publics, synchronisation de collection, intégration avec d’autres plateformes, et plus encore.",
+    "future_2": "Rejoins-nous dans cette aventure et aide à façonner l’outil ultime pour Altered."
   }
 }

@@ -14,6 +14,7 @@ export class AlteredService {
     return this.alteredApiService.getOfferByReference$(card.reference, token).pipe(
       map((response: any) => {
         // Mettre à jour les propriétés de la carte avec les données de l'API
+        card.price_updated_at = Date.now().toFixed();
         if (response['hydra:totalItems'] && response['hydra:totalItems'] > 0) {
           card.price = Number(response['hydra:member'][0]['price']);
           card.price_currency = response['hydra:member'][0]['currency'];

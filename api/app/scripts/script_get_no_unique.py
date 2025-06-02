@@ -90,7 +90,7 @@ def run_script():
                 socketio.emit('script_output',
                     {'data': f"Récupération des cartes de la page {page} {set} results : {cards['hydra:totalItems'] if cards and 'hydra:totalItems' in cards else 0}..."})
 
-                if cards and cards.get('hydra:totalItems', 0) >= 1000:
+                if cards and 'hydra:totalItems' in cards and cards.get('hydra:totalItems', 0) >= 1000:
                     socketio.emit('script_output', {'data': f"\033[91mATTENTION TROP DE RESULTATS MANQUE DES CARTES\033[0m"})
 
                 if not cards or 'hydra:member' not in cards or not cards['hydra:member']:

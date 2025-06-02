@@ -4,11 +4,11 @@ from flask_socketio import emit
 from app.extensions import socketio, limiter
 from app.decorators.auth_decorator import admin_required
 from app.scripts import (
-  script_get_no_unique, script_get_unique, script_get_en
+  script_get_no_unique, script_get_unique, script_get_en, script_get_offers
 )
 
 script_bp = Blueprint('script', __name__)
-ALLOWED_SCRIPTS = {'script_get_no_unique', 'script_get_unique', 'script_get_en'}
+ALLOWED_SCRIPTS = {'script_get_no_unique', 'script_get_unique', 'script_get_en', 'script_get_offers'}
 
 def dispatch_script(script: str, workers: int = 3, faction: str = None):
     if script == 'script_get_unique':
@@ -17,6 +17,8 @@ def dispatch_script(script: str, workers: int = 3, faction: str = None):
         script_get_no_unique.run_script()
     if script == 'script_get_en':
         script_get_en.run_script(faction, workers)
+    if script == 'script_get_offers':
+        script_get_offers.run_script(faction, workers)
 
 def run_with_app_context(app, script_name: str, workers: int = None, faction: str = None):
     def task():

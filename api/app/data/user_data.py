@@ -68,7 +68,7 @@ def get_user_alert_data(id_user: int) -> list[dict]:
     return db.session.query(UserAlert).filter_by(id_user=id_user).all()
 
 def get_user_alert_by_reference_card_data(reference_card: str) -> list[dict]:
-    return db.session.query(UserAlert).filter_by(reference_card=reference_card).all()
+    return db.session.query(UserAlert).filter_by(reference_card=reference_card, mail_active=True).all()
 
 def get_user_alert_with_card_data(id_user: int) -> list[dict]:
     try:

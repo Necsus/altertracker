@@ -98,7 +98,7 @@
     "form_mountain_power": "🗻 Mountain (1-3)",
     "form_ocean_power": "💧 Ocean (1-3)",
     "form_delete_condition": "Delete If/When",
-    "form_db_market": "Db Market",
+    "form_db_market": "Available offers",
     "popover_db_market": "Only cards already scanned by the Live Market",
     "form_live_market": "Live Market",
     "popover_live_market": "Live search via Altered API",
@@ -113,6 +113,23 @@
     "only_in_market": "Only in market",
     "in_market": "In market",
     "load_more": "Load more",
-    "suspended": "Suspended"
+    "suspended": "Suspended",
+    "unavailable": "Unavailable"
+  },
+  "about": {
+    "title": "About AlterTracker",
+    "intro_1": "AlterTracker was born out of a real need within the Altered TCG community: to efficiently reference, search, and analyze the game's cards.",
+    "intro_2": "As a long-time TCG enthusiast, I recently discovered Altered, and like many others, I was immediately captivated by its richness and uniqueness.",
+    "intro_3": "The goal of AlterTracker is simple: to help every player find the perfect unique card for their deck. With a market tracking system, detailed statistics, and advanced search, the app supports you in building your deck and collection.",
+    "intro_4": "Today, AlterTracker aims to be a community-driven, evolving, and constantly improving tool. Your feedback is essential, and every new idea enriches this project designed **by a player, for players**.",
+    "who_title": "Who am I?",
+    "who_1": "My name is Julien, I am a software architect and expert in web application pentesting, GIAC certified. As a full-stack developer by training, I use my technical skills to serve projects I am passionate about.",
+    "who_2": "I am the sole developer of AlterTracker, but I am not alone in this adventure. My team — friends, players, testers — plays a crucial role by testing the app, reporting bugs, and most importantly, suggesting feature ideas that make the experience better for everyone.",
+    "who_3": "This project is above all an act of passion, fueled by the Altered community. Thank you all for your support.",
+    "mission_title": "Our mission",
+    "mission_1": "To provide Altered TCG players with a reliable, fast, and rich platform to explore the game's universe, optimize their decks, and track the card market — with a strong focus on accessibility, transparency, and community.",
+    "future_title": "What's next?",
+    "future_1": "New features are in the works: price alerts, public decks, collection synchronization, integration with other platforms, and more.",
+    "future_2": "Join us in this adventure and help shape the ultimate tool for Altered."
   }
 }

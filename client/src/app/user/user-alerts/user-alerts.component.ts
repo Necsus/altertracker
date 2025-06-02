@@ -66,7 +66,7 @@ export class UserAlertsComponent implements OnInit, OnDestroy {
       },
       complete: () => {
         this.isLoading = false; // Arrête le chargement
-        this.addCardsToQueue(this.alerts); // Ajoute les alertes à la file d'attente
+        // this.addCardsToQueue(this.alerts); // Ajoute les alertes à la file d'attente
       }
     });
   }

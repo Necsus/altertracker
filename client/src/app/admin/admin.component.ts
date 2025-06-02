@@ -20,6 +20,7 @@ export class AdminComponent implements OnInit {
     'script_get_unique',
     'script_get_no_unique',
     'script_get_en',
+    'script_get_offers'
   ];
   selectedScript: string = 'script_get_no_unique';
   selectedFaction: string = '';
@@ -85,7 +86,7 @@ export class AdminComponent implements OnInit {
 
   runScript() {
     let url = `${environment.api_url}/script/start/${this.selectedScript}`;
-    if (this.selectedScript === 'script_get_unique' || this.selectedScript === 'script_get_en') {
+    if (this.selectedScript === 'script_get_unique' || this.selectedScript === 'script_get_en' || this.selectedScript === 'script_get_offers') {
       url += `/${Number(this.selectedWorkers)}/${this.selectedFaction}`;
     }
     const headers = new HttpHeaders({

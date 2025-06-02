@@ -86,7 +86,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
                   this.cards = response; // Mettre à jour les cartes affichées
                 },
                 complete: () => {
-                  this.addCardsToQueue(this.cards); // Ajouter les cartes à la file d'attente
+                  // this.addCardsToQueue(this.cards); // Ajouter les cartes à la file d'attente
                 }
               });
             }

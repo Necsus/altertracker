@@ -42,7 +42,7 @@ export class SearchPanelComponent implements OnInit {
       ocean_power_range: [''],
       in_market: [''],
       no_condition: [''],
-      search_offers: [sessionStorage.getItem('altered_token') ? true : false]
+      search_offers: [false]
     });
 
     this.route.queryParams.subscribe((queryParams) => {

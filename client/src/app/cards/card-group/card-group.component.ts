@@ -14,7 +14,7 @@ export class CardGroupComponent implements OnChanges {
   @Input() cards: CardModel[] = [];
   @Input() autoOpen: boolean = false;
   @Input() allGroupsOpen: boolean = false;
-  @Output() visibleCardsChange = new EventEmitter<CardModel[]>(); // Émet les cartes visibles
+  @Output() visibleCardsChange = new EventEmitter<CardModel[]>();
   isGroupOpen: boolean = false;
   displayedCards: number = 50;
   onlyCardsWithPrice: boolean = false;
