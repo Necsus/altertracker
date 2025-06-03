@@ -30,7 +30,7 @@ export class SaveSearchComponent {
   toggleSlider(): void {
     this.sliderOpen = !this.sliderOpen; // Ouvre/ferme le slider
     this.updateBodyScroll();
-    this.lastSearchUrl = sessionStorage.getItem('lastSearchUrl');
+    this.lastSearchUrl = localStorage.getItem('lastSearchUrl');
     this.isLoading = true; // Démarre le chargement
     this.userService.get_user_searches$().subscribe({
       next: (response: UserSearchModel[]) => {

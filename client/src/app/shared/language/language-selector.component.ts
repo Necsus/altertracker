@@ -16,16 +16,18 @@ export class LanguageSelectorComponent {
     private translate: TranslateService) { }
 
   ngOnInit(): void {
-    // Détecter la langue du navigateur et définir la langue par défaut
-    const browserLang = this.translate.getBrowserLang();
-    const defaultLang = (browserLang ?? 'fr').match(/en|fr/) ? browserLang ?? 'fr' : 'fr';
-    this.selectedLanguage = defaultLang; // Initialiser la langue sélectionnée
-    this.languageService.setLanguage(defaultLang);
+    const savedLanguage = localStorage.getItem('selectedLanguage');
+    const defaultLang = savedLanguage || this.languageService.getCurrentLanguage() || 'fr';
 
+    this.selectedLanguage = defaultLang;
+    this.languageService.setLanguage(defaultLang);
+    localStorage.setItem('selectedLanguage', defaultLang);
   }
 
   changeLanguage(event: Event): void {
-    const selectedLanguage = (event.target as HTMLSelectElement).value; // Cast explicite
+    const selectedLanguage = (event.target as HTMLSelectElement).value;
     this.languageService.setLanguage(selectedLanguage);
+    localStorage.setItem('selectedLanguage', selectedLanguage);
+    window.location.reload();
   }
 }

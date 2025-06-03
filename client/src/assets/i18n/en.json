@@ -79,7 +79,7 @@
     "rarirty": {
       "common": "Common",
       "rare": "Rare",
-      "unik": "Unique"
+      "unique": "Unique"
     },
     "form_faction": "Faction",
     "form_set": "Set",
@@ -132,5 +132,18 @@
     "future_title": "What's next?",
     "future_1": "New features are in the works: price alerts, public decks, collection synchronization, integration with other platforms, and more.",
     "future_2": "Join us in this adventure and help shape the ultimate tool for Altered."
+  },
+  "stats": {
+    "title": "Statistics",
+    "enter_reference": "Please enter a reference to view card details.",
+    "no_result": "No results found for the reference.",
+    "no_purchase_offer": "No purchase offers available.",
+    "send_message": "Send a message",
+    "make_offer": "Make an offer",
+    "purchase_offers": "Purchase offers",
+    "no_market_offers": "No market offers available.",
+    "buy_on_altered": "Buy on Altered.gg",
+    "market_offers": "Market offers",
+    "view_on_altered": "View on Altered.gg"
   }
 }

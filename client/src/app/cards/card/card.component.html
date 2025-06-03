@@ -9,9 +9,9 @@
     <i [class]="is_favorite ? 'fas fa-heart text-red-500' : 'far fa-heart'"></i>
   </button>
   }
-  <img (click)="openModal()" [src]="card.imagePath" [alt]="card.name"
-    onerror="this.onerror=null; this.src='/assets/img/cardback.webp';" loading="lazy"
-    class="max-w-full max-h-64 object-contain rounded-md mb-4 md:mb-0 md:mr-4 cursor-pointer">
+  <img (click)="openModal()" [src]="card | localizedValue:'image_path_en':'imagePath'"
+    [alt]="card | localizedValue:'name_en':'name'" onerror="this.onerror=null; this.src='/assets/img/cardback.webp';"
+    loading="lazy" class="max-w-full max-h-64 object-contain rounded-md mb-4 md:mb-0 md:mr-4 cursor-pointer">
   <div class="flex flex-col">
     <div class="flex items-start py-2">
       <button (click)="copyToClipboard(card.reference)"
@@ -42,7 +42,6 @@
         </div>
         } @else {
         @if (card.price) {
-
         <p class="text-gray-300 mr-2" title="{{card.price_updated_at}}">{{ 'home.price' | translate }}&nbsp;:
         </p>
         <button (click)="goToOffer()" class="text-green-500 hover:text-green-700 transition duration-300">
@@ -64,7 +63,7 @@
         }
         }
       </div>
-      <p class="text-gray-300 mb-2">{{ card.MAIN_EFFECT }}</p>
+      <p class="text-gray-300 mb-2">{{ card | localizedValue:'main_effect_en':'MAIN_EFFECT' }}</p>
     </div>
   </div>
 </div>

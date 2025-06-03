@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CardModel } from '../01_models/03_business/card.model';
 import { OfferViewModel } from '../01_models/home/offer-view.model';
 import { CardService } from '../03_business/card.service';
@@ -9,6 +9,7 @@ import { OfferService } from '../03_business/offer.service';
 import { UserService } from '../03_business/user.service';
 import { AuthViewService } from '../authentication/auth-view.service';
 import { CardImgComponent } from '../cards/card/card-img.component';
+import { LocalizedValuePipe } from '../shared/pipes/localized-value.pipe';
 import { ModalService } from '../shared/services/modal/modal.service';
 import { ToastService } from '../shared/services/toast/toast.service';
 
@@ -16,9 +17,10 @@ import { ToastService } from '../shared/services/toast/toast.service';
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
-  imports: [CommonModule, RouterModule, TranslateModule]
+  imports: [CommonModule, RouterModule, TranslateModule, LocalizedValuePipe]
 })
 export class HomeComponent implements OnInit {
+  currentLanguage: string = 'fr';
   isLoggedIn: boolean = false;
   newCardsLoading: boolean = false;
   newCardsCount: Number = 0;
@@ -41,7 +43,13 @@ export class HomeComponent implements OnInit {
     private userService: UserService,
     private toastService: ToastService,
     private modalService: ModalService,
-    private authViewService: AuthViewService) { }
+    private authViewService: AuthViewService,
+    private translate: TranslateService) {
+    this.currentLanguage = this.translate.currentLang || 'en'; // Définit la langue par défaut
+    this.translate.onLangChange.subscribe((event) => {
+      this.currentLanguage = event.lang;
+    });
+  }
   ngOnInit(): void {
     this.authViewService.isLoggedIn$.subscribe(status => {
       this.isLoggedIn = status;
@@ -89,7 +97,8 @@ export class HomeComponent implements OnInit {
       error: (err: any) => this.toastService.show(err.message, 'error', 5000)
     });
   }
-  openModal(imagePath: string): void {
-    this.modalService.open(CardImgComponent, { src: imagePath });
+  openModal(card: CardModel): void {
+    const currentLanguage = this.translate.currentLang || 'fr';
+    this.modalService.open(CardImgComponent, { src: currentLanguage === 'en' ? card.image_path_en : card.imagePath });
   }
 }

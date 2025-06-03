@@ -34,7 +34,7 @@ def get_card_by_reference_data(reference: str) -> Optional[dict]:
 
 def search_cards_data(name, rarity, faction, set, main_effect, main_effect_2,
     echo_effect, main_cost_range, recall_cost_range, forest_power_range, mountain_power_range, ocean_power_range,
-    no_condition, in_market, price_range, user_id):
+    no_condition, in_market, price_range, en, user_id):
     # Vérifier si le nom correspond à la regexp ^ALT_
     if name and re.match(r'^ALT_', name):
         query = db.session.query(Card) if not user_id else db.session.query(
@@ -75,9 +75,14 @@ def search_cards_data(name, rarity, faction, set, main_effect, main_effect_2,
     if user_id:
         query = query.outerjoin(UserAlert, (UserAlert.reference_card == Card.reference) & (UserAlert.id_user == user_id))
 
+    # Utiliser les colonnes en anglais si en=True
+    name_column = Card.name_en if en else Card.name
+    main_effect_column = Card.main_effect_en if en else Card.MAIN_EFFECT
+    echo_effect_column = Card.echo_effect_en if en else Card.ECHO_EFFECT
+
     if name:
         name = lower_strip(name)
-        query = query.filter(func.lower(Card.name).like(f'%{prepare_like_query(name)}%', escape='\\'))
+        query = query.filter(func.lower(name_column).like(f'%{prepare_like_query(name)}%', escape='\\'))
 
     if rarity:
         query = query.filter(Card.rarity == rarity)
@@ -91,7 +96,7 @@ def search_cards_data(name, rarity, faction, set, main_effect, main_effect_2,
     if main_effect and not main_effect_2:
         # Si seulement main_effect est fourni
         main_effect = lower_strip(main_effect)
-        query = query.filter(func.lower(Card.MAIN_EFFECT).like(f'%{prepare_like_query(main_effect)}%', escape='\\'))
+        query = query.filter(func.lower(main_effect_column).like(f'%{prepare_like_query(main_effect)}%', escape='\\'))
 
     if main_effect and main_effect_2:
         # Si main_effect et main_effect_2 sont fournis
@@ -101,13 +106,13 @@ def search_cards_data(name, rarity, faction, set, main_effect, main_effect_2,
         main_effect_regex = re.escape(main_effect)
         main_effect_2_regex = re.escape(main_effect_2)
         query = query.filter(
-            func.lower(Card.MAIN_EFFECT).like(f'%{prepare_like_query(main_effect)}%', escape='\\'),
-            func.regexp_replace(func.lower(Card.MAIN_EFFECT), main_effect_regex, '', 1).like(f'%{prepare_like_query(main_effect_2)}%', escape='\\')
+            func.lower(main_effect_column).like(f'%{prepare_like_query(main_effect)}%', escape='\\'),
+            func.regexp_replace(func.lower(main_effect_column), main_effect_regex, '', 1).like(f'%{prepare_like_query(main_effect_2)}%', escape='\\')
         )
 
     if echo_effect:
         echo_effect = lower_strip(echo_effect)
-        query = query.filter(func.lower(Card.ECHO_EFFECT).like(f'%{prepare_like_query(echo_effect)}%', escape='\\'))
+        query = query.filter(func.lower(echo_effect_column).like(f'%{prepare_like_query(echo_effect)}%', escape='\\'))
 
     # Recherche par plage pour main_cost
     if main_cost_range:
@@ -170,10 +175,16 @@ def search_cards_data(name, rarity, faction, set, main_effect, main_effect_2,
                     query = query.filter(Card.price <= price_range['max'])
 
     if no_condition:
-        query = query.filter(
-            ~func.lower(Card.MAIN_EFFECT).like('% si %') &
-            ~func.lower(Card.MAIN_EFFECT).like('% s\'il %')
-        )
+        if not en:
+            query = query.filter(
+                ~func.lower(Card.MAIN_EFFECT).like('% si %') &
+                ~func.lower(Card.MAIN_EFFECT).like('% s\'il %')
+            )
+        else:
+            query = query.filter(
+                ~func.lower(Card.MAIN_EFFECT).like('% if %') &
+                ~func.lower(Card.MAIN_EFFECT).like('% when %')
+            )
 
     # Limiter à 10 000 résultats
     query = query.limit(10000)

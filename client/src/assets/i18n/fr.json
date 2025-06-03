@@ -132,5 +132,18 @@
     "future_title": "Et la suite ?",
     "future_1": "De nouvelles fonctionnalités sont en préparation : alertes de prix, decks publics, synchronisation de collection, intégration avec d’autres plateformes, et plus encore.",
     "future_2": "Rejoins-nous dans cette aventure et aide à façonner l’outil ultime pour Altered."
+  },
+  "stats": {
+    "title": "Statistiques",
+    "enter_reference": "Veuillez entrer une référence pour afficher les détails de la carte.",
+    "no_result": "Aucun resultat trouvé pour la référence",
+    "no_purchase_offer": "Aucune offre d'achat disponible.",
+    "send_message": "Envoyer un message",
+    "make_offer": "Faire une offre",
+    "purchase_offers": "Offres d'achat",
+    "no_market_offers": "Aucune offre de marché disponible.",
+    "buy_on_altered": "Acheter sur Altered.gg",
+    "market_offers": "Offres du marché",
+    "view_on_altered": "Voir sur Altered.gg"
   }
 }

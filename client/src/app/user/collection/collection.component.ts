@@ -53,7 +53,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
   }
 
   importCollection(): void {
-    const alteredToken = sessionStorage.getItem('altered_token');
+    const alteredToken = localStorage.getItem('altered_token');
     if (!alteredToken) {
       this.router.navigate(['/token'], { queryParams: { callback: 'collection' } });
       return;
@@ -94,8 +94,8 @@ export class CollectionComponent implements OnInit, OnDestroy {
           error: (error) => {
             if (error.message === 'Token invalide ou expiré. Veuillez le réinsérer.') {
               console.error('Erreur 401 détectée : Redirection vers la page /token.');
-              sessionStorage.removeItem('altered_token');
-              sessionStorage.removeItem('cgu_altered_token');
+              localStorage.removeItem('altered_token');
+              localStorage.removeItem('cgu_altered_token');
               this.router.navigate(['/token'], { queryParams: { callback: 'collection' } });
             }
           }
@@ -121,7 +121,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
   }
 
   private processQueue(): void {
-    const alteredToken = sessionStorage.getItem('altered_token');
+    const alteredToken = localStorage.getItem('altered_token');
     if (!alteredToken) {
       this.router.navigate(['/token'], { queryParams: { callback: 'collection' } });
       return;
@@ -185,8 +185,8 @@ export class CollectionComponent implements OnInit, OnDestroy {
 
   private handleTokenError(error: any): void {
     console.error('Erreur 401 détectée : Redirection vers la page /token.');
-    sessionStorage.removeItem('altered_token');
-    sessionStorage.removeItem('cgu_altered_token');
+    localStorage.removeItem('altered_token');
+    localStorage.removeItem('cgu_altered_token');
     this.toastService.show(error.message, 'error', 5000);
     this.router.navigate(['/token'], { queryParams: { callback: 'collection' } });
   }

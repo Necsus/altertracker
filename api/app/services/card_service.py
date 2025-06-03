@@ -41,10 +41,10 @@ def get_card_by_reference_service(reference: str) -> Optional[Card]:
 
 def search_cards_service(name, rarity, faction, set, main_effect, main_effect_2, echo_effect, main_cost_range, recall_cost_range,
     forest_cost_range, mountain_cost_range, ocean_cost_range, no_condition,
-    in_market, price_range, user_id) -> List[dict]:
+    in_market, price_range, en, user_id) -> List[dict]:
     return search_cards_data(name, rarity, faction, set, main_effect, main_effect_2, echo_effect,
         main_cost_range, recall_cost_range, forest_cost_range, mountain_cost_range, ocean_cost_range,
-        no_condition, in_market, price_range, user_id)
+        no_condition, in_market, price_range, en, user_id)
 
 def post_offer_live_market_service(data: List[dict]) -> None:
     """Optimisation de la gestion des offres pour réduire les appels à la base de données."""
@@ -77,8 +77,32 @@ def post_offer_live_market_service(data: List[dict]) -> None:
             if existing_offer and not existing_offer.is_deleted:
                 if existing_offer.id_offer == new_offer.id_offer:
                     # Même offre, pas de mise à jour nécessaire
-                    cards_to_update.append(existing_card)
-                    continue
+                    if existing_card.price == new_offer.price:
+                        cards_to_update.append(existing_card)
+                        continue
+                    else:
+                        # Préparer la nouvelle offre
+                        existing_offer.is_deleted = True
+                        existing_offer.deleted_at = datetime.now()
+                        existing_offer.status = 'expired'
+
+                        # Préparer la nouvelle offre
+                        new_offer.link_offer = f"https://www.altered.gg/fr-fr/cards/{new_offer.reference_card}/offers"
+                        new_offer.is_deleted = False
+                        new_offer.created_at = datetime.now()
+                        new_offer.deleted_at = None
+                        new_offer.user_altered = None
+                        new_offer.user_id = None
+                        new_offer.previous_offer = existing_offer.id if existing_offer else None
+                        db.session.add(new_offer)
+
+                        # Mettre à jour la carte
+                        existing_card.price = new_offer.price
+                        existing_card.url_offer = new_offer.link_offer
+                        existing_card.price_currency = new_offer.currency
+                        existing_card.price_updated_at = datetime.now()
+                        send_user_alert(existing_card, "edited" if existing_offer else "added")
+                        continue
                 else:
                     # Nouvelle offre, marquer l'ancienne comme expirée
                     existing_offer.is_deleted = True
