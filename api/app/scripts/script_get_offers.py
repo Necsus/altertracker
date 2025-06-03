@@ -48,12 +48,14 @@ def run_script(faction=None, workers=1):
                 socketio.emit('script_output', {'data': f"\033[94mProgression {dbcard.name_en} {dbcard.faction} {dbcard.set} : {count}/{len(subset)}\033[0m"})
                 offers = []
                 page = 1
+                cancelUpdate = False
                 while True:
                     time.sleep(0.5)
                     cards = card_routine.get_unique_offers(
                         dbcard.name_en, dbcard.faction, dbcard.set, page
                     )
                     if not cards or 'hydra:member' not in cards or not cards['hydra:member']:
+                        cancelUpdate = True
                         break
                     
                     if 'hydra:totalItems' in cards and cards['hydra:totalItems'] >= 1000:
@@ -76,7 +78,8 @@ def run_script(faction=None, workers=1):
                 socketio.emit('script_output', {'data': f"Nb cards avec offres : {len(offers)}"})
                 offers += addNoOffers(offers, dbcard.name_en, dbcard.faction, dbcard.set)
                 socketio.emit('script_output', {'data': f"Nb cards : {len(offers)} -> Go To post_offer_live_market_service"})
-                post_offer_live_market_service(offers)
+                if not cancelUpdate:
+                    post_offer_live_market_service(offers)
 
         except Exception as e:
             socketio.emit('script_output', {'data': f"\033[91mError : {e}\033[0m"})
