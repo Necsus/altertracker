@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { ChartConfiguration, ChartOptions } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { OfferLiveMarketRequest } from '../01_models/02_api/card/offer-live-market-request.model';
@@ -13,6 +14,7 @@ import { AlteredService } from '../03_business/altered.service';
 import { CardService } from '../03_business/card.service';
 import { UserService } from '../03_business/user.service';
 import { AuthViewService } from '../authentication/auth-view.service';
+import { LocalizedValuePipe } from '../shared/pipes/localized-value.pipe';
 import { PurchaseOfferComponent } from '../shared/purchase-offer/purchase-offer.component';
 import { ModalService } from '../shared/services/modal/modal.service';
 import { ToastService } from '../shared/services/toast/toast.service';
@@ -21,9 +23,10 @@ import { ToastService } from '../shared/services/toast/toast.service';
   selector: 'app-stats',
   templateUrl: './stats.component.html',
   styleUrls: ['./stats.component.css'],
-  imports: [CommonModule, ReactiveFormsModule, BaseChartDirective]
+  imports: [CommonModule, ReactiveFormsModule, BaseChartDirective, LocalizedValuePipe, TranslateModule]
 })
 export class StatsComponent implements OnInit {
+  currentLanguage: string = 'fr';
   reference: string | null = null;
   isLoggedIn: boolean = false;
   searchForm!: FormGroup;
@@ -67,6 +70,8 @@ export class StatsComponent implements OnInit {
     this.authViewService.isLoggedIn$.subscribe(status => {
       this.isLoggedIn = status;
     });
+    this.currentLanguage = localStorage.getItem('selectedLanguage') || 'fr';
+    console.log('Current language:', this.currentLanguage);
     this.reference = this.route.snapshot.paramMap.get('reference');
     this.searchForm = this.fb.group({
       reference: [this.reference || ''],
@@ -192,7 +197,7 @@ export class StatsComponent implements OnInit {
     }
   }
   refreshCardFromAltered(): void {
-    const alteredToken = sessionStorage.getItem('altered_token');
+    const alteredToken = localStorage.getItem('altered_token');
     if (alteredToken && this.card) {
       let offerLiveMarket: OfferLiveMarketRequest;
       this.alteredService.getMarketOffer$(this.card, alteredToken).subscribe({

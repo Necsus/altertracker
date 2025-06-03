@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { catchError, map, of, throwError } from 'rxjs';
 import { CardModel } from '../../01_models/03_business/card.model';
 import { UserAlertModel } from '../../01_models/03_business/user-alert.model';
@@ -9,6 +9,7 @@ import { AlteredService } from '../../03_business/altered.service';
 import { CardService } from '../../03_business/card.service';
 import { UserService } from '../../03_business/user.service';
 import { AuthViewService } from '../../authentication/auth-view.service';
+import { LocalizedValuePipe } from '../../shared/pipes/localized-value.pipe';
 import { LoaderService } from '../../shared/services/loader/loader.service';
 import { ModalService } from '../../shared/services/modal/modal.service';
 import { ToastService } from '../../shared/services/toast/toast.service';
@@ -18,7 +19,7 @@ import { CardImgComponent } from './card-img.component';
   selector: 'app-card',
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.css'],
-  imports: [CommonModule, RouterModule, TranslateModule],
+  imports: [CommonModule, RouterModule, TranslateModule, LocalizedValuePipe],
 })
 export class CardComponent {
   @Input() card!: CardModel; // Données de la carte
@@ -33,7 +34,8 @@ export class CardComponent {
     private alteredService: AlteredService,
     private router: Router,
     private loaderService: LoaderService,
-    private cardService: CardService
+    private cardService: CardService,
+    private translate: TranslateService
   ) { }
 
   ngOnInit(): void {
@@ -90,7 +92,8 @@ export class CardComponent {
   }
 
   openModal(): void {
-    this.modalService.open(CardImgComponent, { src: this.card.imagePath });
+    const currentLanguage = this.translate.currentLang || 'fr';
+    this.modalService.open(CardImgComponent, { src: currentLanguage === 'en' ? this.card.image_path_en : this.card.imagePath });
   }
 
   copyToClipboard(reference: string): void {
@@ -103,7 +106,7 @@ export class CardComponent {
   }
 
   refreshOffer(): void {
-    const alteredToken = sessionStorage.getItem('altered_token');
+    const alteredToken = localStorage.getItem('altered_token');
     if (!alteredToken) {
       this.router.navigate(['/token']);
       return;
@@ -138,8 +141,8 @@ export class CardComponent {
   }
   private handleTokenError(error: any): void {
     console.error('Erreur 401 détectée : Redirection vers la page /token.');
-    sessionStorage.removeItem('altered_token');
-    sessionStorage.removeItem('cgu_altered_token');
+    localStorage.removeItem('altered_token');
+    localStorage.removeItem('cgu_altered_token');
     this.loaderService.hide();
     this.toastService.show(error.message, 'error', 5000);
     this.router.navigate(['/token']);

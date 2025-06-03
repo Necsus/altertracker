@@ -31,8 +31,8 @@ export class AlteredTokenComponent {
         this.router.navigate(['/login']);
       }
     });
-    const storedToken = sessionStorage.getItem('altered_token');
-    const storedCGU = sessionStorage.getItem('cgu_altered_token');
+    const storedToken = localStorage.getItem('altered_token');
+    const storedCGU = localStorage.getItem('cgu_altered_token');
 
     if (storedToken) {
       this.token = storedToken;
@@ -53,9 +53,9 @@ export class AlteredTokenComponent {
     this.formSubmitted = true;
 
     if (this.isFormValid()) {
-      sessionStorage.setItem('altered_token', this.token);
-      sessionStorage.setItem('cgu_altered_token', String(this.acceptedCGU));
-      const lastSearchUrl = sessionStorage.getItem('lastSearchUrl');
+      localStorage.setItem('altered_token', this.token);
+      localStorage.setItem('cgu_altered_token', String(this.acceptedCGU));
+      const lastSearchUrl = localStorage.getItem('lastSearchUrl');
       this.toastService.show('Token enregistré avec succès', 'success', 5000);
       // Rediriger vers /cards avec les paramètres de recherche si disponibles
       if (this.callbackUrl) {

@@ -113,7 +113,7 @@ export class CardsComponent implements OnInit, OnDestroy {
   }
 
   private processQueue(): void {
-    const alteredToken = sessionStorage.getItem('altered_token');
+    const alteredToken = localStorage.getItem('altered_token');
     if (!alteredToken) {
       this.router.navigate(['/token']);
       return;
@@ -183,8 +183,8 @@ export class CardsComponent implements OnInit, OnDestroy {
 
   private handleTokenError(error: any): void {
     console.error('Erreur 401 détectée : Redirection vers la page /token.');
-    sessionStorage.removeItem('altered_token');
-    sessionStorage.removeItem('cgu_altered_token');
+    localStorage.removeItem('altered_token');
+    localStorage.removeItem('cgu_altered_token');
     this.loaderService.hide();
     this.toastService.show(error.message, 'error', 5000);
     this.router.navigate(['/token']);

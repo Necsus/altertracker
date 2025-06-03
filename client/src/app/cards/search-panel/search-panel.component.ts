@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CardModel } from '../../01_models/03_business/card.model';
 import { CardService } from '../../03_business/card.service';
 import { AuthViewService } from '../../authentication/auth-view.service';
@@ -25,7 +25,8 @@ export class SearchPanelComponent implements OnInit {
     private cardService: CardService,
     private route: ActivatedRoute,
     private authViewService: AuthViewService,
-    private router: Router
+    private router: Router,
+    private translate: TranslateService
   ) { }
 
   ngOnInit() {
@@ -52,7 +53,7 @@ export class SearchPanelComponent implements OnInit {
 
     this.route.queryParams.subscribe((queryParams) => {
       if (Object.keys(queryParams).length === 0) {
-        sessionStorage.removeItem('lastSearchUrl');
+        localStorage.removeItem('lastSearchUrl');
       }
       this.searchForm.patchValue({
         name: queryParams['name'] || '',
@@ -100,10 +101,9 @@ export class SearchPanelComponent implements OnInit {
       }
     });
 
-    // Sauvegarder l'URL dans le sessionStorage
+    // Sauvegarder l'URL dans le localStorage
     const searchUrl = `/cards?${queryParams.toString()}`;
-    sessionStorage.setItem('lastSearchUrl', searchUrl);
-
+    localStorage.setItem('lastSearchUrl', searchUrl);
     this.searchCards(formValues);
   }
 
@@ -129,7 +129,8 @@ export class SearchPanelComponent implements OnInit {
       ocean_power_range: this.buildRange(criteria.ocean_power_range),
       no_condition: criteria.no_condition,
       in_market: criteria.in_market,
-      price_range: this.buildRange(criteria.price_range)
+      price_range: this.buildRange(criteria.price_range),
+      en: (this.translate.currentLang || 'fr') === 'en' ? true : false
     }
     let searchObservable = this.cardService.search_cards$(request);
     // Appliquer conditionnellement le pipe `withLoader`

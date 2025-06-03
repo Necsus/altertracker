@@ -71,14 +71,15 @@
           <div class="scroll-container flex flex-nowrap space-x-4 overflow-x-auto pb-2">
             <div *ngFor="let card of newCards" class="flex-shrink-0 w-48 bg-gray-800 rounded-xl shadow">
               <div class="overflow-hidden rounded-xl bg-black">
-                <img (click)="openModal(card.imagePath)" [src]="card.imagePath" [alt]="card.name"
+                <img (click)="openModal(card)" [src]="card | localizedValue:'image_path_en':'imagePath'"
+                  [alt]="card | localizedValue:'name_en':'name'"
                   onerror="this.onerror=null; this.src='/assets/img/cardback.webp';" loading="lazy"
                   class="max-w-full object-contain rounded-md cursor-pointer" />
               </div>
               <div class="mt-2 text-center text-white p-2">
                 <a routerLink="/stats/{{card.reference}}"
                   class="text-xs text-blue-400 underline hover:text-blue-300 cursor-pointer">{{ card.reference }}</a>
-                <p class="font-semibold">{{ card.name }}</p>
+                <p class="font-semibold">{{ card | localizedValue:'name_en':'name' }}</p>
               </div>
             </div>
           </div>
@@ -95,7 +96,8 @@
         <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
           <div *ngFor="let offer of newOffers" class="w-48 bg-gray-800 rounded-xl shadow">
             <div class="overflow-hidden w-48 rounded-xl bg-black">
-              <img (click)="openModal(offer.card.imagePath)" [src]="offer.card.imagePath" [alt]="offer.card.name"
+              <img (click)="openModal(offer.card)" [src]="offer.card | localizedValue:'image_path_en':'imagePath'"
+                [alt]="offer.card | localizedValue:'name_en':'name'"
                 onerror="this.onerror=null; this.src='/assets/img/cardback.webp';" loading="lazy"
                 class="max-w-full object-contain rounded-md cursor-pointer" />
             </div>
@@ -103,7 +105,7 @@
               <a routerLink="/stats/{{offer.card.reference}}"
                 class="text-xs text-blue-400 underline hover:text-blue-300 cursor-pointer">{{ offer.card.reference
                 }}</a>
-              <div class="font-medium">{{ offer.card.name }}</div>
+              <div class="font-medium">{{ offer.card | localizedValue:'name_en':'name' }}</div>
               <div class="text-sm text-green-400">{{ 'home.price' | translate }} : {{ offer.offer.price |
                 currency:(offer.offer.currency ||
                 ''):'symbol':'1.2-2' }}</div>
@@ -124,7 +126,8 @@
         <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
           <div *ngFor="let offer of deletedOffers" class="w-48 bg-gray-800 rounded-xl shadow">
             <div class="overflow-hidden w-48 rounded-xl bg-black">
-              <img (click)="openModal(offer.card.imagePath)" [src]="offer.card.imagePath" [alt]="offer.card.name"
+              <img (click)="openModal(offer.card)" [src]="offer.card | localizedValue:'image_path_en':'imagePath'"
+                [alt]="offer.card | localizedValue:'name_en':'name'"
                 onerror="this.onerror=null; this.src='/assets/img/cardback.webp';" loading="lazy"
                 class="max-w-full object-contain rounded-md cursor-pointer" />
             </div>
@@ -132,7 +135,7 @@
               <a routerLink="/stats/{{offer.card.reference}}"
                 class="text-xs text-blue-400 underline hover:text-blue-300 cursor-pointer">{{ offer.card.reference
                 }}</a>
-              <div class="font-medium">{{ offer.card.name }}</div>
+              <div class="font-medium">{{ offer.card | localizedValue:'name_en':'name' }}</div>
               <div class="text-sm text-red-400">{{ 'home.old_price' | translate }} : {{ offer.offer.price |
                 currency:(offer.offer.currency || ''):'symbol':'1.2-2' }}</div>
               <p class="text-xs text-gray-500">{{ 'home.detected_at' | translate }} : {{
@@ -152,7 +155,8 @@
         <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
           <div *ngFor="let offer of editedOffers" class="w-48 bg-gray-800 rounded-xl shadow">
             <div class="overflow-hidden w-48 rounded-xl bg-black">
-              <img (click)="openModal(offer.card.imagePath)" [src]="offer.card.imagePath" [alt]="offer.card.name"
+              <img (click)="openModal(offer.card)" [src]="offer.card | localizedValue:'image_path_en':'imagePath'"
+                [alt]="offer.card | localizedValue:'name_en':'name'"
                 onerror="this.onerror=null; this.src='/assets/img/cardback.webp';" loading="lazy"
                 class="max-w-full object-contain rounded-md cursor-pointer" />
             </div>
@@ -160,7 +164,7 @@
               <a routerLink="/stats/{{offer.card.reference}}"
                 class="text-xs text-blue-400 underline hover:text-blue-300 cursor-pointer">{{ offer.card.reference
                 }}</a>
-              <div class="font-medium">{{ offer.card.name }}</div>
+              <div class="font-medium">{{ offer.card | localizedValue:'name_en':'name' }}</div>
               <div class="text-sm text-gray-400">
                 {{ 'home.price' | translate }} : <span class="line-through text-red-400">{{
                   offer.previous_offer?.price |
