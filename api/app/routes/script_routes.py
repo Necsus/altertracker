@@ -1,3 +1,4 @@
+import time
 from flask import Blueprint, current_app
 from flask_jwt_extended import jwt_required
 from flask_socketio import emit
@@ -13,7 +14,9 @@ ALLOWED_SCRIPTS = {'script_get_no_unique', 'script_get_unique', 'script_get_en',
 def dispatch_script(script: str, workers: int = 3, faction: str = None):
     if script == 'script_get_unique':
         script_get_unique.run_script(faction, workers)
+        time.sleep(10)
         script_get_offers.run_script(faction, 1)
+        time.sleep(10)
         script_get_en.run_script(faction, 1)
     if script == 'script_get_no_unique':
         script_get_no_unique.run_script()
