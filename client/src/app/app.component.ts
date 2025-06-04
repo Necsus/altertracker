@@ -18,7 +18,6 @@ export class AppComponent implements AfterViewInit {
     const token = this.authStorageService.getToken();
     if (token) {
       this.authViewService.loggedIn.next(true);
-      this.authViewService.startTokenRefresh();
     } else {
       this.authViewService.loggedIn.next(false); // Assurez-vous de mettre à jour l'état si aucun token n'est présent
     }

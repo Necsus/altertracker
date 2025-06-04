@@ -58,7 +58,7 @@ export class AlteredService {
       map((response: any) => {
         // Mettre à jour les propriétés de la carte avec les données de l'API
         if (response['cardType']) {
-          card.image_path_en = response['imagePath'] ?? null;
+          card.image_path_en = response['allImagePath']['en-us'] ?? null;
           card.main_effect_en = response['elements']['MAIN_EFFECT'] ?? null;
           card.echo_effect_en = response['elements']['ECHO_EFFECT'] ?? null;
         }

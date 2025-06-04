@@ -41,7 +41,6 @@ export class LoginComponent implements OnInit {
       .subscribe({
         next: () => {
           this.authViewService.loggedIn.next(true);
-          this.authViewService.startTokenRefresh();
           this.toastService.show('Success login', 'success', 5000);
           this.router.navigate(['/']);
         },
