@@ -77,7 +77,7 @@ def post_offer_live_market_service(data: List[dict]) -> None:
             if existing_offer and not existing_offer.is_deleted:
                 if existing_offer.id_offer == new_offer.id_offer:
                     # Même offre, pas de mise à jour nécessaire
-                    if existing_card.price == new_offer.price:
+                    if existing_card.price == new_offer.price or existing_offer.currency != new_offer.currency:
                         cards_to_update.append(existing_card)
                         continue
                     else:
