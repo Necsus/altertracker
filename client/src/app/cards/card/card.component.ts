@@ -25,6 +25,7 @@ export class CardComponent {
   @Input() card!: CardModel; // Données de la carte
   isLoggedIn = false;
   is_favorite: boolean = false; // État favori de la carte
+  isRefreshButtonVisible: boolean = true; // État du bouton Refresh
 
   constructor(
     private modalService: ModalService,
@@ -112,13 +113,16 @@ export class CardComponent {
       return;
     }
     if (this.card) {
+      this.card.isProcessing = true;
       this.alteredService.getMarketOffer$(this.card, alteredToken)
         .pipe(
           map((offerRequest) => {
             let request = [];
             request.push(offerRequest);
             this.cardService.post_offer_live_market$(request).subscribe({
-              next: () => { },
+              next: () => {
+
+              },
               error: (error) => {
                 console.error('Erreur lors de la mise à jour des offres live market :', error);
               }
@@ -135,6 +139,7 @@ export class CardComponent {
         .subscribe({
           complete: () => {
             this.card.isProcessing = false;
+            this.isRefreshButtonVisible = false;
           }
         });
     }
