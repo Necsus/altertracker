@@ -50,7 +50,6 @@ export class UserService {
   }
   post_user_contact$(request: UserContactModel): Observable<UserAlertModel> {
     return this.userApiService.post_user_contact$(request).pipe(map((response: any) => {
-      console.log('response', response);
       return response;
     }));
   }

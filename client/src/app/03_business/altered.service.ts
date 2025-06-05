@@ -3,7 +3,7 @@ import { catchError, map, Observable, switchMap, throwError } from 'rxjs';
 import { OfferLiveMarketRequest } from '../01_models/02_api/card/offer-live-market-request.model';
 import { CardModel } from '../01_models/03_business/card.model';
 import { AlteredApiService } from '../02_api/altered-api.service';
-import { CookieManagerApiService } from '../02_api/cookie-manager-api.service';
+import { CookieManagerService } from './cookie-manager.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,9 +11,9 @@ import { CookieManagerApiService } from '../02_api/cookie-manager-api.service';
 export class AlteredService {
   constructor(
     private alteredApiService: AlteredApiService,
-    private cookieManagerApiService: CookieManagerApiService) { }
+    private cookieManagerService: CookieManagerService) { }
   getMarketOffer$(card: CardModel): Observable<OfferLiveMarketRequest> {
-    return this.cookieManagerApiService.getToken$().pipe(switchMap((token: string) => {
+    return this.cookieManagerService.get_token$().pipe(switchMap((token: any) => {
       if (token) {
         return this.alteredApiService.getOfferByReference$(card.reference, token).pipe(
           map((response: any) => {
@@ -51,6 +51,7 @@ export class AlteredService {
           }),
           catchError((error) => {
             if ((error.status === 401 && error.error.message == "Expired JWT Token") || error.status === 500) {
+              sessionStorage.removeItem('offer_token'); // Supprimer le token expiré
               return throwError(() => new Error('Token invalide ou expiré. Veuillez le réinsérer.'));
             }
             return throwError(() => error); // Propager les autres erreurs

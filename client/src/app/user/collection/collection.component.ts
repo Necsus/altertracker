@@ -47,7 +47,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
     this.userService.get_user_collection$().subscribe({
       next: (response: UserCollectionModel[]) => {
         this.cards = response;
-        // this.addCardsToQueue(this.cards); // Ajoute les cartes à la file d'attente
+        this.addCardsToQueue(this.cards); // Ajoute les cartes à la file d'attente
       }
     });
   }

@@ -52,7 +52,7 @@ def run_script(faction=None, workers=1):
                 while True:
                     time.sleep(0.5)
                     cards = card_routine.get_unique_offers(
-                        dbcard.name_en, dbcard.faction, dbcard.set, page
+                        session, dbcard.name_en, dbcard.faction, dbcard.set, page
                     )
                     if not cards or 'hydra:member' not in cards or not cards['hydra:member']:
                         cancelUpdate = True
