@@ -198,9 +198,8 @@ export class StatsComponent implements OnInit {
     }
   }
   refreshCardFromAltered(): void {
-    const alteredToken = localStorage.getItem('altered_token');
-    if (alteredToken && this.card) {
-      this.alteredService.getMarketOffer$(this.card, alteredToken).subscribe({
+    if (this.card) {
+      this.alteredService.getMarketOffer$(this.card).subscribe({
         next: (offer: OfferLiveMarketRequest) => {
           let request = [];
           request.push(offer);

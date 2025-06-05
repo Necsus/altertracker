@@ -6,8 +6,7 @@ from app.utils.emails import render_template_with_data
 from app.models.offer import Offer
 from app.models.card import Card
 from datetime import datetime
-from app.extensions import db
-from app.extensions import mail_api, ApiException
+from app.extensions import db, mail_api, ApiException, socketio
 from app.data.card_data import (
   get_card_by_reference_data,
   search_cards_data,
@@ -266,7 +265,7 @@ def send_user_alert(card: Card, type_changement: str):
     for alert in alerts:
         user = get_user_by_id_data(alert.id_user)
         if user:
-            print(f"{card.price} {card.price_currency}")
+            socketio.emit('script_output', {'data': f"mail send : {card.name_en} {card.reference} {user.username}"})
             # Vérification de l'image
             image_url = card.imagePath if is_image_url_accessible(card.imagePath) else "/static/img/cardback.webp"
             # Envoi de la notif de modif de prix

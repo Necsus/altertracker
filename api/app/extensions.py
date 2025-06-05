@@ -16,8 +16,7 @@ mail_api = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(mail_c
 socketio = SocketIO()
 
 limiter = Limiter(
-    key_func=get_remote_address,
-    default_limits=["200 per day", "50 per hour"]
+    key_func=get_remote_address
 )
 if ConfigEnv.FLASK_ENV == 'production':
     limiter = Limiter(

@@ -43,12 +43,12 @@ export class AlteredApiService {
     );
   }
   getAccessToken$(): Observable<string> {
-    const url = `${this.baseUrl}/api/auth/session`;
+    const url = `https://www.altered.gg/api/auth/session`;
     const headers = new HttpHeaders({
-      'Cookie': '__Secure-next-auth.session-token.xxxx=TON_TOKEN; __Secure-next-auth.callback-url=https%3A%2F%2Fwww.altered.gg'
+      'Accept': '*/*'
     });
 
-    return this.http.get<any>(url, { headers }).pipe(
+    return this.http.get<any>(url, { headers, withCredentials: true }).pipe(
       catchError((error) => {
         if (error.status === 404) {
           console.error('Card not found');
