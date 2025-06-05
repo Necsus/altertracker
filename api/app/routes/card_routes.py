@@ -141,21 +141,13 @@ def get_card_with_offers(reference):
 def update_card(reference: str):
     try:
         data = request.get_json()
-
-        schema = OfferLiveMarketSchema()
-        offer_data = schema.load(data.get('offer'))
-        if offer_data['reference'] not in reference:
-            return make_response(jsonify({'message': 'Reference mismatch'}), 400)
-        post_offer_live_market_service([offer_data])
-
         card_data = data.get('card')
-        if card_data['reference'] not in reference:
-            return make_response(jsonify({'message': 'Reference mismatch'}), 400)
-        if not card_data:
-            return make_response(jsonify({'message': 'Card is required'}), 400)
-
-        update_card_service(card_data)
-
+        if card_data:
+            if card_data['reference'] not in reference:
+                return make_response(jsonify({'message': 'Reference mismatch'}), 400)
+            if not card_data:
+                return make_response(jsonify({'message': 'Card is required'}), 400)
+            update_card_service(card_data)
         return jsonify({'message': 'Carte mise à jour avec succès'}), 201
     except ValidationError as ve:
         return make_response(jsonify({'message': 'Invalid data', 'errors': ve.messages}), 400)

@@ -59,7 +59,7 @@ def run_script(faction: str, workers: int):
                                   socketio.emit('script_output', {'data': f"Mise à jour de la carte : {card_to_update.name_en} ({card_to_update.reference})"})
                                   card_to_update.edited_at = datetime.now()
                                   session.commit()
-                      time.sleep(0.60)
+                      time.sleep(0.50)
 
         except Exception as e:
             socketio.emit('script_output', {'data': f"\033[91mError : {e}\033[0m"})

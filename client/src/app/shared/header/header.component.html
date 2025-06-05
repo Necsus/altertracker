@@ -54,8 +54,6 @@
             }
             <li><a routerLink="/me" class="block px-4 py-2 hover:bg-gray-600 rounded-t-lg">{{
                 'header.profile' | translate }}</a></li>
-            <li><a routerLink="/message" class="block px-4 py-2 hover:bg-gray-600">{{
-                'header.messages' | translate }}</a></li>
             <li><a routerLink="/token" class="block px-4 py-2 hover:bg-gray-600">{{
                 'header.token' | translate }}</a></li>
             <li><a routerLink="/searches" class="block px-4 py-2 hover:bg-gray-600">{{
@@ -127,9 +125,6 @@
 
       <a routerLink="/me" routerLinkActive="text-blue-400" class="block hover:text-blue-300 transition duration-300">{{
         username }}</a>
-      <a routerLink="/message" routerLinkActive="text-blue-400"
-        class="block hover:text-blue-300 transition duration-300">{{
-        'header.messages' | translate }}</a>
       @if (isAdmin) {
       <a routerLink="/admin" class="block hover:text-blue-300 transition duration-300">{{
         'header.admin' | translate }}</a>

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -58,7 +58,8 @@ export class StatsComponent implements OnInit {
     private userService: UserService,
     private toastService: ToastService,
     private modalService: ModalService,
-    private alteredService: AlteredService
+    private alteredService: AlteredService,
+    private cdr: ChangeDetectorRef
   ) { }
   get availableInMarket(): boolean {
     if (this.offers && this.offers.length > 0) {
@@ -199,22 +200,29 @@ export class StatsComponent implements OnInit {
   refreshCardFromAltered(): void {
     const alteredToken = localStorage.getItem('altered_token');
     if (alteredToken && this.card) {
-      let offerLiveMarket: OfferLiveMarketRequest;
       this.alteredService.getMarketOffer$(this.card, alteredToken).subscribe({
         next: (offer: OfferLiveMarketRequest) => {
-          offerLiveMarket = offer;
+          let request = [];
+          request.push(offer);
+          this.cardService.post_offer_live_market$(request).subscribe({
+            next: () => { },
+            error: (error) => {
+              console.error('Erreur lors de la mise à jour des offres live market :', error);
+            }
+          });
+        }
+      });
+    }
+    if (this.card && !this.card.image_path_en) {
+      this.alteredService.getEnglishCardByReference$(this.card).subscribe({
+        next: (card: CardModel) => {
+          this.card = { ...this.card, ...card };
         },
         complete: () => {
           if (this.card) {
-            this.alteredService.getEnglishCardByReference$(this.card).subscribe({
-              complete: () => {
-                if (this.card) {
-                  this.cardService.updateCard$(this.card, offerLiveMarket).subscribe({
-                    next: (response: any) => {
-                      console.log(response);
-                    }
-                  });
-                }
+            this.cardService.updateCard$(this.card).subscribe({
+              next: (response: any) => {
+                console.log(response);
               }
             });
           }
@@ -222,8 +230,12 @@ export class StatsComponent implements OnInit {
       });
     }
   }
-  sendMessage(): void {
-    this.toastService.show('Cette fonctionnalité n\'est pas encore implémentée.', 'info', 5000);
+  openDiscordMessage() {
+    this.toastService.show('Discord message is not implemented yet', 'info', 5000);
+    // const discordUserId = '123456789012345678'; // Remplace par l'ID Discord cible
+    // const url = `https://discord.com/users/${discordUserId}`;
+
+    // window.open(url, '_blank', 'noopener,noreferrer');
   }
 }
 

@@ -35,6 +35,9 @@ jobs:
           export BREVO_API_KEY="${{ secrets.BREVO_API_KEY }}"
           export ANGULAR_URL="${{ vars.ANGULAR_URL }}"
           export FLASK_ENV="${{ vars.FLASK_ENV }}"
+          export DISCORD_CLIENT_ID="${{ vars.DISCORD_CLIENT_ID }}"
+          export DISCORD_CLIENT_SECRET="${{ secrets.DISCORD_CLIENT_SECRET }}"
+          export DISCORD_REDIRECT_URI="${{ vars.DISCORD_REDIRECT_URI }}"
 
           echo "[+] Début du déploiement à $(date)"
           cd ~/geekom/uniquetracker
@@ -57,6 +60,9 @@ jobs:
         ANGULAR_URL=$ANGULAR_URL
         FLASK_ENV=$FLASK_ENV
         REDIS_HOST=redis
+        DISCORD_CLIENT_ID=$DISCORD_CLIENT_ID
+        DISCORD_CLIENT_SECRET=$DISCORD_CLIENT_SECRET
+        DISCORD_REDIRECT_URI=$DISCORD_REDIRECT_URI
         EOL
 
           echo "[+] Execute npm install et build"

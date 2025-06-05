@@ -16,6 +16,7 @@ class User(db.Model):
     is_banned = db.Column(db.Boolean, nullable=True)
     banned_at = db.Column(db.DateTime, nullable=True)
     sub = db.Column(db.String(255), nullable=True)
+    discord_id = db.Column(db.String(255), nullable=True)
 
 
     def __repr__(self):
@@ -34,11 +35,12 @@ class User(db.Model):
             'email_verified_at': self.email_verified_at.isoformat() if self.email_verified_at else None,
             'is_banned': self.is_banned,
             'banned_at': self.banned_at.isoformat() if self.banned_at else None,
-            'sub': self.sub
+            'sub': self.sub,
+            'discord_id': self.discord_id
         }
     
     def __init__(self, username, email, password_hash, created_at=None, edited_at=None, is_email_verified=False,
-                email_verified_at=None, is_banned=False, banned_at=None, sub=None):
+                email_verified_at=None, is_banned=False, banned_at=None, sub=None, discord_id=None):
         self.username = username
         self.email = email
         self.password_hash = password_hash
@@ -49,3 +51,4 @@ class User(db.Model):
         self.is_banned = is_banned
         self.banned_at = banned_at
         self.sub = sub
+        self.discord_id = discord_id

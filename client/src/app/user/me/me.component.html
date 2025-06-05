@@ -18,6 +18,22 @@
     </form>
 
     <hr class="my-6 border-gray-600" />
+    <button [disabled]="discordLinked || loadingDiscord" (click)="linkDiscord()" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all shadow-md
+          text-white
+          btn-discord
+          disabled:bg-gray-400 disabled:cursor-not-allowed">
+      <ng-container *ngIf="loadingDiscord; else notLoading">
+        <i class="fas fa-spinner animate-spin text-xl"></i>
+        Connexion...
+      </ng-container>
+
+      <ng-template #notLoading>
+        <i class="fab fa-discord text-xl"></i>
+        {{ discordLinked ? 'Compte lié ✅' : 'Link Discord' }}
+      </ng-template>
+    </button>
+
+    <hr class="my-6 border-gray-600" />
 
     <form (ngSubmit)="changePassword()">
       <h3 class="text-xl font-semibold mb-2">Changer de mot de passe</h3>
