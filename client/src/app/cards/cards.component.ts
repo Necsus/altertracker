@@ -113,12 +113,6 @@ export class CardsComponent implements OnInit, OnDestroy {
   }
 
   private processQueue(): void {
-    const alteredToken = localStorage.getItem('altered_token');
-    if (!alteredToken) {
-      this.router.navigate(['/token']);
-      return;
-    }
-
     if (this.remainingCards.length === 0) {
       this.progressSubject.next(0); // Réinitialise la progression si la file d'attente est vide
       this.queueProcessing = false; // Arrête le traitement si la file est vide
@@ -133,7 +127,7 @@ export class CardsComponent implements OnInit, OnDestroy {
 
     const card = this.remainingCards.shift(); // Récupère la première carte de la file d'attente
     if (card) {
-      this.alteredService.getMarketOffer$(card, alteredToken)
+      this.alteredService.getMarketOffer$(card)
         .pipe(
           delay(750), // Respecte le délai entre les requêtes
           map((offerRequest) => {

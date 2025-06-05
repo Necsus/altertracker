@@ -72,12 +72,6 @@ export class UserAlertsComponent implements OnInit, OnDestroy {
   }
 
   private processQueue(): void {
-    const alteredToken = localStorage.getItem('altered_token');
-    if (!alteredToken) {
-      this.router.navigate(['/token'], { queryParams: { callback: 'alerts' } });
-      return;
-    }
-
     if (this.remainingCards.length === 0) {
       this.progressSubject.next(0); // Réinitialise la progression si la file d'attente est vide
       this.queueProcessing = false; // Arrête le traitement si la file est vide
@@ -92,7 +86,7 @@ export class UserAlertsComponent implements OnInit, OnDestroy {
 
     const alert = this.remainingCards.shift(); // Récupère la première carte de la file d'attente
     if (alert) {
-      this.alteredService.getMarketOffer$(alert.card, alteredToken)
+      this.alteredService.getMarketOffer$(alert.card)
         .pipe(
           delay(750), // Respecte le délai entre les requêtes
           map((offerRequest) => {

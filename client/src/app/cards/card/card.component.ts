@@ -107,14 +107,9 @@ export class CardComponent {
   }
 
   refreshOffer(): void {
-    const alteredToken = localStorage.getItem('altered_token');
-    if (!alteredToken) {
-      this.router.navigate(['/token']);
-      return;
-    }
     if (this.card) {
       this.card.isProcessing = true;
-      this.alteredService.getMarketOffer$(this.card, alteredToken)
+      this.alteredService.getMarketOffer$(this.card)
         .pipe(
           map((offerRequest) => {
             let request = [];
