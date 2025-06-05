@@ -1,6 +1,7 @@
 import datetime
 from typing import Optional
 from sqlalchemy import func
+from app.models.offer_purchase import OfferPurchase
 from app.models.user_collection import UserCollection
 from app.models.card import Card
 from app.models.user_alert import UserAlert
@@ -33,7 +34,19 @@ def put_user_password_data(user_id: int, hashed_password: str) -> None:
         db.session.commit()
 
 def delete_user_data(user_id) -> None:
-    # Supprime l'utilisateur de la base de données
+    # Supprimer les alertes utilisateur
+    db.session.query(UserAlert).filter_by(id_user=user_id).delete()
+
+    # Supprimer les collections utilisateur
+    db.session.query(UserCollection).filter_by(id_user=user_id).delete()
+
+    # Supprimer les recherches utilisateur
+    db.session.query(UserSearch).filter_by(id_user=user_id).delete()
+
+    # Supprimer les recherches utilisateur
+    db.session.query(OfferPurchase).filter_by(id_user=user_id).delete()
+
+    # Supprimer l'utilisateur
     user = db.session.query(User).filter_by(id=user_id).first()
     if user:
         db.session.delete(user)
