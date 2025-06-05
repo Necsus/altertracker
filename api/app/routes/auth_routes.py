@@ -149,7 +149,8 @@ def login():
         return jsonify({"message": "Email not verified"}), 401
     additional_claims = {
         "is_admin": user.is_admin,
-        "username": user.username
+        "username": user.username,
+        "did_linked": True if user.discord_id else False
     }
     access_token = create_access_token(identity=str(user.id), additional_claims=additional_claims)
     return jsonify(access_token=access_token), 200
