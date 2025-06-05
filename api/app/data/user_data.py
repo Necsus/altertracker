@@ -202,15 +202,3 @@ def save_user_collections_bulk(id_user: int, collections: list[str]) -> list[dic
     except SQLAlchemyError as e:
         db.session.rollback()
         raise Exception(f"Erreur lors de la sauvegarde des collections utilisateur : {str(e)}")
-
-def set_user_sub_data(id_user: int, sub: str) -> None:
-    try:
-        user = db.session.query(User).filter_by(id=id_user).first()
-        if user:
-            user.sub = sub
-            db.session.commit()
-        else:
-            raise Exception(f"Aucun utilisateur trouvé avec l'ID {id_user}")
-    except SQLAlchemyError as e:
-        db.session.rollback()
-        raise Exception(f"Erreur lors de la mise à jour de l'abonnement utilisateur : {str(e)}")
