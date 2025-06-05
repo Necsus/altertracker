@@ -54,8 +54,6 @@
             }
             <li><a routerLink="/me" class="block px-4 py-2 hover:bg-gray-600 rounded-t-lg">{{
                 'header.profile' | translate }}</a></li>
-            <li><a routerLink="/token" class="block px-4 py-2 hover:bg-gray-600">{{
-                'header.token' | translate }}</a></li>
             <li><a routerLink="/searches" class="block px-4 py-2 hover:bg-gray-600">{{
                 'header.searches' | translate }}</a></li>
             <li><a routerLink="/alerts" class="block px-4 py-2 hover:bg-gray-600">{{
@@ -102,9 +100,6 @@
         class="block hover:text-blue-300 transition duration-300">{{
         'header.stats' | translate }}</a>
       @if (isLoggedIn) {
-      <a routerLink="/token" routerLinkActive="text-blue-400"
-        class="block hover:text-blue-300 transition duration-300">{{
-        'header.token' | translate }}</a>
       <a routerLink="/purchase-offers" routerLinkActive="text-blue-400"
         class="block hover:text-blue-300 transition duration-300">{{
         'header.purchase_offers' | translate }}</a>

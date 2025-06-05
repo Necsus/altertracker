@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { jwtDecode } from 'jwt-decode';
 import { BehaviorSubject, catchError, delay, map, of, throwError } from 'rxjs';
 import { OfferLiveMarketRequest } from '../../01_models/02_api/card/offer-live-market-request.model';
 import { UserCollectionModel } from '../../01_models/03_business/user-collection.model';
@@ -58,8 +57,6 @@ export class CollectionComponent implements OnInit, OnDestroy {
       this.router.navigate(['/token'], { queryParams: { callback: 'collection' } });
       return;
     }
-    // Décoder le token
-    const decodedToken = jwtDecode(alteredToken);
     let page = 1;
     const allCards: string[] = []; // Stocker toutes les références de cartes
 
@@ -76,11 +73,11 @@ export class CollectionComponent implements OnInit, OnDestroy {
               page++; // Passer à la page suivante
               fetchPage(); // Récursivité pour récupérer la page suivante
             } else {
-              // Envoyer la collection complète au backend
               const request = {
-                sub: decodedToken['sub'],
                 collection: allCards
               };
+              localStorage.removeItem('altered_token'); // Supprimer le token après l'importation
+              localStorage.removeItem('cgu_altered_token'); // Supprimer le token CGU après l'importation
               this.userService.post_user_collection$(request).subscribe({
                 next: (response: any) => {
                   this.cards = response; // Mettre à jour les cartes affichées
