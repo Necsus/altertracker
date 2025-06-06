@@ -45,7 +45,6 @@ export class MeComponent implements OnInit {
     this.userService.put_user_username$({ new_username: this.username }).subscribe({
       next: (response) => {
         console.log(response);
-        this.authViewService.refreshToken();
       },
       error: (err: any) => this.toastService.show(`Error: ${err.message}`, 'error', 5000)
     });

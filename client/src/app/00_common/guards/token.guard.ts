@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CanActivate } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
 import { AuthApiService } from '../../02_api/auth-api.service';
 import { AuthViewService } from '../../authentication/auth-view.service';
 import { AuthStorageService } from '../services/auth-storage.service';
@@ -25,17 +24,8 @@ export class TokenGuard implements CanActivate {
     }
 
     if (this.isTokenExpired(token)) {
-      // Tente de rafraîchir le token
-      return this.authApiService.refresh$().pipe(
-        map(() => {
-          this.authViewService.startTokenRefresh(); // Redémarre le rafraîchissement du token
-          return true; // Autorise l'accès à la route
-        }),
-        catchError(() => {
-          this.authViewService.logout();
-          return of(false); // Bloque l'accès à la route
-        })
-      );
+      this.authViewService.logout();
+      return of(false); // Bloque l'accès à la route
     }
 
     // Si le token est valide, autorise l'accès

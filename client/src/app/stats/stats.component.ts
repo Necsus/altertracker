@@ -72,7 +72,6 @@ export class StatsComponent implements OnInit {
       this.isLoggedIn = status;
     });
     this.currentLanguage = localStorage.getItem('selectedLanguage') || 'fr';
-    console.log('Current language:', this.currentLanguage);
     this.reference = this.route.snapshot.paramMap.get('reference');
     this.searchForm = this.fb.group({
       reference: [this.reference || ''],

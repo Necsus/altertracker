@@ -24,3 +24,4 @@ class ConfigEnv:
     DISCORD_REDIRECT_URI = os.getenv("DISCORD_REDIRECT_URI")
     DISCORD_TOKEN_URL = "https://discord.com/api/oauth2/token"
     DISCORD_API_URL = "https://discord.com/api/users/@me"
+    # BOT_API_URL = os.getenv("BOT_API_URL")

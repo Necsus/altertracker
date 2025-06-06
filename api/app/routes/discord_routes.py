@@ -2,9 +2,10 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 import requests
 from app.models.user import User
+from app.models.message import Message
 from app.config import ConfigEnv
 from app.extensions import db
-
+from app.config import ConfigEnv
 
 discord_bp = Blueprint('discord', __name__)
 
@@ -52,15 +53,15 @@ def discord_callback():
         return jsonify({'message': 'Discord ID linked successfully'}), 200
     else:
         return jsonify({'error': 'User not found'}), 404
-    
 
-@discord_bp.route('/sendto', methods=['POST'])
+
+@discord_bp.route("/api/rooms/<room_id>/messages", methods=["GET"])
 @jwt_required()
-def get_discord_user_id():
-    user_id = get_jwt_identity()
-    user = User.query.filter_by(id=user_id).first()
-
-    if not user or not user.discord_id:
-        return jsonify({'error': 'Discord ID not linked'}), 404
-
-    return jsonify({'discord_id': user.discord_id}), 200
+def get_room_messages(room_id):
+    messages = (
+        Message.query
+        .filter_by(room_id=room_id)
+        .order_by(Message.timestamp.asc())
+        .all()
+    )
+    return jsonify([m.to_dict() for m in messages])
