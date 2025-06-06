@@ -147,7 +147,5 @@ export class UserAlertsComponent implements OnInit, OnDestroy {
     console.error('Erreur 401 détectée : Redirection vers la page /token.');
     localStorage.removeItem('altered_token');
     localStorage.removeItem('cgu_altered_token');
-    this.toastService.show(error.message, 'error', 5000);
-    this.router.navigate(['/token'], { queryParams: { callback: 'alerts' } });
   }
 }
