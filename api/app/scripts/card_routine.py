@@ -1,3 +1,4 @@
+import sys
 import requests
 from urllib.parse import urlencode
 from app.extensions import db
@@ -138,12 +139,11 @@ def get_offer_by_reference(reference: str, token: str):
         print(f"\033[91mErreur lors de la requête : {e}\033[0m")
         return None
     
-def getToken(session) -> str:
+def getToken(session, retry: bool = True) -> str:
     global _token
     if _token:
         return _token
     try:
-        
         _token0 = session.query(CookieManager).filter_by(name="__Secure-next-auth.session-token.0").first()
         _token1 = session.query(CookieManager).filter_by(name="__Secure-next-auth.session-token.1").first()
         _callback = session.query(CookieManager).filter_by(name="__Secure-next-auth.callback-url").first()
@@ -167,7 +167,13 @@ def getToken(session) -> str:
         return _token
     except requests.exceptions.RequestException as e:
         print(f"\033[91mErreur lors de la récupération du token : {e}\033[0m")
-        return None
+        if retry:
+            print("\033[93mTentative de récupération du token...\033[0m")
+            _token = None
+            return getToken(session, retry=False)
+        else:
+            print("\033[91mÉchec de la récupération du token.\033[0m")
+            raise Exception("Arrêt du script à cause d'une erreur.")
 
 def get_unique_offers(session, name: str, faction: str, set: str, page: int):
     base_url = "https://api.altered.gg/cards/stats"
