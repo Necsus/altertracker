@@ -51,13 +51,14 @@ export class AlteredService {
           }),
           catchError((error) => {
             if ((error.status === 401 && error.error.message == "Expired JWT Token") || error.status === 500) {
-              sessionStorage.removeItem('offer_token'); // Supprimer le token expiré
+              localStorage.removeItem('offer_token'); // Supprimer le token expiré
               return throwError(() => new Error('Token invalide ou expiré. Veuillez le réinsérer.'));
             }
             return throwError(() => error); // Propager les autres erreurs
           })
         );
       } else {
+        localStorage.removeItem('offer_token');
         // Si le token n'est pas disponible, retourner un objet OfferLiveMarketRequest avec un statut non disponible
         return throwError(() => new Error('Token non disponible'));
       }

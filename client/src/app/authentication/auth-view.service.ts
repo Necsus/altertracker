@@ -76,35 +76,6 @@ export class AuthViewService {
     });
   }
 
-  startTokenRefresh(): void {
-    // Nettoyer le timeout précédent
-    if (this.refreshTimeout) {
-      clearTimeout(this.refreshTimeout);
-    }
-
-    const token = localStorage.getItem('access_token');
-    if (!token) {
-      this.logout();
-      return;
-    }
-
-    const expirationTime = this.getTokenExpirationTime(token);
-    if (!expirationTime) {
-      this.logout();
-      return;
-    }
-
-    const currentTime = Date.now();
-    const timeUntilRefresh = expirationTime - currentTime - 60000;
-    if (timeUntilRefresh > 0) {
-      this.refreshTimeout = setTimeout(() => {
-        this.refreshToken();
-      }, timeUntilRefresh);
-    } else {
-      this.refreshToken();
-    }
-  }
-
   // Vérifie si l'access token existe
   private isTokenValid(): boolean {
     const token = localStorage.getItem('access_token');
@@ -116,27 +87,6 @@ export class AuthViewService {
     } catch (err) {
       console.error('Invalid token', err);
       return false;
-    }
-  }
-
-  refreshToken(): void {
-    this.authService.refresh$().subscribe({
-      next: () => {
-        console.log('Token refreshed');
-        this.startTokenRefresh(); // Redémarre le cycle de rafraîchissement
-      },
-      error: () => {
-        this.logout();
-      }
-    });
-  }
-
-  private getTokenExpirationTime(token: string): number | null {
-    try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      return payload.exp ? payload.exp * 1000 : null; // Convertit en millisecondes
-    } catch (e) {
-      return null;
     }
   }
 }
