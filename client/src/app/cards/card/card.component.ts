@@ -144,7 +144,5 @@ export class CardComponent {
     localStorage.removeItem('altered_token');
     localStorage.removeItem('cgu_altered_token');
     this.loaderService.hide();
-    this.toastService.show(error.message, 'error', 5000);
-    this.router.navigate(['/token']);
   }
 }
