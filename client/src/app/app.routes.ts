@@ -8,6 +8,7 @@ import { LoginComponent } from './authentication/login.component';
 import { RegisterComponent } from './authentication/register.component';
 import { ResetPasswordComponent } from './authentication/reset-password/reset-password.component';
 import { CardsComponent } from './cards/cards.component';
+import { ChatComponent } from './chat/chat.component';
 import { HomeComponent } from './home/home.component';
 import { NotFoundComponent } from './shared/error-pages/not-found/not-found.component';
 import { UnauthorizedComponent } from './shared/error-pages/unauthorized/unauthorized.component';
@@ -31,6 +32,7 @@ export const routes: Routes = [
   { path: 'alerts', component: UserAlertsComponent, canActivate: [TokenGuard] },
   { path: 'me', component: MeComponent, canActivate: [TokenGuard] },
   { path: 'me/discord/link', component: DiscordCallbackComponent },
+  { path: 'chat', component: ChatComponent, canActivate: [AdminGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'validate-email/:token', component: ValidateEmailComponent },
