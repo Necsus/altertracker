@@ -12,8 +12,8 @@ export class AlteredService {
   constructor(
     private alteredApiService: AlteredApiService,
     private cookieManagerService: CookieManagerService) { }
-  getMarketOffer$(card: CardModel): Observable<OfferLiveMarketRequest> {
-    return this.cookieManagerService.get_token$().pipe(switchMap((token: any) => {
+  getMarketOffer$(card: CardModel, clearToken: boolean = false): Observable<OfferLiveMarketRequest> {
+    return this.cookieManagerService.get_token$(clearToken).pipe(switchMap((token: any) => {
       if (token) {
         return this.alteredApiService.getOfferByReference$(card.reference, token).pipe(
           map((response: any) => {
@@ -51,15 +51,11 @@ export class AlteredService {
           }),
           catchError((error) => {
             if ((error.status === 401 && error.error.message == "Expired JWT Token") || error.status === 500) {
-              return this.cookieManagerService.get_token$(true).pipe(
-                switchMap((newToken: any) => {
-                  if (newToken) {
-                    return this.alteredApiService.getOfferByReference$(card.reference, newToken);
-                  } else {
-                    return throwError(() => new Error('Impossible de recharger le token.'));
-                  }
-                })
-              );
+              if (clearToken) {
+                return this.getMarketOffer$(card, clearToken);
+              } else {
+                return throwError(() => new Error('Token invalide ou expiré. Veuillez le réinsérer.'));
+              }
             }
             return throwError(() => error); // Propager les autres erreurs
           })
