@@ -51,3 +51,16 @@ def discord_callback():
         return jsonify({'message': 'Discord ID linked successfully'}), 200
     else:
         return jsonify({'error': 'User not found'}), 404
+    
+@discord_bp.route('/unlink', methods=['GET'])
+@jwt_required()
+def discord_unlink():
+    user_id = get_jwt_identity()
+    user = User.query.filter_by(id=user_id).first()
+
+    if user:
+        user.discord_id = None
+        db.session.commit()
+        return jsonify({'message': 'Discord ID unlinked successfully'}), 200
+    else:
+        return jsonify({'error': 'User not found'}), 404

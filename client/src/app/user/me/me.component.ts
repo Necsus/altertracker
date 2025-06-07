@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
+import { DiscordService } from '../../03_business/discord.service';
 import { UserService } from '../../03_business/user.service';
 import { AuthViewService } from '../../authentication/auth-view.service';
 import { ToastService } from '../../shared/services/toast/toast.service';
@@ -26,7 +27,8 @@ export class MeComponent implements OnInit {
     private authViewService: AuthViewService,
     private router: Router,
     private toastService: ToastService,
-    private userService: UserService) { }
+    private userService: UserService,
+    private discordService: DiscordService) { }
 
   ngOnInit(): void {
     this.authViewService.isLoggedIn$.subscribe(status => {
@@ -45,7 +47,7 @@ export class MeComponent implements OnInit {
     }
     this.userService.put_user_username$({ new_username: this.username }).subscribe({
       next: (response) => {
-        console.log(response);
+        this.authViewService.refreshToken();
       },
       error: (err: any) => this.toastService.show(`Error: ${err.message}`, 'error', 5000)
     });
@@ -54,19 +56,30 @@ export class MeComponent implements OnInit {
   linkDiscord() {
     // this.toastService.show('Discord linking is not implemented yet', 'info', 5000);
     if (this.discordLinked || this.loadingDiscord) return;
+    this.loadingDiscord = true;
+    const discordUrl = `https://discord.com/api/oauth2/authorize?client_id=${environment.discord_client_id}&redirect_uri=${environment.discord_redirect_uri}&response_type=code&scope=identify`;
+    // Redirection immédiate : pas besoin de HTTP ici
+    window.location.href = discordUrl;
+  }
+
+  unlinkDiscord(): void {
+    if (!this.discordLinked || this.loadingDiscord) return;
 
     this.loadingDiscord = true;
 
-    const discordUrl = `https://discord.com/api/oauth2/authorize?client_id=${environment.discord_client_id}&redirect_uri=${environment.discord_redirect_uri}&response_type=code&scope=identify`;
-
-    // Redirection immédiate : pas besoin de HTTP ici
-    window.location.href = discordUrl;
+    this.discordService.unlink$().subscribe({
+      next: () => {
+        this.authViewService.refreshToken();
+        this.discordLinked = false;
+        this.loadingDiscord = false;
+      }
+    });
   }
 
   changePassword(): void {
     this.userService.put_user_password$({ old_password: this.oldPassword, new_password: this.newPassword }).subscribe({
       next: (response) => {
-        console.log(response);
+        this.authViewService.refreshToken();
       },
       error: (err: any) => this.toastService.show(`Error: ${err.message}`, 'error', 5000)
     });

@@ -13,4 +13,7 @@ export class DiscordApiService {
   discord_callback$(code: string): Observable<any> {
     return this.wabApiService.callPost$(this.controller, 'callback', { code: code });
   }
+  discord_unlink$(): Observable<void> {
+    return this.wabApiService.callGet$(this.controller, 'unlink');
+  }
 }

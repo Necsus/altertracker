@@ -134,13 +134,12 @@ def get_last_deleted_offers_data() -> list[dict]:
     try:
         # Sous-requête pour récupérer les IDs présents dans previous_offer
         subquery = db.session.query(Offer.previous_offer).filter(Offer.previous_offer != None).subquery()
-        subquery_select = db.session.query(subquery).select()
         # Requête principale
         results = db.session.query(Offer, Card).join(
             Card, Offer.reference_card == Card.reference
         ).filter(
             Offer.is_deleted == True,  # Vérifier que l'offre est supprimée
-            ~Offer.id.in_(subquery_select)  # Vérifier que l'ID n'est pas dans previous_offer
+            ~Offer.id.in_(subquery)  # Vérifier que l'ID n'est pas dans previous_offer
         ).order_by(
             Offer.deleted_at.desc()  # Trier par date de suppression décroissante
         ).limit(20).all()  # Limiter les résultats aux 20 dernières offres

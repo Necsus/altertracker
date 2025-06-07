@@ -28,7 +28,7 @@ export class AuthApiService {
   }
 
   refresh_token$(): Observable<{ access_token: string }> {
-    return this.wabApiService.callPost$(this.controller, 'refresh-token', {}, 110000);
+    return this.wabApiService.callGet$(this.controller, 'refresh-token');
   }
 
   logout$(): Observable<any> {

@@ -155,7 +155,7 @@ def login():
     access_token = create_access_token(identity=str(user.id), additional_claims=additional_claims)
     return jsonify(access_token=access_token), 200
 
-@auth_bp.route('/refresh-token', methods=['POST'])
+@auth_bp.route('/refresh-token', methods=['GET'])
 @limiter.limit("5 per minute")
 @jwt_required()  # Nécessite un refresh token
 def refresh_token():
