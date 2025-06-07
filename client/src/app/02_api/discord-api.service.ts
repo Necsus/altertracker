@@ -11,6 +11,6 @@ export class DiscordApiService {
   constructor(private wabApiService: WebApiService) {
   }
   discord_callback$(code: string): Observable<any> {
-    return this.wabApiService.callPost$(this.controller, 'callback', code);
+    return this.wabApiService.callPost$(this.controller, 'callback', { code: code });
   }
 }

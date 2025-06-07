@@ -17,13 +17,7 @@ export class AppComponent implements AfterViewInit {
   ngAfterViewInit() {
     const token = this.authStorageService.getToken();
     if (token) {
-      const isExpired = this.authViewService.isTokenExpired();
-      if (isExpired) {
-        localStorage.removeItem('access_token');
-        this.authViewService.loggedIn.next(false);
-      } else {
-        this.authViewService.loggedIn.next(true);
-      }
+      this.authViewService.refreshToken();
     } else {
       this.authViewService.loggedIn.next(false); // Assurez-vous de mettre à jour l'état si aucun token n'est présent
     }

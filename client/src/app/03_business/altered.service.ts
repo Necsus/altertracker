@@ -51,14 +51,20 @@ export class AlteredService {
           }),
           catchError((error) => {
             if ((error.status === 401 && error.error.message == "Expired JWT Token") || error.status === 500) {
-              localStorage.removeItem('offer_token'); // Supprimer le token expiré
-              return throwError(() => new Error('Token invalide ou expiré. Veuillez le réinsérer.'));
+              return this.cookieManagerService.get_token$(true).pipe(
+                switchMap((newToken: any) => {
+                  if (newToken) {
+                    return this.alteredApiService.getOfferByReference$(card.reference, newToken);
+                  } else {
+                    return throwError(() => new Error('Impossible de recharger le token.'));
+                  }
+                })
+              );
             }
             return throwError(() => error); // Propager les autres erreurs
           })
         );
       } else {
-        localStorage.removeItem('offer_token');
         // Si le token n'est pas disponible, retourner un objet OfferLiveMarketRequest avec un statut non disponible
         return throwError(() => new Error('Token non disponible'));
       }

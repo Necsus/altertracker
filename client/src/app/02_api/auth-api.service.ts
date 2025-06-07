@@ -27,13 +27,12 @@ export class AuthApiService {
     return this.wabApiService.callPost$(this.controller, 'login', { email: email, password: password });
   }
 
-  logout$(): Observable<any> {
-    return this.wabApiService.callPost$(this.controller, 'logout', {}, 110000);
+  refresh_token$(): Observable<{ access_token: string }> {
+    return this.wabApiService.callPost$(this.controller, 'refresh-token', {}, 110000);
   }
 
-  // Rafraîchit le token d'accès avec le refresh token
-  refresh$(): Observable<{ access_token: string }> {
-    return this.wabApiService.callPost$(this.controller, 'refresh', {}, 110000);
+  logout$(): Observable<any> {
+    return this.wabApiService.callPost$(this.controller, 'logout', {}, 110000);
   }
 
   // Envoie un email pour réinitialiser le mot de passe

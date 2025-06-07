@@ -1,31 +1,34 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DiscordService } from '../../03_business/discord.service';
+import { LoaderService } from '../../shared/services/loader/loader.service';
 
 @Component({
   selector: 'app-discord-callback',
-  template: `<p>Connexion Discord en cours...</p>`
+  templateUrl: './discord-callback.component.html',
 })
 export class DiscordCallbackComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private discordService: DiscordService,
-    private router: Router
+    private router: Router,
+    private loaderService: LoaderService
   ) { }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
       const code = params['code'];
       if (code) {
-        this.discordService.callback$(code).subscribe({
-          next: () => {
-            this.router.navigate(['/me']);
-          },
-          error: (err) => {
-            console.error('Erreur callback Discord', err);
-            this.router.navigate(['/me']);
-          }
-        });
+        this.discordService.callback$(code)
+          .subscribe({
+            next: () => {
+              this.router.navigate(['/me']);
+            },
+            error: (err) => {
+              console.error('Erreur callback Discord', err);
+              this.router.navigate(['/me']);
+            }
+          });
       }
     });
   }
