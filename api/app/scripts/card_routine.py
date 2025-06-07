@@ -1,10 +1,12 @@
 import sys
+import time
 import requests
 from urllib.parse import urlencode
 from app.extensions import db
 from app.models.cookie_manager import CookieManager
 
 _token = None
+_expires = None
 
 def get_cards(page: int, set: str, rarity: str):
     base_url = "https://api.altered.gg/cards"
@@ -140,8 +142,8 @@ def get_offer_by_reference(reference: str, token: str):
         return None
     
 def getToken(session, retry: bool = True) -> str:
-    global _token
-    if _token:
+    global _token, _expires
+    if _token and _expires and _expires > time.time():
         return _token
     try:
         _token0 = session.query(CookieManager).filter_by(name="__Secure-next-auth.session-token.0").first()
@@ -164,6 +166,7 @@ def getToken(session, retry: bool = True) -> str:
         session.commit()
         data = response.json()
         _token = data['accessToken']
+        _expires = data['expires']
         return _token
     except requests.exceptions.RequestException as e:
         print(f"\033[91mErreur lors de la récupération du token : {e}\033[0m")

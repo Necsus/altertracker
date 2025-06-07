@@ -76,6 +76,21 @@ export class AuthViewService {
     });
   }
 
+  isTokenExpired(): boolean | null {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const currentTime = Math.floor(Date.now() / 1000);
+        return payload.exp && payload.exp < currentTime;
+      } catch (e) {
+        return true; // Considère le token comme expiré en cas d'erreur
+      }
+    } else {
+      return null;
+    }
+  }
+
   // Vérifie si l'access token existe
   private isTokenValid(): boolean {
     const token = localStorage.getItem('access_token');

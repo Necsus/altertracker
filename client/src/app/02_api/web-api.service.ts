@@ -144,6 +144,7 @@ export class WebApiService {
         case 401:
           console.log('Vous n\'êtes pas autorisé à effectuer cette action');
           err.type = ExceptionType.Unauthorized;
+          localStorage.removeItem('access_token');
           break;
         case 417:
           err.type = ExceptionType.ExpectationFailed;
