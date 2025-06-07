@@ -11,7 +11,7 @@ from app.extensions import db
 from sqlalchemy.exc import SQLAlchemyError
 
 def get_user_count_data() -> int:
-    return db.session.query(func.count(User.id)).scalar()
+    return db.session.query(func.count(User.id)).filter(User.is_email_verified == True).scalar()
 
 def get_user_by_id_data(id_user: int) -> Optional[User]:
     return db.session.query(User).filter_by(id=id_user).first()
