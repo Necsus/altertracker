@@ -22,6 +22,12 @@ export class AuthService {
     }));
   }
 
+  refresh_token$(): Observable<void> {
+    return this.authApiService.refresh_token$().pipe(map((response: { access_token: string }) => {
+      this.authStorageService.storeAccessToken(response.access_token);
+    }));
+  }
+
   logout$(): Observable<any> {
     return this.authApiService.logout$().pipe(map((response: any) => {
       return response;
@@ -37,13 +43,6 @@ export class AuthService {
   resendValidationEmail$(token: string): Observable<any> {
     return this.authApiService.resendValidationEmail$(token).pipe(map((dbModel: any) => {
       return dbModel;
-    }));
-  }
-
-  refresh$(): Observable<void> {
-    return this.authApiService.refresh$().pipe(map((response: any) => {
-      this.authStorageService.storeAccessToken(response.access_token);
-      return response.access_token;
     }));
   }
 

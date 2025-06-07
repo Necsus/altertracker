@@ -2,8 +2,6 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import get_jwt_identity, jwt_required
 import requests
 from app.models.user import User
-from app.models.message import Message
-from app.config import ConfigEnv
 from app.extensions import db
 from app.config import ConfigEnv
 
@@ -53,15 +51,16 @@ def discord_callback():
         return jsonify({'message': 'Discord ID linked successfully'}), 200
     else:
         return jsonify({'error': 'User not found'}), 404
-
-
-@discord_bp.route("/api/rooms/<room_id>/messages", methods=["GET"])
+    
+@discord_bp.route('/unlink', methods=['GET'])
 @jwt_required()
-def get_room_messages(room_id):
-    messages = (
-        Message.query
-        .filter_by(room_id=room_id)
-        .order_by(Message.timestamp.asc())
-        .all()
-    )
-    return jsonify([m.to_dict() for m in messages])
+def discord_unlink():
+    user_id = get_jwt_identity()
+    user = User.query.filter_by(id=user_id).first()
+
+    if user:
+        user.discord_id = None
+        db.session.commit()
+        return jsonify({'message': 'Discord ID unlinked successfully'}), 200
+    else:
+        return jsonify({'error': 'User not found'}), 404

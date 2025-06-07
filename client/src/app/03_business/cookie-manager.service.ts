@@ -7,10 +7,13 @@ import { CookieManagerApiService } from '../02_api/cookie-manager-api.service';
 })
 export class CookieManagerService {
   constructor(private cookieManagerApiService: CookieManagerApiService) { }
-  get_token$(): Observable<string> {
+  get_token$(clearToken: boolean = false): Observable<string> {
+    if (clearToken) {
+      localStorage.removeItem('offer_token');
+    }
     const token = localStorage.getItem('offer_token');
     if (!token) {
-      return this.cookieManagerApiService.getToken$().pipe(map((token: any) => {
+      return this.cookieManagerApiService.getToken$(clearToken).pipe(map((token: any) => {
         localStorage.setItem('offer_token', token.token);
         return token.token;
       }));

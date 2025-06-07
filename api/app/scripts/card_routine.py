@@ -150,14 +150,13 @@ def _iso_to_timestamp(iso_str):
         dt = datetime.datetime.strptime(iso_str, "%Y-%m-%dT%H:%M:%SZ")
     return dt.replace(tzinfo=datetime.timezone.utc).timestamp()
     
-def getToken(session, retry: bool = True) -> str:
+def getToken(session, clearToken: bool = False) -> str:
     global _token, _expires
-    if _token and _expires:
-        try:
-            if _iso_to_timestamp(_expires) > time.time():
-                return _token
-        except Exception as e:
-            print(f"\033[91mErreur lors du parsing de la date d'expiration : {e}\033[0m")
+    if clearToken:
+        _token = None
+        _expires = None
+    elif _token:
+        return _token
     try:
         _token0 = session.query(CookieManager).filter_by(name="__Secure-next-auth.session-token.0").first()
         _token1 = session.query(CookieManager).filter_by(name="__Secure-next-auth.session-token.1").first()
@@ -183,15 +182,8 @@ def getToken(session, retry: bool = True) -> str:
         return _token
     except requests.exceptions.RequestException as e:
         print(f"\033[91mErreur lors de la récupération du token : {e}\033[0m")
-        if retry:
-            print("\033[93mTentative de récupération du token...\033[0m")
-            _token = None
-            return getToken(session, retry=False)
-        else:
-            print("\033[91mÉchec de la récupération du token.\033[0m")
-            raise Exception("Arrêt du script à cause d'une erreur.")
 
-def get_unique_offers(session, name: str, faction: str, set: str, page: int):
+def get_unique_offers(session, name: str, faction: str, set: str, page: int, retry: bool = True):
     base_url = "https://api.altered.gg/cards/stats"
     params = {
         "page": page,
@@ -226,6 +218,11 @@ def get_unique_offers(session, name: str, faction: str, set: str, page: int):
         # Retourner les données
         return data
     except requests.exceptions.RequestException as e:
-        # Gérer les erreurs de requête
-        print(f"\033[91mErreur lors de la requête : {e}\033[0m")
-        return None
+        if retry:
+            print(f"\033[93mTentative de récupération du token...\033[0m")
+            time.sleep(1)
+            getToken(session, True)
+            return get_unique_offers(session, name, faction, set, page, retry=False)
+        else:
+            print(f"\033[91mErreur lors de la requête : {e}\033[0m")
+            return None

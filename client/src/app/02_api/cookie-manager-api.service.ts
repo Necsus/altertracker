@@ -13,7 +13,7 @@ export class CookieManagerApiService {
     private wabApiService: WebApiService
   ) {
   }
-  getToken$(): Observable<any> {
-    return this.wabApiService.callGet$(this.controller, 'getaccesstoken');
+  getToken$(clearToken: boolean = false): Observable<any> {
+    return this.wabApiService.callGet$(this.controller, 'getaccesstoken' + (clearToken ? '?clearToken=true' : ''));
   }
 }

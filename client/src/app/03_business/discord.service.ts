@@ -12,4 +12,9 @@ export class DiscordService {
       return dbModel;
     }));
   }
+  unlink$(): Observable<void> {
+    return this.discordApiService.discord_unlink$().pipe(map(() => {
+      return;
+    }));
+  }
 }

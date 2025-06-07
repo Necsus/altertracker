@@ -76,7 +76,28 @@ export class AuthViewService {
     });
   }
 
-  isTokenExpired(): boolean | null {
+  refreshToken() {
+    if (this.isTokenExpired() === null) {
+      return;
+    }
+
+    if (!this.isTokenExpired()) {
+      this.authService.refresh_token$().subscribe({
+        next: () => {
+          this.loggedIn.next(true);
+        },
+        error: (err: any) => {
+          console.error('Error refreshing token', err);
+          this.logout();
+        }
+      });
+    } else {
+      console.warn('Token is expired, logging out');
+      this.logout();
+    }
+  }
+
+  private isTokenExpired(): boolean | null {
     const token = localStorage.getItem('access_token');
     if (token) {
       try {

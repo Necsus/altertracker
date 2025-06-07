@@ -5,7 +5,7 @@ import jwt
 import sib_api_v3_sdk
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import (
-    create_access_token, jwt_required, unset_jwt_cookies
+    create_access_token, get_jwt_identity, jwt_required, unset_jwt_cookies
 )
 from app.config import Config, ConfigEnv
 from app.utils.emails import render_template_with_data
@@ -154,6 +154,23 @@ def login():
     }
     access_token = create_access_token(identity=str(user.id), additional_claims=additional_claims)
     return jsonify(access_token=access_token), 200
+
+@auth_bp.route('/refresh-token', methods=['GET'])
+@limiter.limit("5 per minute")
+@jwt_required()  # Nécessite un refresh token
+def refresh_token():
+    user_id = get_jwt_identity()  # Récupère l'identité de l'utilisateur à partir du refresh token
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+
+    additional_claims = {
+        "is_admin": user.is_admin,
+        "username": user.username,
+        "did_linked": True if user.discord_id else False
+    }
+    new_access_token = create_access_token(identity=str(user.id), additional_claims=additional_claims)
+    return jsonify(access_token=new_access_token), 200
 
 @auth_bp.route('/logout', methods=['POST'])
 @jwt_required()

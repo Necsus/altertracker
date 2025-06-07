@@ -11,6 +11,7 @@ from app.routes.script_routes import script_bp
 from app.routes.purchase_routes import purchase_bp
 from app.routes.discord_routes import discord_bp
 from app.routes.cookie_manager_routes import cookiemanager_bp
+from app.routes.chat_routes import chat_bp
 from app.config import Config, ConfigEnv
 from flask_jwt_extended import JWTManager
 from app.extensions import socketio
@@ -39,6 +40,7 @@ def create_app():
     app.register_blueprint(purchase_bp, url_prefix="/api/purchase")
     app.register_blueprint(discord_bp, url_prefix="/api/discord")
     app.register_blueprint(cookiemanager_bp, url_prefix="/api/cookie-manager")
+    app.register_blueprint(chat_bp, url_prefix="/api/chat")
 
     @app.before_request
     def handle_options():
