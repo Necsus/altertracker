@@ -1,10 +1,13 @@
+import datetime
 import sys
+import time
 import requests
 from urllib.parse import urlencode
 from app.extensions import db
 from app.models.cookie_manager import CookieManager
 
 _token = None
+_expires = None
 
 def get_cards(page: int, set: str, rarity: str):
     base_url = "https://api.altered.gg/cards"
@@ -139,10 +142,22 @@ def get_offer_by_reference(reference: str, token: str):
         print(f"\033[91mErreur lors de la requête : {e}\033[0m")
         return None
     
+def _iso_to_timestamp(iso_str):
+    # Gère le format ISO 8601 avec ou sans millisecondes
+    try:
+        dt = datetime.datetime.strptime(iso_str, "%Y-%m-%dT%H:%M:%S.%fZ")
+    except ValueError:
+        dt = datetime.datetime.strptime(iso_str, "%Y-%m-%dT%H:%M:%SZ")
+    return dt.replace(tzinfo=datetime.timezone.utc).timestamp()
+    
 def getToken(session, retry: bool = True) -> str:
-    global _token
-    if _token:
-        return _token
+    global _token, _expires
+    if _token and _expires:
+        try:
+            if _iso_to_timestamp(_expires) > time.time():
+                return _token
+        except Exception as e:
+            print(f"\033[91mErreur lors du parsing de la date d'expiration : {e}\033[0m")
     try:
         _token0 = session.query(CookieManager).filter_by(name="__Secure-next-auth.session-token.0").first()
         _token1 = session.query(CookieManager).filter_by(name="__Secure-next-auth.session-token.1").first()
@@ -164,6 +179,7 @@ def getToken(session, retry: bool = True) -> str:
         session.commit()
         data = response.json()
         _token = data['accessToken']
+        _expires = data['expires']
         return _token
     except requests.exceptions.RequestException as e:
         print(f"\033[91mErreur lors de la récupération du token : {e}\033[0m")
