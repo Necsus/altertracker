@@ -19,4 +19,8 @@ export class ChatApiService {
   create_room$(purchase_id: number): Observable<any> {
     return this.wabApiService.callGet$(this.controller, `room/create/${purchase_id}`);
   }
+
+  send_message$(message: any): Observable<void> {
+    return this.wabApiService.callPost$(this.controller, 'message', message);
+  }
 }

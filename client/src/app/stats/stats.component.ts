@@ -230,16 +230,16 @@ export class StatsComponent implements OnInit {
     }
   }
   startChatRoom(offerPurchase: OfferPurchase) {
-    // this.toastService.show('not implemented', 'info', 5000);
-    this.chatService.create_room(offerPurchase.id).subscribe({
-      next: (room_id: string) => {
-        this.router.navigate(['/chat', room_id]);
-      },
-      error: (err: any) => {
-        console.error(err);
-        this.toastService.show('Erreur lors de la création de la salle de chat', 'error', 5000);
-      }
-    });
+    this.toastService.show('not implemented', 'info', 5000);
+    // this.chatService.create_room$(offerPurchase.id).subscribe({
+    //   next: (room_id: string) => {
+    //     this.router.navigate(['/chat', room_id]);
+    //   },
+    //   error: (err: any) => {
+    //     console.error(err);
+    //     this.toastService.show('Erreur lors de la création de la salle de chat', 'error', 5000);
+    //   }
+    // });
   }
 }
 
