@@ -17,31 +17,6 @@
       <button type="submit" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">Sauvegarder</button>
     </form>
 
-    <!-- <hr class="my-6 border-gray-600" />
-    <button (click)="linkDiscord()" [ngClass]="{
-      'bg-gray-500 cursor-not-allowed': discordLinked || loadingDiscord,
-      'btn-discord': !discordLinked
-    }" [disabled]="discordLinked || loadingDiscord" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all shadow-md
-      text-white disabled:bg-gray-400 disabled:cursor-not-allowed">
-      <ng-container *ngIf="loadingDiscord; else notLoading">
-        <i class="fas fa-spinner animate-spin text-xl"></i>
-        Connexion...
-      </ng-container>
-
-      <ng-template #notLoading>
-        <i class="fab fa-discord text-xl"></i>
-        {{ discordLinked ? 'Compte lié ✅' : 'Link Discord' }}
-      </ng-template>
-    </button>
-
-    <button *ngIf="discordLinked" (click)="unlinkDiscord()" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all shadow-md
-          text-white
-          bg-red-600 hover:bg-red-700
-          disabled:bg-gray-400 disabled:cursor-not-allowed ml-4">
-      <i class="fas fa-unlink text-xl"></i>
-      Unlink Discord
-    </button> -->
-
     <hr class="my-6 border-gray-600" />
 
     <form (ngSubmit)="changePassword()">

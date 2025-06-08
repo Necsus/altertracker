@@ -16,16 +16,16 @@ class ChatRoom(db.Model):
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     reference_card = db.Column(String, nullable=False)
-    user1_id = db.Column(String, nullable=False)
-    user2_id = db.Column(String, nullable=False)
+    seller_id = db.Column(String, nullable=False)
+    buyer_id = db.Column(String, nullable=False)
 
     status = db.Column(SQLAlchemyEnum(ChatRoomStatusEnum, values_callable=lambda obj: [e.value for e in obj]), 
                       nullable=False, 
                       default=ChatRoomStatusEnum.ACTIVE.value)
     expiration_date = db.Column(DateTime, nullable=False)
 
-    user1_closed = db.Column(Boolean, default=False)
-    user2_closed = db.Column(Boolean, default=False)
+    seller_closed = db.Column(Boolean, default=False)
+    buyer_closed = db.Column(Boolean, default=False)
 
     created_at = db.Column(DateTime, default=datetime.now(timezone.utc))
     updated_at = db.Column(DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
@@ -34,5 +34,5 @@ class ChatRoom(db.Model):
 
 from sqlalchemy import Index
 
-Index("ix_chat_rooms_user1_id", ChatRoom.user1_id)
-Index("ix_chat_rooms_user2_id", ChatRoom.user2_id)
+Index("ix_chat_rooms_seller_id", ChatRoom.seller_id)
+Index("ix_chat_rooms_buyer_id", ChatRoom.buyer_id)

@@ -9,7 +9,7 @@ class ChatMessage(db.Model):
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     room_id = db.Column(UUID(as_uuid=True), ForeignKey("chat_rooms.id", ondelete="CASCADE"), nullable=False)
-    sender_id = db.Column(String, nullable=False)  # Discord ID
+    sender_id = db.Column(String, nullable=False)
     content = db.Column(Text, nullable=False)
     sent_at = db.Column(DateTime, default=datetime.now(timezone.utc))
 

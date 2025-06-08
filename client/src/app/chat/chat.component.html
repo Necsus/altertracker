@@ -15,23 +15,24 @@
 
         <!-- Contacts -->
         <div class="bg-gray-800 flex-1 overflow-auto">
-          <div class="px-3 flex items-center bg-gray-700 cursor-pointer hover:bg-gray-600">
-            <div>
+          <div *ngFor="let room of rooms" (click)="selectRoom(room)"
+            class="px-3 flex items-center bg-gray-700 cursor-pointer hover:bg-gray-600">
+            <!-- <div>
               <img class="h-12 w-12 rounded-full"
                 src="https://darrenjameseeley.files.wordpress.com/2014/09/expendables3.jpeg" />
-            </div>
+            </div> -->
             <div class="ml-4 flex-1 border-b border-gray-700 py-4">
               <div class="flex items-bottom justify-between">
                 <p class="text-gray-100">
-                  New Movie! Expendables 4
+                  {{ room.reference_card }}
                 </p>
-                <p class="text-xs text-gray-400">
+                <!-- <p class="text-xs text-gray-400">
                   12:45 pm
-                </p>
+                </p> -->
               </div>
-              <p class="text-gray-400 mt-1 text-sm">
-                Get Andrés on this movie ASAP!
-              </p>
+              <!-- <p class="text-gray-400 mt-1 text-sm">
+                Afficher ici le dernier message
+              </p> -->
             </div>
           </div>
           <!-- Répète pour chaque contact, adapte les couleurs -->
@@ -42,19 +43,20 @@
       <div class="w-2/3 flex flex-col bg-gray-900">
 
         <!-- Header -->
+        @if (activeRoom) {
         <div class="py-2 px-3 bg-gray-900 flex flex-row justify-between items-center border-b border-gray-700">
           <div class="flex items-center">
-            <div>
+            <!-- <div>
               <img class="w-10 h-10 rounded-full"
                 src="https://darrenjameseeley.files.wordpress.com/2014/09/expendables3.jpeg" />
-            </div>
+            </div> -->
             <div class="ml-4">
               <p class="text-gray-100">
-                New Movie! Expendables 4
+                {{ activeRoom.reference_card }}
               </p>
-              <p class="text-gray-400 text-xs mt-1">
+              <!-- <p class="text-gray-400 text-xs mt-1">
                 Andrés, Tom, Harrison, Arnold, Sylvester
-              </p>
+              </p> -->
             </div>
           </div>
           <div class="flex">
@@ -63,16 +65,16 @@
         </div>
 
         <!-- Messages -->
-        <div class="flex-1 overflow-auto bg-gray-800">
+        <div *ngFor="let message of activeRoom.messages" class="flex-1 overflow-auto bg-gray-800">
           <div class="py-2 px-3">
 
-            <div class="flex justify-center mb-2">
+            <!-- <div class="flex justify-center mb-2">
               <div class="rounded py-2 px-4 bg-gray-700">
                 <p class="text-sm uppercase text-gray-300">
                   February 20, 2018
                 </p>
               </div>
-            </div>
+            </div> -->
 
             <div class="flex justify-center mb-4">
               <div class="rounded py-2 px-4 bg-yellow-900">
@@ -89,10 +91,10 @@
                   Sylverter Stallone
                 </p>
                 <p class="text-sm mt-1 text-gray-200">
-                  Hi everyone! Glad you could join! I am making a new movie.
+                  {{ message.content }}
                 </p>
                 <p class="text-right text-xs text-gray-400 mt-1">
-                  12:45 pm
+                  {{ message.sent_at | date:'shortTime' }}
                 </p>
               </div>
             </div>
@@ -124,6 +126,7 @@
             <!-- ...SVG icon... -->
           </div>
         </div>
+        }
       </div>
     </div>
   </div>

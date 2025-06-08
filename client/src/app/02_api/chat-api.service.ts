@@ -15,4 +15,8 @@ export class ChatApiService {
   get_rooms$(): Observable<ChatRoom[]> {
     return this.wabApiService.callGet$(this.controller, 'room');
   }
+
+  create_room$(purchase_id: number): Observable<any> {
+    return this.wabApiService.callGet$(this.controller, `room/create/${purchase_id}`);
+  }
 }

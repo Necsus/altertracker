@@ -15,6 +15,12 @@ export class ChatService {
     }));
   }
 
+  create_room(purchaseId: number): Observable<string> {
+    return this.chatApiService.create_room$(purchaseId).pipe(map((dbModel: any) => {
+      return dbModel.room_id;
+    }));
+  }
+
 
 
 
