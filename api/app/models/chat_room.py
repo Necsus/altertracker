@@ -15,9 +15,9 @@ class ChatRoom(db.Model):
     __tablename__ = "chat_rooms"
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user1_id = db.Column(String, nullable=False)  # Discord ID
-    user2_id = db.Column(String, nullable=False)  # Discord ID
-    discord_channel_id = db.Column(String, nullable=True)
+    reference_card = db.Column(String, nullable=False)
+    user1_id = db.Column(String, nullable=False)
+    user2_id = db.Column(String, nullable=False)
 
     status = db.Column(SQLAlchemyEnum(ChatRoomStatusEnum, values_callable=lambda obj: [e.value for e in obj]), 
                       nullable=False, 

@@ -228,7 +228,7 @@ export class StatsComponent implements OnInit {
       });
     }
   }
-  openDiscordMessage() {
+  startChatRoom() {
     this.toastService.show('Discord message is not implemented yet', 'info', 5000);
     // const discordUserId = '123456789012345678'; // Remplace par l'ID Discord cible
     // const url = `https://discord.com/users/${discordUserId}`;

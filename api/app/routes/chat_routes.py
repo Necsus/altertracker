@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from app.models.offer_purchase import OfferPurchase
 from app.extensions import db, socketio
 from app.models.chat_room import ChatRoom, ChatRoomStatusEnum
 from app.models.chat_message import ChatMessage
@@ -66,6 +67,33 @@ def receive_message():
     }, room=str(room.id))
 
     return jsonify({"status": "message_received"})
+
+@chat_bp.route("/room/create/<int:purchase_id>", methods=["POST"])
+@jwt_required()
+def create_room(purchase_id: int):
+    offer_purchase = OfferPurchase.query.filter_by(id=purchase_id).first()
+    if not offer_purchase:
+        return jsonify({"error": "Offer purchase not found"}), 404
+    user_id = get_jwt_identity()
+    room = ChatRoom(
+        reference_card=offer_purchase.reference_card,
+        user1_id=user_id,
+        user2_id=offer_purchase.user_id,
+        status='active',
+        expiration_date=datetime.now(timezone.utc) + timedelta(days=7),
+        user1_closed=False,
+        user2_closed=False,
+        created_at=datetime.now(timezone.utc),
+        updated_at=datetime.now(timezone.utc)
+    )
+    db.session.add(room)
+    db.session.commit()
+    # socketio.emit("room_created", {
+    #     "room_id": str(room.id),
+    #     "user1_id": room.user1_id,
+    #     "user2_id": room.user2_id
+    # }, room=str(room.id))
+    return jsonify({"status": "room created"})
 
 @chat_bp.route("/room/<uuid:room_id>/close", methods=["POST"])
 def close_room(room_id):
