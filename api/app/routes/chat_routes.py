@@ -27,7 +27,7 @@ def get_rooms():
             "status": room.status,
             "created_at": room.created_at.isoformat(),
             "messages": [{
-                "sender_id": m.sender_id,
+                "sender": 'me' if m.sender_id == user_id else 'other',
                 "content": m.content,
                 "sent_at": m.sent_at.isoformat()
             } for m in sorted(room.messages, key=lambda x: x.sent_at)]

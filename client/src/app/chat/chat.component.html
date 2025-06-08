@@ -84,11 +84,11 @@
               </div>
             </div>
 
-            <!-- Message de gauche -->
-            <div class="flex mb-2">
+            <!-- Message de gauche BUYER -->
+            <div class="flex mb-2" *ngIf="message.sender === 'other'">
               <div class="rounded py-2 px-3 bg-gray-700">
                 <p class="text-sm text-teal-300">
-                  Sylverter Stallone
+                  Contact
                 </p>
                 <p class="text-sm mt-1 text-gray-200">
                   {{ message.content }}
@@ -99,14 +99,14 @@
               </div>
             </div>
 
-            <!-- Message de droite -->
-            <div class="flex justify-end mb-2">
+            <!-- Message de droite ME -->
+            <div class="flex justify-end mb-2" *ngIf="message.sender === 'me'">
               <div class="rounded py-2 px-3 bg-green-900">
                 <p class="text-sm mt-1 text-gray-100">
-                  Hi guys.
+                  {{ message.content }}
                 </p>
                 <p class="text-right text-xs text-gray-400 mt-1">
-                  12:45 pm
+                  {{ message.sent_at | date:'shortTime' }}
                 </p>
               </div>
             </div>
@@ -123,7 +123,9 @@
             <input class="w-full border border-gray-700 rounded px-2 py-2 bg-gray-800 text-gray-200" type="text" />
           </div>
           <div>
-            <!-- ...SVG icon... -->
+            <button type="button" class="text-blue-400 hover:text-blue-300 text-xl">
+              <i class="fas fa-paper-plane"></i>
+            </button>
           </div>
         </div>
         }
