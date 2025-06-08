@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import get_jwt_identity, jwt_required
+from flask_socketio import join_room
 from app.models.user_collection import UserCollection
 from app.models.offer_purchase import OfferPurchase
 from app.extensions import db, socketio
@@ -22,12 +23,10 @@ def get_rooms():
         return {
             "id": str(room.id),
             "reference_card": room.reference_card,
-            # "seller_id": room.seller_id,
-            # "buyer_id": room.buyer_id,
             "status": room.status,
             "created_at": room.created_at.isoformat(),
             "messages": [{
-                "sender_id": m.sender_id,
+                "sender": 'me' if m.sender_id == user_id else 'other',
                 "content": m.content,
                 "sent_at": m.sent_at.isoformat()
             } for m in sorted(room.messages, key=lambda x: x.sent_at)]
@@ -35,39 +34,25 @@ def get_rooms():
 
     return jsonify([room_to_dict(room) for room in rooms])
 
-@chat_bp.route("/message", methods=["POST"])
+@chat_bp.route('/message', methods=['POST'])
+@jwt_required()
 def receive_message():
     data = request.json
-    sender = data["sender_id"]
-    receiver = data["receiver_id"]
+    sender_id = get_jwt_identity()
     content = data["content"]
+    room_id = data["room_id"]
 
-    room = ChatRoom.query.filter(
-        ((ChatRoom.seller_id == sender) & (ChatRoom.buyer_id == receiver)) |
-        ((ChatRoom.seller_id == receiver) & (ChatRoom.buyer_id == sender)),
-        ChatRoom.status == ChatRoomStatusEnum.ACTIVE.value
-    ).first()
+    room = ChatRoom.query.filter_by(id=room_id).first()
 
     if not room:
-        room = ChatRoom(
-            user1_id=sender,
-            user2_id=receiver,
-            expiration_date=datetime.now(timezone.utc) + timedelta(days=7)
-        )
-        db.session.add(room)
-        db.session.commit()
+        return jsonify({"error": "Room not found"}), 404
+    
+    if room.seller_id != sender_id and room.buyer_id != sender_id:
+        return jsonify({"error": "You are not a participant in this room"}), 403
 
-    message = ChatMessage(room_id=room.id, sender_id=sender, content=content)
+    message = ChatMessage(room_id=room.id, sender_id=sender_id, content=content)
     db.session.add(message)
     db.session.commit()
-
-    socketio.emit("new_message", {
-        "room_id": str(room.id),
-        "sender_id": sender,
-        "content": content,
-        "sent_at": message.sent_at.isoformat()
-    }, room=str(room.id))
-
     return jsonify({"status": "message_received"})
 
 @chat_bp.route("/room/create/<int:purchase_id>", methods=["GET"])
@@ -120,3 +105,22 @@ def close_room(room_id):
 
     db.session.commit()
     return jsonify({"status": "room_updated", "room": str(room.id)})
+
+@socketio.on('join_room')
+def handle_join(data):
+    room_id = data.get("room_id")
+    print(f"Joining room: {room_id}")
+    join_room(room_id)
+    socketio.emit("status", f"Joined room {room_id}", room=room_id)
+
+@socketio.on('send_mesage')
+def handle_send_message(data):
+    room_id = data.get("room_id")
+    content = data.get("content")
+    sent_at = data.get("sent_at", datetime.now(timezone.utc).isoformat())
+    socketio.emit('new_message', {
+        "room_id": room_id,
+        "sender": 'other',
+        "content": content,
+        "sent_at": sent_at
+    }, room=str(room_id), include_self=False)

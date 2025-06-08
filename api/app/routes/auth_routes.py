@@ -155,7 +155,7 @@ def login():
     return jsonify(access_token=access_token), 200
 
 @auth_bp.route('/refresh-token', methods=['GET'])
-@limiter.limit("5 per minute")
+@limiter.limit("10 per minute")
 @jwt_required()  # Nécessite un refresh token
 def refresh_token():
     user_id = get_jwt_identity()  # Récupère l'identité de l'utilisateur à partir du refresh token

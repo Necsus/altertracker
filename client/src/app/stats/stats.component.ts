@@ -231,7 +231,7 @@ export class StatsComponent implements OnInit {
   }
   startChatRoom(offerPurchase: OfferPurchase) {
     this.toastService.show('not implemented', 'info', 5000);
-    // this.chatService.create_room(offerPurchase.id).subscribe({
+    // this.chatService.create_room$(offerPurchase.id).subscribe({
     //   next: (room_id: string) => {
     //     this.router.navigate(['/chat', room_id]);
     //   },

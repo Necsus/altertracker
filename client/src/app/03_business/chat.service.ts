@@ -1,46 +1,41 @@
 import { Injectable } from '@angular/core';
+import { Socket } from 'ngx-socket-io';
 import { map, Observable, of } from 'rxjs';
 import { ChatRoom } from '../01_models/03_business/chat-room.model';
 import { ChatApiService } from '../02_api/chat-api.service';
 
 @Injectable({ providedIn: 'root' })
 export class ChatService {
-  private socket: any;
 
-  constructor(private chatApiService: ChatApiService) { }
+  constructor(
+    private chatApiService: ChatApiService,
+    private socket: Socket) { }
 
-  get_rooms(): Observable<ChatRoom[]> {
+  get_rooms$(): Observable<ChatRoom[]> {
     return this.chatApiService.get_rooms$().pipe(map((dbModel: ChatRoom[]) => {
       return dbModel;
     }));
   }
 
-  create_room(purchaseId: number): Observable<string> {
+  create_room$(purchaseId: number): Observable<string> {
     return this.chatApiService.create_room$(purchaseId).pipe(map((dbModel: any) => {
       return dbModel.room_id;
     }));
   }
 
-
-
+  send_message$(messageData: any): Observable<void> {
+    return this.chatApiService.send_message$(messageData).pipe(map(() => {
+      return undefined;
+    }));
+  }
 
   connect(discordId: string) {
     // this.socket = io(this.baseUrl);
     // this.socket.emit('join', discordId);
   }
 
-
-
-  sendMessage(data: any) {
-    this.socket.emit('send_message', data);
-  }
-
   onNewMessage(): Observable<any> {
-    return new Observable(observer => {
-      this.socket.on('new_message', (msg: any) => {
-        observer.next(msg);
-      });
-    });
+    return this.socket.fromEvent('new_message');
   }
 
   closeRoom(id: string): Observable<void> {
