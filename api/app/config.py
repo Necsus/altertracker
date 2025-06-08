@@ -18,8 +18,3 @@ class ConfigEnv:
     BREVO_API_KEY = os.getenv('BREVO_API_KEY')
     ANGULAR_URL = os.getenv('ANGULAR_URL')
     FLASK_ENV = os.getenv('FLASK_ENV')
-    DISCORD_CLIENT_ID = os.getenv("DISCORD_CLIENT_ID")
-    DISCORD_CLIENT_SECRET = os.getenv("DISCORD_CLIENT_SECRET")
-    DISCORD_REDIRECT_URI = os.getenv("DISCORD_REDIRECT_URI")
-    DISCORD_TOKEN_URL = "https://discord.com/api/oauth2/token"
-    DISCORD_API_URL = "https://discord.com/api/users/@me"

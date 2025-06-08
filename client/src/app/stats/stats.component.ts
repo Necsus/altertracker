@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -12,6 +12,7 @@ import { OfferModel } from '../01_models/03_business/offer.model';
 import { UserAlertModel } from '../01_models/03_business/user-alert.model';
 import { AlteredService } from '../03_business/altered.service';
 import { CardService } from '../03_business/card.service';
+import { ChatService } from '../03_business/chat.service';
 import { UserService } from '../03_business/user.service';
 import { AuthViewService } from '../authentication/auth-view.service';
 import { LocalizedValuePipe } from '../shared/pipes/localized-value.pipe';
@@ -59,7 +60,7 @@ export class StatsComponent implements OnInit {
     private toastService: ToastService,
     private modalService: ModalService,
     private alteredService: AlteredService,
-    private cdr: ChangeDetectorRef
+    private chatService: ChatService
   ) { }
   get availableInMarket(): boolean {
     if (this.offers && this.offers.length > 0) {
@@ -228,12 +229,17 @@ export class StatsComponent implements OnInit {
       });
     }
   }
-  openDiscordMessage() {
-    this.toastService.show('Discord message is not implemented yet', 'info', 5000);
-    // const discordUserId = '123456789012345678'; // Remplace par l'ID Discord cible
-    // const url = `https://discord.com/users/${discordUserId}`;
-
-    // window.open(url, '_blank', 'noopener,noreferrer');
+  startChatRoom(offerPurchase: OfferPurchase) {
+    this.toastService.show('not implemented', 'info', 5000);
+    // this.chatService.create_room(offerPurchase.id).subscribe({
+    //   next: (room_id: string) => {
+    //     this.router.navigate(['/chat', room_id]);
+    //   },
+    //   error: (err: any) => {
+    //     console.error(err);
+    //     this.toastService.show('Erreur lors de la création de la salle de chat', 'error', 5000);
+    //   }
+    // });
   }
 }
 

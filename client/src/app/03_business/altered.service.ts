@@ -50,9 +50,9 @@ export class AlteredService {
             }
           }),
           catchError((error) => {
-            if ((error.status === 401 && error.error.message == "Expired JWT Token") || error.status === 500) {
-              if (clearToken) {
-                return this.getMarketOffer$(card, clearToken);
+            if (error.status === 401) {
+              if (!clearToken) {
+                return this.getMarketOffer$(card, true);
               } else {
                 return throwError(() => new Error('Token invalide ou expiré. Veuillez le réinsérer.'));
               }

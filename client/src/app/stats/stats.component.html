@@ -123,14 +123,13 @@
         <li *ngFor="let purchase of purchases" class="flex items-center border-b border-gray-700 pb-2">
           <!-- Username and Date -->
           <div class="flex flex-col">
-            <span class="font-medium">{{ purchase.username }}</span>
+            <!-- <span class="font-medium">{{ purchase.username }}</span> -->
             <span class="text-gray-500 text-xs">{{ purchase.created_at | date:'dd/MM/yyyy HH:mm' }}</span>
           </div>
           <!-- Button -->
           <div class="flex justify-center items-center mx-4" *ngIf="isLoggedIn && is_mine">
-            <button (click)="openDiscordMessage()"
-              class="inline-flex items-center gap-2 px-4 py-2 rounded-lg btn-discord text-white font-semibold transition-all shadow-md">
-              <i class="fab fa-discord text-xl"></i>
+            <button (click)="startChatRoom(purchase)"
+              class="inline-flex items-center bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg transition">
               Envoyer un message
             </button>
           </div>

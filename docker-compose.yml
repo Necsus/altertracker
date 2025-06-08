@@ -51,16 +51,6 @@ services:
       - backend
       - frontend
 
-  # bot:
-  #   build: ./bot
-  #   restart: always
-  #   env_file:
-  #     - ./config/production.env
-  #   depends_on:
-  #     - api
-  #   networks:
-  #     - backend
-
   certbot:
     image: certbot/certbot
     restart: always
