@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_socketio import join_room
+from app.models.card import Card
 from app.models.user_collection import UserCollection
 from app.models.offer_purchase import OfferPurchase
 from app.extensions import db, socketio
@@ -20,19 +21,47 @@ def get_rooms():
     ).order_by(ChatRoom.created_at.desc()).all()
 
     def room_to_dict(room):
+        last_message = sorted(room.messages, key=lambda x: x.sent_at, reverse=True)[0] if room.messages else None
+        card = Card.query.filter_by(reference=room.reference_card).first()
+        if not card:
+            return jsonify({"error": "Card not found"}), 404
         return {
             "id": str(room.id),
             "reference_card": room.reference_card,
+            "card": card.json(),
             "status": room.status,
             "created_at": room.created_at.isoformat(),
-            "messages": [{
-                "sender": 'me' if m.sender_id == user_id else 'other',
-                "content": m.content,
-                "sent_at": m.sent_at.isoformat()
-            } for m in sorted(room.messages, key=lambda x: x.sent_at)]
+            "messages": {
+                "sender": 'me' if last_message.sender_id == user_id else 'other',
+                "content": last_message.content,
+                "sent_at": last_message.sent_at.isoformat()
+            } if last_message else None
         }
 
     return jsonify([room_to_dict(room) for room in rooms])
+
+@chat_bp.route('/message/<uuid:room_id>', methods=['GET'])
+@jwt_required()
+def get_messages(room_id):
+    user_id = get_jwt_identity()
+    room = ChatRoom.query.filter_by(id=room_id).first()
+
+    if not room:
+        return jsonify({"error": "Room not found"}), 404
+    
+    if room.seller_id != user_id and room.buyer_id != user_id:
+        return jsonify({"error": "You are not a participant in this room"}), 403
+
+    messages = ChatMessage.query.filter_by(room_id=room.id).order_by(ChatMessage.sent_at.asc()).all()
+
+    def message_to_dict(message):
+        return {
+            "sender": 'me' if message.sender_id == user_id else 'other',
+            "content": message.content,
+            "sent_at": message.sent_at.isoformat()
+        }
+
+    return jsonify([message_to_dict(message) for message in messages])
 
 @chat_bp.route('/message', methods=['POST'])
 @jwt_required()

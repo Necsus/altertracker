@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 import { map, Observable, of } from 'rxjs';
+import { ChatMessage } from '../01_models/03_business/chat-message.model';
 import { ChatRoom } from '../01_models/03_business/chat-room.model';
 import { ChatApiService } from '../02_api/chat-api.service';
 
@@ -13,6 +14,12 @@ export class ChatService {
 
   get_rooms$(): Observable<ChatRoom[]> {
     return this.chatApiService.get_rooms$().pipe(map((dbModel: ChatRoom[]) => {
+      return dbModel;
+    }));
+  }
+
+  get_messages$(room_id: string): Observable<ChatMessage[]> {
+    return this.chatApiService.get_messages$(room_id).pipe(map((dbModel: ChatMessage[]) => {
       return dbModel;
     }));
   }
