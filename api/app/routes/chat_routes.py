@@ -117,10 +117,10 @@ def create_room(purchase_id: int):
     # }, room=str(room.id))
     return jsonify({"status": "room created", "room_id": str(room.id)})
 
-@chat_bp.route("/room/<uuid:room_id>/close", methods=["POST"])
+@chat_bp.route("/room/close/<uuid:room_id>", methods=["GET"])
+@jwt_required()
 def close_room(room_id):
-    data = request.json
-    user_id = data.get("user_id")
+    user_id = get_jwt_identity()
 
     room = ChatRoom.query.get_or_404(room_id)
 

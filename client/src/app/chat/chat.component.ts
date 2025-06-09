@@ -121,7 +121,7 @@ export class ChatComponent implements OnInit {
   }
 
   closeRoom(chatRoom: ChatRoom) {
-    this.chatService.closeRoom(chatRoom.id).subscribe(() => {
+    this.chatService.close_room$(chatRoom.id).subscribe(() => {
       chatRoom.is_open = false;
     });
   }

@@ -212,7 +212,7 @@ export class StatsComponent implements OnInit {
         }
       });
     }
-    if (this.card && (!this.card.image_path_en || !this.card.image_path_en.includes('en-US'))) {
+    if (this.card && (!this.card.image_path_en || !this.card.image_path_en.includes('en_US'))) {
       this.alteredService.getEnglishCardByReference$(this.card).subscribe({
         next: (card: CardModel) => {
           this.card = { ...this.card, ...card };

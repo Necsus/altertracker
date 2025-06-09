@@ -28,4 +28,8 @@ export class ChatApiService {
   send_message$(message: any): Observable<void> {
     return this.wabApiService.callPost$(this.controller, 'message', message);
   }
+
+  close_room$(room_id: string): Observable<void> {
+    return this.wabApiService.callGet$(this.controller, `room/close/${room_id}`);
+  }
 }
