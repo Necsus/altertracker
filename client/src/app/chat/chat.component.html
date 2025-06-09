@@ -10,7 +10,7 @@
         <!-- Search -->
         <div class="py-2 px-2 bg-gray-800">
           <input type="text" class="w-full px-2 py-2 text-sm bg-gray-700 text-gray-200 rounded"
-            placeholder="Search or start new chat" />
+            placeholder="Rechercher une carte..." />
         </div>
 
         <!-- Contacts -->
@@ -124,7 +124,7 @@
             <!-- ...SVG icon... -->
           </div>
           <div class="flex-1 mx-4">
-            <input [(ngModel)]="newMessage" (keyup.enter)="sendMessage()"
+            <input [(ngModel)]="newMessage" (keyup.enter)="sendMessage()" placeholder="Ecrire votre message..."
               class="w-full border border-gray-700 rounded px-2 py-2 bg-gray-800 text-gray-200" type="text" />
           </div>
           <div>

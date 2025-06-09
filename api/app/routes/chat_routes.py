@@ -87,7 +87,7 @@ def receive_message():
 @chat_bp.route("/room/create/<int:purchase_id>", methods=["GET"])
 @jwt_required()
 def create_room(purchase_id: int):
-    offer_purchase = OfferPurchase.query.filter_by(id=purchase_id).first()
+    offer_purchase = db.session.query(OfferPurchase).filter_by(id=purchase_id).first()
     if not offer_purchase:
         return jsonify({"error": "Offer purchase not found"}), 404
     seller_id = get_jwt_identity()
@@ -109,6 +109,7 @@ def create_room(purchase_id: int):
         updated_at=datetime.now(timezone.utc)
     )
     db.session.add(room)
+    offer_purchase.room_id = room.id
     db.session.commit()
     # socketio.emit("room_created", {
     #     "room_id": str(room.id),
