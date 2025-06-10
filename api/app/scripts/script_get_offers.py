@@ -45,7 +45,7 @@ def run_script(faction=None, workers=1):
         try:
             for index, dbcard in enumerate(subset, start=start_index):
                 count += 1
-                socketio.emit('script_output', {'data': f"\033[94mProgression {dbcard.name_en} {dbcard.faction} {dbcard.set} : {count}/{len(subset)}\033[0m"})
+                socketio.emit('script_output', {'data': f"\033[94m{dbcard.name_en} {dbcard.faction} {dbcard.set} : {count}/{len(subset)}\033[0m"})
                 offers = []
                 page = 1
                 cancelUpdate = False
