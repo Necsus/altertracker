@@ -2,6 +2,26 @@
 <div class="container mx-auto px-4 py-8">
   <h1 class="text-2xl font-bold text-center mb-4">Mes alertes enregistrées</h1>
 
+  <div class="flex items-center justify-between gap-4 mb-4">
+    <!-- Champ de recherche -->
+    <input type="text"
+      class="w-full bg-gray-800 text-white placeholder-gray-400 rounded-lg py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      placeholder="Rechercher une carte..." [(ngModel)]="searchQuery" (input)="onSearchChange()" />
+
+    <!-- Menu déroulant -->
+    <select
+      class="p-2 bg-gray-700 rounded-lg border border-purple-500 focus:ring-2 focus:ring-purple-400 outline-none transition"
+      [(ngModel)]="selectedFaction" (change)="onFactionChange()">
+      <option value="">-- {{ 'cards.form_faction' | translate }} --</option>
+      <option value="AX">Axiom</option>
+      <option value="BR">Bravos</option>
+      <option value="LY">Lyra</option>
+      <option value="MU">Muna</option>
+      <option value="OR">Ordis</option>
+      <option value="YZ">Yzmir</option>
+    </select>
+  </div>
+
   <!-- Gestion du chargement -->
   <div *ngIf="isLoading" class="text-center text-gray-400">
     <i class="fas fa-spinner fa-spin text-2xl"></i>
@@ -10,7 +30,7 @@
 
   <div class="space-y-4">
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-      <div *ngFor="let alert of alerts" class="relative">
+      <div *ngFor="let alert of filteredAlerts" class="relative">
         <app-card [card]="alert.card"></app-card>
         <!-- Checkbox notifications -->
         <div class="absolute bottom-2 right-2 flex items-center space-x-2">

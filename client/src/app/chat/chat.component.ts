@@ -1,29 +1,44 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
 import { Socket } from 'ngx-socket-io';
+import { CardModel } from '../01_models/03_business/card.model';
 import { ChatMessage } from '../01_models/03_business/chat-message.model';
 import { ChatRoom } from '../01_models/03_business/chat-room.model';
 import { ChatService } from '../03_business/chat.service';
 import { AuthViewService } from '../authentication/auth-view.service';
+import { CardImgComponent } from '../cards/card/card-img.component';
+import { LocalizedValuePipe } from '../shared/pipes/localized-value.pipe';
+import { ModalService } from '../shared/services/modal/modal.service';
 
 @Component({
   selector: 'app-chat',
   templateUrl: './chat.component.html',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LocalizedValuePipe],
 })
 export class ChatComponent implements OnInit {
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
+  currentLanguage: string = 'fr';
   rooms: ChatRoom[] = [];
   activeRoom: ChatRoom | null = null;
+  activeRoomMessages: ChatMessage[] = [];
   newMessage = '';
 
   constructor(
     private authViewService: AuthViewService,
+    private activatedRoute: ActivatedRoute,
     private router: Router,
     private chatService: ChatService,
-    private socket: Socket) { }
+    private socket: Socket,
+    private translate: TranslateService,
+    private modalService: ModalService) {
+    this.currentLanguage = this.translate.currentLang || 'en'; // Définit la langue par défaut
+    this.translate.onLangChange.subscribe((event) => {
+      this.currentLanguage = event.lang;
+    });
+  }
 
   ngOnInit() {
     this.authViewService.isLoggedIn$.subscribe(status => {
@@ -31,6 +46,19 @@ export class ChatComponent implements OnInit {
     });
     this.chatService.get_rooms$().subscribe((rooms: ChatRoom[]) => {
       this.rooms = rooms;
+      const room_id = this.activatedRoute.snapshot.paramMap.get('room_id');
+      if (room_id) {
+        const room = this.rooms.find(r => r.id === room_id);
+        if (room) {
+          this.selectRoom(room);
+        } else {
+          this.activeRoom = null;
+          this.activeRoomMessages = [];
+        }
+      } else {
+        this.activeRoom = null;
+        this.activeRoomMessages = [];
+      }
     });
   }
 
@@ -39,6 +67,17 @@ export class ChatComponent implements OnInit {
       const element = this.scrollContainer.nativeElement;
       element.scrollTop = element.scrollHeight;
     }
+  }
+
+  getMessages(): void {
+    this.activeRoomMessages = [];
+    if (!this.activeRoom) return;
+    this.chatService.get_messages$(this.activeRoom.id).subscribe((messages: ChatMessage[]) => {
+      this.activeRoomMessages = messages;
+      setTimeout(() => {
+        this.scrollToBottom();
+      }, 100);
+    });
   }
 
   sendMessage() {
@@ -53,7 +92,7 @@ export class ChatComponent implements OnInit {
         content: messageData.content,
         sent_at: new Date()
       };
-      this.activeRoom?.messages.push(newMessage);
+      this.activeRoomMessages.push(newMessage);
       this.socket.emit('send_mesage', messageData);
       setTimeout(() => {
         this.scrollToBottom();
@@ -72,21 +111,24 @@ export class ChatComponent implements OnInit {
           content: msg.content,
           sent_at: new Date(msg.sent_at)
         };
-        this.activeRoom.messages.push(newMessage);
+        this.activeRoomMessages.push(newMessage);
         setTimeout(() => {
           this.scrollToBottom();
         }, 100);
       }
     });
-    setTimeout(() => {
-      this.scrollToBottom();
-    }, 100);
+    this.getMessages();
   }
 
   closeRoom(chatRoom: ChatRoom) {
-    this.chatService.closeRoom(chatRoom.id).subscribe(() => {
+    this.chatService.close_room$(chatRoom.id).subscribe(() => {
       chatRoom.is_open = false;
     });
+  }
+
+  openModal(card: CardModel): void {
+    const currentLanguage = this.translate.currentLang || 'fr';
+    this.modalService.open(CardImgComponent, { src: currentLanguage === 'en' ? card.image_path_en : card.imagePath });
   }
 }
 

@@ -9,6 +9,7 @@ export interface OfferPurchase {
   created_at: string;
   is_accepted: boolean | null;
   accepted_at: string | null;
+  room_id: string | null;
 
   username?: string;
   card?: CardModel

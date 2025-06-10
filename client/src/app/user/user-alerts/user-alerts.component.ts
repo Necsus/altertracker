@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, catchError, delay, map, of, throwError } from 'rxjs';
 import { OfferLiveMarketRequest } from '../../01_models/02_api/card/offer-live-market-request.model';
 import { UserAlertModel } from '../../01_models/03_business/user-alert.model';
@@ -16,7 +17,7 @@ import { ToastService } from '../../shared/services/toast/toast.service';
   selector: 'app-user-alerts',
   templateUrl: './user-alerts.component.html',
   styleUrls: ['./user-alerts.component.css'],
-  imports: [CommonModule, FormsModule, CardComponent]
+  imports: [CommonModule, FormsModule, CardComponent, TranslateModule]
 })
 export class UserAlertsComponent implements OnInit, OnDestroy {
   isLoading: boolean = false; // État de chargement
@@ -26,6 +27,10 @@ export class UserAlertsComponent implements OnInit, OnDestroy {
   private requestQueue: OfferLiveMarketRequest[] = []; // File d'attente des requêtes
   private progressSubject = new BehaviorSubject<number>(0);
   progress$ = this.progressSubject.asObservable();
+
+  filteredAlerts: UserAlertModel[] = []; // Liste filtrée
+  searchQuery: string = ''; // Texte de recherche
+  selectedFaction: string = ''; // Filtre sélectionné
 
   constructor(
     private userService: UserService,
@@ -41,6 +46,23 @@ export class UserAlertsComponent implements OnInit, OnDestroy {
       if (!status) this.router.navigate(['/login']);
     });
     this.loadUserAlerts();
+  }
+
+  onSearchChange(): void {
+    this.filterAlerts();
+  }
+
+
+  onFactionChange(): void {
+    this.filterAlerts();
+  }
+
+  filterAlerts(): void {
+    this.filteredAlerts = this.alerts.filter(alert => {
+      const matchesSearch = alert.card.name.toLowerCase().includes(this.searchQuery.toLowerCase());
+      const matchesFaction = alert.card.faction.includes(this.selectedFaction);
+      return matchesSearch && matchesFaction;
+    });
   }
 
   addCardsToQueue(alerts: UserAlertModel[]): void {
@@ -59,6 +81,7 @@ export class UserAlertsComponent implements OnInit, OnDestroy {
         this.alerts.map((alert: UserAlertModel) => {
           alert.card.alert_id = alert.id; // Associe l'ID de l'alerte à la carte
         });
+        this.filteredAlerts = [...this.alerts];
       },
       error: (err: any) => {
         this.isLoading = false; // Arrête le chargement

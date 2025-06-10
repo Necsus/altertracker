@@ -7,20 +7,15 @@ from app.extensions import db
 from app.models.offer_purchase import OfferPurchase
 
 def get_purchases_by_reference_data(reference: str) -> List[dict]:
-    purchases = db.session.query(OfferPurchase, User.username).join(
-        User, OfferPurchase.id_user == User.id  # Jointure avec la table User
-    ).filter(
+    purchases = db.session.query(OfferPurchase).filter(
         OfferPurchase.reference_card == reference
     ).order_by(
-        OfferPurchase.price.desc()  # Trier par date descendante
+        OfferPurchase.price.desc()  # Trier par prix descendant
     ).all()
     
     return [
-        {
-            **purchase.json(),
-            "username": username
-        }
-        for purchase, username in purchases
+        purchase.json()  # Retourner uniquement les données de l'offre d'achat
+        for purchase in purchases
     ] if purchases else []
 
 def get_purchases_by_user_data(user_id: int) -> List[dict]:

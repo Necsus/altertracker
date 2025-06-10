@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, catchError, delay, map, of, throwError } from 'rxjs';
 import { OfferLiveMarketRequest } from '../../01_models/02_api/card/offer-live-market-request.model';
 import { UserCollectionModel } from '../../01_models/03_business/user-collection.model';
@@ -11,13 +13,12 @@ import { AuthViewService } from '../../authentication/auth-view.service';
 import { CardComponent } from '../../cards/card/card.component';
 import { withLoader } from '../../shared/services/loader/loader.operator';
 import { LoaderService } from '../../shared/services/loader/loader.service';
-import { ToastService } from '../../shared/services/toast/toast.service';
 
 @Component({
   selector: 'app-collection',
   templateUrl: './collection.component.html',
   styleUrls: ['./collection.component.css'],
-  imports: [CommonModule, RouterModule, CardComponent]
+  imports: [CommonModule, FormsModule, RouterModule, CardComponent, TranslateModule]
 })
 export class CollectionComponent implements OnInit, OnDestroy {
   cards!: UserCollectionModel[]; // Remplacez any par le type approprié pour vos cartes
@@ -26,13 +27,17 @@ export class CollectionComponent implements OnInit, OnDestroy {
   private requestQueue: OfferLiveMarketRequest[] = []; // File d'attente des requêtes
   private progressSubject = new BehaviorSubject<number>(0);
   progress$ = this.progressSubject.asObservable();
+
+  filteredCollection: UserCollectionModel[] = []; // Liste filtrée
+  searchQuery: string = ''; // Texte de recherche
+  selectedFaction: string = ''; // Filtre sélectionné
+
   constructor(
     private authViewService: AuthViewService,
     private router: Router,
     private alteredService: AlteredService,
     private userService: UserService,
     private loaderService: LoaderService,
-    private toastService: ToastService,
     private cardService: CardService
   ) {
   }
@@ -42,10 +47,30 @@ export class CollectionComponent implements OnInit, OnDestroy {
     });
     this.getUserCollection();
   }
+
+  onSearchChange(): void {
+    this.filterCollection();
+  }
+
+
+  onFactionChange(): void {
+    this.filterCollection();
+  }
+
+
+  filterCollection(): void {
+    this.filteredCollection = this.cards.filter(collection => {
+      const matchesSearch = collection.card.name.toLowerCase().includes(this.searchQuery.toLowerCase());
+      const matchesFaction = collection.card.faction.includes(this.selectedFaction);
+      return matchesSearch && matchesFaction;
+    });
+  }
+
   getUserCollection(): void {
     this.userService.get_user_collection$().subscribe({
       next: (response: UserCollectionModel[]) => {
         this.cards = response;
+        this.filteredCollection = [...response]; // Initialiser la collection filtrée
         this.addCardsToQueue(this.cards); // Ajoute les cartes à la file d'attente
       }
     });

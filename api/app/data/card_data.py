@@ -234,6 +234,9 @@ def update_card_data(card: dict) -> None:
         existing_card = db.session.query(Card).filter_by(reference=card.get('reference')).first()
         if existing_card:
             for key, value in card.items():
+                if key == 'image_path_en':
+                    if 'en_EN' in getattr(existing_card, key, None):
+                        setattr(existing_card, key, value)
                 if getattr(existing_card, key, None) is None:
                     setattr(existing_card, key, value)
             db.session.commit()

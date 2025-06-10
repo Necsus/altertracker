@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
-import { map, Observable, of } from 'rxjs';
+import { map, Observable } from 'rxjs';
+import { ChatMessage } from '../01_models/03_business/chat-message.model';
 import { ChatRoom } from '../01_models/03_business/chat-room.model';
 import { ChatApiService } from '../02_api/chat-api.service';
 
@@ -17,6 +18,12 @@ export class ChatService {
     }));
   }
 
+  get_messages$(room_id: string): Observable<ChatMessage[]> {
+    return this.chatApiService.get_messages$(room_id).pipe(map((dbModel: ChatMessage[]) => {
+      return dbModel;
+    }));
+  }
+
   create_room$(purchaseId: number): Observable<string> {
     return this.chatApiService.create_room$(purchaseId).pipe(map((dbModel: any) => {
       return dbModel.room_id;
@@ -29,17 +36,9 @@ export class ChatService {
     }));
   }
 
-  connect(discordId: string) {
-    // this.socket = io(this.baseUrl);
-    // this.socket.emit('join', discordId);
-  }
-
-  onNewMessage(): Observable<any> {
-    return this.socket.fromEvent('new_message');
-  }
-
-  closeRoom(id: string): Observable<void> {
-    return of();
-    // return this.http.post(`${this.baseUrl}/conversation/${id}/close`, {});
+  close_room$(room_id: string): Observable<void> {
+    return this.chatApiService.close_room$(room_id).pipe(map(() => {
+      return undefined;
+    }));
   }
 }

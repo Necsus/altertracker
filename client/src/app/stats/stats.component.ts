@@ -212,7 +212,7 @@ export class StatsComponent implements OnInit {
         }
       });
     }
-    if (this.card && !this.card.image_path_en) {
+    if (this.card && (!this.card.image_path_en || !this.card.image_path_en.includes('en_US'))) {
       this.alteredService.getEnglishCardByReference$(this.card).subscribe({
         next: (card: CardModel) => {
           this.card = { ...this.card, ...card };
@@ -230,16 +230,16 @@ export class StatsComponent implements OnInit {
     }
   }
   startChatRoom(offerPurchase: OfferPurchase) {
-    this.toastService.show('not implemented', 'info', 5000);
-    // this.chatService.create_room$(offerPurchase.id).subscribe({
-    //   next: (room_id: string) => {
-    //     this.router.navigate(['/chat', room_id]);
-    //   },
-    //   error: (err: any) => {
-    //     console.error(err);
-    //     this.toastService.show('Erreur lors de la création de la salle de chat', 'error', 5000);
-    //   }
-    // });
+    // this.toastService.show('not implemented', 'info', 5000);
+    this.chatService.create_room$(offerPurchase.id).subscribe({
+      next: (room_id: string) => {
+        this.router.navigate(['/chat', room_id]);
+      },
+      error: (err: any) => {
+        console.error(err);
+        this.toastService.show('Erreur lors de la création de la salle de chat', 'error', 5000);
+      }
+    });
   }
 }
 
