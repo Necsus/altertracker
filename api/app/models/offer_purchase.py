@@ -24,7 +24,7 @@ class OfferPurchase(db.Model):
             'price': self.price,
             'currency': self.currency,
             'created_at': self.created_at.isoformat() if self.created_at else None,
-            'contacted_at': self.contacted_at.isoformat() if self.created_at else None,
+            'contacted_at': self.contacted_at.isoformat() if self.contacted_at else None,
             'room_id': str(self.room_id) if self.room_id else None
         }
 
