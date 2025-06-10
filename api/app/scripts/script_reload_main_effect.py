@@ -55,8 +55,8 @@ def run_script(faction: str, workers: int):
             session.close()
 
     def get_effect_cards():
-        print("----------- GET EFFECT CARDS -----------")
-        socketio.emit('script_output', {'data': "----------- GET EFFECT CARDS -----------"})
+        print("----------- FIX EFFECT CARDS -----------")
+        socketio.emit('script_output', {'data': "----------- FIX EFFECT CARDS -----------"})
         session = Session()
         try:
             query = session.query(Card).filter(Card.MAIN_EFFECT == None, Card.main_effect_en != None)
@@ -100,4 +100,4 @@ def run_script(faction: str, workers: int):
 
     print(f"Temps d'exécution : {int(hours):02}:{int(minutes):02}:{int(seconds):02}")
     socketio.emit('script_output', {'data': f"Temps d'exécution : {int(hours):02}:{int(minutes):02}:{int(seconds):02}"})
-    print(f"GET EN terminé")
+    print(f"FIX EFFECT terminé")
