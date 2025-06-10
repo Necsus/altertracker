@@ -7,8 +7,7 @@ export interface OfferPurchase {
   price: number;
   currency: string;
   created_at: string;
-  is_accepted: boolean | null;
-  accepted_at: string | null;
+  contacted_at: string | null;
   room_id: string | null;
 
   username?: string;

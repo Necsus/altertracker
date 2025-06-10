@@ -110,6 +110,7 @@ def create_room(purchase_id: int):
     )
     db.session.add(room)
     offer_purchase.room_id = room.id
+    offer_purchase.contacted_at = datetime.now(timezone.utc)
     db.session.commit()
     # socketio.emit("room_created", {
     #     "room_id": str(room.id),

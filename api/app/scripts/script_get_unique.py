@@ -109,6 +109,7 @@ def run_script(faction=None, workers=3):
                                     if card_to_update:
                                         # Initialiser un drapeau pour suivre les modifications
                                         has_updated = False
+                                        
 
                                         # Vérifiez et mettez à jour uniquement si les valeurs sont différentes
                                         if str(card_to_update.name) != str(tempCard.name):
@@ -156,7 +157,14 @@ def run_script(faction=None, workers=3):
                                             card_to_update.created_at = datetime.now()
                                             has_updated = True
 
-                                        # Si une modification a été effectuée, mettre à jour `edited_at`
+
+                                        if card_to_update.MAIN_EFFECT is None and card_to_update.main_effect_en is not None:
+                                            detailsCard = card_routine.get_card_by_reference(tempCard.reference)
+                                            if detailsCard:
+                                                temp_card = map_effect_to_card(tempCard, detailsCard)
+                                                card_to_update.MAIN_EFFECT = temp_card.MAIN_EFFECT
+                                                has_updated = True
+
                                         if has_updated:
                                             socketio.emit('script_output', {'data': f"Mise à jour de la carte : {card_to_update.name_en} ({card_to_update.reference})"})
                                             card_to_update.edited_at = datetime.now()
@@ -240,6 +248,13 @@ def run_script(faction=None, workers=3):
                                             if card_to_update.created_at is None:
                                                 card_to_update.created_at = datetime.now()
                                                 has_updated = True
+
+                                            if card_to_update.MAIN_EFFECT is None and card_to_update.main_effect_en is not None:
+                                                detailsCard = card_routine.get_card_by_reference(tempCard.reference)
+                                                if detailsCard:
+                                                    temp_card = map_effect_to_card(tempCard, detailsCard)
+                                                    card_to_update.MAIN_EFFECT = temp_card.MAIN_EFFECT
+                                                    has_updated = True
 
                                             # Si une modification a été effectuée, mettre à jour `edited_at`
                                             if has_updated:
