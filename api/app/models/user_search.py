@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from app.extensions import db
 
 
@@ -7,7 +7,7 @@ class UserSearch(db.Model):
     id_user = db.Column(db.Integer, nullable=False)
     name_search = db.Column(db.String(300), nullable=False)
     url_search = db.Column(db.Text, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.now(), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), nullable=False)
 
     def __repr__(self):
           return f"<UserSearch {self.name_search}>"

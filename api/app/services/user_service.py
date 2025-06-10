@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Dict
 from app.data.user_data import (
   get_user_search_data,
@@ -54,7 +54,7 @@ def save_user_search_service(data: Dict) -> Dict:
         "id_user": data.get("id_user"),
         "name_search": data.get("name_search"),
         "url_search": data.get("url_search"),
-        "created_at": datetime.fromisoformat(data["created_at"]) if "created_at" in data else datetime.now()
+        "created_at": datetime.fromisoformat(data["created_at"]) if "created_at" in data else datetime.now(timezone.utc)
     }
     saved_search = save_user_search_data(mapped_data)
     return saved_search.json()
@@ -78,7 +78,7 @@ def save_user_alert_service(data: Dict) -> Dict:
         "id_user": data.get("id_user"),
         "reference_card": data.get("reference_card"),
         "mail_active": True,
-        "created_at": datetime.fromisoformat(data["created_at"]) if "created_at" in data else datetime.now()
+        "created_at": datetime.fromisoformat(data["created_at"]) if "created_at" in data else datetime.now(timezone.utc)
     }
     saved_alert = save_user_alert_data(mapped_data)
     return saved_alert.json()

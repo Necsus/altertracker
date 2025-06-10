@@ -13,7 +13,7 @@ from app.models.user import User
 from app.extensions import db, mail_api, ApiException, limiter
 from app.utils.security import hash_password, check_password
 import itsdangerous
-from datetime import datetime
+from datetime import datetime, timezone
 
 auth_bp = Blueprint('auth', __name__)
 REFRESH_TOKEN_EXPIRATION = 86400  # 30 jours
@@ -62,7 +62,7 @@ def register():
         html_content=render_template_with_data(template_path, {
             "USERNAME": data['username'],
             "LIEN_DE_VALIDATION": validation_url,
-            "YEAR": str(datetime.now().year)
+            "YEAR": str(datetime.now(timezone.utc).year)
         }),
         sender={"name": "AlterTracker", "email": "noreply@altertracker.com"}
     )
@@ -121,7 +121,7 @@ def resend_validation_email(token):
             html_content=render_template_with_data(template_path, {
                 "USERNAME": user.username,
                 "LIEN_DE_VALIDATION": validation_url,
-                "YEAR": str(datetime.now().year)
+                "YEAR": str(datetime.now(timezone.utc).year)
             }),
             sender={"name": "AlterTracker", "email": "noreply@altertracker.com"}
         )
@@ -196,7 +196,7 @@ def forgot_password():
         html_content=render_template_with_data(template_path, {
             "USERNAME": user.username,
             "RESET_LINK": reset_url,
-            "YEAR": str(datetime.now().year)
+            "YEAR": str(datetime.now(timezone.utc).year)
         }),
         sender={"name": "AlterTracker", "email": "noreply@altertracker.com"}
     )

@@ -26,7 +26,7 @@
       <option *ngFor="let script of scripts" [value]="script">{{ script }}</option>
     </select>
     @if (selectedScript === 'script_get_unique' || selectedScript === 'script_get_en' || selectedScript ===
-    'script_get_offers') {
+    'script_get_offers' || selectedScript === 'script_reload_main_effect') {
     <select [(ngModel)]="selectedWorkers" class="w-full bg-gray-700 text-white p-2 rounded-md"
       [disabled]="status === 'running' || !socketConnected">
       <option value="0">-- Workers --</option>

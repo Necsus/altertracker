@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 import time
 from app.scripts import card_routine
 from app.models.card import Card
@@ -57,7 +57,7 @@ def run_script(faction: str, workers: int):
                               # Si une modification a été effectuée, mettre à jour `edited_at`
                               if has_updated:
                                   socketio.emit('script_output', {'data': f"Mise à jour de la carte : {card_to_update.name_en} ({card_to_update.reference})"})
-                                  card_to_update.edited_at = datetime.now()
+                                  card_to_update.edited_at = datetime.now(timezone.utc)
                                   session.commit()
                       time.sleep(0.50)
 

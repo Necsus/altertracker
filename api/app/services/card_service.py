@@ -82,13 +82,13 @@ def post_offer_live_market_service(data: List[dict]) -> None:
                     else:
                         # Préparer la nouvelle offre
                         existing_offer.is_deleted = True
-                        existing_offer.deleted_at = datetime.now()
+                        existing_offer.deleted_at = datetime.now(timezone.utc)
                         existing_offer.status = 'expired'
 
                         # Préparer la nouvelle offre
                         new_offer.link_offer = f"https://www.altered.gg/fr-fr/cards/{new_offer.reference_card}/offers"
                         new_offer.is_deleted = False
-                        new_offer.created_at = datetime.now()
+                        new_offer.created_at = datetime.now(timezone.utc)
                         new_offer.deleted_at = None
                         new_offer.user_altered = None
                         new_offer.user_id = None
@@ -99,19 +99,19 @@ def post_offer_live_market_service(data: List[dict]) -> None:
                         existing_card.price = new_offer.price
                         existing_card.url_offer = new_offer.link_offer
                         existing_card.price_currency = new_offer.currency
-                        existing_card.price_updated_at = datetime.now()
+                        existing_card.price_updated_at = datetime.now(timezone.utc)
                         send_user_alert(existing_card, "edited" if existing_offer else "added")
                         continue
                 else:
                     # Nouvelle offre, marquer l'ancienne comme expirée
                     existing_offer.is_deleted = True
-                    existing_offer.deleted_at = datetime.now()
+                    existing_offer.deleted_at = datetime.now(timezone.utc)
                     existing_offer.status = 'expired'
 
             # Préparer la nouvelle offre
             new_offer.link_offer = f"https://www.altered.gg/fr-fr/cards/{new_offer.reference_card}/offers"
             new_offer.is_deleted = False
-            new_offer.created_at = datetime.now()
+            new_offer.created_at = datetime.now(timezone.utc)
             new_offer.deleted_at = None
             new_offer.user_altered = None
             new_offer.user_id = None
@@ -122,30 +122,30 @@ def post_offer_live_market_service(data: List[dict]) -> None:
             existing_card.price = new_offer.price
             existing_card.url_offer = new_offer.link_offer
             existing_card.price_currency = new_offer.currency
-            existing_card.price_updated_at = datetime.now()
+            existing_card.price_updated_at = datetime.now(timezone.utc)
             send_user_alert(existing_card, "edited" if existing_offer else "added")
         else:
             if existing_offer and not existing_offer.is_deleted:
                 # Marquer l'offre existante comme expirée
                 existing_offer.is_deleted = True
-                existing_offer.deleted_at = datetime.now()
+                existing_offer.deleted_at = datetime.now(timezone.utc)
                 existing_offer.status = 'expired'
 
                 # Mettre à jour la carte
                 existing_card.price = None
                 existing_card.price_currency = None
                 existing_card.url_offer = None
-                existing_card.price_updated_at = datetime.now()
+                existing_card.price_updated_at = datetime.now(timezone.utc)
                 send_user_alert(existing_card, "expired")
             else:
                 # Pas d'offre existante, rien à faire pour cette carte
                 existing_card.price = None
                 existing_card.price_currency = None
                 existing_card.url_offer = None
-                existing_card.price_updated_at = datetime.now()
+                existing_card.price_updated_at = datetime.now(timezone.utc)
 
     # Appliquer les mises à jour de `price_updated_at` en une seule fois
-    now = datetime.now()
+    now = datetime.now(timezone.utc)
     for card in cards_to_update:
         card.price_updated_at = now
 
@@ -182,13 +182,13 @@ def post_offer_live_market_service(data: List[dict]) -> None:
 #                     # sinon ca veut dire qu'il ya une nouvelle offre
 #                     # on met à jour l'ancienne offre
 #                     existing_offer.is_deleted = True
-#                     existing_offer.deleted_at = datetime.now()
+#                     existing_offer.deleted_at = datetime.now(timezone.utc)
 #                     existing_offer.status = 'expired'
 
 #                     # on prepare la nouvelle offre à etre insérée
 #                     new_offer.link_offer = f"https://www.altered.gg/fr-fr/cards/{new_offer.reference_card}/offers"
 #                     new_offer.is_deleted = False
-#                     new_offer.created_at = datetime.now()
+#                     new_offer.created_at = datetime.now(timezone.utc)
 #                     new_offer.deleted_at = None
 #                     new_offer.user_altered = None
 #                     new_offer.user_id = None
@@ -198,7 +198,7 @@ def post_offer_live_market_service(data: List[dict]) -> None:
 #                     if existing_card:
 #                         # on met à jour la carte
 #                         existing_card.price = new_offer.price
-#                         existing_card.price_updated_at = datetime.now()
+#                         existing_card.price_updated_at = datetime.now(timezone.utc)
 #                         existing_card.url_offer = new_offer.link_offer
 #                         existing_card.price_currency = new_offer.currency
 #                         send_user_alert(existing_card, "edited")
@@ -211,7 +211,7 @@ def post_offer_live_market_service(data: List[dict]) -> None:
 #                 # on prepare la nouvelle offre à etre insérée
 #                 new_offer.link_offer = f"https://www.altered.gg/fr-fr/cards/{new_offer.reference_card}/offers"
 #                 new_offer.is_deleted = False
-#                 new_offer.created_at = datetime.now()
+#                 new_offer.created_at = datetime.now(timezone.utc)
 #                 new_offer.deleted_at = None
 #                 new_offer.user_altered = None
 #                 new_offer.user_id = None
@@ -222,7 +222,7 @@ def post_offer_live_market_service(data: List[dict]) -> None:
 #                 if existing_card:
 #                     # on met à jour la carte
 #                     existing_card.price = new_offer.price
-#                     existing_card.price_updated_at = datetime.now()
+#                     existing_card.price_updated_at = datetime.now(timezone.utc)
 #                     existing_card.url_offer = new_offer.link_offer
 #                     existing_card.price_currency = new_offer.currency
 #                     send_user_alert(existing_card, "added")
@@ -235,13 +235,13 @@ def post_offer_live_market_service(data: List[dict]) -> None:
 #                 # si l'offre n'est pas disponible et qu'il existe une offre
 #                 # on met à jour l'ancienne offre
 #                 existing_offer.is_deleted = True
-#                 existing_offer.deleted_at = datetime.now()
+#                 existing_offer.deleted_at = datetime.now(timezone.utc)
 #                 existing_offer.status = 'expired'
 
 #                 if existing_card:
 #                     # on met à jour la carte
 #                     existing_card.price = None
-#                     existing_card.price_updated_at = datetime.now()
+#                     existing_card.price_updated_at = datetime.now(timezone.utc)
 #                     existing_card.price_currency = None
 #                     existing_card.url_offer = None
 #                     send_user_alert(existing_card, "expired")
@@ -282,7 +282,7 @@ def send_user_alert(card: Card, type_changement: str):
                     "DATE_EFFECTIVE": card.price_updated_at.strftime("%d/%m/%Y %H:%M"),
                     "URL_IMAGE_CARD": image_url,
                     "LIEN_VERS_ALERTS": f"{ConfigEnv.ANGULAR_URL}/alerts",
-                    "YEAR": str(datetime.now().year)
+                    "YEAR": str(datetime.now(timezone.utc).year)
                 }),
                 sender={"name": "AlterTracker", "email": "noreply@altertracker.com"}
             )

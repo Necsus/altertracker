@@ -20,9 +20,10 @@ export class AdminComponent implements OnInit {
     'script_get_unique',
     'script_get_no_unique',
     'script_get_en',
-    'script_get_offers'
+    'script_get_offers',
+    'script_reload_main_effect'
   ];
-  selectedScript: string = 'script_get_no_unique';
+  selectedScript: string = 'script_get_offers';
   selectedFaction: string = '';
   selectedWorkers: number = 0;
   logs: string = '';
@@ -86,7 +87,10 @@ export class AdminComponent implements OnInit {
 
   runScript() {
     let url = `${environment.api_url}/script/start/${this.selectedScript}`;
-    if (this.selectedScript === 'script_get_unique' || this.selectedScript === 'script_get_en' || this.selectedScript === 'script_get_offers') {
+    if (this.selectedScript === 'script_get_unique' ||
+      this.selectedScript === 'script_get_en' ||
+      this.selectedScript === 'script_get_offers' ||
+      this.selectedScript === 'script_reload_main_effect') {
       if (this.selectedWorkers) {
         url += `/${this.selectedWorkers}`;
       }
