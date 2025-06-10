@@ -4,7 +4,8 @@ from app.models.user_alert import UserAlert
 from app.models.card import Card
 from sqlalchemy import func
 from app.extensions import db
-from datetime import datetime, timezone
+from datetime import datetime
+from pytz import timezone
 
 def get_cards_count_data() -> int:
     return db.session.query(func.count(Card.id)).scalar()
@@ -269,9 +270,17 @@ def prepare_like_query(text: str) -> str:
     return text.replace(' ', '_')
 
 def get_count_cards_created_today_data() -> int:
-    today_utc = datetime.now(timezone.utc).date()
+    paris_tz = timezone('Europe/Paris')
+    # Obtenir la date actuelle dans le fuseau horaire de Paris
+    today_paris = datetime.now(paris_tz).date()
+    # Convertir la date de Paris en UTC pour la comparaison avec les données stockées
+    today_utc_start = datetime.combine(today_paris, datetime.min.time()).astimezone(timezone('UTC'))
+    today_utc_end = datetime.combine(today_paris, datetime.max.time()).astimezone(timezone('UTC'))
+
+    # Filtrer les cartes créées aujourd'hui en UTC
     return db.session.query(func.count(Card.id)).filter(
-        func.date(Card.created_at) == today_utc
+        Card.created_at >= today_utc_start,
+        Card.created_at <= today_utc_end
     ).scalar()
 
 def get_last_added_cards_data() -> list[dict]:

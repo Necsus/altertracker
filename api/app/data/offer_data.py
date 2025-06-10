@@ -5,7 +5,8 @@ from app.models.card import Card
 from app.models.offer import Offer  # Assurez-vous que le modèle Offer est correctement importé
 from typing import List, Optional
 from app.extensions import db
-from datetime import datetime, timezone
+from datetime import datetime
+from pytz import timezone
 
 def get_cards_in_market_count_data() -> int:
     return db.session.query(func.count(Offer.id)).filter(Offer.is_deleted == False).scalar()
@@ -75,16 +76,23 @@ def get_last_added_offers_data() -> list[dict]:
     return db.session.query(Offer, Card).join(
             Card, Offer.reference_card == Card.reference
         ).filter(
+            Offer.previous_offer == None,  # Inclure uniquement les offres sans previous_offer
             Offer.is_deleted == False  # Exclure les offres supprimées
         ).order_by(
             Offer.created_at.desc()  # Trier par date de création décroissante
         ).limit(20).all()
 
 def get_count_offers_added_today_data() -> int:
-    today_utc = datetime.now(timezone.utc).date()
+    paris_tz = timezone('Europe/Paris')
+    today_paris = datetime.now(paris_tz).date()  # Obtenir la date actuelle dans le fuseau de Paris
+    today_utc_start = datetime.combine(today_paris, datetime.min.time()).astimezone(timezone('UTC'))
+    today_utc_end = datetime.combine(today_paris, datetime.max.time()).astimezone(timezone('UTC'))
+
     return db.session.query(func.count(Offer.id)).filter(
-        func.date(Offer.created_at) == today_utc,
-        Offer.is_deleted == False
+        Offer.created_at >= today_utc_start,
+        Offer.created_at <= today_utc_end,
+        Offer.is_deleted == False,
+        Offer.previous_offer == None
     ).scalar()
 
 # a revoir avec le 
@@ -123,9 +131,14 @@ def get_last_edited_offers_data() -> list[dict]:
         return []
     
 def get_count_offers_edited_today_data() -> int:
-    today_utc = datetime.now(timezone.utc).date()
+    paris_tz = timezone('Europe/Paris')
+    today_paris = datetime.now(paris_tz).date()  # Obtenir la date actuelle dans le fuseau de Paris
+    today_utc_start = datetime.combine(today_paris, datetime.min.time()).astimezone(timezone('UTC'))
+    today_utc_end = datetime.combine(today_paris, datetime.max.time()).astimezone(timezone('UTC'))
+
     return db.session.query(func.count(Offer.id)).filter(
-        func.date(Offer.created_at) == today_utc,
+        Offer.created_at >= today_utc_start,
+        Offer.created_at <= today_utc_end,
         Offer.is_deleted == False,
         Offer.previous_offer != None
     ).scalar()
@@ -157,8 +170,13 @@ def get_last_deleted_offers_data() -> list[dict]:
         return []
     
 def get_count_offers_deleted_today_data() -> int:
-    today_utc = datetime.now(timezone.utc).date()
+    paris_tz = timezone('Europe/Paris')
+    today_paris = datetime.now(paris_tz).date()  # Obtenir la date actuelle dans le fuseau de Paris
+    today_utc_start = datetime.combine(today_paris, datetime.min.time()).astimezone(timezone('UTC'))
+    today_utc_end = datetime.combine(today_paris, datetime.max.time()).astimezone(timezone('UTC'))
+
     return db.session.query(func.count(Offer.id)).filter(
-        func.date(Offer.deleted_at) == today_utc,
+        Offer.deleted_at >= today_utc_start,
+        Offer.deleted_at <= today_utc_end,
         Offer.is_deleted == True
     ).scalar()

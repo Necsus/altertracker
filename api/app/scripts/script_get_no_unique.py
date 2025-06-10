@@ -45,9 +45,9 @@ def run_script():
     def map_names(card: Card, name_fr: str, name_en: str):
         card.name = name_fr
         card.name_en = name_en
-        card.edited_at = datetime.now()
+        card.edited_at = datetime.now(timezone.utc)
         if card.created_at is None:
-            card.created_at = datetime.now()
+            card.created_at = datetime.now(timezone.utc)
         db.session.commit()
 
     def insert_cards_into_db(cards):
@@ -55,7 +55,7 @@ def run_script():
         try:
             add_card_len = 0
             for card in cards:
-                card.created_at = datetime.now()
+                card.created_at = datetime.now(timezone.utc)
                 db.session.add(card)
                 add_card_len += 1
             # Valider la transaction
@@ -124,13 +124,13 @@ def run_script():
                             card_to_update.FOREST_POWER = tempCard.FOREST_POWER
                             has_updated = True
                         if card_to_update.created_at is None:
-                            card_to_update.created_at = datetime.now()
+                            card_to_update.created_at = datetime.now(timezone.utc)
                             has_updated = True
 
                         # Si une modification a été effectuée, mettre à jour `edited_at`
                         if has_updated:
                             socketio.emit('script_output', {'data': f"Mise à jour de la carte : {card_to_update.name_en} ({card_to_update.reference})"})
-                            card_to_update.edited_at = datetime.now()
+                            card_to_update.edited_at = datetime.now(timezone.utc)
                             db.session.commit()
                         continue
                     socketio.emit('script_output', {'data': f"\rRécupération des stats de la carte {tempCard.reference}..."})

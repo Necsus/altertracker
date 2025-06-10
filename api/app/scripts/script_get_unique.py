@@ -1,5 +1,5 @@
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime
+from datetime import datetime, timezone
 import time
 from sqlalchemy.orm import scoped_session, sessionmaker
 from app.scripts import card_routine
@@ -79,6 +79,7 @@ def run_script(faction=None, workers=3):
                         test_result = card_routine.get_unique_cards_name_faction(
                             dbcard.name_en, dbcard.faction, dbcard.set, mainCost, recallCost, forestPowers, 1
                         )
+
                         if test_result and test_result.get('hydra:totalItems', 0) >= 1000:
                             socketio.emit('script_output', {'data': f"\033[91mATTENTION TROP DE RESULTATS MANQUE DES CARTES\033[0m"})
                             socketio.emit('script_output', {'data': f"\033[91mName: {dbcard.name_en} | faction: {dbcard.faction} | set: {dbcard.set} | mainCost: {mainCost} | recallCost: {recallCost} | forestPower: {forestPowers}\033[0m"})
@@ -90,6 +91,21 @@ def run_script(faction=None, workers=3):
                             socketio.emit('script_output', {'data': f"\033[92mName: {dbcard.name_en} OK POUR forestPower: {forestPowers} results : {test_result.get('hydra:totalItems', 0)}\033[0m"})
 
                         if test_result and test_result.get('hydra:totalItems', 0) > 0:
+                            cards_to_update = session.query(Card).filter(
+                                Card.name_en == dbcard.name_en,
+                                Card.faction == dbcard.faction,
+                                Card.set == dbcard.set,
+                                Card.MAIN_COST == mainCost,
+                                Card.RECALL_COST == recallCost,
+                                Card.rarity == 'UNIQUE',
+                                Card.type == 'CHARACTER',
+                                Card.FOREST_POWER.in_(forestPowers)
+                            ).all()
+                            if len(cards_to_update) == int(test_result.get('hydra:totalItems')) and test_result.get('hydra:totalItems') < 1000:
+                                # socketio.emit('script_output', {'data': f"NO CHANGES SKIPPING"})
+                                continue
+                            # else:
+                            #     socketio.emit('script_output', {'data': f"CHANGES NO SKIPPING"})
                             page = 1
                             while True:
                                 cards = card_routine.get_unique_cards_name_faction(
@@ -101,15 +117,9 @@ def run_script(faction=None, workers=3):
 
                                 for card in cards['hydra:member']:
                                     tempCard = map_jsoncard_to_card(card, dbcard.name_en)
-                                    card_to_update = session.query(Card).filter_by(reference=tempCard.reference).first()
-                                    # if card_to_update.image_path_en is None:
-                                    #     detailsEn = card_routine.get_card_by_reference(tempCard.reference, True)
-                                    #     if detailsEn:
-                                    #         tempCard = map_jsoncard_to_card_en(tempCard, detailsEn)
+                                    card_to_update = next((c for c in cards_to_update if c.reference == tempCard.reference), None)
                                     if card_to_update:
-                                        # Initialiser un drapeau pour suivre les modifications
                                         has_updated = False
-                                        
 
                                         # Vérifiez et mettez à jour uniquement si les valeurs sont différentes
                                         if str(card_to_update.name) != str(tempCard.name):
@@ -154,7 +164,7 @@ def run_script(faction=None, workers=3):
                                                 card_to_update.echo_effect_en = tempCard.echo_effect_en
                                                 has_updated = True
                                         if card_to_update.created_at is None:
-                                            card_to_update.created_at = datetime.now()
+                                            card_to_update.created_at = datetime.now(timezone.utc)
                                             has_updated = True
 
 
@@ -167,14 +177,14 @@ def run_script(faction=None, workers=3):
 
                                         if has_updated:
                                             socketio.emit('script_output', {'data': f"Mise à jour de la carte : {card_to_update.name_en} ({card_to_update.reference})"})
-                                            card_to_update.edited_at = datetime.now()
-                                            session.commit()
+                                            card_to_update.edited_at = datetime.now(timezone.utc)
                                         continue
                                     detailsCard = card_routine.get_card_by_reference(tempCard.reference)
                                     if detailsCard:
                                         tempCard = map_effect_to_card(tempCard, detailsCard)
                                     socketio.emit('script_output', {'data': f"Ajout de la carte : {tempCard.name_en} ({tempCard.reference})"})
                                     cardToInsert.append(tempCard)
+                                session.commit()
                                 if len(cards['hydra:member']) < 36:
                                     break
                                 page += 1
@@ -246,7 +256,7 @@ def run_script(faction=None, workers=3):
                                                     card_to_update.echo_effect_en = tempCard.echo_effect_en
                                                     has_updated = True
                                             if card_to_update.created_at is None:
-                                                card_to_update.created_at = datetime.now()
+                                                card_to_update.created_at = datetime.now(timezone.utc)
                                                 has_updated = True
 
                                             if card_to_update.MAIN_EFFECT is None and card_to_update.main_effect_en is not None:
@@ -259,7 +269,7 @@ def run_script(faction=None, workers=3):
                                             # Si une modification a été effectuée, mettre à jour `edited_at`
                                             if has_updated:
                                                 socketio.emit('script_output', {'data': f"Mise à jour de la carte : {card_to_update.name_en} ({card_to_update.reference})"})
-                                                card_to_update.edited_at = datetime.now()
+                                                card_to_update.edited_at = datetime.now(timezone.utc)
                                                 session.commit()
                                             continue
                                         detailsCard = card_routine.get_card_by_reference(tempCard.reference)
