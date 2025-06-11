@@ -43,9 +43,11 @@
     "market_tracking_description_part1": "Consultez les prix actuels des cartes Altered, identifiez les bonnes affaires, et utilisez les ",
     "market_tracking_description_highlight": "alertes de prix personnalisées",
     "market_tracking_description_part2": " pour ne rater aucune opportunité.",
+    "offer_purchase_title": "🤝 Proposez des offres d'achat",
+    "offer_purchase_description": "Vous pouvez proposer des offres d'achat sur les cartes qui vous intéressent. Importez votre collection, et répondez aux offres !",
     "coming_soon_title": "🧭 Ce qui arrive bientôt",
     "coming_soon_items": {
-      "stats": "Statistiques détaillées à la carte (popularité...)",
+      "stats": "Statistiques détaillées à la carte (popularité, cartes similaires...)",
       "collection_import": "Importation decks",
       "card_scan": "Scan ta carte et estimation de prix",
       "exchange_facilitation": "Facilitation des échanges pour des uniques AAA (système de messagerie)",
