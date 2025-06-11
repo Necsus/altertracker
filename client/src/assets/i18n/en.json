@@ -43,9 +43,11 @@
     "market_tracking_description_part1": "Check the current prices of Altered cards, spot great deals, and use ",
     "market_tracking_description_highlight": "custom price alerts",
     "market_tracking_description_part2": " to never miss an opportunity.",
+    "offer_purchase_title": "🤝 Make purchase offers",
+    "offer_purchase_description": "You can make purchase offers on the cards you are interested in. Import your collection and respond to offers!",
     "coming_soon_title": "🧭 Coming soon",
     "coming_soon_items": {
-      "stats": "Detailed card statistics (popularity...)",
+      "stats": "Detailed card statistics (popularity, similar cards...)",
       "collection_import": "Deck import",
       "card_scan": "Scan your card and get price estimation",
       "exchange_facilitation": "Trade facilitation for unique AAA cards (messaging system)",
