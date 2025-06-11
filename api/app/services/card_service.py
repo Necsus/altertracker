@@ -5,7 +5,7 @@ from app.config import ConfigEnv
 from app.utils.emails import render_template_with_data
 from app.models.offer import Offer
 from app.models.card import Card
-from datetime import datetime
+from datetime import datetime, timezone
 from app.extensions import db, mail_api, ApiException, socketio
 from app.data.card_data import (
   get_card_by_reference_data,
