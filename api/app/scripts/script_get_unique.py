@@ -98,8 +98,7 @@ def run_script(faction=None, workers=3):
                                 Card.MAIN_COST == mainCost,
                                 Card.RECALL_COST == recallCost,
                                 Card.rarity == 'UNIQUE',
-                                Card.type == 'CHARACTER',
-                                Card.FOREST_POWER.in_(forestPowers)
+                                Card.type == 'CHARACTER'
                             ).all()
                             if len(cards_to_update) == int(test_result.get('hydra:totalItems')) and test_result.get('hydra:totalItems') < 1000:
                                 # socketio.emit('script_output', {'data': f"NO CHANGES SKIPPING"})
@@ -205,7 +204,7 @@ def run_script(faction=None, workers=3):
 
                                     for card in cards['hydra:member']:
                                         tempCard = map_jsoncard_to_card(card, dbcard.name_en)
-                                        card_to_update = session.query(Card).filter_by(reference=tempCard.reference).first()
+                                        card_to_update = next((c for c in cards_to_update if c.reference == tempCard.reference), None)
                                         # detailsEn = card_routine.get_card_by_reference(tempCard.reference, True)
                                         # if detailsEn:
                                         #     tempCard = map_jsoncard_to_card_en(tempCard, detailsEn)
@@ -270,13 +269,14 @@ def run_script(faction=None, workers=3):
                                             if has_updated:
                                                 socketio.emit('script_output', {'data': f"Mise à jour de la carte : {card_to_update.name_en} ({card_to_update.reference})"})
                                                 card_to_update.edited_at = datetime.now(timezone.utc)
-                                                session.commit()
+                                                
                                             continue
                                         detailsCard = card_routine.get_card_by_reference(tempCard.reference)
                                         if detailsCard:
                                             tempCard = map_effect_to_card(tempCard, detailsCard)
                                         socketio.emit('script_output', {'data': f"Ajout de la carte : {tempCard.name_en} ({tempCard.reference})"})
                                         cardToInsert.append(tempCard)
+                                    session.commit()
                                     if len(cards['hydra:member']) < 36:
                                         break
                                     page += 1
