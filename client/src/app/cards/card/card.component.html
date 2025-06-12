@@ -92,6 +92,10 @@
           <a href="/chat/{{ offer.room_id }}" *ngIf="offer.room_id">
             <i class="fas fa-message text-blue-400 mr-2"></i>
           </a>
+          <button class="ml-auto">
+            <i class="fas fa-trash text-red-400 hover:text-red-600 cursor-pointer"
+              (click)="deletePurchaseOffer(offer)"></i>
+          </button>
         </div>
       </section>
 
