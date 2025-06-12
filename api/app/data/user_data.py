@@ -149,24 +149,35 @@ def edit_user_alert_data(id_alert: int, data: dict) -> UserAlert:
 
 def get_user_collections_data(id_user: int) -> list[dict]:
     try:
-        # Jointure entre UserCollection et Card sur reference_card
-        collections = db.session.query(
+        # Récupérer les collections avec les cartes et les offres d'achat en une seule requête
+        results = db.session.query(
             UserCollection,
-            Card
+            Card,
+            OfferPurchase
         ).join(
             Card, UserCollection.reference_card == Card.reference
+        ).outerjoin(
+            OfferPurchase, UserCollection.reference_card == OfferPurchase.reference_card
         ).filter(
             UserCollection.id_user == id_user
-        ).all()
+        ).order_by(UserCollection.added_at.desc()).all()
 
-        # Transformation des résultats en JSON
-        return [
-            {
-                **collection.json(),
-                "card": card.json() if card else None  # Inclut les données de la carte si elle existe
-            }
-            for collection, card in collections
-        ]
+        # Grouper les résultats par UserCollection et Card
+        collections_grouped = {}
+        for collection, card, offer in results:
+            if collection.reference_card not in collections_grouped:
+                collections_grouped[collection.reference_card] = {
+                    **collection.json(),
+                    "card": {
+                        **card.json(),
+                        "purchase_offers": []
+                    } if card else None
+                }
+            if offer:
+                collections_grouped[collection.reference_card]["card"]["purchase_offers"].append(offer.json())
+
+        # Retourner les résultats sous forme de liste
+        return list(collections_grouped.values())
     except SQLAlchemyError as e:
         raise Exception(f"Erreur lors de la récupération des collections utilisateur : {str(e)}")
     
