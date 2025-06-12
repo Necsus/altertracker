@@ -30,15 +30,15 @@
 
   <div class="space-y-4">
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-      <div *ngFor="let alert of filteredAlerts" class="relative">
-        <app-card [card]="alert.card"></app-card>
+      <div *ngFor="let card of filteredAlerts" class="relative">
+        <app-card [card]="card"></app-card>
         <!-- Checkbox notifications -->
-        <div class="absolute bottom-2 right-2 flex items-center space-x-2">
+        <!-- <div class="absolute bottom-2 right-2 flex items-center space-x-2">
           <label class="flex items-center cursor-pointer">
-            <input type="checkbox" [(ngModel)]="alert.mail_active" (change)="onToggleNotification(alert)" />
+            <input type="checkbox" [(ngModel)]="card.alert.mail_active" (change)="onToggleNotification(card.alert)" />
             <span class="ml-2 text-sm text-gray-300 dark:text-gray-300">Mail</span>
           </label>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>

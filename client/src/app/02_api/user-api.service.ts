@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { CardModel } from '../01_models/03_business/card.model';
 import { UserAlertModel } from '../01_models/03_business/user-alert.model';
 import { UserContactModel } from '../01_models/03_business/user-contact.model';
 import { UserSearchModel } from '../01_models/03_business/user-search.model';
@@ -26,7 +27,7 @@ export class UserApiService {
   delete_user_search$(id_search: number): Observable<void> {
     return this.wabApiService.callDelete$(this.controller, `searches/${id_search}`);
   }
-  get_user_alerts$(): Observable<UserAlertModel[]> {
+  get_user_alerts$(): Observable<CardModel[]> {
     return this.wabApiService.callGet$(this.controller, 'alerts');
   }
   post_user_alert$(request: UserAlertModel): Observable<UserAlertModel> {

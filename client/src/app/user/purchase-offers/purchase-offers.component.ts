@@ -2,21 +2,22 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
-import { OfferPurchase } from '../../01_models/03_business/offer-purchase.model';
+import { CardModel } from '../../01_models/03_business/card.model';
 import { AlteredService } from '../../03_business/altered.service';
 import { CardService } from '../../03_business/card.service';
 import { PurchaseService } from '../../03_business/purchase.service';
 import { AuthViewService } from '../../authentication/auth-view.service';
+import { CardComponent } from '../../cards/card/card.component';
 import { ToastService } from '../../shared/services/toast/toast.service';
 
 @Component({
   selector: 'app-purchase-offers',
   templateUrl: './purchase-offers.component.html',
-  imports: [CommonModule, FormsModule, RouterModule]
+  imports: [CommonModule, FormsModule, RouterModule, CardComponent]
 })
 export class PurchaseOffersComponent implements OnInit {
   isLoading: boolean = false; // État de chargement
-  offers: OfferPurchase[] = []; // Liste des recherches
+  cards: CardModel[] = []; // Liste des recherches
 
   constructor(
     private purchaseService: PurchaseService,
@@ -36,23 +37,13 @@ export class PurchaseOffersComponent implements OnInit {
   loadUserPurchaseOffers(): void {
     this.isLoading = true;
     this.purchaseService.getUserPurchases$().subscribe({
-      next: (response: OfferPurchase[]) => {
-        this.offers = response; // Met à jour la liste des offres d'achat
+      next: (response: CardModel[]) => {
+        this.cards = response; // Met à jour la liste des offres d'achat
         this.isLoading = false; // Arrête le chargement
       },
       error: (err: any) => {
         this.isLoading = false; // Arrête le chargement
       },
-    });
-  }
-  deletePurchaseOffer(purchase: OfferPurchase): void {
-    this.purchaseService.deletePurchase$(purchase.id).subscribe({
-      next: () => {
-        this.offers = this.offers.filter((offer: OfferPurchase) => offer.id !== purchase.id);
-      },
-      error: (err: any) => {
-        this.toastService.show(err.message, 'error', 5000);
-      }
     });
   }
 }

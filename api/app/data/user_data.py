@@ -98,8 +98,8 @@ def get_user_alert_with_card_data(id_user: int) -> list[dict]:
         # Transformation des résultats en JSON
         return [
             {
-                **alert.json(),
-                "card": card.json() if card else None  # Inclut les données de la carte si elle existe
+                **card.json(),
+                "alert": alert.json() if alert else None  # Inclut les données de la carte si elle existe
             }
             for alert, card in alerts
         ]
