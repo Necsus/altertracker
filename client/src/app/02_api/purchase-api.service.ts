@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { CardModel } from '../01_models/03_business/card.model';
 import { OfferPurchase } from '../01_models/03_business/offer-purchase.model';
 import { WebApiService } from './web-api.service';
 
@@ -16,7 +17,7 @@ export class PurchaseApiService {
     return this.wabApiService.callGet$(this.controller, `reference/${reference}`);
   }
 
-  getUserPurchases$(): Observable<OfferPurchase[]> {
+  getUserPurchases$(): Observable<CardModel[]> {
     return this.wabApiService.callGet$(this.controller, 'mine');
   }
 

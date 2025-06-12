@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
+import { CardModel } from '../01_models/03_business/card.model';
 import { OfferPurchase } from '../01_models/03_business/offer-purchase.model';
 import { PurchaseApiService } from '../02_api/purchase-api.service';
 
@@ -15,8 +16,8 @@ export class PurchaseService {
     }));;
   }
 
-  getUserPurchases$(): Observable<OfferPurchase[]> {
-    return this.purchaseApiService.getUserPurchases$().pipe(map((dbModel: OfferPurchase[]) => {
+  getUserPurchases$(): Observable<CardModel[]> {
+    return this.purchaseApiService.getUserPurchases$().pipe(map((dbModel: CardModel[]) => {
       return dbModel;
     }));
   }

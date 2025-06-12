@@ -1,3 +1,6 @@
+import { OfferPurchase } from "./offer-purchase.model";
+import { UserAlertModel } from "./user-alert.model";
+
 export interface CardModel {
   id: number;
   id_card: string;
@@ -30,4 +33,8 @@ export interface CardModel {
   alert_id?: number;
   visible?: boolean;
   isProcessing?: boolean;
+
+  purchase_offers?: OfferPurchase[]; // Optional, can be undefined
+  mine_purchase_offers?: OfferPurchase[]; // Optional, can be undefined
+  alert?: UserAlertModel;
 }

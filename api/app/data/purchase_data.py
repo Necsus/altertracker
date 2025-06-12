@@ -21,22 +21,24 @@ def get_purchases_by_reference_data(reference: str) -> List[dict]:
 def get_purchases_by_user_data(user_id: int) -> List[dict]:
     purchases = db.session.query(
         OfferPurchase,
-        Card  # Inclure les informations de la carte
+        Card
     ).join(
-        Card, OfferPurchase.reference_card == Card.reference  # Jointure avec la table Card
+        Card, OfferPurchase.reference_card == Card.reference
     ).filter(
         OfferPurchase.id_user == user_id
     ).order_by(
-        OfferPurchase.created_at.desc()  # Trier par date descendante
+        OfferPurchase.created_at.desc()
     ).all()
-    
-    return [
-        {
-            **purchase.json(),
-            "card": card.json()  # Inclure les informations de la carte
-        }
-        for purchase, card in purchases
-    ] if purchases else []
+
+    # Grouper les achats par carte
+    cards_dict = {}
+    for purchase, card in purchases:
+        ref = card.reference
+        if ref not in cards_dict:
+            cards_dict[ref] = {**card.json(), "mine_purchase_offers": []}
+        cards_dict[ref]["mine_purchase_offers"].append(purchase.json())
+
+    return list(cards_dict.values())
 
 def add_purchase_data(data: dict) -> Optional[OfferPurchase]:
     try:

@@ -1,15 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { catchError, map, of, throwError } from 'rxjs';
 import { CardModel } from '../../01_models/03_business/card.model';
-import { OfferPurchase } from '../../01_models/03_business/offer-purchase.model';
 import { UserAlertModel } from '../../01_models/03_business/user-alert.model';
 import { AlteredService } from '../../03_business/altered.service';
 import { CardService } from '../../03_business/card.service';
-import { PurchaseService } from '../../03_business/purchase.service';
 import { UserService } from '../../03_business/user.service';
 import { AuthViewService } from '../../authentication/auth-view.service';
 import { LocalizedValuePipe } from '../../shared/pipes/localized-value.pipe';
@@ -22,13 +19,14 @@ import { CardImgComponent } from './card-img.component';
   selector: 'app-card',
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.css'],
-  imports: [CommonModule, RouterModule, FormsModule, TranslateModule, LocalizedValuePipe],
+  imports: [CommonModule, RouterModule, TranslateModule, LocalizedValuePipe],
 })
-export class CardComponent {
+export class OldCardComponent {
   @Input() card!: CardModel; // Données de la carte
   isLoggedIn = false;
   is_favorite: boolean = false; // État favori de la carte
   isRefreshButtonVisible: boolean = true; // État du bouton Refresh
+
   constructor(
     private modalService: ModalService,
     private userService: UserService,
@@ -38,8 +36,7 @@ export class CardComponent {
     private router: Router,
     private loaderService: LoaderService,
     private cardService: CardService,
-    private translate: TranslateService,
-    private purchaseService: PurchaseService
+    private translate: TranslateService
   ) { }
 
   ngOnInit(): void {
@@ -140,33 +137,6 @@ export class CardComponent {
             this.isRefreshButtonVisible = false;
           }
         });
-    }
-  }
-  toggleEmailNotifications(): void {
-    if (this.card.alert) {// Inverse l'état des notifications par e-mail
-      this.card.alert.mail_active = !this.card.alert.mail_active;
-      this.userService.put_user_alert$(this.card.alert).subscribe({
-        next: () => { },
-        error: (err: any) => {// Rétablit l'état précédent en cas d'erreur
-          if (this.card.alert) {
-            this.card.alert.mail_active = !this.card.alert.mail_active;
-          }
-        },
-      });
-    }
-  }
-  deletePurchaseOffer(purchase: OfferPurchase): void {
-    if (this.card && this.card.mine_purchase_offers) {
-      {
-        this.purchaseService.deletePurchase$(purchase.id).subscribe({
-          next: () => {
-            this.card.mine_purchase_offers = this.card.mine_purchase_offers?.filter((offer: OfferPurchase) => offer.id !== purchase.id);
-          },
-          error: (err: any) => {
-            this.toastService.show(err.message, 'error', 5000);
-          }
-        });
-      }
     }
   }
   private handleTokenError(error: any): void {

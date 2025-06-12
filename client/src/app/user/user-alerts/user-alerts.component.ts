@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, catchError, delay, map, of, throwError } from 'rxjs';
 import { OfferLiveMarketRequest } from '../../01_models/02_api/card/offer-live-market-request.model';
-import { UserAlertModel } from '../../01_models/03_business/user-alert.model';
+import { CardModel } from '../../01_models/03_business/card.model';
 import { AlteredService } from '../../03_business/altered.service';
 import { CardService } from '../../03_business/card.service';
 import { UserService } from '../../03_business/user.service';
@@ -21,14 +21,14 @@ import { ToastService } from '../../shared/services/toast/toast.service';
 })
 export class UserAlertsComponent implements OnInit, OnDestroy {
   isLoading: boolean = false; // État de chargement
-  alerts: UserAlertModel[] = []; // Liste des recherches
-  remainingCards: UserAlertModel[] = []; // Cartes restantes à traiter
+  alerts: CardModel[] = []; // Liste des recherches
+  remainingCards: CardModel[] = []; // Cartes restantes à traiter
   queueProcessing = false; // Indique si la file d'attente est en cours de traitement
   private requestQueue: OfferLiveMarketRequest[] = []; // File d'attente des requêtes
   private progressSubject = new BehaviorSubject<number>(0);
   progress$ = this.progressSubject.asObservable();
 
-  filteredAlerts: UserAlertModel[] = []; // Liste filtrée
+  filteredAlerts: CardModel[] = []; // Liste filtrée
   searchQuery: string = ''; // Texte de recherche
   selectedFaction: string = ''; // Filtre sélectionné
 
@@ -59,14 +59,14 @@ export class UserAlertsComponent implements OnInit, OnDestroy {
 
   filterAlerts(): void {
     this.filteredAlerts = this.alerts.filter(alert => {
-      const matchesSearch = alert.card.name.toLowerCase().includes(this.searchQuery.toLowerCase());
-      const matchesFaction = alert.card.faction.includes(this.selectedFaction);
+      const matchesSearch = alert.name.toLowerCase().includes(this.searchQuery.toLowerCase());
+      const matchesFaction = alert.faction.includes(this.selectedFaction);
       return matchesSearch && matchesFaction;
     });
   }
 
-  addCardsToQueue(alerts: UserAlertModel[]): void {
-    alerts.map((alert) => alert.card.isProcessing = true);
+  addCardsToQueue(alerts: CardModel[]): void {
+    alerts.map((alert) => alert.isProcessing = true);
     this.remainingCards.push(...alerts); // Ajoute les nouvelles cartes à la file d'attente
     if (!this.queueProcessing) {
       this.processQueue(); // Démarre le traitement de la file d'attente si ce n'est pas déjà en cours
@@ -76,11 +76,8 @@ export class UserAlertsComponent implements OnInit, OnDestroy {
   loadUserAlerts(): void {
     this.isLoading = true; // Démarre le chargement
     this.userService.get_user_alerts$().subscribe({
-      next: (response: UserAlertModel[]) => {
+      next: (response: CardModel[]) => {
         this.alerts = response; // Met à jour la liste des recherches
-        this.alerts.map((alert: UserAlertModel) => {
-          alert.card.alert_id = alert.id; // Associe l'ID de l'alerte à la carte
-        });
         this.filteredAlerts = [...this.alerts];
       },
       error: (err: any) => {
@@ -107,9 +104,9 @@ export class UserAlertsComponent implements OnInit, OnDestroy {
 
     this.queueProcessing = true; // Indique que le traitement de la file d'attente est en cours
 
-    const alert = this.remainingCards.shift(); // Récupère la première carte de la file d'attente
-    if (alert) {
-      this.alteredService.getMarketOffer$(alert.card)
+    const card = this.remainingCards.shift(); // Récupère la première carte de la file d'attente
+    if (card) {
+      this.alteredService.getMarketOffer$(card)
         .pipe(
           delay(750), // Respecte le délai entre les requêtes
           map((offerRequest) => {
@@ -129,21 +126,21 @@ export class UserAlertsComponent implements OnInit, OnDestroy {
         )
         .subscribe({
           complete: () => {
-            alert.card.isProcessing = false;
+            card.isProcessing = false;
             this.processQueue(); // Relance le traitement pour la prochaine carte
           }
         });
     }
   }
 
-  onToggleNotification(alert: UserAlertModel): void {
-    this.userService.put_user_alert$(alert).subscribe({
-      next: () => { },
-      error: (err: any) => {
-        alert.mail_active = !alert.mail_active; // Rétablit l'état précédent en cas d'erreur
-      },
-    });
-  }
+  // onToggleNotification(alert: UserAlertModel): void {
+  //   this.userService.put_user_alert$(alert).subscribe({
+  //     next: () => { },
+  //     error: (err: any) => {
+  //       alert.mail_active = !alert.mail_active; // Rétablit l'état précédent en cas d'erreur
+  //     },
+  //   });
+  // }
 
   ngOnDestroy(): void {
     this.flushRequestQueue(); // Vide la file d'attente des requêtes
