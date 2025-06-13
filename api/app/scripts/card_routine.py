@@ -191,7 +191,7 @@ def get_unique_offers(session, name: str, faction: str, set: str, page: int, ret
         "inSale": "true",
         "rarity[]": "UNIQUE",
         "cardSet[]": set,
-        "translations.name": name,
+        "translations.name": f"\"{name}\"",
         "itemsPerPage": 36,
         "locale": "en-us"
     }
