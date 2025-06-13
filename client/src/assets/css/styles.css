@@ -182,3 +182,7 @@ footer img {
 .icon-unique {
   background-image: url('/assets/img/rarity/UNIQUE.webp');
 }
+
+button {
+  cursor: pointer;
+}

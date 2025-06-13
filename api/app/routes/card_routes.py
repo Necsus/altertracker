@@ -58,6 +58,7 @@ def search_cards_route():
         main_effect = data.get('main_effect')
         main_effect_2 = data.get('main_effect_2')
         echo_effect = data.get('echo_effect')
+        exclude_effect = data.get('exclude_effect')
         main_cost_range = data.get('main_cost_range')
         recall_cost_range = data.get('recall_cost_range')
         forest_power_range = data.get('forest_power_range')
@@ -68,7 +69,7 @@ def search_cards_route():
         price_range = data.get('price_range')
         en = data.get('en', False)
         cards = search_cards_service(
-            name, rarity, faction, set, main_effect, main_effect_2, echo_effect,
+            name, rarity, faction, set, main_effect, main_effect_2, echo_effect, exclude_effect,
             main_cost_range, recall_cost_range, forest_power_range, mountain_power_range, ocean_power_range,
             no_condition, in_market, price_range, en, user_id
         )

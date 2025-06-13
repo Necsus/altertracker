@@ -5,12 +5,12 @@
   <div class="flex items-center justify-between gap-4 mb-4">
     <!-- Champ de recherche -->
     <input type="text"
-      class="w-full bg-gray-800 text-white placeholder-gray-400 rounded-lg py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      class="w-full bg-gray-800 text-white placeholder-gray-400 rounded-lg py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-amber-500"
       placeholder="Rechercher une carte..." [(ngModel)]="searchQuery" (input)="onSearchChange()" />
 
     <!-- Menu déroulant -->
     <select
-      class="p-2 bg-gray-700 rounded-lg border border-purple-500 focus:ring-2 focus:ring-purple-400 outline-none transition"
+      class="p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400 outline-none transition"
       [(ngModel)]="selectedFaction" (change)="onFactionChange()">
       <option value="">-- {{ 'cards.form_faction' | translate }} --</option>
       <option value="AX">Axiom</option>

@@ -46,7 +46,7 @@ export class CardComponent {
     this.authViewService.isLoggedIn$.subscribe(status => {
       this.isLoggedIn = status;
       if (status) {
-        this.is_favorite = !!this.card.alert_id; // Initialiser l'état favori de la carte
+        this.is_favorite = !!this.card.alert?.id || !!this.card.alert_id; // Initialiser l'état favori de la carte
       }
     });
   }

@@ -20,15 +20,15 @@
       <label class="block mb-1 text-center text-sm font-semibold">Rareté</label>
       <div class="grid grid-cols-3 gap-2">
         <a class="flex flex-col items-center justify-center p-1 rounded-lg hover:bg-gray-600 transition cursor-pointer"
-          [class.bg-gray-700]="selectedFactions.includes('COMMON')" (click)="toggleFaction('COMMON')">
+          [class.bg-gray-700]="selectedRarity.includes('COMMON')" (click)="toggleRarity('COMMON')">
           <i class="icon-common w-10 h-5"></i>
         </a>
         <a class="flex flex-col items-center justify-content-center p-2 rounded-lg hover:bg-gray-600 transition cursor-pointer"
-          [class.bg-gray-700]="selectedFactions.includes('RARE')" (click)="toggleFaction('RARE')">
+          [class.bg-gray-700]="selectedRarity.includes('RARE')" (click)="toggleRarity('RARE')">
           <i class="icon-rare w-10 h-5"></i>
         </a>
         <a class="flex flex-col items-center justify-center p-1 rounded-lg hover:bg-gray-600 transition cursor-pointer"
-          [class.bg-gray-700]="selectedFactions.includes('UNIQUE')" (click)="toggleFaction('UNIQUE')">
+          [class.bg-gray-700]="selectedRarity.includes('UNIQUE')" (click)="toggleRarity('UNIQUE')">
           <i class="icon-unique w-10 h-5"></i>
         </a>
       </div>
@@ -39,27 +39,27 @@
       <label class="block mb-1 text-center text-sm font-semibold">Faction</label>
       <div class="grid grid-cols-3 gap-2">
         <a class="flex flex-col items-center justify-center p-1 rounded-lg hover:bg-gray-600 transition cursor-pointer"
-          [class.bg-gray-700]="selectedFactions.includes('Axiom')" (click)="toggleFaction('Axiom')">
+          [class.bg-gray-700]="selectedFactions.includes('AX')" (click)="toggleFaction('AX')">
           <i class="icon-axiom w-10 h-10"></i>
         </a>
         <a class="flex flex-col items-center p-2 rounded-lg hover:bg-gray-600 transition cursor-pointer"
-          [class.bg-gray-700]="selectedFactions.includes('Bravos')" (click)="toggleFaction('Bravos')">
+          [class.bg-gray-700]="selectedFactions.includes('BR')" (click)="toggleFaction('BR')">
           <i class="icon-bravos w-10 h-10"></i>
         </a>
         <a class="flex flex-col items-center p-1 rounded-lg hover:bg-gray-600 transition cursor-pointer"
-          [class.bg-gray-700]="selectedFactions.includes('Lyra')" (click)="toggleFaction('Lyra')">
+          [class.bg-gray-700]="selectedFactions.includes('LY')" (click)="toggleFaction('LY')">
           <i class="icon-lyra w-10 h-10"></i>
         </a>
         <a class="flex flex-col items-center p-1 rounded-lg hover:bg-gray-600 transition cursor-pointer"
-          [class.bg-gray-700]="selectedFactions.includes('Muna')" (click)="toggleFaction('Muna')">
+          [class.bg-gray-700]="selectedFactions.includes('MU')" (click)="toggleFaction('MU')">
           <i class="icon-muna w-10 h-10"></i>
         </a>
         <a class="flex flex-col items-center p-1 rounded-lg hover:bg-gray-600 transition cursor-pointer"
-          [class.bg-gray-700]="selectedFactions.includes('Ordis')" (click)="toggleFaction('Ordis')">
+          [class.bg-gray-700]="selectedFactions.includes('OR')" (click)="toggleFaction('OR')">
           <i class="icon-ordis w-10 h-10"></i>
         </a>
         <a class="flex flex-col items-center p-1 rounded-lg hover:bg-gray-600 transition cursor-pointer"
-          [class.bg-gray-700]="selectedFactions.includes('Yzmir')" (click)="toggleFaction('Yzmir')">
+          [class.bg-gray-700]="selectedFactions.includes('YZ')" (click)="toggleFaction('YZ')">
           <i class="icon-yzmir w-10 h-10"></i>
         </a>
       </div>
@@ -68,7 +68,8 @@
     <!-- Set -->
     <div class="mb-4">
       <label class="block mb-1 text-center text-sm font-semibold">Set</label>
-      <select class="w-full p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400">
+      <select formControlName="set"
+        class="w-full p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400">
         <option value="">-- Set --</option>
         <option value="BISE">Bise</option>
         <option value="ALIZE">Alizé</option>
@@ -133,16 +134,15 @@
         class="w-full p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400">
     </div>
     <div class="mb-4">
+      <label class="block mb-1 text-sm font-semibold">Exclure</label>
+      <input type="text" formControlName="exclude_effect"
+        class="w-full p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400">
+    </div>
+    <div class="mb-4">
       <label class="block mb-1 text-sm font-semibold">Effet echo contient</label>
       <input type="text" formControlName="echo_effect"
         class="w-full p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400">
     </div>
-    <div class="mb-4">
-      <label class="block mb-1 text-sm font-semibold">Exclure</label>
-      <input type="text"
-        class="w-full p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400">
-    </div>
-
   </div>
 
   <div class="flex justify-between items-center mb-4">

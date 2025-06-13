@@ -60,7 +60,6 @@ def run_script(faction=None, workers=1):
                     
                     if 'hydra:totalItems' in cards and cards['hydra:totalItems'] >= 1000:
                         socketio.emit('script_output', {'data': f"\033[91mTROP DE RESULTATS pour {dbcard.name_en} ({dbcard.faction}) ({dbcard.set})\033[0m"})
-                        break
                     
                     socketio.emit('script_output', {'data': f"\033[92mpage : {page} pour {cards.get('hydra:totalItems', 0)} offres trouvées\033[0m"})
 

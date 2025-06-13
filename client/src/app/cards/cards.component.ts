@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, catchError, delay, map, of, throwError } from 'rxjs';
@@ -23,6 +23,7 @@ import { SearchPanelComponent } from './search-panel/search-panel.component';
 export class CardsComponent implements OnInit, OnDestroy {
   @ViewChild('sidebar') sidebar!: ElementRef;
   sidebarOpen: boolean = true;
+  isMobile: boolean = false;
   cards: CardModel[] = [];
   groupedCards: { [key: string]: CardModel[] } = {};
   nbCards: number = 0;
@@ -45,7 +46,13 @@ export class CardsComponent implements OnInit, OnDestroy {
     private loaderService: LoaderService,
     private toastService: ToastService) { }
 
+  @HostListener('window:resize', ['$event'])
+  onResize(event: Event): void {
+    this.isMobile = window.innerWidth < 640; // Détecte si l'écran est inférieur à 640px (taille sm dans Tailwind)
+  }
+
   ngOnInit(): void {
+    this.isMobile = window.innerWidth < 640;
     this.authViewService.isLoggedIn$.subscribe(status => {
       this.isLoggedIn = status;
     });
@@ -188,5 +195,41 @@ export class CardsComponent implements OnInit, OnDestroy {
     this.loaderService.hide();
     this.toastService.show(error.message, 'error', 5000);
     this.router.navigate(['/token']);
+  }
+
+  touchStartY = 0;
+  touchStartX = 0;
+  touchEndY = 0;
+  touchEndX = 0;
+  swipeFromTop = false;
+
+  onTouchStart(event: TouchEvent) {
+    this.touchStartY = event.touches[0].clientY;
+    this.touchStartX = event.touches[0].clientX;
+    this.touchEndY = this.touchStartY; // Important pour les tap !
+    this.touchEndX = this.touchStartX;
+    const target = event.target as HTMLElement;
+    this.swipeFromTop = (this.touchStartY - target.getBoundingClientRect().top) < 30;
+  }
+
+  onTouchMove(event: TouchEvent) {
+    this.touchEndY = event.touches[0].clientY;
+    this.touchEndX = event.touches[0].clientX;
+  }
+
+  onTouchEnd(event: TouchEvent) {
+    const deltaY = this.touchEndY - this.touchStartY;
+    const deltaX = Math.abs(this.touchEndX - this.touchStartX);
+
+    // Swipe franc vers le bas, partant du haut du tiroir, et pas trop horizontal
+    if (
+      this.swipeFromTop &&
+      deltaY > 80 && // Doit descendre d'au moins 80px
+      deltaY > deltaX * 2 && // Doit être bien plus vertical qu'horizontal
+      Math.abs(deltaY) > 10 // Ignore les tap ou scrolls très courts
+    ) {
+      this.sidebarOpen = false;
+    }
+    this.swipeFromTop = false;
   }
 }

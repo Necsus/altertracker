@@ -1,0 +1,4 @@
+button.fixed {
+  transition: top 0.2s ease-in-out;
+  /* Animation fluide pour la position verticale */
+}

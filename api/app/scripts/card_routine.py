@@ -191,7 +191,7 @@ def get_unique_offers(session, name: str, faction: str, set: str, page: int, ret
         "inSale": "true",
         "rarity[]": "UNIQUE",
         "cardSet[]": set,
-        "translations.name": name,
+        "translations.name":  f"\"{name}\"",
         "itemsPerPage": 36,
         "locale": "en-us"
     }
@@ -200,6 +200,8 @@ def get_unique_offers(session, name: str, faction: str, set: str, page: int, ret
         "authorization": f"Bearer {token}",
         "accept": "*/*"
     }
+
+    print(params)
 
     # Construire l'URL avec les paramètres encodés
     url = f"{base_url}?{urlencode(params, doseq=True)}"

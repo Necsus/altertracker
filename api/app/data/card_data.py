@@ -33,8 +33,8 @@ def get_card_by_reference_with_alert_data(reference: str, user_id: int) -> Optio
 def get_card_by_reference_data(reference: str) -> Optional[dict]:
     return db.session.query(Card).filter_by(reference=reference).first()
 
-def search_cards_data(name, rarity, faction, set, main_effect, main_effect_2,
-    echo_effect, main_cost_range, recall_cost_range, forest_power_range, mountain_power_range, ocean_power_range,
+def search_cards_data(name, rarity, faction, set, main_effect, main_effect_2, echo_effect, exclude_effect,
+    main_cost_range, recall_cost_range, forest_power_range, mountain_power_range, ocean_power_range,
     no_condition, in_market, price_range, en, user_id):
     # Vérifier si le nom correspond à la regexp ^ALT_
     if name and re.match(r'^ALT_', name):
@@ -86,10 +86,22 @@ def search_cards_data(name, rarity, faction, set, main_effect, main_effect_2,
         query = query.filter(func.lower(name_column).like(f'%{prepare_like_query(name)}%', escape='\\'))
 
     if rarity:
-        query = query.filter(Card.rarity == rarity)
+        if isinstance(rarity, str):
+            rarity_list = [r.strip() for r in rarity.split(',') if r.strip()]
+            query = query.filter(Card.rarity.in_(rarity_list))
+        elif isinstance(rarity, list):
+            query = query.filter(Card.rarity.in_(rarity))
+        else:
+            query = query.filter(Card.rarity == rarity)
 
     if faction:
-        query = query.filter(Card.faction == faction)
+        if isinstance(faction, str):
+            faction_list = [f.strip() for f in faction.split(',') if f.strip()]
+            query = query.filter(Card.faction.in_(faction_list))
+        elif isinstance(faction, list):
+            query = query.filter(Card.faction.in_(faction))
+        else:
+            query = query.filter(Card.faction == faction)
 
     if set:
         query = query.filter(Card.set == set)
@@ -110,6 +122,11 @@ def search_cards_data(name, rarity, faction, set, main_effect, main_effect_2,
             func.lower(main_effect_column).like(f'%{prepare_like_query(main_effect)}%', escape='\\'),
             func.regexp_replace(func.lower(main_effect_column), main_effect_regex, '', 1).like(f'%{prepare_like_query(main_effect_2)}%', escape='\\')
         )
+
+    if exclude_effect:
+        # Si exclude_effect est fourni, on l'utilise pour exclure les cartes
+        exclude_effect = lower_strip(exclude_effect)
+        query = query.filter(~func.lower(main_effect_column).like(f'%{prepare_like_query(exclude_effect)}%', escape='\\'))
 
     if echo_effect:
         echo_effect = lower_strip(echo_effect)

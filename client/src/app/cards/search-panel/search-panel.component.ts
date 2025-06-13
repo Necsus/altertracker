@@ -17,7 +17,7 @@ import { LoaderService } from '../../shared/services/loader/loader.service';
 export class SearchPanelComponent implements OnInit {
   @Output() cardsRetrieved = new EventEmitter<{ cards: CardModel[], searchOffers: boolean }>();
   searchForm!: FormGroup;
-  areFiltersOpen: boolean = false; // État initial des filtres
+  areFiltersOpen: boolean = true; // État initial des filtres
   areEffectsOpen: boolean = false; // État initial des effets
   areOffersOpen: boolean = false; // État initial des effets
   popoverIndex: number | null = null;
@@ -46,6 +46,7 @@ export class SearchPanelComponent implements OnInit {
       main_effect: [''],
       main_effect_2: [''],
       echo_effect: [''],
+      exclude_effect: [''],
       main_cost_range: [''],
       recall_cost_range: [''],
       forest_power_range: [''],
@@ -68,6 +69,7 @@ export class SearchPanelComponent implements OnInit {
         main_effect: queryParams['main_effect'] || '',
         main_effect_2: queryParams['main_effect_2'] || '',
         echo_effect: queryParams['echo_effect'] || '',
+        exclude_effect: queryParams['exclude_effect'] || '',
         main_cost_range: queryParams['main_cost_range'] || '',
         recall_cost_range: queryParams['recall_cost_range'] || '',
         forest_power_range: queryParams['forest_power_range'] || '',
@@ -77,6 +79,12 @@ export class SearchPanelComponent implements OnInit {
         price_range: queryParams['price_range'] || '',
         no_condition: queryParams['no_condition'] || ''
       });
+      if (queryParams['faction']) {
+        this.selectedFactions = queryParams['faction'].split(',').map((faction: string) => faction.trim());
+      }
+      if (queryParams['rarity']) {
+        this.selectedRarity = queryParams['rarity'].split(',').map((rarity: string) => rarity.trim());
+      }
     });
   }
 
@@ -99,7 +107,9 @@ export class SearchPanelComponent implements OnInit {
       // Supprimer la faction si elle est déjà sélectionnée
       this.selectedRarity.splice(index, 1);
     }
-    console.log('Selected Factions:', this.selectedRarity); // Debug
+    this.searchForm.patchValue({
+      rarity: this.selectedRarity.join(',') // Met à jour le formulaire avec les raretés sélectionnées
+    });
   }
 
   toggleFaction(faction: string): void {
@@ -111,16 +121,18 @@ export class SearchPanelComponent implements OnInit {
       // Supprimer la faction si elle est déjà sélectionnée
       this.selectedFactions.splice(index, 1);
     }
-    console.log('Selected Factions:', this.selectedFactions); // Debug
+    this.searchForm.patchValue({
+      faction: this.selectedFactions.join(',') // Met à jour le formulaire avec les raretés sélectionnées
+    });
   }
 
   isFormValid(): boolean {
-    const { name, rarity, faction, set, main_effect, main_effect_2, echo_effect,
+    const { name, rarity, faction, set, main_effect, main_effect_2, echo_effect, exclude_effect,
       main_cost_range, recall_cost_range, forest_power_range, mountain_power_range, ocean_power_range,
       in_market, price_range, no_condition } = this.searchForm.value;
     // Vérifie si au moins un champ est rempli ou si forest_power, mountain_power ou ocean_power est égal à 0
     return !!(
-      name || rarity || faction || set || main_effect || main_effect_2 || echo_effect || main_cost_range || recall_cost_range ||
+      name || rarity || faction || set || main_effect || main_effect_2 || echo_effect || exclude_effect || main_cost_range || recall_cost_range ||
       forest_power_range !== '' && forest_power_range !== null && forest_power_range !== undefined ||
       mountain_power_range !== '' && mountain_power_range !== null && mountain_power_range !== undefined ||
       ocean_power_range !== '' && ocean_power_range !== null && ocean_power_range !== undefined ||
@@ -162,6 +174,7 @@ export class SearchPanelComponent implements OnInit {
       main_effect: criteria.main_effect,
       main_effect_2: criteria.main_effect_2,
       echo_effect: criteria.echo_effect,
+      exclude_effect: criteria.exclude_effect,
       main_cost_range: this.buildRange(criteria.main_cost_range),
       recall_cost_range: this.buildRange(criteria.recall_cost_range),
       forest_power_range: this.buildRange(criteria.forest_power_range),

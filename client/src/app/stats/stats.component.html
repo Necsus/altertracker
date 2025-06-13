@@ -6,7 +6,7 @@
     <form [formGroup]="searchForm" (ngSubmit)="onSubmit()" class="flex flex-1 relative">
       <div class="relative w-full">
         <input type="text" placeholder="Reference... (ALT_)" formControlName="reference"
-          class="w-full bg-gray-800 text-white placeholder-gray-400 rounded-l-lg py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          class="w-full bg-gray-800 text-white placeholder-gray-400 rounded-l-lg py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-amber-500" />
         <svg xmlns="http://www.w3.org/2000/svg"
           class="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" fill="none"
           viewBox="0 0 24 24" stroke="currentColor">
@@ -17,7 +17,7 @@
 
       <!-- Search Button -->
       <button type="submit" [disabled]="!isFormValid()"
-        [ngClass]="{'bg-gray-500 cursor-not-allowed': !isFormValid(), 'bg-blue-600 hover:bg-blue-700': isFormValid()}"
+        [ngClass]="{'bg-gray-500 cursor-not-allowed': !isFormValid(), 'bg-amber-600 hover:bg-amber-700': isFormValid()}"
         class="text-white px-4 rounded-r-lg transition">
         <i class="fa-solid fa-magnifying-glass"></i>
       </button>
@@ -43,7 +43,7 @@
           <h2 class="text-xl font-semibold">{{ 'stats.title' | translate }}</h2>
           <div class="flex items-center space-x-4">
             <a href="https://altered.gg/{{(currentLanguage === 'fr' ? 'fr-fr/' : '')}}cards/{{card.reference}}"
-              target="_blank" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg transition">
+              target="_blank" class="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2 rounded-lg transition">
               {{ 'stats.view_on_altered' | translate }}&nbsp;<i class="fas fa-up-right-from-square text-xs"></i>
             </a>
             @if (isLoggedIn) {
@@ -81,7 +81,7 @@
         <h2 class="text-xl font-semibold">{{ 'stats.market_offers' | translate }}</h2>
         @if (availableInMarket) {
         <a href="https://altered.gg/{{(currentLanguage === 'fr' ? 'fr-fr/' : '')}}cards/{{card.reference}}/offers"
-          target="_blank" class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg transition">
+          target="_blank" class="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2 rounded-lg transition">
           {{ 'stats.buy_on_altered' | translate }}&nbsp;<i class="fas fa-up-right-from-square text-xs"></i>
         </a>
         }
@@ -133,13 +133,13 @@
           <div class="flex justify-center items-center mx-4" *ngIf="isLoggedIn && is_mine">
             @if (purchase.room_id) {
             <a href="/chat/{{ purchase.room_id }}"
-              class="inline-flex items-center bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg transition">
+              class="inline-flex items-center bg-amber-600 hover:bg-amber-500 text-white px-4 py-2 rounded-lg transition">
               Rejoindre la conversation
             </a>
             }
             @else {
             <button (click)="startChatRoom(purchase)"
-              class="inline-flex items-center bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg transition">
+              class="inline-flex items-center bg-amber-600 hover:bg-amber-500 text-white px-4 py-2 rounded-lg transition">
               Envoyer un message
             </button>
             }
