@@ -281,7 +281,7 @@ def send_user_alert(card: Card, type_changement: str):
                     "PRICE": f"{card.price} {card.price_currency}" if card.price and card.price_currency else "N/A",
                     "DATE_EFFECTIVE": card.price_updated_at.strftime("%d/%m/%Y %H:%M"),
                     "URL_IMAGE_CARD": image_url,
-                    "LIEN_VERS_ALERTS": f"{ConfigEnv.ANGULAR_URL}/alerts",
+                    "LIEN_VERS_ALERTS": f"{ConfigEnv.ANGULAR_URL}/stats/{card.reference}",
                     "YEAR": str(datetime.now(timezone.utc).year)
                 }),
                 sender={"name": "AlterTracker", "email": "noreply@altertracker.com"}

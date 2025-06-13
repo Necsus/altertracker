@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, catchError, delay, map, of, throwError } from 'rxjs';
@@ -21,6 +21,8 @@ import { SearchPanelComponent } from './search-panel/search-panel.component';
   imports: [CommonModule, SearchPanelComponent, CardGroupComponent, SaveSearchComponent, TranslateModule]
 })
 export class CardsComponent implements OnInit, OnDestroy {
+  @ViewChild('sidebar') sidebar!: ElementRef;
+  sidebarOpen: boolean = true;
   cards: CardModel[] = [];
   groupedCards: { [key: string]: CardModel[] } = {};
   nbCards: number = 0;
@@ -63,6 +65,10 @@ export class CardsComponent implements OnInit, OnDestroy {
         console.error('Error fetching card count:', error);
       }
     });
+  }
+
+  toggleFilterSlider(): void {
+    this.sidebarOpen = !this.sidebarOpen;
   }
 
   toggleAllGroups(): void {

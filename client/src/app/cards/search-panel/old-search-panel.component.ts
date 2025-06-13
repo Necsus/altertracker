@@ -10,20 +10,15 @@ import { withLoader } from '../../shared/services/loader/loader.operator';
 import { LoaderService } from '../../shared/services/loader/loader.service';
 
 @Component({
-  selector: 'app-search-panel',
-  templateUrl: './search-panel.component.html',
+  selector: 'app-old-search-panel',
+  templateUrl: './old-search-panel.component.html',
   imports: [CommonModule, ReactiveFormsModule, TranslateModule]
 })
-export class SearchPanelComponent implements OnInit {
+export class OldSearchPanelComponent implements OnInit {
   @Output() cardsRetrieved = new EventEmitter<{ cards: CardModel[], searchOffers: boolean }>();
   searchForm!: FormGroup;
-  areFiltersOpen: boolean = false; // État initial des filtres
-  areEffectsOpen: boolean = false; // État initial des effets
-  areOffersOpen: boolean = false; // État initial des effets
   popoverIndex: number | null = null;
   isLoggedIn = false;
-  selectedFactions: string[] = []; // Liste des factions sélectionnées
-  selectedRarity: string[] = []; // Liste des factions sélectionnées
   constructor(
     private fb: FormBuilder,
     private loaderService: LoaderService,
@@ -80,40 +75,6 @@ export class SearchPanelComponent implements OnInit {
     });
   }
 
-  toggleFilters(): void {
-    this.areFiltersOpen = !this.areFiltersOpen; // Inverse l'état des filtres
-  }
-  toggleEffects(): void {
-    this.areEffectsOpen = !this.areEffectsOpen; // Inverse l'état des filtres
-  }
-  toggleOffers(): void {
-    this.areOffersOpen = !this.areOffersOpen; // Inverse l'état des filtres
-  }
-
-  toggleRarity(rarity: string): void {
-    const index = this.selectedRarity.indexOf(rarity);
-    if (index === -1) {
-      // Ajouter la faction si elle n'est pas déjà sélectionnée
-      this.selectedRarity.push(rarity);
-    } else {
-      // Supprimer la faction si elle est déjà sélectionnée
-      this.selectedRarity.splice(index, 1);
-    }
-    console.log('Selected Factions:', this.selectedRarity); // Debug
-  }
-
-  toggleFaction(faction: string): void {
-    const index = this.selectedFactions.indexOf(faction);
-    if (index === -1) {
-      // Ajouter la faction si elle n'est pas déjà sélectionnée
-      this.selectedFactions.push(faction);
-    } else {
-      // Supprimer la faction si elle est déjà sélectionnée
-      this.selectedFactions.splice(index, 1);
-    }
-    console.log('Selected Factions:', this.selectedFactions); // Debug
-  }
-
   isFormValid(): boolean {
     const { name, rarity, faction, set, main_effect, main_effect_2, echo_effect,
       main_cost_range, recall_cost_range, forest_power_range, mountain_power_range, ocean_power_range,
@@ -128,7 +89,6 @@ export class SearchPanelComponent implements OnInit {
       in_market || no_condition
     );
   }
-
 
   onSubmit() {
     const formValues = this.cleanFormValues(this.searchForm.value);

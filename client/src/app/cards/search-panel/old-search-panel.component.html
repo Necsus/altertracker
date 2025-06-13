@@ -1,0 +1,167 @@
+<form [formGroup]="searchForm" (ngSubmit)="onSubmit()"
+  class="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 p-4 md:p-6 rounded-2xl shadow-xl text-white mb-6">
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
+    <!-- Nom / Référence -->
+    <div class="col-span-full md:col-span-3">
+      <label for="name" class="block mb-1 text-sm font-semibold text-purple-200">{{
+        'cards.form_name' | translate }}</label>
+      <input id="name" formControlName="name" type="text"
+        class="w-full p-2 bg-gray-700 rounded-lg border border-purple-500 focus:ring-2 focus:ring-purple-400 outline-none transition" />
+    </div>
+
+    <!-- Rareté -->
+    <div>
+      <label for="rarity" class="block mb-1 text-sm font-semibold text-purple-200">{{
+        'cards.form_rarity' | translate }}</label>
+      <select id="rarity" formControlName="rarity"
+        class="w-full p-2 bg-gray-700 rounded-lg border border-purple-500 focus:ring-2 focus:ring-purple-400 outline-none transition">
+        <option value="">-- {{ 'cards.form_rarity' | translate }} --</option>
+        <option value="COMMON">⚪ {{ 'cards.rarirty.common' | translate }}</option>
+        <option value="RARE">🔵 {{ 'cards.rarirty.rare' | translate }}</option>
+        <option value="UNIQUE">🟡 {{ 'cards.rarirty.unique' | translate }}</option>
+      </select>
+    </div>
+
+    <!-- Faction -->
+    <div>
+      <label for="faction" class="block mb-1 text-sm font-semibold text-purple-200">{{
+        'cards.form_faction' | translate }}</label>
+      <select id="faction" formControlName="faction"
+        class="w-full p-2 bg-gray-700 rounded-lg border border-purple-500 focus:ring-2 focus:ring-purple-400 outline-none transition">
+        <option value="">-- {{ 'cards.form_faction' | translate }} --</option>
+        <option value="AX">Axiom</option>
+        <option value="BR">Bravos</option>
+        <option value="LY">Lyra</option>
+        <option value="MU">Muna</option>
+        <option value="OR">Ordis</option>
+        <option value="YZ">Yzmir</option>
+      </select>
+    </div>
+
+    <!-- Set -->
+    <div>
+      <label for="set" class="block mb-1 text-sm font-semibold text-purple-200">{{ 'cards.form_set' | translate
+        }}</label>
+      <select id="set" formControlName="set"
+        class="w-full p-2 bg-gray-700 rounded-lg border border-purple-500 focus:ring-2 focus:ring-purple-400 outline-none transition">
+        <option value="">-- {{ 'cards.form_set' | translate }} --</option>
+        <option value="BISE">{{ 'cards.set.bise' | translate }}</option>
+        <option value="ALIZE">{{ 'cards.set.alize' | translate }}</option>
+        <option value="CORE">{{ 'cards.set.core' | translate }}</option>
+        <option value="COREKS">{{ 'cards.set.coreks' | translate }}</option>
+      </select>
+    </div>
+
+    <!-- Effets -->
+    <div class="sm:col-span-2">
+      <label class="block mb-1 text-sm font-semibold text-purple-200">{{ 'cards.form_contain_effect' | translate
+        }}</label>
+      <input id="main_effect" formControlName="main_effect" type="text"
+        class="w-full p-2 bg-gray-700 rounded-lg border border-purple-500 focus:ring-2 focus:ring-purple-400" />
+    </div>
+    <div class="sm:col-span-2">
+      <label class="block mb-1 text-sm font-semibold text-purple-200">{{ 'cards.form_and_contain_effect' | translate
+        }}</label>
+      <input id="main_effect_2" formControlName="main_effect_2" type="text"
+        class="w-full p-2 bg-gray-700 rounded-lg border border-purple-500 focus:ring-2 focus:ring-purple-400" />
+    </div>
+    <div class="sm:col-span-2">
+      <label class="block mb-1 text-sm font-semibold text-purple-200">{{ 'cards.form_contain_echo_effect' | translate
+        }}</label>
+      <input id="echo_effect" formControlName="echo_effect" type="text"
+        class="w-full p-2 bg-gray-700 rounded-lg border border-purple-500 focus:ring-2 focus:ring-purple-400" />
+    </div>
+
+    <!-- Coûts -->
+    <div>
+      <label class="block mb-1 text-sm text-purple-200 font-semibold">{{ 'cards.form_main_cost' | translate
+        }}</label>
+      <input formControlName="main_cost_range" type="text"
+        class="w-full p-2 bg-gray-700 rounded-lg border border-purple-500 focus:ring-2 focus:ring-purple-400" />
+    </div>
+    <div>
+      <label class="block mb-1 text-sm text-purple-200 font-semibold">{{ 'cards.form_recall_cost' | translate
+        }}</label>
+      <input formControlName="recall_cost_range" type="text"
+        class="w-full p-2 bg-gray-700 rounded-lg border border-purple-500 focus:ring-2 focus:ring-purple-400" />
+    </div>
+
+    <!-- Énergies -->
+    <div>
+      <label class="block mb-1 text-sm text-green-200 font-semibold">{{ 'cards.form_forest_power' | translate
+        }}</label>
+      <input formControlName="forest_power_range" type="text"
+        class="w-full p-2 bg-gray-700 rounded-lg border border-green-500 focus:ring-2 focus:ring-green-400" />
+    </div>
+    <div>
+      <label class="block mb-1 text-sm text-red-200 font-semibold">{{ 'cards.form_mountain_power' | translate
+        }}</label>
+      <input formControlName="mountain_power_range" type="text"
+        class="w-full p-2 bg-gray-700 rounded-lg border border-red-500 focus:ring-2 focus:ring-red-400" />
+    </div>
+    <div>
+      <label class="block mb-1 text-sm text-blue-200 font-semibold">{{ 'cards.form_ocean_power' | translate
+        }}</label>
+      <input formControlName="ocean_power_range" type="text"
+        class="w-full p-2 bg-gray-700 rounded-lg border border-blue-500 focus:ring-2 focus:ring-blue-400" />
+    </div>
+  </div>
+
+  <!-- Checkboxes -->
+  <div class="flex flex-col sm:flex-row flex-wrap justify-center gap-4 mt-6">
+    <label class="inline-flex items-center text-sm text-gray-300 select-none">
+      <input type="checkbox" formControlName="no_condition" class="form-checkbox bg-gray-600 text-purple-500 rounded" />
+      <span class="ml-2">{{ 'cards.form_delete_condition' | translate
+        }}</span>
+    </label>
+    <label class="inline-flex items-center text-sm text-gray-300 select-none">
+      <input type="checkbox" formControlName="in_market" class="form-checkbox bg-gray-600 text-purple-500 rounded" />
+      <span class="ml-2">
+        {{ 'cards.form_db_market' | translate }}
+      </span>
+    </label>
+    <div *ngIf="searchForm.get('in_market')?.value">
+      <label class="block mb-1 text-sm font-semibold">{{ 'cards.form_price_range' | translate
+        }}</label>
+      <input formControlName="price_range" type="text" class="w-full p-2 bg-gray-700 rounded-lg focus:ring-2" />
+    </div>
+    <!-- <div class="relative inline-flex items-center">
+      <div *ngIf="popoverIndex === 1"
+        class="absolute z-50 mb-2 bottom-full left-1/2 -translate-x-1/2 bg-white text-black text-xs rounded shadow-lg px-3 py-2"
+        style="min-width: 180px;">
+        {{ 'cards.popover_db_market' | translate }}
+      </div>
+      <i class="inline-flex items-center fas fa-question-circle text-sm text-gray-300 cursor-pointer"
+        (click)="showPopover(1)" (document:click)="hidePopover()" (click)="$event.stopPropagation()">
+      </i>
+    </div> -->
+    <!-- <label class="inline-flex items-center text-sm text-gray-300 select-none">
+      <input type="checkbox" formControlName="search_offers"
+        class="form-checkbox bg-gray-600 text-purple-500 rounded" />
+      <span class="ml-2">
+        {{ 'cards.form_live_market' | translate }}
+      </span>
+    </label>
+    <div class="relative inline-flex items-center">
+      <div *ngIf="popoverIndex === 2"
+        class="absolute z-50 mb-2 bottom-full left-1/2 -translate-x-1/2 bg-white text-black text-xs rounded shadow-lg px-3 py-2"
+        style="min-width: 180px;">
+        {{ 'cards.popover_live_market' | translate }}
+      </div>
+      <i class="inline-flex items-center fas fa-question-circle text-sm text-gray-300 cursor-pointer"
+        (click)="showPopover(2)" (document:click)="hidePopover()" (click)="$event.stopPropagation()">
+      </i>
+    </div> -->
+  </div>
+
+  <!-- Submit -->
+  <div class="mt-8 text-center">
+    <button type="submit" [disabled]="!isFormValid()" [ngClass]="{
+        'bg-gray-500 cursor-not-allowed': !isFormValid(),
+        'bg-gradient-to-r from-purple-600 to-blue-500 hover:from-purple-700 hover:to-blue-600': isFormValid()
+      }" class="w-full sm:w-auto px-6 py-3 text-white font-semibold rounded-lg shadow-lg transition">
+      {{ 'cards.form_search' | translate }}
+    </button>
+  </div>
+</form>

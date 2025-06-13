@@ -1,24 +1,10 @@
 header {
-  background-color: #1a202c;
   /* Couleur de fond sombre */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   /* Ombre légère */
 }
 
-nav ul li a {
-  color: white;
-  /* Couleur du texte */
-  transition: color 0.3s ease;
-  /* Transition pour l'effet de survol */
-}
-
-nav ul li a:hover {
-  color: #90cdf4;
-  /* Couleur du texte au survol */
-}
-
 footer {
-  background-color: #1a202c;
   /* Couleur de fond sombre */
   padding: 1.5rem 0;
   text-align: center;
@@ -145,4 +131,54 @@ footer img {
 .tooltip-arrow {
   border-color: white !important;
   /* Change la couleur de la flèche */
+}
+
+.icon-common,
+.icon-rare,
+.icon-unique,
+.icon-axiom,
+.icon-bravos,
+.icon-lyra,
+.icon-muna,
+.icon-ordis,
+.icon-yzmir {
+  background-size: contain;
+  background-repeat: no-repeat;
+  display: inline-block;
+}
+
+.icon-axiom {
+  background-image: url('/assets/img/faction/AX.webp');
+}
+
+.icon-bravos {
+  background-image: url('/assets/img/faction/BR.webp');
+}
+
+.icon-lyra {
+  background-image: url('/assets/img/faction/LY.webp');
+}
+
+.icon-muna {
+  background-image: url('/assets/img/faction/MU.webp');
+}
+
+.icon-ordis {
+  background-image: url('/assets/img/faction/OR.webp');
+}
+
+.icon-yzmir {
+  background-image: url('/assets/img/faction/YZ.webp');
+}
+
+.icon-common {
+  background-image: url('/assets/img/rarity/COMMON.webp');
+}
+
+.icon-rare {
+  background-image: url('/assets/img/rarity/RARE.webp');
+}
+
+.icon-unique {
+  background-image: url('/assets/img/rarity/UNIQUE.webp');
 }
