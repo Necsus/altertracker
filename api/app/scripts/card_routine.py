@@ -201,8 +201,6 @@ def get_unique_offers(session, name: str, faction: str, set: str, page: int, ret
         "accept": "*/*"
     }
 
-    print(params)
-
     # Construire l'URL avec les paramètres encodés
     url = f"{base_url}?{urlencode(params, doseq=True)}"
     try:
@@ -216,6 +214,9 @@ def get_unique_offers(session, name: str, faction: str, set: str, page: int, ret
         data = response.json()
         if data['hydra:totalItems'] <= 0:
             return None
+        
+        if data['hydra:totalItems'] >= 1000:
+            print(params)
 
         # Retourner les données
         return data
