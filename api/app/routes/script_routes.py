@@ -20,11 +20,11 @@ def dispatch_script(script: str, workers: int = 3, faction: str = None):
     if script == 'script_get_no_unique':
         script_get_no_unique.run_script()
     if script == 'script_get_en':
-        script_get_en.run_script(faction, workers)
+        script_get_en.run_script(faction, 1)
     if script == 'script_get_offers':
-        script_get_offers.run_script(faction, workers)
+        script_get_offers.run_script(faction, 1)
     if script == 'script_reload_main_effect':
-        script_reload_main_effect.run_script(faction, workers)
+        script_reload_main_effect.run_script(faction, 1)
 
 def run_with_app_context(app, script_name: str, workers: int = None, faction: str = None):
     def task():

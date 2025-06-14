@@ -47,7 +47,8 @@
             <span>{{ username }}</span>
             <i class="fas fa-chevron-down"></i>
           </button>
-          <ul *ngIf="isDropdownOpen" class="absolute right-0 mt-2 w-48 bg-gray-700 text-white rounded-lg shadow-lg z-10"
+          <ul *ngIf="isDropdownOpen"
+            class="absolute right-0 mt-2 w-48 bg-gray-700 text-white rounded-lg shadow-lg z-100"
             (mouseleave)="isDropdownOpen = false">
             @if (isAdmin) {
             <li><a routerLink="/admin" class="block px-4 py-2 hover:bg-gray-600 rounded-t-lg">{{

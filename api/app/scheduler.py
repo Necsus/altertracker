@@ -14,7 +14,7 @@ def start_scheduler():
 
     # Script toutes les 4h
     scheduler.add_job(
-        lambda: run_script_with_context(app, 'script_get_offers'), 
+        lambda: run_script_with_context(app, 'script_get_offers'),
         trigger=CronTrigger(hour='0,4,8,12,16,20', minute=0))
 
     scheduler.start()
