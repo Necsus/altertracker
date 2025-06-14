@@ -75,6 +75,24 @@ export class SearchPanelComponent implements OnInit {
         if (state['rarity']) {
           this.selectedRarity = state['rarity'].split(',').map((rarity: string) => rarity.trim());
         }
+        if (state['in_market'] || state['price_range']) {
+          this.areOffersOpen = true; // Ouvre les offres si in_market est défini
+        }
+        else {
+          this.areOffersOpen = false; // Ouvre les filtres si aucun critère n'est défini
+        }
+        if (state['main_effect'] || state['main_effect_2'] || state['echo_effect'] || state['exclude_effect']) {
+          this.areEffectsOpen = true; // Ouvre les offres si in_market est défini
+        }
+        else {
+          this.areEffectsOpen = false; // Ouvre les filtres si aucun critère n'est défini
+        }
+        if (state['name'] || state['rarity'] || state['faction'] || state['set'] || state['main_cost_range'] || state['recall_cost_range'] ||
+          state['forest_power_range'] || state['mountain_power_range'] || state['ocean_power_range']) {
+          this.areFiltersOpen = true; // Ouvre les offres si in_market est défini
+        } else {
+          this.areFiltersOpen = false; // Ouvre les filtres si aucun critère n'est défini
+        }
       }
     });
 
@@ -177,7 +195,6 @@ export class SearchPanelComponent implements OnInit {
     });
 
     // Sauvegarder l'URL dans le localStorage
-    this.searchFormService.setFormState(formValues);
     const searchUrl = `/cards?${queryParams.toString()}`;
     localStorage.setItem('lastSearchUrl', searchUrl);
     this.location.replaceState(searchUrl);
@@ -185,6 +202,7 @@ export class SearchPanelComponent implements OnInit {
   }
 
   searchCards(criteria: any): void {
+    const formValues = this.cleanFormValues(this.searchForm.value);
     if (criteria.in_market) {
       if (!this.isLoggedIn) {
         this.router.navigate(['/login']);
@@ -216,6 +234,7 @@ export class SearchPanelComponent implements OnInit {
     searchObservable.subscribe({
       next: (data: CardModel[]) => {
         this.cardsRetrieved.emit({ cards: data, searchOffers: criteria.in_market });
+        this.searchFormService.setFormState(formValues);
       },
       error: (error) => {
         console.error('Error fetching card data:', error);
