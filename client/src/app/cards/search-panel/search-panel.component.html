@@ -154,7 +154,8 @@
 
   <div *ngIf="areOffersOpen">
     <div class="mb-2 flex items-center">
-      <input type="checkbox" formControlName="in_market" class="form-checkbox bg-gray-600 text-amber-500 rounded">
+      <input type="checkbox" formControlName="in_market"
+        class="form-checkbox bg-gray-600 text-amber-500 rounded select-none">
       <span class="ml-2 text-sm">{{ 'cards.form_db_market' | translate }}</span>
     </div>
     <div *ngIf="searchForm.get('in_market')?.value" class="mb-4">

@@ -35,7 +35,7 @@
         </button>
       </div>
       <div class="flex items-center gap-4">
-        <div>
+        <div *ngIf="cards && cards.length > 0">
           <label class="mr-2 font-semibold">Trié par</label>
           <select class="p-2 bg-gray-700 rounded-lg border border-amber-500">
             <option>Nom</option>
@@ -44,7 +44,7 @@
             <option>Prix</option>
           </select>
         </div>
-        <div>
+        <div *ngIf="cards && cards.length > 0">
           <label class="mr-2 font-semibold">Groupé par</label>
           <select class="p-2 bg-gray-700 rounded-lg border border-amber-500">
             <option>Nom</option>
@@ -60,8 +60,17 @@
 
     <!-- Results -->
     <div class="flex-1 overflow-auto p-4">
+      <p class="text-center text-gray-500 mb-8" *ngIf="!cards || cards.length <= 0"> {{
+        'cards.subtitle_1' | translate }}&nbsp;<strong>{{nbCards}}</strong>&nbsp;{{
+        'cards.subtitle_2' | translate }}
+        <strong>{{nbCardsInMarket}}</strong>&nbsp;{{
+        'cards.subtitle_3' | translate }}
+      </p>
       <!-- Ici tu mettras ton affichage de cartes -->
-      <div class="text-center text-gray-400">
+      <div class="text-gray-400" *ngIf="cards && cards.length > 0">
+        <p class="text-lg pb-4"><span class="font-bold"><span
+              *ngIf="cards.length >= 10000">+</span>{{cards.length}}</span>
+          &nbsp;{{ 'cards.found_cards' | translate }}</p>
         <div *ngFor="let group of groupedCards | keyvalue" class="mb-8">
           <app-card-group [groupName]="group.key" [cards]="group.value" [autoOpen]="group.key === autoOpenGroup"
             [allGroupsOpen]="allGroupsOpen" (visibleCardsChange)="onVisibleCardsChange($event)">
