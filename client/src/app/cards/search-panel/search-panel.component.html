@@ -153,14 +153,15 @@
   </div>
 
   <div *ngIf="areOffersOpen">
-    <div class="mb-4">
-      <label class="block mb-1 text-center text-sm font-semibold">Prix</label>
+    <div class="mb-2 flex items-center">
+      <input type="checkbox" formControlName="in_market" class="form-checkbox bg-gray-600 text-amber-500 rounded">
+      <span class="ml-2 text-sm">{{ 'cards.form_db_market' | translate }}</span>
+    </div>
+    <div *ngIf="searchForm.get('in_market')?.value" class="mb-4">
+      <label class="block mb-1 text-center text-sm font-semibold">{{ 'cards.form_price_range' | translate
+        }}</label>
       <input type="number" formControlName="price_range" placeholder="1-250"
         class="w-full text-center p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400">
-    </div>
-    <div class="mb-2 flex items-center">
-      <input type="checkbox" class="form-checkbox bg-gray-600 text-amber-500 rounded">
-      <span class="ml-2 text-sm">Offres disponibles</span>
     </div>
   </div>
 
