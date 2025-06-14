@@ -1,5 +1,5 @@
-import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { CommonModule, Location } from '@angular/common';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -8,6 +8,7 @@ import { CardService } from '../../03_business/card.service';
 import { AuthViewService } from '../../authentication/auth-view.service';
 import { withLoader } from '../../shared/services/loader/loader.operator';
 import { LoaderService } from '../../shared/services/loader/loader.service';
+import { SearchFormService } from './search-form.service';
 
 @Component({
   selector: 'app-search-panel',
@@ -16,6 +17,7 @@ import { LoaderService } from '../../shared/services/loader/loader.service';
 })
 export class SearchPanelComponent implements OnInit {
   @Output() cardsRetrieved = new EventEmitter<{ cards: CardModel[], searchOffers: boolean }>();
+  @Input() showFull: boolean = false;
   searchForm!: FormGroup;
   areFiltersOpen: boolean = true; // État initial des filtres
   areEffectsOpen: boolean = false; // État initial des effets
@@ -31,10 +33,17 @@ export class SearchPanelComponent implements OnInit {
     private route: ActivatedRoute,
     private authViewService: AuthViewService,
     private router: Router,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private location: Location,
+    private searchFormService: SearchFormService
   ) { }
 
   ngOnInit() {
+    if (this.showFull) {
+      this.areFiltersOpen = true;
+      this.areEffectsOpen = true;
+      this.areOffersOpen = true;
+    }
     this.authViewService.isLoggedIn$.subscribe(status => {
       this.isLoggedIn = status;
     });
@@ -57,34 +66,48 @@ export class SearchPanelComponent implements OnInit {
       price_range: ['']
     });
 
+    this.searchFormService.formState$.subscribe(state => {
+      if (state) {
+        this.searchForm.patchValue(state);
+        if (state['faction']) {
+          this.selectedFactions = state['faction'].split(',').map((faction: string) => faction.trim());
+        }
+        if (state['rarity']) {
+          this.selectedRarity = state['rarity'].split(',').map((rarity: string) => rarity.trim());
+        }
+      }
+    });
+
     this.route.queryParams.subscribe((queryParams) => {
       if (Object.keys(queryParams).length === 0) {
         localStorage.removeItem('lastSearchUrl');
+      } else {
+        this.searchForm.patchValue({
+          name: queryParams['name'] || '',
+          rarity: queryParams['rarity'] || '',
+          faction: queryParams['faction'] || '',
+          set: queryParams['set'] || '',
+          main_effect: queryParams['main_effect'] || '',
+          main_effect_2: queryParams['main_effect_2'] || '',
+          echo_effect: queryParams['echo_effect'] || '',
+          exclude_effect: queryParams['exclude_effect'] || '',
+          main_cost_range: queryParams['main_cost_range'] || '',
+          recall_cost_range: queryParams['recall_cost_range'] || '',
+          forest_power_range: queryParams['forest_power_range'] || '',
+          mountain_power_range: queryParams['mountain_power_range'] || '',
+          ocean_power_range: queryParams['ocean_power_range'] || '',
+          in_market: queryParams['in_market'] || '',
+          price_range: queryParams['price_range'] || '',
+          no_condition: queryParams['no_condition'] || ''
+        });
+        if (queryParams['faction']) {
+          this.selectedFactions = queryParams['faction'].split(',').map((faction: string) => faction.trim());
+        }
+        if (queryParams['rarity']) {
+          this.selectedRarity = queryParams['rarity'].split(',').map((rarity: string) => rarity.trim());
+        }
       }
-      this.searchForm.patchValue({
-        name: queryParams['name'] || '',
-        rarity: queryParams['rarity'] || '',
-        faction: queryParams['faction'] || '',
-        set: queryParams['set'] || '',
-        main_effect: queryParams['main_effect'] || '',
-        main_effect_2: queryParams['main_effect_2'] || '',
-        echo_effect: queryParams['echo_effect'] || '',
-        exclude_effect: queryParams['exclude_effect'] || '',
-        main_cost_range: queryParams['main_cost_range'] || '',
-        recall_cost_range: queryParams['recall_cost_range'] || '',
-        forest_power_range: queryParams['forest_power_range'] || '',
-        mountain_power_range: queryParams['mountain_power_range'] || '',
-        ocean_power_range: queryParams['ocean_power_range'] || '',
-        in_market: queryParams['in_market'] || '',
-        price_range: queryParams['price_range'] || '',
-        no_condition: queryParams['no_condition'] || ''
-      });
-      if (queryParams['faction']) {
-        this.selectedFactions = queryParams['faction'].split(',').map((faction: string) => faction.trim());
-      }
-      if (queryParams['rarity']) {
-        this.selectedRarity = queryParams['rarity'].split(',').map((rarity: string) => rarity.trim());
-      }
+
     });
   }
 
@@ -154,8 +177,10 @@ export class SearchPanelComponent implements OnInit {
     });
 
     // Sauvegarder l'URL dans le localStorage
+    this.searchFormService.setFormState(formValues);
     const searchUrl = `/cards?${queryParams.toString()}`;
     localStorage.setItem('lastSearchUrl', searchUrl);
+    this.location.replaceState(searchUrl);
     this.searchCards(formValues);
   }
 
