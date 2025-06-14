@@ -286,11 +286,11 @@ def send_user_alert(card: Card, type_changement: str):
                 }),
                 sender={"name": "AlterTracker", "email": "noreply@altertracker.com"}
             )
-            # try:
-            #     response = mail_api.send_transac_email(send_smtp_email)
-            #     print(response)
-            # except ApiException as e:
-            #     print("Exception lors de l'appel à l’API Sendinblue: %s\n" % e)
+            try:
+                response = mail_api.send_transac_email(send_smtp_email)
+                print(response)
+            except ApiException as e:
+                print("Exception lors de l'appel à l’API Sendinblue: %s\n" % e)
 
 def update_card_service(data: dict) -> Optional[Card]:
     return update_card_data(data)
