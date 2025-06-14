@@ -57,7 +57,7 @@ export class CardComponent {
 
   saveFavoriteState(): void {
     const reference = this.card.reference;
-    const alert_id = this.card.alert_id;
+    const alert_id = this.card.alert_id ?? this.card.alert?.id;
     if (!this.is_favorite && !alert_id) {
       const request = <UserAlertModel>{
         reference_card: reference,
