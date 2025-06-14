@@ -61,7 +61,7 @@
 
     <!-- Results -->
     <div class="flex-1 overflow-auto p-4">
-      <div *ngIf="!cards || cards.length <= 0"
+      <div *ngIf="!isMobile && (!cards || cards.length <= 0)"
         class="bg-gradient-to-b from-gray-800 to-gray-900 p-4 transition-transform duration-300">
         <app-search-panel (cardsRetrieved)="onCardsRetrieved($event)" [showFull]="true"></app-search-panel>
       </div>
