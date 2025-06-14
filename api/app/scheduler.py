@@ -1,10 +1,8 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
 from app.routes.script_routes import dispatch_script
-from app import create_app
 
-def start_scheduler():
-    app = create_app()
+def start_scheduler(app):
     scheduler = BackgroundScheduler(timezone="Europe/Paris")
 
     # Script toutes les 24h

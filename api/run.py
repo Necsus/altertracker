@@ -5,7 +5,7 @@ from app.extensions import socketio
 from app.scheduler import start_scheduler
 
 app = create_app()
-start_scheduler()
+start_scheduler(app)
 
 if __name__ == '__main__':
     socketio.run(app, debug=True, host='0.0.0.0', port=5000)
