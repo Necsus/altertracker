@@ -12,5 +12,6 @@ export enum ExceptionType {
   ResultModelIsNull, // the model of BaseResult is null
   RequestFailed, // server returns a action result that indicate the create/update/delete request is failed
   PartialSuccess, // http 512
-  SuccessWithWarning // http 513
+  SuccessWithWarning, // http 513
+  ForbiddenError // http 403
 }

@@ -15,6 +15,9 @@ class User(db.Model):
     email_verified_at = db.Column(db.DateTime, nullable=True)
     is_banned = db.Column(db.Boolean, nullable=True)
     banned_at = db.Column(db.DateTime, nullable=True)
+    is_premium = db.Column(db.Boolean, default=False)
+    premium_start_at = db.Column(db.DateTime, nullable=True)
+    premium_end_at = db.Column(db.DateTime, nullable=True)
 
 
     def __repr__(self):
@@ -33,10 +36,14 @@ class User(db.Model):
             'email_verified_at': self.email_verified_at.isoformat() if self.email_verified_at else None,
             'is_banned': self.is_banned,
             'banned_at': self.banned_at.isoformat() if self.banned_at else None,
+            'is_premium': self.is_premium,
+            'premium_start_at': self.premium_start_at.isoformat() if self.premium_start_at else None,
+            'premium_end_at': self.premium_end_at.isoformat() if self.premium_end_at else None,
         }
     
     def __init__(self, username, email, password_hash, created_at=None, edited_at=None, is_email_verified=False,
-                email_verified_at=None, is_banned=False, banned_at=None):
+                email_verified_at=None, is_banned=False, banned_at=None, is_premium=False,
+                premium_start_at=None, premium_end_at=None):
         self.username = username
         self.email = email
         self.password_hash = password_hash
@@ -46,3 +53,6 @@ class User(db.Model):
         self.email_verified_at = email_verified_at
         self.is_banned = is_banned
         self.banned_at = banned_at
+        self.is_premium = is_premium
+        self.premium_start_at = premium_start_at
+        self.premium_end_at = premium_end_at

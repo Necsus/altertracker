@@ -35,6 +35,8 @@
             class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
             'header.stats' | translate }}</a>
         </li>
+        <li><a routerLink="/premium" routerLinkActive="text-amber-400" style="user-select: none;"
+            class="hover:text-amber-400 transition duration-300 cursor-pointer">Premium</a></li>
         <li><a routerLink="/about" routerLinkActive="text-amber-400" style="user-select: none;"
             class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
             'header.about' | translate }}</a></li>
@@ -124,6 +126,8 @@
       <a routerLink="/about" routerLinkActive="text-amber-400"
         class="block hover:text-amber-400 transition duration-300">{{
         'header.about' | translate }}</a>
+      <a routerLink="/premium" routerLinkActive="text-amber-400"
+        class="block hover:text-amber-400 transition duration-300">Premium</a>
       @if (isLoggedIn) {
 
       <a routerLink="/me" routerLinkActive="text-amber-400"

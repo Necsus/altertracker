@@ -1,0 +1,34 @@
+<div class="container mx-auto max-w-3xl px-4 py-12 bg-gray-900 text-white rounded-2xl">
+  <h2 class="text-3xl font-bold mb-6 text-center">Tarifs</h2>
+  <p class="font-bold mb-6 text-center text-red-500">Mise en place bientôt !</p>
+  <div class="overflow-x-auto">
+    <table class="min-w-full text-left border-collapse">
+      <thead>
+        <tr class="border-b border-gray-700">
+          <th class="p-4">Fonctionnalité</th>
+          <th class="p-4 text-center">Freemium</th>
+          <th class="p-4 text-center">Premium</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let f of features" class="border-b border-gray-700 hover:bg-gray-800 transition">
+          <td class="p-4">{{ f.feature }}</td>
+          <td class="p-4 text-center">
+            <ng-container *ngIf="typeof f.freemium === 'boolean'; else freemiumText">
+              <span *ngIf="f.freemium" class="text-green-400">✔</span>
+              <span *ngIf="!f.freemium" class="text-red-400">✖</span>
+            </ng-container>
+            <ng-template #freemiumText>{{ f.freemium }}</ng-template>
+          </td>
+          <td class="p-4 text-center">
+            <ng-container *ngIf="typeof f.premium === 'boolean'; else premiumText">
+              <span *ngIf="f.premium" class="text-green-400">✔</span>
+              <span *ngIf="!f.premium" class="text-red-400">✖</span>
+            </ng-container>
+            <ng-template #premiumText>{{ f.premium }}</ng-template>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

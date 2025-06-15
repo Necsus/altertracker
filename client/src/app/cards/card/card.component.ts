@@ -148,6 +148,7 @@ export class CardComponent {
       this.userService.put_user_alert$(this.card.alert).subscribe({
         next: () => { },
         error: (err: any) => {// Rétablit l'état précédent en cas d'erreur
+          this.toastService.show(err.message, 'error', 5000);
           if (this.card.alert) {
             this.card.alert.mail_active = !this.card.alert.mail_active;
           }

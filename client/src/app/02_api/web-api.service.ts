@@ -146,6 +146,9 @@ export class WebApiService {
           err.type = ExceptionType.Unauthorized;
           localStorage.removeItem('access_token');
           break;
+        case 403:
+          err.type = ExceptionType.ForbiddenError;
+          break;
         case 417:
           err.type = ExceptionType.ExpectationFailed;
           break;

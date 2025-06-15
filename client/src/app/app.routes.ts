@@ -10,6 +10,7 @@ import { ResetPasswordComponent } from './authentication/reset-password/reset-pa
 import { CardsComponent } from './cards/cards.component';
 import { ChatComponent } from './chat/chat.component';
 import { HomeComponent } from './home/home.component';
+import { PremiumComponent } from './premium/premium.component';
 import { NotFoundComponent } from './shared/error-pages/not-found/not-found.component';
 import { UnauthorizedComponent } from './shared/error-pages/unauthorized/unauthorized.component';
 import { StatsComponent } from './stats/stats.component';
@@ -40,6 +41,7 @@ export const routes: Routes = [
   { path: 'token', component: AlteredTokenComponent, canActivate: [TokenGuard] },
   { path: 'contact', component: ContactComponent, canActivate: [TokenGuard] },
   { path: 'about', component: AboutComponent },
+  { path: 'premium', component: PremiumComponent },
   { path: 'purchase-offers', component: PurchaseOffersComponent, canActivate: [TokenGuard] },
   { path: 'collection', component: CollectionComponent, canActivate: [TokenGuard] },
   { path: 'admin', component: AdminComponent, canActivate: [AdminGuard] },
