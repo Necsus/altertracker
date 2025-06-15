@@ -98,59 +98,57 @@
     @if (isMenuOpen) {
     <div class="sm:hidden mt-4 space-y-4">
       <a routerLink="/" routerLinkActive="text-amber-400" [routerLinkActiveOptions]="{ exact: true }"
-        class="block hover:text-amber-400 transition duration-300">{{
+        (click)="isMenuOpen = false" class="block hover:text-amber-400 transition duration-300">{{
         'header.home' | translate }}</a>
       <a routerLink="/cards" routerLinkActive="text-amber-400" [routerLinkActiveOptions]="{ exact: true }"
-        class="block hover:text-amber-400 transition duration-300">{{
+        (click)="isMenuOpen = false" class="block hover:text-amber-400 transition duration-300">{{
         'header.cards' | translate }}</a>
-      <a routerLink="/stats" routerLinkActive="text-amber-400"
+      <a routerLink="/stats" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
         class="block hover:text-amber-400 transition duration-300">{{
         'header.stats' | translate }}</a>
-      @if (isLoggedIn) {
-      <a routerLink="/purchase-offers" routerLinkActive="text-amber-400"
-        class="block hover:text-amber-400 transition duration-300">{{
-        'header.purchase_offers' | translate }}</a>
-      <a routerLink="/chat" routerLinkActive="text-amber-400"
-        class="block hover:text-amber-400 transition duration-300">{{
-        'header.chat' | translate }}</a>
-      <a routerLink="/searches" routerLinkActive="text-amber-400"
-        class="block hover:text-amber-400 transition duration-300">{{
-        'header.searches' | translate }}</a>
-      <a routerLink="/alerts" routerLinkActive="text-amber-400"
-        class="block hover:text-amber-400 transition duration-300">{{
-        'header.alerts' | translate }}</a>
-      <a routerLink="/collection" routerLinkActive="text-amber-400"
-        class="block hover:text-amber-400 transition duration-300">{{
-        'header.collection' | translate }}</a>
-      }
-      <a routerLink="/about" routerLinkActive="text-amber-400"
+      <a routerLink="/about" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
         class="block hover:text-amber-400 transition duration-300">{{
         'header.about' | translate }}</a>
-      <a routerLink="/premium" routerLinkActive="text-amber-400"
+      <a routerLink="/premium" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
         class="block hover:text-amber-400 transition duration-300">Premium</a>
       @if (isLoggedIn) {
-
-      <a routerLink="/me" routerLinkActive="text-amber-400"
+      <a routerLink="/me" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
         class="block hover:text-amber-400 transition duration-300">{{
         username }}</a>
+      <a routerLink="/purchase-offers" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
+        class="block hover:text-amber-400 transition duration-300">{{
+        'header.purchase_offers' | translate }}</a>
+      <a routerLink="/chat" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
+        class="block hover:text-amber-400 transition duration-300">{{
+        'header.chat' | translate }}</a>
+      <a routerLink="/searches" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
+        class="block hover:text-amber-400 transition duration-300">{{
+        'header.searches' | translate }}</a>
+      <a routerLink="/alerts" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
+        class="block hover:text-amber-400 transition duration-300">{{
+        'header.alerts' | translate }}</a>
+      <a routerLink="/collection" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
+        class="block hover:text-amber-400 transition duration-300">{{
+        'header.collection' | translate }}</a>
       @if (isAdmin) {
-      <a routerLink="/admin" class="block hover:text-amber-400 transition duration-300">{{
+      <a routerLink="/admin" (click)="isMenuOpen = false" class="block hover:text-amber-400 transition duration-300">{{
         'header.admin' | translate }}</a>
       }
-      <a (click)="onLogout()" class="block text-red-300 hover:text-red-200 transition duration-300 cursor-pointer">{{
+      <a (click)="onLogout()" (click)="isMenuOpen = false"
+        class="block text-red-300 hover:text-red-200 transition duration-300 cursor-pointer">{{
         'header.logout' | translate }}</a>
       <div class="flex justify-between items-center">
-        <a routerLink="/contact" routerLinkActive="text-amber-400"
+        <a routerLink="/contact" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
           class="block hover:text-amber-400 transition duration-300"><i class="fas fa-bug"></i></a>
         <app-language-selector class="ml-auto"></app-language-selector>
       </div>
       }
       @else {
-      <a routerLink="/login" routerLinkActive="text-amber-400"
+      <a routerLink="/login" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
         class="block hover:text-amber-400 transition duration-300">{{
         'header.login' | translate }}</a>
       <div class="flex justify-between items-center">
-        <a routerLink="/register" routerLinkActive="text-amber-400"
+        <a routerLink="/register" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
           class="block hover:text-amber-400 transition duration-300">{{
           'header.register' | translate }}</a>
         <app-language-selector class="ml-auto"></app-language-selector>
