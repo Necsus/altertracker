@@ -104,6 +104,10 @@ export class CardsComponent implements OnInit, OnDestroy {
     // Détecter un seul groupe
     const groupNames = Object.keys(this.groupedCards);
     this.autoOpenGroup = groupNames.length === 1 ? groupNames[0] : null;
+
+    if (this.isMobile) {
+      this.sidebarOpen = false; // Ferme le tiroir de filtre sur mobile
+    }
   }
 
   groupCardsByName(): void {
