@@ -1,7 +1,7 @@
 import { CommonModule, Location } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CardModel } from '../../01_models/03_business/card.model';
 import { CardService } from '../../03_business/card.service';
@@ -39,6 +39,13 @@ export class SearchPanelComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationEnd) {
+        if (this.showFull) {
+          this.searchFormService.setFormState(null);
+        }
+      }
+    });
     if (this.showFull) {
       this.areFiltersOpen = true;
       this.areEffectsOpen = true;
@@ -185,19 +192,6 @@ export class SearchPanelComponent implements OnInit {
 
   onSubmit() {
     const formValues = this.cleanFormValues(this.searchForm.value);
-
-    // Construire l'URL avec les paramètres du formulaire
-    const queryParams = new URLSearchParams();
-    Object.keys(formValues).forEach(key => {
-      if (formValues[key] !== null && formValues[key] !== undefined && formValues[key] !== '') {
-        queryParams.append(key, formValues[key]);
-      }
-    });
-
-    // Sauvegarder l'URL dans le localStorage
-    const searchUrl = `/cards?${queryParams.toString()}`;
-    localStorage.setItem('lastSearchUrl', searchUrl);
-    this.location.replaceState(searchUrl);
     this.searchCards(formValues);
   }
 
@@ -234,7 +228,21 @@ export class SearchPanelComponent implements OnInit {
     searchObservable.subscribe({
       next: (data: CardModel[]) => {
         this.cardsRetrieved.emit({ cards: data, searchOffers: criteria.in_market });
-        this.searchFormService.setFormState(formValues);
+        if (data && data.length > 0) {
+          // Construire l'URL avec les paramètres du formulaire
+          const queryParams = new URLSearchParams();
+          Object.keys(formValues).forEach(key => {
+            if (formValues[key] !== null && formValues[key] !== undefined && formValues[key] !== '') {
+              queryParams.append(key, formValues[key]);
+            }
+          });
+
+          // Sauvegarder l'URL dans le localStorage
+          const searchUrl = `/cards?${queryParams.toString()}`;
+          localStorage.setItem('lastSearchUrl', searchUrl);
+          this.location.replaceState(searchUrl);
+          this.searchFormService.setFormState(formValues);
+        }
       },
       error: (error) => {
         console.error('Error fetching card data:', error);

@@ -1,0 +1,344 @@
+@font-face {
+  font-family: AlteredIcons;
+  src: url(/assets/font/altered-icons-extd.woff2) format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block
+}
+
+@font-face {
+  font-family: AlteredIconBaseSet;
+  src: url(/assets/font/altered-icons-basic.eot#iefix) format("embedded-opentype"), url(/assets/font/altered-icons-basic.ttf) format("truetype"), url(/assets/font/altered-icons-basic.woff) format("woff"), url(/assets/font/altered-icons-basic.svg#AlteredIcons) format("svg")
+}
+
+i.altered-icon {
+  font-family: AlteredIcons !important;
+  speak: never;
+  font-style: normal;
+  font-weight: 400;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale
+}
+
+i.altered-icon-basic {
+  font-family: AlteredIconBaseSet !important;
+  speak: never;
+  font-style: normal;
+  font-weight: 400;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale
+}
+
+.--color-ax {
+  color: hsl(var(--axiom)) !important
+}
+
+.--color-br {
+  color: hsl(var(--bravos)) !important
+}
+
+.--color-ly {
+  color: hsl(var(--lyra)) !important
+}
+
+.--color-mu {
+  color: hsl(var(--muna)) !important
+}
+
+.--color-or {
+  color: hsl(var(--ordis)) !important
+}
+
+.--color-yz {
+  color: hsl(var(--yzmir)) !important
+}
+
+.--color-mana-hand {
+  color: #5095c9 !important
+}
+
+.color-forest {
+  color: rgb(158 176 66);
+}
+
+.border-forest {
+  border-color: rgb(158 176 66);
+}
+
+.color-mountain {
+  color: rgb(189 128 73);
+}
+
+.border-mountain {
+  border-color: rgb(189 128 73);
+}
+
+.color-ocean {
+  color: rgb(88 113 166);
+}
+
+.border-ocean {
+  border-color: rgb(88 113 166);
+}
+
+.altered-icon.cost-0:before {
+  content: ""
+}
+
+.altered-icon.cost-1:before {
+  content: ""
+}
+
+.altered-icon.cost-2:before {
+  content: ""
+}
+
+.altered-icon.cost-3:before {
+  content: ""
+}
+
+.altered-icon.cost-4:before {
+  content: ""
+}
+
+.altered-icon.cost-5:before {
+  content: ""
+}
+
+.altered-icon.cost-6:before {
+  content: ""
+}
+
+.altered-icon.cost-7:before {
+  content: ""
+}
+
+.altered-icon.cost-8:before {
+  content: ""
+}
+
+.altered-icon.cost-9:before {
+  content: ""
+}
+
+.altered-icon.brush:before {
+  content: ""
+}
+
+.altered-icon.tumult:before {
+  content: ""
+}
+
+.altered-icon.support:before {
+  content: ""
+}
+
+.altered-icon.fleeting:before {
+  content: ""
+}
+
+.altered-icon.btg:before {
+  content: ""
+}
+
+.altered-icon.hand:before {
+  content: ""
+}
+
+.altered-icon.infinite:before {
+  content: ""
+}
+
+.altered-icon.etb:before {
+  content: ""
+}
+
+.altered-icon.anchored:before {
+  content: ""
+}
+
+.altered-icon.separator:before {
+  content: ""
+}
+
+.altered-icon.forest:before {
+  content: ""
+}
+
+.altered-icon.mountain:before {
+  content: ""
+}
+
+.altered-icon.ocean:before {
+  content: ""
+}
+
+.altered-icon.card:before {
+  content: ""
+}
+
+.altered-icon.reserve:before {
+  content: ""
+}
+
+.altered-icon.swirl:before {
+  content: ""
+}
+
+.altered-icon.exhaust:before {
+  content: ""
+}
+
+.altered-icon.x:before {
+  content: ""
+}
+
+.altered-icon.sleeping:before {
+  content: ""
+}
+
+.altered-icon.bga:before {
+  content: ""
+}
+
+.altered-icon.bgg:before {
+  content: ""
+}
+
+.altered-icon.booster-pack:before {
+  content: ""
+}
+
+.altered-icon.collection:before {
+  content: ""
+}
+
+.altered-icon.display-box:before {
+  content: ""
+}
+
+.altered-icon.btg-2:before {
+  content: ""
+}
+
+.altered-icon.kickstarter:before {
+  content: ""
+}
+
+.altered-icon.gamegenic:before {
+  content: ""
+}
+
+.altered-icon.ks-set:before {
+  content: ""
+}
+
+.altered-icon.mobile:before {
+  content: ""
+}
+
+.altered-icon.deck:before {
+  content: ""
+}
+
+.altered-icon.ax:before {
+  content: ""
+}
+
+.altered-icon.br:before {
+  content: ""
+}
+
+.altered-icon.ly:before {
+  content: ""
+}
+
+.altered-icon.mu:before {
+  content: ""
+}
+
+.altered-icon.or:before {
+  content: ""
+}
+
+.altered-icon.yz:before {
+  content: ""
+}
+
+.altered-icon-basic.mana-1:before {
+  content: ""
+}
+
+.altered-icon-basic.mana-2:before {
+  content: ""
+}
+
+.altered-icon-basic.mana-3:before {
+  content: ""
+}
+
+.altered-icon-basic.mana-4:before {
+  content: ""
+}
+
+.altered-icon-basic.mana-5:before {
+  content: ""
+}
+
+.altered-icon-basic.mana-6:before {
+  content: ""
+}
+
+.altered-icon-basic.mana-7:before {
+  content: ""
+}
+
+.altered-icon-basic.mana-8:before {
+  content: ""
+}
+
+.altered-icon-basic.mana-9:before {
+  content: ""
+}
+
+.altered-icon-basic.etb:before {
+  content: ""
+}
+
+.altered-icon-basic.exhaust:before {
+  content: ""
+}
+
+.altered-icon-basic.forest:before {
+  content: ""
+}
+
+.altered-icon-basic.hand:before {
+  content: ""
+}
+
+.altered-icon-basic.mountain:before {
+  content: ""
+}
+
+.altered-icon-basic.reserve:before {
+  content: ""
+}
+
+.altered-icon-basic.support:before {
+  content: ""
+}
+
+.altered-icon-basic.water:before {
+  content: ""
+}
+
+.altered-icon-basic.x:before {
+  content: ""
+}

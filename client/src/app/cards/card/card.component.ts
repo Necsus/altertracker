@@ -12,6 +12,7 @@ import { CardService } from '../../03_business/card.service';
 import { PurchaseService } from '../../03_business/purchase.service';
 import { UserService } from '../../03_business/user.service';
 import { AuthViewService } from '../../authentication/auth-view.service';
+import { IconParserPipe } from '../../shared/pipes/icon-parser.pipe';
 import { LocalizedValuePipe } from '../../shared/pipes/localized-value.pipe';
 import { LoaderService } from '../../shared/services/loader/loader.service';
 import { ModalService } from '../../shared/services/modal/modal.service';
@@ -22,13 +23,14 @@ import { CardImgComponent } from './card-img.component';
   selector: 'app-card',
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.css'],
-  imports: [CommonModule, RouterModule, FormsModule, TranslateModule, LocalizedValuePipe],
+  imports: [CommonModule, RouterModule, FormsModule, TranslateModule, LocalizedValuePipe, IconParserPipe],
 })
 export class CardComponent {
   @Input() card!: CardModel; // Données de la carte
   isLoggedIn = false;
   is_favorite: boolean = false; // État favori de la carte
   isRefreshButtonVisible: boolean = true; // État du bouton Refresh
+  prettierText: boolean = true; // État de l'affichage du texte formaté
   constructor(
     private modalService: ModalService,
     private userService: UserService,

@@ -107,7 +107,22 @@
     </div> -->
 
       <!-- Effet principal -->
+      @if (prettierText) {
+      <p class="text-gray-300 text-sm leading-relaxed"
+        [innerHTML]="(card | localizedValue:'main_effect_en':'MAIN_EFFECT') | iconParser"></p>
+      <hr *ngIf="card.ECHO_EFFECT" class="my-1">
+      <p class="text-gray-300 text-sm leading-relaxed"
+        [innerHTML]="(card | localizedValue:'echo_effect_en':'ECHO_EFFECT') | iconParser"></p>
+      <a class="cursor-pointer text-amber-500 hover:text-amber-600" (click)="prettierText = !prettierText">voir le texte
+        original</a>
+      }
+      @else
+      {
       <p class="text-gray-300 text-sm leading-relaxed">{{ card | localizedValue:'main_effect_en':'MAIN_EFFECT' }}</p>
+      <hr *ngIf="card.ECHO_EFFECT" class="my-1">
+      <p class="text-gray-300 text-sm leading-relaxed">{{ card | localizedValue:'echo_effect_en':'ECHO_EFFECT' }}</p>
+      <a class="cursor-pointer text-amber-500 hover:text-amber-600" (click)="prettierText = !prettierText">retour</a>
+      }
 
     </div>
   </div>

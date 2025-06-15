@@ -56,11 +56,12 @@
         <ul class="grid grid-cols-2 gap-4 text-sm text-gray-300">
           <li><strong>{{ 'cards.form_rarity' | translate }}:</strong> {{ card.rarity }}</li>
           <li><strong>{{ 'cards.form_set' | translate }}:</strong> {{ card.set }}</li>
-          <li *ngIf="card.MAIN_EFFECT" [ngClass]="{'col-span-2': !card.ECHO_EFFECT}"><strong>main
-              effect:</strong><br />{{ card |
-            localizedValue:'main_effect_en':'MAIN_EFFECT' }}</li>
-          <li *ngIf="card.ECHO_EFFECT"><strong>echo effect:</strong><br />{{ card |
-            localizedValue:'echo_effect_en':'ECHO_EFFECT' }}</li>
+          <li *ngIf="card.MAIN_EFFECT" class="col-span-2"><span
+              [innerHTML]="(card | localizedValue:'main_effect_en':'MAIN_EFFECT') | iconParser"></span></li>
+          <li *ngIf="card.ECHO_EFFECT" class="col-span-2">
+            <hr class="my-2"><span
+              [innerHTML]="(card | localizedValue:'echo_effect_en':'ECHO_EFFECT') | iconParser"></span>
+          </li>
         </ul>
       </div>
 

@@ -186,3 +186,7 @@ footer img {
 button {
   cursor: pointer;
 }
+
+.z-100 {
+  z-index: 100;
+}

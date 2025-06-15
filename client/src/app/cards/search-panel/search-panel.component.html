@@ -75,10 +75,10 @@
         <select formControlName="set"
           class="w-full p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400">
           <option value="">-- Set --</option>
-          <option value="BISE">Bise</option>
-          <option value="ALIZE">Alizé</option>
-          <option value="CORE">Core</option>
-          <option value="COREKS">Core KS</option>
+          <option value="BISE">{{ 'cards.set.bise' | translate }}</option>
+          <option value="ALIZE">{{ 'cards.set.alize' | translate }}</option>
+          <option value="CORE">{{ 'cards.set.core' | translate }}</option>
+          <option value="COREKS">{{ 'cards.set.coreks' | translate }}</option>
         </select>
       </div>
 
@@ -99,22 +99,22 @@
 
       <div class="grid grid-cols-3 gap-2 mb-4">
         <div class="flex flex-col items-center justify-center">
-          <label class="block mb-1 text-sm font-semibold">{{ 'cards.form_forest_power' | translate
-            }}</label>
+          <label class="block mb-1 text-sm font-semibold"><i
+              class="altered-icon forest color-forest inline-block"></i></label>
           <input formControlName="forest_power_range" type="text" placeholder="0-10"
-            class="w-full text-center p-2 bg-gray-700 rounded-lg border border-green-500 focus:ring-2 focus:ring-green-400" />
+            class="w-full text-center p-2 bg-gray-700 rounded-lg border border-forest" />
         </div>
         <div class="flex flex-col items-center justify-center">
-          <label class="block mb-1 text-sm font-semibold">{{ 'cards.form_mountain_power' | translate
-            }}</label>
+          <label class="block mb-1 text-sm font-semibold"><i
+              class="altered-icon mountain color-mountain inline-block"></i></label>
           <input formControlName="mountain_power_range" type="text" placeholder="0-10"
-            class="w-full text-center p-2 bg-gray-700 rounded-lg border border-red-500 focus:ring-2 focus:ring-red-400" />
+            class="w-full text-center p-2 bg-gray-700 rounded-lg border border-mountain" />
         </div>
         <div class="flex flex-col items-center justify-center">
-          <label class="block mb-1 text-sm font-semibold">{{ 'cards.form_ocean_power' | translate
-            }}</label>
+          <label class="block mb-1 text-sm font-semibold"><i
+              class="altered-icon ocean color-ocean inline-block"></i></label>
           <input formControlName="ocean_power_range" type="text" placeholder="0-10"
-            class="w-full text-center p-2 bg-gray-700 rounded-lg border border-blue-500 focus:ring-2 focus:ring-blue-400" />
+            class="w-full text-center p-2 bg-gray-700 rounded-lg border border-ocean" />
         </div>
       </div>
     </div>
