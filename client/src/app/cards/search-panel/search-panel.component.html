@@ -21,16 +21,16 @@
       <div class="mb-4">
         <label class="block mb-1 text-center text-sm font-semibold">Rareté</label>
         <div class="grid grid-cols-3 gap-2">
-          <a class="flex flex-col items-center justify-center p-1 rounded-lg hover:bg-gray-600 transition cursor-pointer"
-            [class.bg-gray-700]="selectedRarity.includes('COMMON')" (click)="toggleRarity('COMMON')">
+          <a class="flex flex-col items-center justify-center p-1 rounded-lg transition cursor-pointer"
+            [class.bg-amber-500]="selectedRarity.includes('COMMON')" (click)="toggleRarity('COMMON')">
             <i class="icon-common w-10 h-5"></i>
           </a>
-          <a class="flex flex-col items-center justify-content-center p-2 rounded-lg hover:bg-gray-600 transition cursor-pointer"
-            [class.bg-gray-700]="selectedRarity.includes('RARE')" (click)="toggleRarity('RARE')">
+          <a class="flex flex-col items-center justify-content-center p-2 rounded-lg transition cursor-pointer"
+            [class.bg-amber-500]="selectedRarity.includes('RARE')" (click)="toggleRarity('RARE')">
             <i class="icon-rare w-10 h-5"></i>
           </a>
-          <a class="flex flex-col items-center justify-center p-1 rounded-lg hover:bg-gray-600 transition cursor-pointer"
-            [class.bg-gray-700]="selectedRarity.includes('UNIQUE')" (click)="toggleRarity('UNIQUE')">
+          <a class="flex flex-col items-center justify-center p-1 rounded-lg transition cursor-pointer"
+            [class.bg-amber-500]="selectedRarity.includes('UNIQUE')" (click)="toggleRarity('UNIQUE')">
             <i class="icon-unique w-10 h-5"></i>
           </a>
         </div>
@@ -40,28 +40,28 @@
       <div class="mb-4">
         <label class="block mb-1 text-center text-sm font-semibold">Faction</label>
         <div class="grid grid-cols-3 gap-2">
-          <a class="flex flex-col items-center justify-center p-1 rounded-lg hover:bg-gray-600 transition cursor-pointer"
-            [class.bg-gray-700]="selectedFactions.includes('AX')" (click)="toggleFaction('AX')">
+          <a class="flex flex-col items-center justify-center p-1 rounded-lg transition cursor-pointer"
+            [class.bg-amber-500]="selectedFactions.includes('AX')" (click)="toggleFaction('AX')">
             <i class="icon-axiom w-10 h-10"></i>
           </a>
-          <a class="flex flex-col items-center p-2 rounded-lg hover:bg-gray-600 transition cursor-pointer"
-            [class.bg-gray-700]="selectedFactions.includes('BR')" (click)="toggleFaction('BR')">
+          <a class="flex flex-col items-center p-2 rounded-lg transition cursor-pointer"
+            [class.bg-amber-500]="selectedFactions.includes('BR')" (click)="toggleFaction('BR')">
             <i class="icon-bravos w-10 h-10"></i>
           </a>
-          <a class="flex flex-col items-center p-1 rounded-lg hover:bg-gray-600 transition cursor-pointer"
-            [class.bg-gray-700]="selectedFactions.includes('LY')" (click)="toggleFaction('LY')">
+          <a class="flex flex-col items-center p-1 rounded-lg transition cursor-pointer"
+            [class.bg-amber-500]="selectedFactions.includes('LY')" (click)="toggleFaction('LY')">
             <i class="icon-lyra w-10 h-10"></i>
           </a>
-          <a class="flex flex-col items-center p-1 rounded-lg hover:bg-gray-600 transition cursor-pointer"
-            [class.bg-gray-700]="selectedFactions.includes('MU')" (click)="toggleFaction('MU')">
+          <a class="flex flex-col items-center p-1 rounded-lg transition cursor-pointer"
+            [class.bg-amber-500]="selectedFactions.includes('MU')" (click)="toggleFaction('MU')">
             <i class="icon-muna w-10 h-10"></i>
           </a>
-          <a class="flex flex-col items-center p-1 rounded-lg hover:bg-gray-600 transition cursor-pointer"
-            [class.bg-gray-700]="selectedFactions.includes('OR')" (click)="toggleFaction('OR')">
+          <a class="flex flex-col items-center p-1 rounded-lg transition cursor-pointer"
+            [class.bg-amber-500]="selectedFactions.includes('OR')" (click)="toggleFaction('OR')">
             <i class="icon-ordis w-10 h-10"></i>
           </a>
-          <a class="flex flex-col items-center p-1 rounded-lg hover:bg-gray-600 transition cursor-pointer"
-            [class.bg-gray-700]="selectedFactions.includes('YZ')" (click)="toggleFaction('YZ')">
+          <a class="flex flex-col items-center p-1 rounded-lg transition cursor-pointer"
+            [class.bg-amber-500]="selectedFactions.includes('YZ')" (click)="toggleFaction('YZ')">
             <i class="icon-yzmir w-10 h-10"></i>
           </a>
         </div>
@@ -165,7 +165,7 @@
       <div *ngIf="searchForm.get('in_market')?.value" class="mb-4">
         <label class="block mb-1 text-center text-sm font-semibold">{{ 'cards.form_price_range' | translate
           }}</label>
-        <input type="number" formControlName="price_range" placeholder="1-250"
+        <input type="text" formControlName="price_range" placeholder="1-250"
           class="w-full text-center p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400">
       </div>
     </div>
