@@ -1,13 +1,9 @@
-from datetime import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.cron import CronTrigger
-import pytz
 from app.routes.script_routes import dispatch_script
-from app.extensions import socketio
 
 def start_scheduler(app):
-    print(f'Heure locale Europe/Paris : {datetime.now(pytz.timezone("Europe/Paris"))}')
-    scheduler = BackgroundScheduler(timezone="Europe/Paris")
+    scheduler = BackgroundScheduler()
 
     # Script toutes les 24h
     scheduler.add_job(
