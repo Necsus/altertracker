@@ -5,14 +5,22 @@ from app import create_app
 
 app = create_app()
 
-# Regex pour les différents patterns
+# =========================
+# REGEX PRE-COMPILÉES
+# =========================
+
+# Cas {déclencheur} avec éventuelle condition
 pattern_curly_with_condition = re.compile(r"^\{([^}]+)\}\s*(.*?):\s*(.*)$")
 pattern_curly_without_condition = re.compile(r"^\{([^}]+)\}\s*(.*)$")
+
+# Cas déclencheur texte suivi de tiret long
 pattern_dash = re.compile(r"^(.*?—)\s*(.*)")
+
+# Condition vide []
 pattern_empty_condition = re.compile(r'^\[\]\s*(.*)$')
 
-# Séparateur d'effets multiples (tu m’as confirmé qu’il est correct)
-split_regex = re.compile(r'\  \s*')  # ton split sur espace insécable confirmé
+# Split des effets multiples (tu avais bien validé ce split sur espace insécable)
+split_regex = re.compile(r'\  \s*')  # attention ici à ton espace insécable, si besoin je peux encore sécuriser
 
 parsed_results = []
 
@@ -21,10 +29,7 @@ with app.app_context():
             Card.reference,
             Card.name_en,
             Card.MAIN_EFFECT
-        ).filter(
-            Card.MAIN_EFFECT.isnot(None),
-            Card.name == "Dédale"
-        ).limit(100).all()
+        ).filter(Card.MAIN_EFFECT.isnot(None),Card.name == "Dédale").all()
 
     for card in cards:
         print(f"\033[94mTraitement de la carte : {card[1]} ({card[0]})\033[0m")
@@ -39,67 +44,48 @@ with app.app_context():
 
             print(f"\033[92mEffet à parser : {effet}\033[0m")
             declencheur, condition, effet_value = '[]', '[]', '[]'
+            reste = effet
 
-            # D'abord on teste le pattern {déclencheur} avec condition
+            # =========================
+            # DÉTECTION DU DÉCLENCHEUR
+            # =========================
+
             match = pattern_curly_with_condition.match(effet)
             if match:
                 declencheur = f"{{{match.group(1)}}}"
-                condition = match.group(2).strip() + " :"
-                effet_value = match.group(3).strip()
+                reste = match.group(2).strip() + " : " + match.group(3).strip()
             else:
-                # Sinon, pattern {déclencheur} sans condition
                 match = pattern_curly_without_condition.match(effet)
                 if match:
                     declencheur = f"{{{match.group(1)}}}"
                     reste = match.group(2).strip()
-
-                    # On vérifie si condition vide via []
-                    match_empty = pattern_empty_condition.match(reste)
-                    if match_empty:
-                        condition = '[]'
-                        effet_value = match_empty.group(1).strip()
-                    else:
-                        if ':' in reste:
-                            parts = reste.split(':', 1)
-                            condition = parts[0].strip() + " :"
-                            effet_value = parts[1].strip()
-                        else:
-                            effet_value = reste
-
                 else:
-                    # Sinon pattern texte suivi de —
                     match = pattern_dash.match(effet)
                     if match:
                         declencheur = match.group(1).strip()
                         reste = match.group(2).strip()
-
-                        match_empty = pattern_empty_condition.match(reste)
-                        if match_empty:
-                            condition = '[]'
-                            effet_value = match_empty.group(1).strip()
-                        else:
-                            if ':' in reste:
-                                parts = reste.split(':', 1)
-                                condition = parts[0].strip() + " :"
-                                effet_value = parts[1].strip()
-                            else:
-                                effet_value = reste
-
                     else:
-                        # Aucun déclencheur détecté
-                        reste = effet
+                        reste = effet  # Aucun déclencheur détecté
 
-                        match_empty = pattern_empty_condition.match(reste)
-                        if match_empty:
-                            condition = '[]'
-                            effet_value = match_empty.group(1).strip()
-                        else:
-                            if ':' in reste:
-                                parts = reste.split(':', 1)
-                                condition = parts[0].strip() + " :"
-                                effet_value = parts[1].strip()
-                            else:
-                                effet_value = reste
+            # =========================
+            # TRAITEMENT DU RESTE
+            # =========================
+
+            match_empty = pattern_empty_condition.match(reste)
+            if match_empty:
+                condition = '[]'
+                effet_value = match_empty.group(1).strip()
+            else:
+                if ':' in reste:
+                    parts = reste.split(':', 1)
+                    condition = parts[0].strip() + " :"
+                    effet_value = parts[1].strip()
+                else:
+                    effet_value = reste
+
+            # =========================
+            # OUTPUT INTERNE
+            # =========================
 
             print(f"  déclencheur = {declencheur}")
             print(f"  condition   = {condition}")
