@@ -12,7 +12,6 @@ export class ModalComponent implements AfterViewInit {
 
   @ViewChild('modalContent', { read: ViewContainerRef, static: true })
   modalContent!: ViewContainerRef;
-
   componentRef!: ComponentRef<any>;
 
   ngAfterViewInit(): void {

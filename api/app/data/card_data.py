@@ -1,5 +1,6 @@
 import re
 from typing import Optional
+from app.models.effect import Effect
 from app.models.user_alert import UserAlert
 from app.models.card import Card
 from sqlalchemy import func
@@ -302,3 +303,6 @@ def get_count_cards_created_today_data() -> int:
 
 def get_last_added_cards_data() -> list[dict]:
     return db.session.query(Card).order_by(Card.created_at.desc()).limit(20).all()
+
+def get_effect_data(lang: str) -> list[dict]:
+    return db.session.query(Effect).filter(Effect.language == lang).all()

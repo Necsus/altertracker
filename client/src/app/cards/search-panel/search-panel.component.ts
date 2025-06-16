@@ -8,6 +8,8 @@ import { CardService } from '../../03_business/card.service';
 import { AuthViewService } from '../../authentication/auth-view.service';
 import { withLoader } from '../../shared/services/loader/loader.operator';
 import { LoaderService } from '../../shared/services/loader/loader.service';
+import { ModalService } from '../../shared/services/modal/modal.service';
+import { EffectBuilderComponent } from './effect-builder.component';
 import { SearchFormService } from './search-form.service';
 
 @Component({
@@ -35,7 +37,8 @@ export class SearchPanelComponent implements OnInit {
     private router: Router,
     private translate: TranslateService,
     private location: Location,
-    private searchFormService: SearchFormService
+    private searchFormService: SearchFormService,
+    private modalService: ModalService
   ) { }
 
   ngOnInit() {
@@ -246,6 +249,24 @@ export class SearchPanelComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error fetching card data:', error);
+      }
+    });
+  }
+
+  openEffectBuilder(effectType: 'main_effect' | 'main_effect_2' | 'echo_effect' | 'exclude_effect') {
+    const modalRef = this.modalService.open(EffectBuilderComponent);
+    // Passe la référence au composant dynamique
+    setTimeout(() => {
+      if (modalRef.instance.componentRef) {
+        modalRef.instance.componentRef.instance.modalRef = modalRef;
+      }
+    });
+
+    modalRef.onDestroy(() => {
+      const result = modalRef.instance.componentRef?.instance.result;
+      if (result) {
+        // Utilise la chaîne dans ton parent (ex: setValue sur le champ)
+        this.searchForm.get(effectType)?.setValue(result);
       }
     });
   }

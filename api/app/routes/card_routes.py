@@ -3,6 +3,7 @@ from flask_jwt_extended import get_jwt_identity, jwt_required
 from marshmallow import Schema, fields, ValidationError
 from app.services.card_service import (
   get_card_by_reference_service,
+  get_effect_service,
   search_cards_service,
   get_cards_count_service,
   get_cards_in_market_count_service,
@@ -15,6 +16,7 @@ from app.services.card_service import (
 from app.services.offer_service import get_offers_by_reference_service
 from app.services.purchase_service import get_purchases_by_reference_service
 from app.services.user_service import get_card_is_in_collection_service
+from app.extensions import cache
 
 
 card_bp = Blueprint('card', __name__)
@@ -152,5 +154,14 @@ def update_card(reference: str):
         return jsonify({'message': 'Carte mise à jour avec succès'}), 201
     except ValidationError as ve:
         return make_response(jsonify({'message': 'Invalid data', 'errors': ve.messages}), 400)
+    except Exception as e:
+        return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
+    
+@card_bp.route('/effect/<string:lang>', methods=['GET'])
+@cache.cached(timeout=3600, query_string=True)
+def get_effect(lang: str):
+    try:
+        effects = get_effect_service(lang)
+        return jsonify([effect.json() for effect in effects]), 200
     except Exception as e:
         return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)

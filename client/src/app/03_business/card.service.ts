@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { OfferLiveMarketRequest } from '../01_models/02_api/card/offer-live-market-request.model';
 import { CardModel } from '../01_models/03_business/card.model';
+import { EffectModel } from '../01_models/03_business/effect.model';
 import { OfferPurchase } from '../01_models/03_business/offer-purchase.model';
 import { OfferModel } from '../01_models/03_business/offer.model';
 import { CardApiService } from '../02_api/card-api.service';
@@ -58,6 +59,12 @@ export class CardService {
 
   updateCard$(card: CardModel): Observable<CardModel> {
     return this.cardApiService.update_card$(card).pipe(map((dbModel: CardModel) => {
+      return dbModel;
+    }));
+  }
+
+  getEffect$(lang: string): Observable<EffectModel[]> {
+    return this.cardApiService.get_effects$(lang).pipe(map((dbModel: EffectModel[]) => {
       return dbModel;
     }));
   }

@@ -1,4 +1,4 @@
 <div class="backdrop" (click)="close()"></div>
-<div class="modal">
+<div class="modal" (click)="$event.stopPropagation()">
   <ng-template #modalContent></ng-template>
 </div>

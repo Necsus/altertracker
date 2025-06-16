@@ -2,7 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({ name: 'iconParser' })
 export class IconParserPipe implements PipeTransform {
-  transform(value: string): string {
+  transform(value: string, options?: { skipEmptyBrackets?: boolean }): string {
     if (!value) return '';
     value = value.replace(/\[\[([^\]]+)\]\]/g, '<b><u>$1</u></b>');
     value = value.replace(/\[([^\]]+)\]/g, '<b>$1</b>');
@@ -27,7 +27,9 @@ export class IconParserPipe implements PipeTransform {
     value = value.replace(/\{7\}/g, '<i class="altered-icon-basic mana-7 inline-block"></i>');
     value = value.replace(/\{8\}/g, '<i class="altered-icon-basic mana-8 inline-block"></i>');
     value = value.replace(/\{9\}/g, '<i class="altered-icon-basic mana-9 inline-block"></i>');
-    value = value.replace(/\[\]/g, '');
+    if (!options?.skipEmptyBrackets) {
+      value = value.replace(/\[\]/g, '');
+    }
     value = value.replace(/  /g, '<br>');
     // value = value.replace(/(?<!^)Lorsque/g, '<br>Lorsque');
     // value = value.replace(/(?<!^)When/g, '<br>When');

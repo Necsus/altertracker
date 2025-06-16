@@ -15,9 +15,7 @@ from app.config import Config, ConfigEnv
 from flask_jwt_extended import JWTManager
 from app.extensions import socketio
 from app.extensions import limiter
-
-
-
+from app.extensions import cache
 
 def create_app():
     app = Flask(__name__)
@@ -29,6 +27,7 @@ def create_app():
     migrate.init_app(app, db)
     socketio.init_app(app, cors_allowed_origins=ConfigEnv.CORS_ORIGINS, async_mode='eventlet')
     limiter.init_app(app)
+    cache.init_app(app)
 
     app.register_blueprint(global_bp, url_prefix="/api/global")
     app.register_blueprint(auth_bp, url_prefix="/api/auth")

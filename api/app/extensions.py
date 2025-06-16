@@ -6,6 +6,7 @@ from flask_limiter.util import get_remote_address
 from sib_api_v3_sdk.rest import ApiException
 from app.config import ConfigEnv
 import sib_api_v3_sdk
+from flask_caching import Cache
 
 
 db = SQLAlchemy()
@@ -14,6 +15,7 @@ mail_conf = sib_api_v3_sdk.Configuration()
 mail_conf.api_key['api-key'] = ConfigEnv.BREVO_API_KEY
 mail_api = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(mail_conf))
 socketio = SocketIO()
+cache = Cache(config={'CACHE_TYPE': 'SimpleCache'})
 
 limiter = Limiter(
     key_func=get_remote_address
