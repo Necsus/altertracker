@@ -6,7 +6,7 @@ from app.routes.script_routes import dispatch_script
 from app.extensions import socketio
 
 def start_scheduler(app):
-    socketio.emit('server_message', {'data': f'Heure locale Europe/Paris : {datetime.now(pytz.timezone("Europe/Paris"))}'})
+    print(f'Heure locale Europe/Paris : {datetime.now(pytz.timezone("Europe/Paris"))}')
     scheduler = BackgroundScheduler(timezone="Europe/Paris")
 
     # Script toutes les 24h
