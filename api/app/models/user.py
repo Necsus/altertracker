@@ -18,6 +18,7 @@ class User(db.Model):
     is_premium = db.Column(db.Boolean, default=False)
     premium_start_at = db.Column(db.DateTime, nullable=True)
     premium_end_at = db.Column(db.DateTime, nullable=True)
+    discord_id = db.Column(db.String, nullable=True)
 
 
     def __repr__(self):

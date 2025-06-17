@@ -10,13 +10,13 @@ import { ResetPasswordComponent } from './authentication/reset-password/reset-pa
 import { CardsComponent } from './cards/cards.component';
 import { ChatComponent } from './chat/chat.component';
 import { HomeComponent } from './home/home.component';
-import { PremiumComponent } from './premium/premium.component';
 import { NotFoundComponent } from './shared/error-pages/not-found/not-found.component';
 import { UnauthorizedComponent } from './shared/error-pages/unauthorized/unauthorized.component';
 import { StatsComponent } from './stats/stats.component';
 import { AlteredTokenComponent } from './user/altered-token/altered-token.component';
 import { CollectionComponent } from './user/collection/collection.component';
 import { ContactComponent } from './user/contact/contact.component';
+import { DiscordCallbackComponent } from './user/me/discord-callback.component';
 import { MeComponent } from './user/me/me.component';
 import { PurchaseOffersComponent } from './user/purchase-offers/purchase-offers.component';
 import { UserAlertsComponent } from './user/user-alerts/user-alerts.component';
@@ -31,6 +31,7 @@ export const routes: Routes = [
   { path: 'searches', component: UserSearchesComponent, canActivate: [TokenGuard] },
   { path: 'alerts', component: UserAlertsComponent, canActivate: [TokenGuard] },
   { path: 'me', component: MeComponent, canActivate: [TokenGuard] },
+  { path: 'me/discord/link', component: DiscordCallbackComponent },
   { path: 'chat', component: ChatComponent, canActivate: [TokenGuard] },
   { path: 'chat/:room_id', component: ChatComponent, canActivate: [TokenGuard] },
   { path: 'login', component: LoginComponent },

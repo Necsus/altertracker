@@ -6,6 +6,7 @@ from app.routes.global_routes import global_bp
 from app.routes.card_routes import card_bp
 from app.routes.offer_routes import offer_bp
 from app.routes.user_routes import user_bp
+from app.routes.discord_routes import discord_bp
 from app.routes.auth_routes import auth_bp
 from app.routes.script_routes import script_bp
 from app.routes.purchase_routes import purchase_bp
@@ -34,6 +35,7 @@ def create_app():
     app.register_blueprint(card_bp, url_prefix="/api/card")
     app.register_blueprint(offer_bp, url_prefix="/api/offer")
     app.register_blueprint(user_bp, url_prefix="/api/user")
+    app.register_blueprint(discord_bp, url_prefix="/api/discord")
     app.register_blueprint(script_bp, url_prefix="/api/script")
     app.register_blueprint(purchase_bp, url_prefix="/api/purchase")
     app.register_blueprint(cookiemanager_bp, url_prefix="/api/cookie-manager")

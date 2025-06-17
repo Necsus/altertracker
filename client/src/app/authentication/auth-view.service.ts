@@ -45,6 +45,19 @@ export class AuthViewService {
     }
   }
 
+  getDiscordIdLinked(): boolean | null {
+    const token = localStorage.getItem('access_token');
+    if (!token) return null;
+
+    try {
+      const decoded: any = jwtDecode(token);
+      return decoded.did_linked || null;
+    } catch (err) {
+      console.error('Error decoding token', err);
+      return null;
+    }
+  }
+
   logout() {
     this.authService.logout$().subscribe({
       next: () => {
