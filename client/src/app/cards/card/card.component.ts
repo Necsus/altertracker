@@ -63,7 +63,7 @@ export class CardComponent {
     if (!this.is_favorite && !alert_id) {
       const request = <UserAlertModel>{
         reference_card: reference,
-        mail_active: false
+        mail_active: true
       };
       this.userService.post_user_alert$(request).subscribe({
         next: (response: UserAlertModel) => {

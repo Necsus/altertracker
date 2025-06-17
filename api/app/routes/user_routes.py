@@ -115,17 +115,12 @@ def delete_user_alert(id_alert):
 def update_user_alert():
     try:
         user_id = get_jwt_identity()
-        user = get_user_by_id_service(user_id)
         data = request.get_json()
-
         # Supprime la clé 'card' si elle est présente
         data.pop('card', None)
 
         # Vérifie si l'alerte appartient à l'utilisateur authentifié
         alerts = get_user_alert_service(user_id)
-        count_alert_active = sum(1 for alert in alerts if alert.get("mail_active") is True)
-        if data["mail_active"] and count_alert_active >= 10 and not user["is_premium"]:
-            return jsonify({"message": "Vous ne pouvez pas activer plus de 10 alertes"}), 403
         if not any(alert["id"] == data["id"] for alert in alerts):
             return jsonify({"message": "Alerte non trouvée ou non autorisée"}), 403
 
