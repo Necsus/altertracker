@@ -67,8 +67,14 @@ export class EffectBuilderComponent implements OnInit {
       this.selectedCondition?.value ?? '[]',
       this.selectedEffect?.value ?? '[]'
     ];
-    const joiner = values.includes('[]') ? '' : ' ';
-    this.result = values.filter(Boolean).join(joiner);
+
+    let result = values[0] || '';
+    for (let i = 1; i < values.length; i++) {
+      // Si la précédente est '[]', on ne met pas d'espace
+      const joiner = values[i - 1] === '[]' ? '' : ' ';
+      result += (values[i] ? joiner + values[i] : '');
+    }
+    this.result = result;
     if (this.modalRef) {
       this.modalRef.destroy(); // Ferme la modale proprement
     }
