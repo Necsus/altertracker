@@ -62,11 +62,13 @@ export class EffectBuilderComponent implements OnInit {
   }
 
   validate(): void {
-    this.result = this.result = [
+    const values = [
       this.selectedTrigger?.value ?? '[]',
       this.selectedCondition?.value ?? '[]',
       this.selectedEffect?.value ?? '[]'
-    ].filter(Boolean).join(' ');
+    ];
+    const joiner = values.includes('[]') ? '' : ' ';
+    this.result = values.filter(Boolean).join(joiner);
     if (this.modalRef) {
       this.modalRef.destroy(); // Ferme la modale proprement
     }

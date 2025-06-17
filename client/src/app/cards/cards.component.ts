@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { BehaviorSubject, catchError, delay, map, of, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, delay, map, throwError } from 'rxjs';
 import { OfferLiveMarketRequest } from '../01_models/02_api/card/offer-live-market-request.model';
 import { CardModel } from '../01_models/03_business/card.model';
 import { AlteredService } from '../03_business/altered.service';
@@ -155,10 +155,6 @@ export class CardsComponent implements OnInit, OnDestroy {
             }
           }),
           catchError((error) => {
-            if (error.message === 'Token invalide ou expiré. Veuillez le réinsérer.') {
-              this.handleTokenError(error);
-              return of();
-            }
             return throwError(() => error);
           })
         )
@@ -190,15 +186,6 @@ export class CardsComponent implements OnInit, OnDestroy {
         }
       });
     }
-  }
-
-  private handleTokenError(error: any): void {
-    console.error('Erreur 401 détectée : Redirection vers la page /token.');
-    localStorage.removeItem('altered_token');
-    localStorage.removeItem('cgu_altered_token');
-    this.loaderService.hide();
-    this.toastService.show(error.message, 'error', 5000);
-    this.router.navigate(['/token']);
   }
 
   touchStartY = 0;

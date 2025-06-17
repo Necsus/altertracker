@@ -52,6 +52,14 @@ services:
       - backend
       - frontend
 
+  # discord-bot:
+  #   build: ./bot
+  #   restart: always
+  #   environment:
+  #     - ./config/production.env
+  #   networks:
+  #     - backend
+
   certbot:
     image: certbot/certbot
     restart: always

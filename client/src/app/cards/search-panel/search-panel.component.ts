@@ -1,7 +1,7 @@
 import { CommonModule, Location } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CardModel } from '../../01_models/03_business/card.model';
 import { CardService } from '../../03_business/card.service';
@@ -17,7 +17,7 @@ import { SearchFormService } from './search-form.service';
   templateUrl: './search-panel.component.html',
   imports: [CommonModule, ReactiveFormsModule, TranslateModule]
 })
-export class SearchPanelComponent implements OnInit {
+export class SearchPanelComponent implements OnInit, OnDestroy {
   @Output() cardsRetrieved = new EventEmitter<{ cards: CardModel[], searchOffers: boolean }>();
   @Input() showFull: boolean = false;
   searchForm!: FormGroup;
@@ -28,6 +28,7 @@ export class SearchPanelComponent implements OnInit {
   isLoggedIn = false;
   selectedFactions: string[] = []; // Liste des factions sélectionnées
   selectedRarity: string[] = []; // Liste des factions sélectionnées
+  private routeSubscription: any;
   constructor(
     private fb: FormBuilder,
     private loaderService: LoaderService,
@@ -42,13 +43,6 @@ export class SearchPanelComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.router.events.subscribe(event => {
-      if (event instanceof NavigationEnd) {
-        if (this.showFull) {
-          this.searchFormService.setFormState(null);
-        }
-      }
-    });
     if (this.showFull) {
       this.areFiltersOpen = true;
       this.areEffectsOpen = true;
@@ -76,67 +70,47 @@ export class SearchPanelComponent implements OnInit {
       price_range: ['']
     });
 
-    this.searchFormService.formState$.subscribe(state => {
-      if (state) {
-        this.searchForm.patchValue(state);
-        if (state['faction']) {
-          this.selectedFactions = state['faction'].split(',').map((faction: string) => faction.trim());
-        }
-        if (state['rarity']) {
-          this.selectedRarity = state['rarity'].split(',').map((rarity: string) => rarity.trim());
-        }
-        if (state['in_market'] || state['price_range']) {
-          this.areOffersOpen = true; // Ouvre les offres si in_market est défini
-        }
-        else {
-          this.areOffersOpen = false; // Ouvre les filtres si aucun critère n'est défini
-        }
-        if (state['main_effect'] || state['main_effect_2'] || state['echo_effect'] || state['exclude_effect']) {
-          this.areEffectsOpen = true; // Ouvre les offres si in_market est défini
-        }
-        else {
-          this.areEffectsOpen = false; // Ouvre les filtres si aucun critère n'est défini
-        }
-        if (state['name'] || state['rarity'] || state['faction'] || state['set'] || state['main_cost_range'] || state['recall_cost_range'] ||
-          state['forest_power_range'] || state['mountain_power_range'] || state['ocean_power_range']) {
-          this.areFiltersOpen = true; // Ouvre les offres si in_market est défini
-        } else {
-          this.areFiltersOpen = false; // Ouvre les filtres si aucun critère n'est défini
-        }
-      }
-    });
+    // Patch le formulaire avec les query params actuels dès l'init
+    const queryParams = this.route.snapshot.queryParams;
+    this.patchFormWithQueryParams(queryParams);
 
-    this.route.queryParams.subscribe((queryParams) => {
-      if (Object.keys(queryParams).length === 0) {
-        localStorage.removeItem('lastSearchUrl');
-      } else {
-        this.searchForm.patchValue({
-          name: queryParams['name'] || '',
-          rarity: queryParams['rarity'] || '',
-          faction: queryParams['faction'] || '',
-          set: queryParams['set'] || '',
-          main_effect: queryParams['main_effect'] || '',
-          main_effect_2: queryParams['main_effect_2'] || '',
-          echo_effect: queryParams['echo_effect'] || '',
-          exclude_effect: queryParams['exclude_effect'] || '',
-          main_cost_range: queryParams['main_cost_range'] || '',
-          recall_cost_range: queryParams['recall_cost_range'] || '',
-          forest_power_range: queryParams['forest_power_range'] || '',
-          mountain_power_range: queryParams['mountain_power_range'] || '',
-          ocean_power_range: queryParams['ocean_power_range'] || '',
-          in_market: queryParams['in_market'] || '',
-          price_range: queryParams['price_range'] || '',
-          no_condition: queryParams['no_condition'] || ''
-        });
-        if (queryParams['faction']) {
-          this.selectedFactions = queryParams['faction'].split(',').map((faction: string) => faction.trim());
-        }
-        if (queryParams['rarity']) {
-          this.selectedRarity = queryParams['rarity'].split(',').map((rarity: string) => rarity.trim());
-        }
-      }
+    this.routeSubscription = this.route.queryParams.subscribe((queryParams) => {
+      this.patchFormWithQueryParams(queryParams);
 
+      // Ouvre/ferme les sections selon les critères
+      this.areOffersOpen = this.showFull || !!(queryParams['in_market'] || queryParams['price_range']);
+      this.areEffectsOpen = this.showFull || !!(queryParams['main_effect'] || queryParams['main_effect_2'] || queryParams['echo_effect'] || queryParams['exclude_effect']);
+      this.areFiltersOpen = this.showFull || !!(
+        queryParams['name'] || queryParams['rarity'] || queryParams['faction'] || queryParams['set'] ||
+        queryParams['main_cost_range'] || queryParams['recall_cost_range'] ||
+        queryParams['forest_power_range'] || queryParams['mountain_power_range'] || queryParams['ocean_power_range']
+      );
     });
+  }
+
+  patchFormWithQueryParams(queryParams: any): void {
+    this.searchForm.patchValue({
+      name: queryParams['name'] || '',
+      rarity: queryParams['rarity'] || '',
+      faction: queryParams['faction'] || '',
+      set: queryParams['set'] || '',
+      main_effect: queryParams['main_effect'] || '',
+      main_effect_2: queryParams['main_effect_2'] || '',
+      echo_effect: queryParams['echo_effect'] || '',
+      exclude_effect: queryParams['exclude_effect'] || '',
+      main_cost_range: queryParams['main_cost_range'] || '',
+      recall_cost_range: queryParams['recall_cost_range'] || '',
+      forest_power_range: queryParams['forest_power_range'] || '',
+      mountain_power_range: queryParams['mountain_power_range'] || '',
+      ocean_power_range: queryParams['ocean_power_range'] || '',
+      in_market: queryParams['in_market'] || '',
+      price_range: queryParams['price_range'] || '',
+      no_condition: queryParams['no_condition'] || ''
+    }, { emitEvent: false }); // Ne pas déclencher valueChanges ici
+
+    // Synchronise les tableaux pour l'affichage
+    this.selectedFactions = (queryParams['faction'] || '').split(',').filter(Boolean);
+    this.selectedRarity = (queryParams['rarity'] || '').split(',').filter(Boolean);
   }
 
   toggleFilters(): void {
@@ -195,11 +169,30 @@ export class SearchPanelComponent implements OnInit {
 
   onSubmit() {
     const formValues = this.cleanFormValues(this.searchForm.value);
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: formValues,
+      queryParamsHandling: 'merge', // merge pour garder les autres params éventuels
+      replaceUrl: true
+    });
+    const queryParams = new URLSearchParams();
+    Object.keys(formValues).forEach(key => {
+      if (formValues[key] !== null && formValues[key] !== undefined && formValues[key] !== '') {
+        queryParams.append(key, formValues[key]);
+      }
+    });
+    const searchUrl = `/cards?${queryParams.toString()}`;
+    localStorage.setItem('lastSearchUrl', searchUrl);
     this.searchCards(formValues);
   }
 
+  ngOnDestroy() {
+    if (this.routeSubscription) {
+      this.routeSubscription.unsubscribe();
+    }
+  }
+
   searchCards(criteria: any): void {
-    const formValues = this.cleanFormValues(this.searchForm.value);
     if (criteria.in_market) {
       if (!this.isLoggedIn) {
         this.router.navigate(['/login']);
@@ -231,21 +224,6 @@ export class SearchPanelComponent implements OnInit {
     searchObservable.subscribe({
       next: (data: CardModel[]) => {
         this.cardsRetrieved.emit({ cards: data, searchOffers: criteria.in_market });
-        if (data && data.length > 0) {
-          // Construire l'URL avec les paramètres du formulaire
-          const queryParams = new URLSearchParams();
-          Object.keys(formValues).forEach(key => {
-            if (formValues[key] !== null && formValues[key] !== undefined && formValues[key] !== '') {
-              queryParams.append(key, formValues[key]);
-            }
-          });
-
-          // Sauvegarder l'URL dans le localStorage
-          const searchUrl = `/cards?${queryParams.toString()}`;
-          localStorage.setItem('lastSearchUrl', searchUrl);
-          this.location.replaceState(searchUrl);
-          this.searchFormService.setFormState(formValues);
-        }
       },
       error: (error) => {
         console.error('Error fetching card data:', error);

@@ -41,8 +41,6 @@ def discord_callback():
     user_info = user_response.json()
     discord_id = user_info.get('id')
 
-    # ⬇️ Ici tu enregistres l'ID dans ta base utilisateur
-    # (exemple fictif)
     user_id = get_jwt_identity()
     user = User.query.filter_by(id=user_id).first()
     if user:
@@ -64,3 +62,13 @@ def discord_unlink():
         return jsonify({'message': 'Discord ID unlinked successfully'}), 200
     else:
         return jsonify({'error': 'User not found'}), 404
+    
+@discord_bp.route('/assign', methods=["POST"])
+@jwt_required()
+def assign_discord_role():
+    user_id = get_jwt_identity()
+    user = User.query.filter_by(id=user_id).first()
+    if not user or not user.discord_id:
+        return jsonify({"error": "User not found or Discord ID not linked"}), 404
+    response = requests.post("http://discord-bot:8080/assign", json={"discord_id": user.discord_id})
+    return jsonify({"status": response.text})
