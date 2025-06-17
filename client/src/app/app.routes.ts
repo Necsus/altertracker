@@ -41,7 +41,6 @@ export const routes: Routes = [
   { path: 'token', component: AlteredTokenComponent, canActivate: [TokenGuard] },
   { path: 'contact', component: ContactComponent, canActivate: [TokenGuard] },
   { path: 'about', component: AboutComponent },
-  { path: 'premium', component: PremiumComponent },
   { path: 'purchase-offers', component: PurchaseOffersComponent, canActivate: [TokenGuard] },
   { path: 'collection', component: CollectionComponent, canActivate: [TokenGuard] },
   { path: 'admin', component: AdminComponent, canActivate: [AdminGuard] },
