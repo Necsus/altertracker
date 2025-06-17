@@ -43,6 +43,7 @@ services:
       - ./nginx/certbot/conf:/etc/letsencrypt
       - ./nginx/certbot/webroot:/var/www/certbot
       - ./nginx/robots.txt:/etc/nginx/static/robots.txt
+      - ./nginx/ads.txt:/etc/nginx/static/ads.txt
       - ./nginx/sitemap.xml:/etc/nginx/static/sitemap.xml
       - ./client/dist/client/browser:/usr/share/nginx/html
     depends_on:
