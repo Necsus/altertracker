@@ -16,6 +16,7 @@ import { StatsComponent } from './stats/stats.component';
 import { AlteredTokenComponent } from './user/altered-token/altered-token.component';
 import { CollectionComponent } from './user/collection/collection.component';
 import { ContactComponent } from './user/contact/contact.component';
+import { JoinDiscordComponent } from './user/contact/join-discord.component';
 import { DiscordCallbackComponent } from './user/me/discord-callback.component';
 import { MeComponent } from './user/me/me.component';
 import { PurchaseOffersComponent } from './user/purchase-offers/purchase-offers.component';
@@ -41,6 +42,7 @@ export const routes: Routes = [
   { path: 'reset-password/:token', component: ResetPasswordComponent },
   { path: 'token', component: AlteredTokenComponent, canActivate: [TokenGuard] },
   { path: 'contact', component: ContactComponent, canActivate: [TokenGuard] },
+  { path: 'join-discord', component: JoinDiscordComponent },
   { path: 'about', component: AboutComponent },
   { path: 'purchase-offers', component: PurchaseOffersComponent, canActivate: [TokenGuard] },
   { path: 'collection', component: CollectionComponent, canActivate: [TokenGuard] },
