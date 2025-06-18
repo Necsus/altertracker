@@ -57,6 +57,8 @@ services:
     restart: always
     env_file:
       - ./config/production.env
+    expose:
+      - "8080"
     networks:
       - backend
 
