@@ -137,8 +137,6 @@
         class="block text-red-300 hover:text-red-200 transition duration-300 cursor-pointer">{{
         'header.logout' | translate }}</a>
       }
-
-
       @else {
       <a routerLink="/login" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
         class="block hover:text-amber-400 transition duration-300">{{
@@ -147,12 +145,12 @@
         <a routerLink="/register" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
           class="block hover:text-amber-400 transition duration-300">{{
           'header.register' | translate }}</a>
-        <app-language-selector class="ml-auto"></app-language-selector>
       </div>
       }
       <div class="flex justify-between items-center">
         <a routerLink="/join-discord" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
-          class="block hover:text-amber-400 transition duration-300"><i class="fas fa-bug"></i></a>
+          class="block hover:text-amber-400 transition duration-300"><i
+              class="fa-brands fa-discord text-lg"></i></a>
         <app-language-selector class="ml-auto"></app-language-selector>
       </div>
 
