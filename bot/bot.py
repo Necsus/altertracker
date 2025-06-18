@@ -32,11 +32,11 @@ async def handle_send_alert(request):
     guild = bot.get_guild(int(os.getenv("GUILD_ID")))
     member = guild.get_member(int(discord_id))
 
-    if message["changement_type"] == "added":
+    if message['changement_type'] == "added":
         embed_color = discord.Color.green()
-    elif message["changement_type"] == "edited":
+    elif message['changement_type'] == "edited":
         embed_color = discord.Color.blue()
-    elif message["changement_type"] == "expired":  # "expired" ou autre
+    elif message['changement_type'] == "expired":  # "expired" ou autre
         embed_color = discord.Color.red()
     else:
         embed_color = discord.Color.default()
@@ -44,24 +44,24 @@ async def handle_send_alert(request):
     embed = discord.Embed(
         title="🔔 Un changement de prix a été appliqué à votre favoris",
         color=embed_color,
-        timestamp=datetime.strptime(message["date_effective"], "%Y-%m-%d %H:%M:%S")  # adapte le format de date si besoin
+        timestamp=datetime.strptime(message['date_effective'], "%Y-%m-%d %H:%M:%S")  # adapte le format de date si besoin
     )
 
     embed.set_author(name=f"AlterTracker", icon_url="https://altertracker.com/favicon.ico")  # si tu as un logo en url
 
     # Description de bienvenue personnalisée
-    embed.description = f"\nBonjour **{message["username"]}**, \n\n" \
+    embed.description = f"\nBonjour **{message['username']}**, \n\n" \
                         "Un changement de prix a été détecté sur une de vos cartes favorites associée à votre compte **AlterTracker**."
 
     # Champs détaillés
-    embed.add_field(name="Nom", value=message["name_card"], inline=True)
-    embed.add_field(name="Référence", value=message["reference"], inline=True)
-    embed.add_field(name="Changement", value=message["changement_type"], inline=True)
-    embed.add_field(name="Prix", value=message["price"], inline=True)
-    embed.add_field(name="Date de détection", value=message["date_effective"], inline=True)
+    embed.add_field(name="Nom", value=message['name_card'], inline=True)
+    embed.add_field(name="Référence", value=message['reference'], inline=True)
+    embed.add_field(name="Changement", value=message['changement_type'], inline=True)
+    embed.add_field(name="Prix", value=message['price'], inline=True)
+    embed.add_field(name="Date de détection", value=message['date_effective'], inline=True)
 
     # Image de la carte
-    embed.set_image(url=message["url_image_card"])
+    embed.set_image(url=message['url_image_card'])
 
     # Footer et timestamp
     embed.set_footer(text="Merci pour votre confiance • AlterTracker © 2025")
@@ -69,7 +69,7 @@ async def handle_send_alert(request):
 
     if member:
         await member.send(embed=embed)
-        await member.send(f"👉 [Cliquez ici pour voir la carte]({message["lien_vers_alerts"]})")
+        await member.send(f"👉 [Cliquez ici pour voir la carte]({message['lien_vers_alerts']})")
     return web.Response(text="Alert sent")
 
 # API pour recevoir l’appel depuis Flask
