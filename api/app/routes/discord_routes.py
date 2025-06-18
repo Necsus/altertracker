@@ -77,5 +77,5 @@ def discord_unlink():
 #     return jsonify({"status": response.text})
 
 def assign_discord_role(discord_id: str) -> str:
-    response = requests.post("http://backend:8080/assign", json={"discord_id": discord_id})
+    response = requests.post(f"{ConfigEnv.DISCORD_BOT_URI}/assign", json={"discord_id": discord_id})
     return response.text
