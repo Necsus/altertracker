@@ -1,6 +1,9 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_socketio import join_room
+import requests
+from api.app.services.card_service import is_image_url_accessible
+from app.config import ConfigEnv
 from app.models.card import Card
 from app.models.user_collection import UserCollection
 from app.models.offer_purchase import OfferPurchase
@@ -112,6 +115,20 @@ def create_room(purchase_id: int):
     offer_purchase.room_id = room.id
     offer_purchase.contacted_at = datetime.now(timezone.utc)
     db.session.commit()
+    buyer = User.query.filter_by(id=offer_purchase.id_user).first()
+    if buyer and buyer.discord_id:
+        card = Card.query.filter_by(reference=offer_purchase.reference_card).first()
+        image_url = card.imagePath if is_image_url_accessible(card.imagePath) else "/static/img/cardback.webp"
+        embed_message = {
+            "username": buyer.username,
+            "name_card": card.name,
+            "reference": card.reference,
+            "price": f"{offer_purchase.price} {offer_purchase.currency}",
+            "date_effective": card.price_updated_at.strftime("%Y-%m-%d %H:%M:%S") if card.price_updated_at else "",
+            "url_image_card": image_url,
+            "lien_vers_chat": f"https://altertracker.com/chats/{room.id}"
+        }
+        requests.post(f"{ConfigEnv.DISCORD_BOT_URI}/sendchat", json={'discord_id': buyer.discord_id, 'embed_message': embed_message })
     # socketio.emit("room_created", {
     #     "room_id": str(room.id),
     #     "user1_id": room.user1_id,

@@ -72,6 +72,42 @@ async def handle_send_alert(request):
         await member.send(f"👉 [Cliquez ici pour voir la carte]({message['lien_vers_alerts']})")
     return web.Response(text="Alert sent")
 
+async def handle_send_chat(request):
+    data = await request.json()
+    discord_id = data.get("discord_id")
+    message = data.get("embed_message")
+    guild = bot.get_guild(int(os.getenv("GUILD_ID")))
+    member = guild.get_member(int(discord_id))
+
+    embed = discord.Embed(
+        title="🔔 Votre offre d'achat suscite de l'intêret",
+        color=discord.Color.green()
+    )
+
+    embed.set_author(name=f"AlterTracker", icon_url="https://altertracker.com/favicon.ico")  # si tu as un logo en url
+
+    # Description de bienvenue personnalisée
+    embed.description = f"\nBonjour **{message['username']}**, \n\n" \
+                        "Un vendeur souhaite discuter avec vous concernant votre offre d'achat sur **AlterTracker**."
+
+    # Champs détaillés
+    embed.add_field(name="Nom", value=message['name_card'], inline=True)
+    embed.add_field(name="Référence", value=message['reference'], inline=True)
+    embed.add_field(name="Prix", value=message['price'], inline=True)
+    embed.add_field(name="Date de détection", value=message['date_effective'], inline=True)
+
+    # Image de la carte
+    embed.set_image(url=message['url_image_card'])
+
+    # Footer et timestamp
+    embed.set_footer(text="Merci pour votre confiance • AlterTracker © 2025")
+    embed.timestamp = discord.utils.utcnow()
+
+    if member:
+        await member.send(embed=embed)
+        await member.send(f"👉 [Cliquez ici pour accéder au chat]({message['lien_vers_chat']})")
+    return web.Response(text="Alert sent")
+
 # API pour recevoir l’appel depuis Flask
 async def handle_assign(request):
     data = await request.json()
@@ -84,6 +120,7 @@ async def start_web():
     app = web.Application()
     app.router.add_post("/assign", handle_assign)
     app.router.add_post("/sendalert", handle_send_alert)
+    app.router.add_post("/sendchat", handle_send_chat)
     runner = web.AppRunner(app)
     await runner.setup()
     site = web.TCPSite(runner, '0.0.0.0', 8080)
