@@ -19,9 +19,9 @@
 
     <hr class="my-6 border-gray-600" />
     <button (click)="linkDiscord()" [ngClass]="{
-      'bg-gray-500 cursor-not-allowed': discordLinked || loadingDiscord,
-      'btn-discord': !discordLinked
-    }" [disabled]="discordLinked || loadingDiscord" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all shadow-md
+      'bg-gray-500 cursor-not-allowed rounded-l-lg': discordLinked || loadingDiscord,
+      'btn-discord rounded-lg': !discordLinked
+    }" [disabled]="discordLinked || loadingDiscord" class="inline-flex items-center gap-2 px-4 py-2 font-semibold transition-all shadow-md
       text-white disabled:bg-gray-400 disabled:cursor-not-allowed">
       <ng-container *ngIf="loadingDiscord; else notLoading">
         <i class="fas fa-spinner animate-spin text-xl"></i>
@@ -34,12 +34,11 @@
       </ng-template>
     </button>
 
-    <button *ngIf="discordLinked" (click)="unlinkDiscord()" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg font-semibold transition-all shadow-md
+    <button *ngIf="discordLinked" (click)="unlinkDiscord()" class="inline-flex items-center gap-2 px-4 py-2 rounded-r-lg font-semibold transition-all shadow-md
           text-white
           bg-red-600 hover:bg-red-700
-          disabled:bg-gray-400 disabled:cursor-not-allowed ml-4">
+          disabled:bg-gray-400 disabled:cursor-not-allowed">
       <i class="fas fa-unlink text-xl"></i>
-      Unlink Discord
     </button>
 
     <hr class="my-6 border-gray-600" />

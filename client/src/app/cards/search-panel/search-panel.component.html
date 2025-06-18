@@ -1,8 +1,9 @@
 <!-- Sidebar -->
 <form [formGroup]="searchForm" (ngSubmit)="onSubmit()">
-  <div class="flex justify-between items-center mb-4" *ngIf="!showFull">
+  <div class="flex justify-between items-center mb-4 cursor-pointer select-none" *ngIf="!showFull"
+    (click)="toggleFilters()">
     <h2 class="text-xl font-bold">Filtres</h2>
-    <a (click)="toggleFilters()" class="p-2 rounded-lg hover:bg-gray-600 transition cursor-pointer">
+    <a class="p-2 rounded-lg hover:bg-gray-600 transition cursor-pointer">
       <i class="fas" [ngClass]="areFiltersOpen ? 'fa-minus' : 'fa-plus'"></i>
     </a>
   </div>
@@ -119,9 +120,10 @@
       </div>
     </div>
 
-    <div class="flex justify-between items-center mb-4" *ngIf="!showFull">
+    <div class="flex justify-between items-center mb-4 cursor-pointer select-none" (click)="toggleEffects()"
+      *ngIf="!showFull">
       <h2 class="text-xl font-bold">Effets</h2>
-      <a (click)="toggleEffects()" class="p-2 rounded-lg hover:bg-gray-600 transition cursor-pointer">
+      <a class="p-2 rounded-lg hover:bg-gray-600 transition cursor-pointer">
         <i class="fas" [ngClass]="areEffectsOpen ? 'fa-minus' : 'fa-plus'"></i>
       </a>
     </div>
@@ -161,9 +163,9 @@
       </div>
     </div>
 
-    <div class="flex justify-between items-center mb-4" *ngIf="!showFull">
-      <h2 class="text-xl font-bold">Offres</h2>
-      <a (click)="toggleOffers()" class="p-2 rounded-lg hover:bg-gray-600 transition cursor-pointer">
+    <div class="flex justify-between items-center mb-4 cursor-pointer select-none" *ngIf="!showFull">
+      <h2 class="text-xl font-bold" (click)="toggleOffers()">Offres</h2>
+      <a class="p-2 rounded-lg hover:bg-gray-600 transition cursor-pointer">
         <i class="fas" [ngClass]="areOffersOpen ? 'fa-minus' : 'fa-plus'"></i>
       </a>
     </div>
