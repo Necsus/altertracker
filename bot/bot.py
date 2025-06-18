@@ -1,9 +1,13 @@
+from datetime import datetime
 import os
 from aiohttp import web
 import discord
 from discord.ext import commands
 import asyncio
 
+from dotenv import load_dotenv
+
+load_dotenv()
 intents = discord.Intents.default()
 intents.members = True
 
@@ -21,6 +25,53 @@ async def assign_role(discord_id):
         await member.add_roles(role)
         await member.send("Tu as reçu le rôle utilisateur.")
 
+async def handle_send_alert(request):
+    data = await request.json()
+    discord_id = data.get("discord_id")
+    message = data.get("embed_message")
+    guild = bot.get_guild(int(os.getenv("GUILD_ID")))
+    member = guild.get_member(int(discord_id))
+
+    if message["changement_type"] == "added":
+        embed_color = discord.Color.green()
+    elif message["changement_type"] == "edited":
+        embed_color = discord.Color.blue()
+    elif message["changement_type"] == "expired":  # "expired" ou autre
+        embed_color = discord.Color.red()
+    else:
+        embed_color = discord.Color.default()
+
+    embed = discord.Embed(
+        title="🔔 Un changement de prix a été appliqué à votre favoris",
+        color=embed_color,
+        timestamp=datetime.strptime(message["date_effective"], "%Y-%m-%d %H:%M:%S")  # adapte le format de date si besoin
+    )
+
+    embed.set_author(name=f"AlterTracker", icon_url="https://altertracker.com/favicon.ico")  # si tu as un logo en url
+
+    # Description de bienvenue personnalisée
+    embed.description = f"\nBonjour **{message["username"]}**, \n\n" \
+                        "Un changement de prix a été détecté sur une de vos cartes favorites associée à votre compte **AlterTracker**."
+
+    # Champs détaillés
+    embed.add_field(name="Nom", value=message["name_card"], inline=True)
+    embed.add_field(name="Référence", value=message["reference"], inline=True)
+    embed.add_field(name="Changement", value=message["changement_type"], inline=True)
+    embed.add_field(name="Prix", value=message["price"], inline=True)
+    embed.add_field(name="Date de détection", value=message["date_effective"], inline=True)
+
+    # Image de la carte
+    embed.set_image(url=message["url_image_card"])
+
+    # Footer et timestamp
+    embed.set_footer(text="Merci pour votre confiance • AlterTracker © 2025")
+    embed.timestamp = discord.utils.utcnow()
+
+    if member:
+        await member.send(embed=embed)
+        await member.send(f"👉 [Cliquez ici pour voir la carte]({message["lien_vers_alerts"]})")
+    return web.Response(text="Alert sent")
+
 # API pour recevoir l’appel depuis Flask
 async def handle_assign(request):
     data = await request.json()
@@ -32,6 +83,7 @@ async def handle_assign(request):
 async def start_web():
     app = web.Application()
     app.router.add_post("/assign", handle_assign)
+    app.router.add_post("/sendalert", handle_send_alert)
     runner = web.AppRunner(app)
     await runner.setup()
     site = web.TCPSite(runner, '0.0.0.0', 8080)
@@ -40,6 +92,6 @@ async def start_web():
 # Lancer discord bot + serveur web
 async def main():
     await start_web()
-    await bot.start(os.getenv("DISCORD_TOKEN"))
+    await bot.start(os.getenv("DISCORD_BOT_TOKEN"))
 
 asyncio.run(main())

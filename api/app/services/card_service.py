@@ -166,8 +166,27 @@ def is_image_url_accessible(url: str) -> bool:
         return response.status_code == 200
     except Exception:
         return False
-
+    
 def send_user_alert(card: Card, type_changement: str):
+    alerts = get_user_alert_by_reference_card_data(card.reference)
+    for alert in alerts:
+        user = get_user_by_id_data(alert.id_user)
+        if user and user.discord_id:
+            socketio.emit('script_output', {'data': f"mail send : {card.name_en} {card.reference} {user.username}"})
+            image_url = card.imagePath if is_image_url_accessible(card.imagePath) else "/static/img/cardback.webp"
+            embed_message = {
+                "username": user.username,
+                "name_card": card.name,
+                "reference": card.reference,
+                "changement_type": type_changement,
+                "price": f"{card.price} {card.price_currency}" if card.price and card.price_currency else "N/A",
+                "date_effective": card.price_updated_at.strftime("%Y-%m-%d %H:%M:%S") if card.price_updated_at else "",
+                "url_image_card": image_url,
+                "lien_vers_alerts": f"https://altertracker.com/stats/{card.reference}"
+            }
+            requests.post("http://backend:8080/sendmessage", json={"discord_id": user.discord_id, "embed_message": embed_message})
+
+def send_user_alert_mail(card: Card, type_changement: str):
     alerts = get_user_alert_by_reference_card_data(card.reference)
     for alert in alerts:
         user = get_user_by_id_data(alert.id_user)

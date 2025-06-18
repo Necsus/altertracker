@@ -31,6 +31,7 @@ export class CardComponent {
   is_favorite: boolean = false; // État favori de la carte
   isRefreshButtonVisible: boolean = true; // État du bouton Refresh
   prettierText: boolean = true; // État de l'affichage du texte formaté
+  discordLinked: boolean = false; // État de la liaison Discord
   constructor(
     private modalService: ModalService,
     private userService: UserService,
@@ -48,7 +49,8 @@ export class CardComponent {
     this.authViewService.isLoggedIn$.subscribe(status => {
       this.isLoggedIn = status;
       if (status) {
-        this.is_favorite = !!this.card.alert?.id || !!this.card.alert_id; // Initialiser l'état favori de la carte
+        this.is_favorite = !!this.card.alert?.id || !!this.card.alert_id;
+        this.discordLinked = this.authViewService.getDiscordIdLinked() ?? false;
       }
     });
   }
@@ -145,6 +147,11 @@ export class CardComponent {
     }
   }
   toggleEmailNotifications(): void {
+    if (!this.discordLinked) {
+      this.toastService.show('Veuillez lier votre compte Discord pour activer les notifications.', 'info', 5000);
+      this.router.navigate(['/me']);
+      return;
+    }
     if (this.card.alert) {// Inverse l'état des notifications par e-mail
       this.card.alert.mail_active = !this.card.alert.mail_active;
       this.userService.put_user_alert$(this.card.alert).subscribe({

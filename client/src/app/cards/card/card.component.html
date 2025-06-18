@@ -36,13 +36,13 @@
         </div>
 
         <div class="flex items-center gap-3 w-full" *ngIf="card.alert">
-          <label for="emailToggle" class="text-sm text-gray-300 flex items-center gap-2">
-            <i class="fas fa-envelope text-blue-400"></i>
+          <label for="emailToggle" class=" flex items-center gap-2">
+            <i class="fa-brands fa-discord text-lg text-blue"></i>
           </label>
 
           <div class="relative inline-flex items-center cursor-pointer" (click)="toggleEmailNotifications()">
             <div [ngClass]="{
-            'bg-green-500': card.alert.mail_active,
+            'bg-amber-500': card.alert.mail_active,
             'bg-gray-600': !card.alert.mail_active
           }" class="w-11 h-6 rounded-full transition duration-300"></div>
             <div class="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-300"

@@ -39,7 +39,9 @@ jobs:
           export DISCORD_CLIENT_SECRET="${{ secrets.DISCORD_CLIENT_SECRET }}"
           export DISCORD_REDIRECT_URI="${{ vars.DISCORD_REDIRECT_URI }}"
           export DISCORD_BOT_TOKEN="${{ secrets.DISCORD_BOT_TOKEN }}"
-          export API_BASE_URL="${{ vars.API_BASE_URL }}"
+          export GUILD_ID="${{ vars.GUILD_ID }}"
+          export ROLE_ID="${{ vars.ROLE_ID }}"
+          export DISCORD_BOT_URI="${{ vars.DISCORD_BOT_URI }}"
 
           echo "[+] Début du déploiement à $(date)"
           cd ~/geekom/uniquetracker
@@ -66,7 +68,9 @@ jobs:
         DISCORD_CLIENT_SECRET=$DISCORD_CLIENT_SECRET
         DISCORD_REDIRECT_URI=$DISCORD_REDIRECT_URI
         DISCORD_BOT_TOKEN=$DISCORD_BOT_TOKEN
-        API_BASE_URL=$API_BASE_URL
+        GUILD_ID=$GUILD_ID
+        ROLE_ID=$ROLE_ID
+        DISCORD_BOT_URI=$DISCORD_BOT_URI
         EOL
 
           echo "[+] Execute npm install et build"

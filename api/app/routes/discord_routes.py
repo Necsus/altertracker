@@ -46,6 +46,7 @@ def discord_callback():
     if user:
         user.discord_id = discord_id
         db.session.commit()
+        assign_discord_role(discord_id)
         return jsonify({'message': 'Discord ID linked successfully'}), 200
     else:
         return jsonify({'error': 'User not found'}), 404
@@ -63,12 +64,18 @@ def discord_unlink():
     else:
         return jsonify({'error': 'User not found'}), 404
     
-@discord_bp.route('/assign', methods=["POST"])
-@jwt_required()
-def assign_discord_role():
-    user_id = get_jwt_identity()
-    user = User.query.filter_by(id=user_id).first()
-    if not user or not user.discord_id:
-        return jsonify({"error": "User not found or Discord ID not linked"}), 404
-    response = requests.post("http://discord-bot:8080/assign", json={"discord_id": user.discord_id})
-    return jsonify({"status": response.text})
+
+# @discord_bp.route('/sendmessage', methods=["POST"])
+# @jwt_required()
+# def send_message():
+#     user_id = get_jwt_identity()
+#     user = User.query.filter_by(id=user_id).first()
+#     embed_message = "test message"
+#     if not user or not user.discord_id:
+#         return jsonify({"error": "User not found or Discord ID not linked"}), 404
+#     response = requests.post("http://localhost:8080/sendmessage", json={"discord_id": user.discord_id, "embed_message": embed_message})
+#     return jsonify({"status": response.text})
+
+def assign_discord_role(discord_id: str) -> str:
+    response = requests.post("http://backend:8080/assign", json={"discord_id": discord_id})
+    return response.text
