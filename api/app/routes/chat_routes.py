@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import get_jwt_identity, jwt_required
 from flask_socketio import join_room
 import requests
-from api.app.services.card_service import is_image_url_accessible
+from app.services.card_service import is_image_url_accessible
 from app.config import ConfigEnv
 from app.models.card import Card
 from app.models.user_collection import UserCollection
