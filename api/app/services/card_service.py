@@ -186,7 +186,7 @@ def send_user_alert(card: Card, type_changement: str):
                 "url_image_card": image_url,
                 "lien_vers_alerts": f"https://altertracker.com/stats/{card.reference}"
             }
-            response = requests.post(f"{ConfigEnv.DISCORD_BOT_URI}/sendmessage", json={"discord_id": user.discord_id, "embed_message": embed_message})
+            response = requests.post(f"{ConfigEnv.DISCORD_BOT_URI}/sendalert", json={"discord_id": user.discord_id, "embed_message": embed_message})
             print(response)
         else:
             if user:
