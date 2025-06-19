@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Import Alter Collection</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <div class="container">
+    <h1>Import Collection</h1>
+
+    <div id="step1">
+      <p>1. Connecte-toi sur <strong>altertracker.com</strong></p>
+      <button onclick="handleGo()">Go</button>
+    </div>
+
+    <div id="step2" class="hidden">
+      <p>2. Connecte-toi sur <strong>altered.gg</strong></p>
+      <button onclick="handleImport()">Commencer l'import</button>
+    </div>
+
+    <div id="step3" class="hidden">
+      <p>✅ Importation réussie !</p>
+      <a href="https://altertracker.com/ma-collection" target="_blank">Voir ma collection</a>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+
+</html>

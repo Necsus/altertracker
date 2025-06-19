@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "AlterTracker Collection Importer",
+  "version": "1.0",
+  "description": "Importe ta collection depuis altered.gg vers altertracker.com",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "host_permissions": [
+    "https://*.altered.gg/*",
+    "https://*.altertracker.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Importer collection"
+  },
+  "icons": {
+    "16": "icons/icon.png",
+    "48": "icons/icon.png",
+    "128": "icons/icon.png"
+  }
+}

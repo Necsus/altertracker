@@ -1,0 +1,35 @@
+{
+  "action": {
+    "default_icon": {
+      "128": "icon.png",
+      "16": "icon.png",
+      "48": "icon.png"
+    },
+    "default_popup": "popup.html"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "{df474bb2-92a7-470e-8194-ce02948aa945}",
+      "strict_min_version": "109.0"
+    }
+  },
+  "description": "Extract your cards collection from Altered TCG website, using the official API, in the following format: Quantity ID.",
+  "host_permissions": [
+    "https://*.altered.gg/*"
+  ],
+  "icons": {
+    "128": "icon.png",
+    "16": "icon.png",
+    "48": "icon.png"
+  },
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA2dCrEFGupxZJkmme4B8gXL+b3mwz0tuUW/IPcsjezXMFuRUEndZSytxwSFUGQdEs2O5Y/GQaXxM0TJ/eKRqoPDor1VO/jz37YjFtqTW/dT6+VS9isQYaRP89A0R2mW5SgtlaHSQwvaTHkGsOc/OwcjlpALic/MiBv2PzB9STyFyM9nG7NP1M259tEKcbQpl5xW5EsXrUVhUgG0/oJufNt/LYou/v1hk09Wkokcf3ZNQCIroluwv2lQIHoCPn9UvZ2X8YVHheKRCP5O4zCg/vvdhCSW+pAQh8pY91WqVg5jJeMqh7uAKnT6hDfZgCYgvS65+jfJcoHa03HR9j7HJu1QIDAQAB",
+  "manifest_version": 3,
+  "name": "Altered - Collection Extractor",
+  "permissions": [
+    "scripting",
+    "activeTab",
+    "tabs"
+  ],
+  "update_url": "https://clients2.google.com/service/update2/crx",
+  "version": "4.1"
+}
