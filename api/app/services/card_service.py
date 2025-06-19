@@ -172,8 +172,9 @@ def send_user_alert(card: Card, type_changement: str):
     alerts = get_user_alert_by_reference_card_data(card.reference)
     for alert in alerts:
         user = get_user_by_id_data(alert.id_user)
-        if user and user.discord_id:
-            socketio.emit('script_output', {'data': f"mail send : {card.name_en} {card.reference} {user.username}"})
+        if user and user.discord_id: 
+            socketio.emit('script_output', {'data': f"discord alert send : {card.name_en} {card.reference} {user.username}"})
+            print(f"discord alert send : {card.name_en} {card.reference} {user.username}")
             image_url = card.imagePath if is_image_url_accessible(card.imagePath) else "/static/img/cardback.webp"
             embed_message = {
                 "username": user.username,
@@ -185,7 +186,8 @@ def send_user_alert(card: Card, type_changement: str):
                 "url_image_card": image_url,
                 "lien_vers_alerts": f"https://altertracker.com/stats/{card.reference}"
             }
-            requests.post(f"{ConfigEnv.DISCORD_BOT_URI}/sendmessage", json={"discord_id": user.discord_id, "embed_message": embed_message})
+            response = requests.post(f"{ConfigEnv.DISCORD_BOT_URI}/sendalert", json={"discord_id": user.discord_id, "embed_message": embed_message})
+            print(response)
         else:
             if user:
                 send_user_alert_mail(card, type_changement, user)
