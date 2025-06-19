@@ -15,7 +15,7 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 
 @bot.event
 async def on_ready():
-    print(f"Bot prêt : {bot.user}")
+    print(f"Bot prêt : {bot.user}", flush=True)
 
 async def assign_role(discord_id):
     guild = bot.get_guild(int(os.getenv("GUILD_ID")))
@@ -30,83 +30,107 @@ async def handle_send_alert(request):
     discord_id = data.get("discord_id")
     message = data.get("embed_message")
     guild = bot.get_guild(int(os.getenv("GUILD_ID")))
-    member = guild.get_member(int(discord_id))
 
-    if message['changement_type'] == "added":
-        embed_color = discord.Color.green()
-    elif message['changement_type'] == "edited":
-        embed_color = discord.Color.blue()
-    elif message['changement_type'] == "expired":  # "expired" ou autre
-        embed_color = discord.Color.red()
-    else:
-        embed_color = discord.Color.default()
+    if not guild:
+        print("[ERROR] Guild non trouvée", flush=True)
+        return web.Response(status=500, text="Guild non trouvée")
 
-    embed = discord.Embed(
-        title="🔔 Un changement de prix a été appliqué à votre favoris",
-        color=embed_color,
-        timestamp=datetime.strptime(message['date_effective'], "%Y-%m-%d %H:%M:%S")  # adapte le format de date si besoin
-    )
-
-    embed.set_author(name=f"AlterTracker", icon_url="https://altertracker.com/favicon.ico")  # si tu as un logo en url
-
-    # Description de bienvenue personnalisée
-    embed.description = f"\nBonjour **{message['username']}**, \n\n" \
-                        "Un changement de prix a été détecté sur une de vos cartes favorites associée à votre compte **AlterTracker**."
-
-    # Champs détaillés
-    embed.add_field(name="Nom", value=message['name_card'], inline=True)
-    embed.add_field(name="Référence", value=message['reference'], inline=True)
-    embed.add_field(name="Changement", value=message['changement_type'], inline=True)
-    embed.add_field(name="Prix", value=message['price'], inline=True)
-    embed.add_field(name="Date de détection", value=message['date_effective'], inline=True)
-
-    # Image de la carte
-    embed.set_image(url=message['url_image_card'])
-
-    # Footer et timestamp
-    embed.set_footer(text="Merci pour votre confiance • AlterTracker © 2025")
-    embed.timestamp = discord.utils.utcnow()
-
-    if member:
-        await member.send(embed=embed)
-        await member.send(f"👉 [Cliquez ici pour voir la carte]({message['lien_vers_alerts']})")
-    return web.Response(text="Alert sent")
+    try:
+        member = await guild.fetch_member(int(discord_id))  # ⬅️ force un appel API
+        print(f"[INFO] Membre {member.display_name} récupéré", flush=True)
+        
+        if message['changement_type'] == "added":
+            embed_color = discord.Color.green()
+        elif message['changement_type'] == "edited":
+            embed_color = discord.Color.blue()
+        elif message['changement_type'] == "expired":  # "expired" ou autre
+            embed_color = discord.Color.red()
+        else:
+            embed_color = discord.Color.default()
+    
+        embed = discord.Embed(
+            title="🔔 Un changement de prix a été appliqué à votre favoris",
+            color=embed_color,
+            timestamp=datetime.strptime(message['date_effective'], "%Y-%m-%d %H:%M:%S")  # adapte le format de date si besoin
+        )
+    
+        embed.set_author(name=f"AlterTracker", icon_url="https://altertracker.com/favicon.ico")  # si tu as un logo en url
+    
+        # Description de bienvenue personnalisée
+        embed.description = f"\nBonjour **{message['username']}**, \n\n" \
+                            "Un changement de prix a été détecté sur une de vos cartes favorites associée à votre compte **AlterTracker**."
+    
+        # Champs détaillés
+        embed.add_field(name="Nom", value=message['name_card'], inline=True)
+        embed.add_field(name="Référence", value=message['reference'], inline=True)
+        embed.add_field(name="Changement", value=message['changement_type'], inline=True)
+        embed.add_field(name="Prix", value=message['price'], inline=True)
+        embed.add_field(name="Date de détection", value=message['date_effective'], inline=True)
+    
+        # Image de la carte
+        embed.set_image(url=message['url_image_card'])
+    
+        # Footer et timestamp
+        embed.set_footer(text="Merci pour votre confiance • AlterTracker © 2025")
+        embed.timestamp = discord.utils.utcnow()
+    
+        if member:
+            await member.send(embed=embed)
+            await member.send(f"👉 [Cliquez ici pour voir la carte]({message['lien_vers_alerts']})")
+        return web.Response(text="Alert sent")
+    except discord.NotFound:
+        return web.Response(status=404, text="Membre introuvable")
+    except Exception as e:
+        print(f"[ERROR] Erreur fetch_member : {e}", flush=True)
+        return web.Response(status=500, text="Erreur lors de la récupération du membre")
 
 async def handle_send_chat(request):
     data = await request.json()
     discord_id = data.get("discord_id")
     message = data.get("embed_message")
     guild = bot.get_guild(int(os.getenv("GUILD_ID")))
-    member = guild.get_member(int(discord_id))
 
-    embed = discord.Embed(
-        title="🔔 Votre offre d'achat suscite de l'intêret",
-        color=discord.Color.green()
-    )
+    if not guild:
+        print("[ERROR] Guild non trouvée", flush=True)
+        return web.Response(status=500, text="Guild non trouvée")
 
-    embed.set_author(name=f"AlterTracker", icon_url="https://altertracker.com/favicon.ico")  # si tu as un logo en url
+    try:
+        member = await guild.fetch_member(int(discord_id))  # ⬅️ force un appel API
+        print(f"[INFO] Membre {member.display_name} récupéré", flush=True)
+        embed = discord.Embed(
+            title="🔔 Votre offre d'achat suscite de l'intêret",
+            color=discord.Color.green()
+        )
+    
+        embed.set_author(name=f"AlterTracker", icon_url="https://altertracker.com/favicon.ico")  # si tu as un logo en url
+    
+        # Description de bienvenue personnalisée
+        embed.description = f"\nBonjour **{message['username']}**, \n\n" \
+                            "Un vendeur souhaite discuter avec vous concernant votre offre d'achat sur **AlterTracker**."
+    
+        # Champs détaillés
+        embed.add_field(name="Nom", value=message['name_card'], inline=True)
+        embed.add_field(name="Référence", value=message['reference'], inline=True)
+        embed.add_field(name="Prix", value=message['price'], inline=True)
+        embed.add_field(name="Date de détection", value=message['date_effective'], inline=True)
+    
+        # Image de la carte
+        embed.set_image(url=message['url_image_card'])
+    
+        # Footer et timestamp
+        embed.set_footer(text="Merci pour votre confiance • AlterTracker © 2025")
+        embed.timestamp = discord.utils.utcnow()
+    
+        if member:
+            await member.send(embed=embed)
+            await member.send(f"👉 [Cliquez ici pour accéder au chat]({message['lien_vers_chat']})")
+        return web.Response(text="Alert sent")
+    except discord.NotFound:
+        return web.Response(status=404, text="Membre introuvable")
+    except Exception as e:
+        print(f"[ERROR] Erreur fetch_member : {e}", flush=True)
+        return web.Response(status=500, text="Erreur lors de la récupération du membre")
 
-    # Description de bienvenue personnalisée
-    embed.description = f"\nBonjour **{message['username']}**, \n\n" \
-                        "Un vendeur souhaite discuter avec vous concernant votre offre d'achat sur **AlterTracker**."
-
-    # Champs détaillés
-    embed.add_field(name="Nom", value=message['name_card'], inline=True)
-    embed.add_field(name="Référence", value=message['reference'], inline=True)
-    embed.add_field(name="Prix", value=message['price'], inline=True)
-    embed.add_field(name="Date de détection", value=message['date_effective'], inline=True)
-
-    # Image de la carte
-    embed.set_image(url=message['url_image_card'])
-
-    # Footer et timestamp
-    embed.set_footer(text="Merci pour votre confiance • AlterTracker © 2025")
-    embed.timestamp = discord.utils.utcnow()
-
-    if member:
-        await member.send(embed=embed)
-        await member.send(f"👉 [Cliquez ici pour accéder au chat]({message['lien_vers_chat']})")
-    return web.Response(text="Alert sent")
 
 # API pour recevoir l’appel depuis Flask
 async def handle_assign(request):
