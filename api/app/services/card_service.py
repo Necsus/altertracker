@@ -173,7 +173,8 @@ def send_user_alert(card: Card, type_changement: str):
     for alert in alerts:
         user = get_user_by_id_data(alert.id_user)
         if user and user.discord_id: 
-            socketio.emit('script_output', {'data': f"mail send : {card.name_en} {card.reference} {user.username}"})
+            socketio.emit('script_output', {'data': f"discord alert send : {card.name_en} {card.reference} {user.username}"})
+            print(f"discord alert send : {card.name_en} {card.reference} {user.username}")
             image_url = card.imagePath if is_image_url_accessible(card.imagePath) else "/static/img/cardback.webp"
             embed_message = {
                 "username": user.username,
