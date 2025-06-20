@@ -1,17 +1,24 @@
 body {
   background-color: #1f2937;
-  /* bg-gray-800 */
   color: #ffffff;
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 16px;
   width: 300px;
+  height: 200px;
+  /* Fixe la hauteur de la popup */
+  box-sizing: border-box;
+  overflow: hidden;
+  /* Empêche le scroll */
 }
 
 .container {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  width: 100%;
+  height: 100%;
+  position: relative;
 }
 
 button {
@@ -31,10 +38,65 @@ button:hover {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 a {
   color: #fbbf24;
   text-decoration: underline;
+}
+
+/* Spinner et overlay loading */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(30, 41, 59, 0.85);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  border-radius: 1rem;
+}
+
+.spinner {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #f59e42;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  color: #f59e42;
+  font-weight: bold;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+}
+
+.error-message {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin: 12px 0;
+  text-align: center;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(185, 28, 28, 0.07);
 }

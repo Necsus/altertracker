@@ -14,29 +14,32 @@
     <div id="step1">
       <p>1. Connecte-toi sur <strong>altertracker.com</strong></p>
       <button id="go-altertracker">Go</button>
-      <div id="wait-login-altertracker" class="hidden">
-        <span class="text-amber-400">En attente de connexion...</span>
-        <button id="validate-altertracker" class="amber-btn mt-2">J'ai fini de me connecter</button>
-      </div>
     </div>
 
     <div id="step2" class="hidden">
       <p>2. Connecte-toi sur <strong>altered.gg</strong></p>
       <button id="go-altered">Go</button>
-      <div id="wait-login-altered" class="hidden">
-        <span class="text-amber-400">En attente de connexion...</span>
-        <button id="validate-altered" class="amber-btn mt-2">J'ai fini de me connecter</button>
-      </div>
-      <div id="import-section" class="hidden">
-        <button id="start-import" class="amber-btn">Commencer l'import</button>
-        <div id="loader" class="loader hidden mt-2"><span class="text-amber-400">Import en cours...</span></div>
-      </div>
+    </div>
+
+    <div id="step3" class="hidden">
+      <p>3. Tout est prêt vous pouvez commencer l'importation</p>
+      <button id="start-import" class="amber-btn">Go</button>
     </div>
 
     <div id="success" class="hidden">
       <p>✅ Importation réussie !</p>
-      <a id="collection-link" href="https://altertracker.com/ma-collection" target="_blank" class="amber-btn">Voir ma
+      <a id="collection-link" href="https://altertracker.com/collection" target="_blank" class="amber-btn">Voir ma
         collection</a>
+    </div>
+
+    <div id="error" class="hidden error-message">
+      <span>😢 Oups, une erreur est survenue lors de l'import.<br>
+        Merci de vérifier ta connexion et de réessayer !</span>
+    </div>
+
+    <div id="loading" class="hidden loading-overlay">
+      <div class="spinner"></div>
+      <span class="loading-text">Loading...</span>
     </div>
   </div>
   <script src="popup.js"></script>

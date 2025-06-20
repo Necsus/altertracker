@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "AlterTracker Collection Importer",
+  "name": "AlterTracker Collection",
   "version": "1.0",
   "description": "Importe ta collection depuis altered.gg vers altertracker.com",
   "permissions": [
@@ -12,6 +12,9 @@
     "https://*.altered.gg/*",
     "https://*.altertracker.com/*"
   ],
+  "background": {
+    "service_worker": "background.js"
+  },
   "action": {
     "default_popup": "popup.html",
     "default_title": "Importer collection"
