@@ -10,6 +10,7 @@ import { UserService } from '../03_business/user.service';
 import { AuthViewService } from '../authentication/auth-view.service';
 import { CardImgComponent } from '../cards/card/card-img.component';
 import { LocalizedValuePipe } from '../shared/pipes/localized-value.pipe';
+import { ToDatePipe } from '../shared/pipes/to-date.pipe';
 import { ModalService } from '../shared/services/modal/modal.service';
 import { ToastService } from '../shared/services/toast/toast.service';
 
@@ -17,7 +18,7 @@ import { ToastService } from '../shared/services/toast/toast.service';
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
-  imports: [CommonModule, RouterModule, TranslateModule, LocalizedValuePipe]
+  imports: [CommonModule, RouterModule, TranslateModule, LocalizedValuePipe, ToDatePipe]
 })
 export class HomeComponent implements OnInit {
   currentLanguage: string = 'fr';

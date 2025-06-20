@@ -100,10 +100,10 @@
       <ul class="space-y-2 text-sm text-gray-300">
         <li *ngFor="let offer of offers" class="flex justify-between border-b border-gray-700 pb-1">
           <span class="text-gray-400">
-            {{ offer.created_at | date:'dd/MM/yyyy HH:mm' }}
+            {{ offer.created_at | toDate | date:'dd/MM/yyyy HH:mm' }}
           </span>
           <span class="text-gray-400" *ngIf="offer.is_deleted">
-            {{ offer.deleted_at | date:'dd/MM/yyyy HH:mm' }}
+            {{ offer.deleted_at | toDate | date:'dd/MM/yyyy HH:mm' }}
           </span>
           <span [ngClass]="{
             'text-green-400': !offer.is_deleted,
@@ -137,7 +137,7 @@
           <!-- Username and Date -->
           <div class="flex flex-col">
             <!-- <span class="font-medium">{{ purchase.username }}</span> -->
-            <span class="text-gray-500 text-xs">{{ purchase.created_at | date:'dd/MM/yyyy HH:mm' }}</span>
+            <span class="text-gray-500 text-xs">{{ purchase.created_at | toDate | date:'dd/MM/yyyy HH:mm' }}</span>
           </div>
           <!-- Button -->
           <div class="flex justify-center items-center mx-4" *ngIf="isLoggedIn && is_mine">

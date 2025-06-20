@@ -17,6 +17,7 @@ import { UserService } from '../03_business/user.service';
 import { AuthViewService } from '../authentication/auth-view.service';
 import { IconParserPipe } from '../shared/pipes/icon-parser.pipe';
 import { LocalizedValuePipe } from '../shared/pipes/localized-value.pipe';
+import { ToDatePipe } from '../shared/pipes/to-date.pipe';
 import { PurchaseOfferComponent } from '../shared/purchase-offer/purchase-offer.component';
 import { ModalService } from '../shared/services/modal/modal.service';
 import { ToastService } from '../shared/services/toast/toast.service';
@@ -25,7 +26,15 @@ import { ToastService } from '../shared/services/toast/toast.service';
   selector: 'app-stats',
   templateUrl: './stats.component.html',
   styleUrls: ['./stats.component.css'],
-  imports: [CommonModule, ReactiveFormsModule, BaseChartDirective, LocalizedValuePipe, TranslateModule, IconParserPipe]
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    BaseChartDirective,
+    LocalizedValuePipe,
+    TranslateModule,
+    IconParserPipe,
+    ToDatePipe
+  ]
 })
 export class StatsComponent implements OnInit {
   currentLanguage: string = 'fr';
