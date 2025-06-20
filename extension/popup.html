@@ -13,20 +13,32 @@
 
     <div id="step1">
       <p>1. Connecte-toi sur <strong>altertracker.com</strong></p>
-      <button onclick="handleGo()">Go</button>
+      <button id="go-altertracker">Go</button>
+      <div id="wait-login-altertracker" class="hidden">
+        <span class="text-amber-400">En attente de connexion...</span>
+        <button id="validate-altertracker" class="amber-btn mt-2">J'ai fini de me connecter</button>
+      </div>
     </div>
 
     <div id="step2" class="hidden">
       <p>2. Connecte-toi sur <strong>altered.gg</strong></p>
-      <button onclick="handleImport()">Commencer l'import</button>
+      <button id="go-altered">Go</button>
+      <div id="wait-login-altered" class="hidden">
+        <span class="text-amber-400">En attente de connexion...</span>
+        <button id="validate-altered" class="amber-btn mt-2">J'ai fini de me connecter</button>
+      </div>
+      <div id="import-section" class="hidden">
+        <button id="start-import" class="amber-btn">Commencer l'import</button>
+        <div id="loader" class="loader hidden mt-2"><span class="text-amber-400">Import en cours...</span></div>
+      </div>
     </div>
 
-    <div id="step3" class="hidden">
+    <div id="success" class="hidden">
       <p>✅ Importation réussie !</p>
-      <a href="https://altertracker.com/ma-collection" target="_blank">Voir ma collection</a>
+      <a id="collection-link" href="https://altertracker.com/ma-collection" target="_blank" class="amber-btn">Voir ma
+        collection</a>
     </div>
   </div>
-
   <script src="popup.js"></script>
 </body>
 
