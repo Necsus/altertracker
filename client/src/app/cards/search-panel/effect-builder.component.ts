@@ -65,7 +65,7 @@ export class EffectBuilderComponent implements OnInit {
     const values = [
       this.selectedTrigger?.value ?? '[]',
       this.selectedCondition?.value ?? '[]',
-      this.selectedEffect?.value ?? '[]'
+      this.selectedEffect?.value ?? ''
     ];
 
     let result = values[0] || '';
