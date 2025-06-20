@@ -46,7 +46,6 @@ const getAccessTokenFromAPI = async () => {
 };
 
 const getCollection = async (token, page = 1, collection = []) => {
-  console.log(`https://api.altered.gg/cards?cardType%5B%5D=CHARACTER&collection=true&rarity%5B%5D=UNIQUE&itemsPerPage=36&page=${page}&locale=fr-fr`);
   const postRes = await fetch(`https://api.altered.gg/cards?cardType%5B%5D=CHARACTER&collection=true&rarity%5B%5D=UNIQUE&itemsPerPage=36&page=${page}&locale=fr-fr`, {
     method: 'GET',
     headers: {
@@ -77,7 +76,6 @@ document.addEventListener('DOMContentLoaded', () => {
           func: () => localStorage.getItem('access_token')
         }, (results) => {
           const alterTrackerToken = results[0].result;
-          console.log(alterTrackerToken);
           if (alterTrackerToken) {
             chrome.runtime.sendMessage({ action: 'setAlterTrackerToken', token: alterTrackerToken }, () => {
               showStep('step2');
@@ -112,7 +110,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('start-import').onclick = async () => {
     showStep('loading');
     chrome.runtime.sendMessage({ action: 'getAlteredToken' }, async (response) => {
-      console.log(response.token);
       const collection = await getCollection(response.token);
       // Stocke la collection dans le background
       chrome.runtime.sendMessage({ action: 'setCollection', collection }, () => {
