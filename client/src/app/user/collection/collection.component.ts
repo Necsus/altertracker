@@ -11,7 +11,6 @@ import { CardService } from '../../03_business/card.service';
 import { UserService } from '../../03_business/user.service';
 import { AuthViewService } from '../../authentication/auth-view.service';
 import { CardComponent } from '../../cards/card/card.component';
-import { withLoader } from '../../shared/services/loader/loader.operator';
 import { LoaderService } from '../../shared/services/loader/loader.service';
 
 @Component({
@@ -76,57 +75,57 @@ export class CollectionComponent implements OnInit, OnDestroy {
     });
   }
 
-  importCollection(): void {
-    const alteredToken = localStorage.getItem('altered_token');
-    if (!alteredToken) {
-      this.router.navigate(['/token'], { queryParams: { callback: 'collection' } });
-      return;
-    }
-    let page = 1;
-    const allCards: string[] = []; // Stocker toutes les références de cartes
+  // importCollection(): void {
+  //   const alteredToken = localStorage.getItem('altered_token');
+  //   if (!alteredToken) {
+  //     this.router.navigate(['/token'], { queryParams: { callback: 'collection' } });
+  //     return;
+  //   }
+  //   let page = 1;
+  //   const allCards: string[] = []; // Stocker toutes les références de cartes
 
-    const fetchPage = () => {
-      this.alteredService.getCollection$(alteredToken, page)
-        .pipe(withLoader(this.loaderService))
-        .subscribe({
-          next: (response) => {
-            // Ajouter les références de cartes à la liste
-            allCards.push(...response['hydra:member'].map((card: any) => card['reference']));
+  //   const fetchPage = () => {
+  //     this.alteredService.getCollection$(alteredToken, page)
+  //       .pipe(withLoader(this.loaderService))
+  //       .subscribe({
+  //         next: (response) => {
+  //           // Ajouter les références de cartes à la liste
+  //           allCards.push(...response['hydra:member'].map((card: any) => card['reference']));
 
-            // Vérifier s'il reste des éléments à récupérer
-            if (response['hydra:totalItems'] > allCards.length) {
-              page++; // Passer à la page suivante
-              fetchPage(); // Récursivité pour récupérer la page suivante
-            } else {
-              const request = {
-                collection: allCards
-              };
-              localStorage.removeItem('altered_token'); // Supprimer le token après l'importation
-              localStorage.removeItem('cgu_altered_token'); // Supprimer le token CGU après l'importation
-              this.userService.post_user_collection$(request).subscribe({
-                next: (response: any) => {
-                  this.cards = response; // Mettre à jour les cartes affichées
-                },
-                complete: () => {
-                  this.addCardsToQueue(this.cards); // Ajouter les cartes à la file d'attente
-                }
-              });
-            }
-          },
-          error: (error) => {
-            if (error.message === 'Token invalide ou expiré. Veuillez le réinsérer.') {
-              console.error('Erreur 401 détectée : Redirection vers la page /token.');
-              localStorage.removeItem('altered_token');
-              localStorage.removeItem('cgu_altered_token');
-              this.router.navigate(['/token'], { queryParams: { callback: 'collection' } });
-            }
-          }
-        });
-    };
+  //           // Vérifier s'il reste des éléments à récupérer
+  //           if (response['hydra:totalItems'] > allCards.length) {
+  //             page++; // Passer à la page suivante
+  //             fetchPage(); // Récursivité pour récupérer la page suivante
+  //           } else {
+  //             const request = {
+  //               collection: allCards
+  //             };
+  //             localStorage.removeItem('altered_token'); // Supprimer le token après l'importation
+  //             localStorage.removeItem('cgu_altered_token'); // Supprimer le token CGU après l'importation
+  //             this.userService.post_user_collection$(request).subscribe({
+  //               next: (response: any) => {
+  //                 this.cards = response; // Mettre à jour les cartes affichées
+  //               },
+  //               complete: () => {
+  //                 this.addCardsToQueue(this.cards); // Ajouter les cartes à la file d'attente
+  //               }
+  //             });
+  //           }
+  //         },
+  //         error: (error) => {
+  //           if (error.message === 'Token invalide ou expiré. Veuillez le réinsérer.') {
+  //             console.error('Erreur 401 détectée : Redirection vers la page /token.');
+  //             localStorage.removeItem('altered_token');
+  //             localStorage.removeItem('cgu_altered_token');
+  //             this.router.navigate(['/token'], { queryParams: { callback: 'collection' } });
+  //           }
+  //         }
+  //       });
+  //   };
 
-    // Démarrer la récupération avec la première page
-    fetchPage();
-  }
+  //   // Démarrer la récupération avec la première page
+  //   fetchPage();
+  // }
 
   addCardsToQueue(collections: UserCollectionModel[]): void {
     collections.map((collection) => collection.card.isProcessing = true);
@@ -199,9 +198,9 @@ export class CollectionComponent implements OnInit, OnDestroy {
     }
   }
 
-  private handleTokenError(error: any): void {
-    console.error('Erreur 401 détectée : Redirection vers la page /token.');
-    localStorage.removeItem('altered_token');
-    localStorage.removeItem('cgu_altered_token');
-  }
+  // private handleTokenError(error: any): void {
+  //   console.error('Erreur 401 détectée : Redirection vers la page /token.');
+  //   localStorage.removeItem('altered_token');
+  //   localStorage.removeItem('cgu_altered_token');
+  // }
 }
