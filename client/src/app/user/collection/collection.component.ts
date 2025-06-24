@@ -168,7 +168,7 @@ export class CollectionComponent implements OnInit, OnDestroy {
           }),
           catchError((error) => {
             if (error.message === 'Token invalide ou expiré. Veuillez le réinsérer.') {
-              this.handleTokenError(error);
+              // this.handleTokenError(error);
               return of();
             }
             return throwError(() => error);
