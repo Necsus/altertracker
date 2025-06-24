@@ -13,7 +13,6 @@ import { HomeComponent } from './home/home.component';
 import { NotFoundComponent } from './shared/error-pages/not-found/not-found.component';
 import { UnauthorizedComponent } from './shared/error-pages/unauthorized/unauthorized.component';
 import { StatsComponent } from './stats/stats.component';
-import { AlteredTokenComponent } from './user/altered-token/altered-token.component';
 import { CollectionComponent } from './user/collection/collection.component';
 import { ContactComponent } from './user/contact/contact.component';
 import { JoinDiscordComponent } from './user/contact/join-discord.component';
@@ -40,7 +39,7 @@ export const routes: Routes = [
   { path: 'validate-email/:token', component: ValidateEmailComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password/:token', component: ResetPasswordComponent },
-  { path: 'token', component: AlteredTokenComponent, canActivate: [TokenGuard] },
+  // { path: 'token', component: AlteredTokenComponent, canActivate: [TokenGuard] },
   { path: 'contact', component: ContactComponent, canActivate: [TokenGuard] },
   { path: 'join-discord', component: JoinDiscordComponent },
   { path: 'about', component: AboutComponent },
