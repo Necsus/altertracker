@@ -198,9 +198,9 @@ export class CollectionComponent implements OnInit, OnDestroy {
     }
   }
 
-  private handleTokenError(error: any): void {
-    console.error('Erreur 401 détectée : Redirection vers la page /token.');
-    localStorage.removeItem('altered_token');
-    localStorage.removeItem('cgu_altered_token');
-  }
+  // private handleTokenError(error: any): void {
+  //   console.error('Erreur 401 détectée : Redirection vers la page /token.');
+  //   localStorage.removeItem('altered_token');
+  //   localStorage.removeItem('cgu_altered_token');
+  // }
 }
