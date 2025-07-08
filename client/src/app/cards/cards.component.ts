@@ -34,6 +34,7 @@ export class CardsComponent implements OnInit, OnDestroy {
   allGroupsOpen: boolean = false;
   remainingCards: CardModel[] = []; // Cartes restantes à traiter
   queueProcessing = false;
+  showAds = false;
   private requestQueue: OfferLiveMarketRequest[] = [];
   private progressSubject = new BehaviorSubject<number>(0);
   progress$ = this.progressSubject.asObservable();
@@ -52,6 +53,7 @@ export class CardsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.showAds = localStorage.getItem('cookieConsent') === 'accepted';
     this.isMobile = window.innerWidth < 640;
     this.authViewService.isLoggedIn$.subscribe(status => {
       this.isLoggedIn = status;

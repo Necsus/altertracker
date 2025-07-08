@@ -64,14 +64,16 @@
       <div *ngIf="!isMobile && (!cards || cards.length <= 0)"
         class="bg-gradient-to-b from-gray-800 to-gray-900 p-4 transition-transform duration-300">
         <app-search-panel (cardsRetrieved)="onCardsRetrieved($event)" [showFull]="true"></app-search-panel>
-        <script async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4001144292832515"
-          crossorigin="anonymous"></script>
-        <ins class="adsbygoogle" style="display:block" data-ad-format="fluid" data-ad-layout-key="-ea+6u+8c-jk+8f"
-          data-ad-client="ca-pub-4001144292832515" data-ad-slot="5520714519"></ins>
-        <script>
-          (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
+        <ng-container *ngIf="showAds">
+          <script async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4001144292832515"
+            crossorigin="anonymous"></script>
+          <ins class="adsbygoogle" style="display:block" data-ad-format="fluid" data-ad-layout-key="-ea+6u+8c-jk+8f"
+            data-ad-client="ca-pub-4001144292832515" data-ad-slot="5520714519"></ins>
+          <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+          </script>
+        </ng-container>
       </div>
       <p class="text-center text-gray-500 mb-8" *ngIf="!cards || cards.length <= 0"> {{
         'cards.subtitle_1' | translate }}&nbsp;<strong>{{nbCards}}</strong>&nbsp;{{
@@ -88,7 +90,7 @@
           <app-card-group [groupName]="group.key" [cards]="group.value" [autoOpen]="group.key === autoOpenGroup"
             [allGroupsOpen]="allGroupsOpen" (visibleCardsChange)="onVisibleCardsChange($event)">
           </app-card-group>
-          <ng-container *ngIf="i % 2 === 1">
+          <ng-container *ngIf="showAds && i % 2 === 1">
             <script async
               src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4001144292832515"
               crossorigin="anonymous"></script>

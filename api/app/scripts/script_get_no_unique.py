@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 import time
 from app.scripts import card_routine
 from app.models.card import Card

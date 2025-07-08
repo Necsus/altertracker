@@ -13,23 +13,34 @@ export class CookiesComponent implements OnInit {
 
   ngOnInit(): void {
     this.showCookieConsent = !localStorage.getItem('cookieConsent');
+    if (this.showCookieConsent) {
+      this.loadAdsenseScript();
+      setTimeout(() => {
+        // Recharge les ads après chargement du script
+        const ads = document.getElementsByClassName('adsbygoogle');
+        for (let i = 0; i < ads.length; i++) {
+          try {
+            // @ts-ignore
+            (window['adsbygoogle'] = window['adsbygoogle'] || []).push({});
+          } catch (e) { }
+        }
+      }, 500);
+    }
   }
   acceptCookies(): void {
     localStorage.setItem('cookieConsent', 'accepted');
     this.showCookieConsent = false;
   }
 
-  // loadAnalytics() {
-  //   const script = document.createElement('script');
-  //   script.src = 'https://www.googletagmanager.com/gtag/js?id=UA-XXXXXXX-X';
-  //   script.async = true;
-  //   document.head.appendChild(script);
-
-  //   window['dataLayer'] = window['dataLayer'] || [];
-  //   function gtag() { window['dataLayer'].push(arguments); }
-  //   gtag('js', new Date());
-  //   gtag('config', 'UA-XXXXXXX-X');
-  // }
+  loadAdsenseScript() {
+    if (document.getElementById('adsbygoogle-js')) return;
+    const script = document.createElement('script');
+    script.id = 'adsbygoogle-js';
+    script.async = true;
+    script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4001144292832515';
+    script.crossOrigin = 'anonymous';
+    document.head.appendChild(script);
+  }
 
   refuseCookies(): void {
     localStorage.setItem('cookieConsent', 'refused');
