@@ -188,9 +188,9 @@ def send_user_alert(card: Card, type_changement: str):
             }
             response = requests.post(f"{ConfigEnv.DISCORD_BOT_URI}/sendalert", json={"discord_id": user.discord_id, "embed_message": embed_message})
             print(response)
-        else:
-            if user:
-                send_user_alert_mail(card, type_changement, user)
+        # else:
+        #     if user:
+        #         send_user_alert_mail(card, type_changement, user)
 
 def send_user_alert_mail(card: Card, type_changement: str, user: User):
     socketio.emit('script_output', {'data': f"mail send : {card.name_en} {card.reference} {user.username}"})

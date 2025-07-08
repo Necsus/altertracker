@@ -19,7 +19,7 @@
     "chat": "Chat",
     "token": "Token Altered",
     "searches": "Mes recherches",
-    "alerts": "Mes alertes",
+    "alerts": "Mes alertes ❤️",
     "collection": "Ma collection",
     "purchase_offers": "Offres d'achat",
     "logout": "Déconnexion",
@@ -148,5 +148,19 @@
     "buy_on_altered": "Acheter sur Altered.gg",
     "market_offers": "Offres du marché",
     "view_on_altered": "Voir sur Altered.gg"
+  },
+  "user_alerts": {
+    "title": "Mes alertes ❤️",
+    "instructions": {
+      "title": "🔔 Comment recevoir des alertes 🔔",
+      "step_1": "Rejoignez notre serveur Discord AlterTracker 👉",
+      "step_1_link": "Lien du serveur Discord",
+      "step_2": "Liez votre compte Discord à AlterTracker 👉",
+      "step_2_link": "Lien vers AlterTracker",
+      "step_3": "Si ce n'est pas fait, autoriser le serveur AlterTracker à envoyer des messages privés à votre compte Discord.",
+      "alert": "En raison d'un trop grand nombre de mails envoyés, les alertes par emails sont désactivées. Nous vous recommandons d'utiliser les notifications Discord pour recevoir vos alertes."
+    },
+    "loading": "Chargement des alertes...",
+    "no_alerts": "Aucune alerte enregistrée."
   }
 }
