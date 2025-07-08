@@ -302,7 +302,7 @@ def get_count_cards_created_today_data() -> int:
     ).scalar()
 
 def get_last_added_cards_data() -> list[dict]:
-    return db.session.query(Card).order_by(Card.created_at.desc()).limit(20).all()
+    return db.session.query(Card).order_by(Card.created_at.desc()).limit(10).all()
 
 def get_effect_data(lang: str) -> list[dict]:
     return db.session.query(Effect).filter(Effect.language == lang).all()

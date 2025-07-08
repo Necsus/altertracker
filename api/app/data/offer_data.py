@@ -80,7 +80,7 @@ def get_last_added_offers_data() -> list[dict]:
             Offer.is_deleted == False  # Exclure les offres supprimées
         ).order_by(
             Offer.created_at.desc()  # Trier par date de création décroissante
-        ).limit(20).all()
+        ).limit(10).all()
 
 def get_count_offers_added_today_data() -> int:
     paris_tz = timezone('Europe/Paris')
@@ -115,7 +115,7 @@ def get_last_edited_offers_data() -> list[dict]:
             Offer.previous_offer != None  # Inclure uniquement les offres avec une previous_offer
         ).order_by(
             Offer.created_at.desc()  # Trier par date de création décroissante
-        ).limit(20).all()  # Limiter les résultats aux 20 dernières offres
+        ).limit(10).all()  # Limiter les résultats aux 10 dernières offres
 
         # Formater les résultats en liste de dictionnaires
         return [
@@ -155,7 +155,7 @@ def get_last_deleted_offers_data() -> list[dict]:
             ~Offer.id.in_(subquery)  # Vérifier que l'ID n'est pas dans previous_offer
         ).order_by(
             Offer.deleted_at.desc()  # Trier par date de suppression décroissante
-        ).limit(20).all()  # Limiter les résultats aux 20 dernières offres
+        ).limit(10).all()  # Limiter les résultats aux 10 dernières offres
 
         # Formater les résultats en liste de dictionnaires
         return [
