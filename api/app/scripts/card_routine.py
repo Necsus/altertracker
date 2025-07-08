@@ -59,7 +59,7 @@ def get_unique_cards_name_faction(name: str, faction: str, set: str, mainCost: i
         "mainCost[]": mainCost,
         "recallCost[]": recallCost,
         "rarity[]": "UNIQUE",
-        "translations.name": f"\"{name}\"",
+        "query": f"\"{name}\"",
         "itemsPerPage": 36,
         "locale": "fr-fr"
     }
@@ -191,7 +191,7 @@ def get_unique_offers(session, name: str, faction: str, set: str, page: int, ret
         "inSale": "true",
         "rarity[]": "UNIQUE",
         "cardSet[]": set,
-        "translations.name": f"\"{name}\"",
+        "query": f"\"{name}\"",
         "itemsPerPage": 36,
         "locale": "en-us"
     }
@@ -203,6 +203,7 @@ def get_unique_offers(session, name: str, faction: str, set: str, page: int, ret
 
     # Construire l'URL avec les paramètres encodés
     url = f"{base_url}?{urlencode(params, doseq=True)}"
+    print(url)
     try:
         # Effectuer une requête GET vers l'URL
         response = requests.get(url, headers=headers)
