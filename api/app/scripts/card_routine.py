@@ -59,7 +59,7 @@ def get_unique_cards_name_faction(name: str, faction: str, set: str, mainCost: i
         "mainCost[]": mainCost,
         "recallCost[]": recallCost,
         "rarity[]": "UNIQUE",
-        "query": f"\"{name}\"",
+        "query": name,
         "itemsPerPage": 36,
         "locale": "fr-fr"
     }
@@ -191,7 +191,7 @@ def get_unique_offers(session, name: str, faction: str, set: str, page: int, ret
         "inSale": "true",
         "rarity[]": "UNIQUE",
         "cardSet[]": set,
-        "query": f"\"{name}\"",
+        "query": name,
         "itemsPerPage": 36,
         "locale": "en-us"
     }
