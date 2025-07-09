@@ -7,16 +7,16 @@ def start_scheduler(app):
 
     # Script toutes les 24h
     scheduler.add_job(
-        lambda: run_script_with_context(app, 'script_get_unique'),
+        lambda: run_script_with_context(app, 'script_get_unique', 8),
         trigger=CronTrigger(hour='2,14', minute=0))
 
     # Script toutes les 4h
     scheduler.add_job(
-        lambda: run_script_with_context(app, 'script_get_offers'),
+        lambda: run_script_with_context(app, 'script_get_offers', 3),
         trigger=CronTrigger(hour='0,6,12,18', minute=0))
 
     scheduler.start()
 
-def run_script_with_context(app, script_name):
+def run_script_with_context(app, script_name, workers):
     with app.app_context():
-        dispatch_script(script_name)
+        dispatch_script(script_name, workers)
