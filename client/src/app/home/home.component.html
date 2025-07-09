@@ -123,33 +123,6 @@
 
     <section>
       <h2 class="text-2xl font-semibold mb-4">
-        {{ 'home.deleted_offers_title' | translate }} &nbsp;<span class="text-green-400">+{{
-          deletedOffersCount }}</span>
-      </h2>
-      <ng-container *ngIf="!deletedOffersLoading; else cardsLoadingSection">
-        <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
-          <div *ngFor="let offer of deletedOffers" class="w-48 bg-gray-800 rounded-xl shadow">
-            <div class="overflow-hidden w-48 rounded-xl bg-black">
-              <img (click)="openModal(offer.card)" [src]="offer.card | localizedValue:'image_path_en':'imagePath'"
-                [alt]="offer.card | localizedValue:'name_en':'name'"
-                onerror="this.onerror=null; this.src='/assets/img/cardback.webp';" loading="lazy"
-                class="max-w-full object-contain rounded-md cursor-pointer" />
-            </div>
-            <div class="mt-2 text-center text-white p-2 cursor-pointer select-none"
-              (click)="goToStats(offer.card.reference)">
-              <div class="font-medium">{{ offer.card | localizedValue:'name_en':'name' }}</div>
-              <div class="text-sm text-red-400">{{ 'home.old_price' | translate }} : {{ offer.offer.price |
-                currency:(offer.offer.currency || ''):'symbol':'1.2-2' }}</div>
-              <p class="text-xs text-gray-500">{{ 'home.detected_at' | translate }} : {{
-                offer.offer.deleted_at | toDate | date:'dd/MM/yyyy HH:mm' }}</p>
-            </div>
-          </div>
-        </div>
-      </ng-container>
-    </section>
-
-    <section>
-      <h2 class="text-2xl font-semibold mb-4">
         {{ 'home.edited_offers_title' | translate }} &nbsp;<span class="text-green-400">+{{
           editedOffersCount }}</span>
       </h2>
@@ -174,6 +147,33 @@
               </div>
               <p class="text-xs text-gray-500">{{ 'home.detected_at' | translate }} : {{
                 offer.offer.created_at | toDate | date:'dd/MM/yyyy HH:mm' }}</p>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </section>
+
+    <section>
+      <h2 class="text-2xl font-semibold mb-4">
+        {{ 'home.deleted_offers_title' | translate }} &nbsp;<span class="text-green-400">+{{
+          deletedOffersCount }}</span>
+      </h2>
+      <ng-container *ngIf="!deletedOffersLoading; else cardsLoadingSection">
+        <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
+          <div *ngFor="let offer of deletedOffers" class="w-48 bg-gray-800 rounded-xl shadow">
+            <div class="overflow-hidden w-48 rounded-xl bg-black">
+              <img (click)="openModal(offer.card)" [src]="offer.card | localizedValue:'image_path_en':'imagePath'"
+                [alt]="offer.card | localizedValue:'name_en':'name'"
+                onerror="this.onerror=null; this.src='/assets/img/cardback.webp';" loading="lazy"
+                class="max-w-full object-contain rounded-md cursor-pointer" />
+            </div>
+            <div class="mt-2 text-center text-white p-2 cursor-pointer select-none"
+              (click)="goToStats(offer.card.reference)">
+              <div class="font-medium">{{ offer.card | localizedValue:'name_en':'name' }}</div>
+              <div class="text-sm text-red-400">{{ 'home.old_price' | translate }} : {{ offer.offer.price |
+                currency:(offer.offer.currency || ''):'symbol':'1.2-2' }}</div>
+              <p class="text-xs text-gray-500">{{ 'home.detected_at' | translate }} : {{
+                offer.offer.deleted_at | toDate | date:'dd/MM/yyyy HH:mm' }}</p>
             </div>
           </div>
         </div>
