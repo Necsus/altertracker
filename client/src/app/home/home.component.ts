@@ -26,18 +26,18 @@ export class HomeComponent implements OnInit {
   nbCards: number = 0;
   nbCardsInMarket: number = 0;
   newCardsLoading: boolean = false;
-  newCardsCount: Number = 0;
+  newCardsCount: number = 0;
   newCards: CardModel[] = [];
   newOffersLoading: boolean = false;
-  newOffersCount: Number = 0;
+  newOffersCount: number = 0;
   newOffers: OfferViewModel[] = [];
   deletedOffersLoading: boolean = false;
-  deletedOffersCount: Number = 0;
+  deletedOffersCount: number = 0;
   deletedOffers: OfferViewModel[] = [];
   editedOffersLoading: boolean = false;
-  editedOffersCount: Number = 0;
+  editedOffersCount: number = 0;
   editedOffers: OfferViewModel[] = [];
-  usersCount: Number = 0;
+  usersCount: number = 0;
 
   constructor(
     private cardService: CardService,
@@ -111,7 +111,7 @@ export class HomeComponent implements OnInit {
     });
     this.userService.count_all_users$().subscribe({
       next: (response: number) => {
-        this.usersCount = Number(response);
+        this.usersCount = response;
       },
       error: (err: any) => this.toastService.show(err.message, 'error', 5000)
     });
