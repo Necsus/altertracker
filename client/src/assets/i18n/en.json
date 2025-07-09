@@ -190,6 +190,13 @@
     "login_action_2": "Sign in",
     "already_have_account": "Already have an account?",
     "forgot_password": "Forgot password?",
-    "not_registered": "Don't have an account yet?"
+    "not_registered": "Don't have an account yet?",
+    "confirm_loading": "Confirmation in progress...",
+    "waiting": "Please wait.",
+    "confirmed_email_title": "Email confirmed!",
+    "resend_link": "Resend link",
+    "confirmed_email": "Your address has been successfully verified.",
+    "confirm_error": "Confirmation failed",
+    "invalid_link": "The link is invalid or has expired."
   }
 }

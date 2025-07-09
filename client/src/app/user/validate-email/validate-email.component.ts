@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../../03_business/auth.service';
 
 @Component({
   selector: 'app-validate-email',
   templateUrl: './validate-email.component.html',
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslateModule],
 })
 export class ValidateEmailComponent implements OnInit {
   status: 'loading' | 'success' | 'error' | 'noresend' = 'loading';

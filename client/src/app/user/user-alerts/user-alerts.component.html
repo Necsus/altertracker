@@ -72,6 +72,6 @@
 </div>
 
 <div *ngIf="progress$ | async as progress" class="progress-tooltip">
-  <p>{{ 'progress.progress' | translate }} : {{remainingCards.length + 1}} {{ 'progress.remaining_cards' | translate }}
+  <p>{{ 'progress.progress' | translate }} {{remainingCards.length + 1}} {{ 'progress.remaining_cards' | translate }}
   </p>
 </div>

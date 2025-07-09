@@ -190,6 +190,13 @@
     "login_action_2": "Se connecter",
     "already_have_account": "Vous avez déjà un compte ?",
     "forgot_password": "Mot de passe oublié ?",
-    "not_registered": "Pas encore de compte ?"
+    "not_registered": "Pas encore de compte ?",
+    "confirm_loading": "Confirmation en cours...",
+    "waiting": "Veuillez patienter.",
+    "confirmed_email_title": "Email confirmé !",
+    "resend_link": "Renvoyer le lien",
+    "confirmed_email": "Votre adresse a été vérifiée avec succès.",
+    "confirm_error": "Échec de confirmation",
+    "invalid_link": "Le lien est invalide ou a expiré."
   }
 }
