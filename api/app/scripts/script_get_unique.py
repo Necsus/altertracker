@@ -63,14 +63,14 @@ def run_script(faction=None, workers=3, forceUpdate=False):
         k, m = divmod(len(data), n)
         return [data[i * k + min(i, m):(i + 1) * k + min(i + 1, m)] for i in range(n)]
 
-    def process_unique_cards(subset, mainCosts, recallCosts, start_index, count, forceUpdate=False):
+    def process_unique_cards(subset, mainCosts, recallCosts, start_index, count, worker_id, forceUpdate=False):
         """Traite un sous-ensemble de cartes pour la tâche `get_unique`."""
         session = Session()
         try:
             for index, dbcard in enumerate(subset, start=start_index):
                 count += 1
                 # Afficher la progression au format "1/34"
-                socketio.emit('script_output', {'data': f"\033[94mProgression : {count}/{len(subset)}\033[0m"})  # En bleu pour plus de visibilité
+                socketio.emit('script_output', {'data': f"\033[94mProgression {worker_id}: {count}/{len(subset)}\033[0m"})  # En bleu pour plus de visibilité
                 forestPowers = list(range(0, 11))
                 filtered_mainCosts = [cost for cost in mainCosts if dbcard.MAIN_COST - 3 <= cost <= dbcard.MAIN_COST + 3]
                 for mainCost in filtered_mainCosts:
@@ -319,7 +319,8 @@ def run_script(faction=None, workers=3, forceUpdate=False):
             for i, subset in enumerate(subsets):
                 count = 0
                 start_index = sum(len(subsets[j]) for j in range(i)) + 1
-                futures.append(executor.submit(process_unique_cards, subset, mainCosts, recallCosts, start_index, count, forceUpdate))
+                worker_id = f"worker-{i+1}"
+                futures.append(executor.submit(process_unique_cards, subset, mainCosts, recallCosts, start_index, count, worker_id, forceUpdate))
 
             for future in futures:
                 future.result()  # Attendre que toutes les tâches soient terminées
