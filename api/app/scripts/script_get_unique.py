@@ -6,7 +6,7 @@ from app.scripts import card_routine
 from app.models.card import Card
 from app.extensions import db, socketio
 
-def run_script(faction=None, workers=3):
+def run_script(faction=None, workers=3, forceUpdate=False):
     # Démarrer le timer
     start_time = time.time()
     Session = scoped_session(sessionmaker(bind=db.engine))
@@ -61,7 +61,7 @@ def run_script(faction=None, workers=3):
         k, m = divmod(len(data), n)
         return [data[i * k + min(i, m):(i + 1) * k + min(i + 1, m)] for i in range(n)]
 
-    def process_unique_cards(subset, mainCosts, recallCosts, start_index, count):
+    def process_unique_cards(subset, mainCosts, recallCosts, start_index, count, forceUpdate=False):
         """Traite un sous-ensemble de cartes pour la tâche `get_unique`."""
         session = Session()
         try:
@@ -100,7 +100,7 @@ def run_script(faction=None, workers=3):
                                 Card.rarity == 'UNIQUE',
                                 Card.type == 'CHARACTER'
                             ).all()
-                            if len(cards_to_update) == int(test_result.get('hydra:totalItems')) and test_result.get('hydra:totalItems') < 1000:
+                            if len(cards_to_update) == int(test_result.get('hydra:totalItems')) and test_result.get('hydra:totalItems') < 1000 and not forceUpdate:
                                 # socketio.emit('script_output', {'data': f"NO CHANGES SKIPPING"})
                                 continue
                             # else:
@@ -319,7 +319,7 @@ def run_script(faction=None, workers=3):
             for i, subset in enumerate(subsets):
                 count = 0
                 start_index = sum(len(subsets[j]) for j in range(i)) + 1
-                futures.append(executor.submit(process_unique_cards, subset, mainCosts, recallCosts, start_index, count))
+                futures.append(executor.submit(process_unique_cards, subset, mainCosts, recallCosts, start_index, count, forceUpdate))
 
             for future in futures:
                 future.result()  # Attendre que toutes les tâches soient terminées
