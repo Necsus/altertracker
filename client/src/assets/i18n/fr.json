@@ -31,12 +31,14 @@
     "altered_tcg": "est la propriété d'Equinox."
   },
   "home": {
-    "title": "AlterTracker – Analyse et Suivi du Marché pour Altered TCG",
+    "title": "Analyse et Suivi du Marché pour Altered TCG",
     "description_part1": "AlterTracker est l’outil incontournable pour les joueurs d’",
     "description_link": "Altered TCG",
-    "description_part2": ". Explorez les cartes du jeu grâce à une recherche avancée, des statistiques complètes et un suivi du marché en temps réel.",
+    "description_part2": "Explorez les cartes du jeu grâce à une recherche avancée, des statistiques complètes et un suivi du marché en temps réel.",
     "create_account": "Créer un compte gratuitement",
     "get_started": "Commencer une recherche",
+    "nb_cards": "Cartes référencées",
+    "nb_offers": "Offres détectées",
     "limitations": "Des limitations ont été mises en place par Altered. Le processus de récupération est actuellement géré en file d’attente, en attendant les directives officielles. 🙏 Merci pour votre compréhension et votre patience. Ce projet me tient à cœur, et je suis pleinement engagé à le faire avancer.",
     "advanced_search_title": "🔍 Recherche avancée de cartes",
     "advanced_search_description": "Filtrez les cartes par nom, faction, coût, rareté, effet et plus encore. Retrouvez facilement les cartes Altered qui correspondent à votre style ou à votre collection.",

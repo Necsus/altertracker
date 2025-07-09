@@ -31,12 +31,14 @@
     "altered_tcg": "is the property of Equinox."
   },
   "home": {
-    "title": "AlterTracker – Market Analysis and Tracking for Altered TCG",
+    "title": "Market Analysis and Tracking for Altered TCG",
     "description_part1": "AlterTracker is the essential tool for players of ",
     "description_link": "Altered TCG",
-    "description_part2": ". Explore the game cards with advanced search, complete statistics, and real-time market tracking.",
+    "description_part2": "Explore the game cards with advanced search, complete statistics, and real-time market tracking.",
     "create_account": "Create a free account",
     "get_started": "Get Started",
+    "nb_cards": "Referenced cards",
+    "nb_offers": "Detected offers",
     "limitations": "Limitations have been set by Altered. The retrieval process is currently managed in a queue, awaiting official guidance. 🙏 Thank you for your understanding and patience. This project is close to my heart, and I am fully committed to advancing it.",
     "advanced_search_title": "🔍 Advanced card search",
     "advanced_search_description": "Filter cards by name, faction, cost, rarity, effect and more. Easily find Altered cards that match your style or collection.",

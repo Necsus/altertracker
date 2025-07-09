@@ -23,6 +23,8 @@ import { ToastService } from '../shared/services/toast/toast.service';
 export class HomeComponent implements OnInit {
   currentLanguage: string = 'fr';
   isLoggedIn: boolean = false;
+  nbCards: number = 0;
+  nbCardsInMarket: number = 0;
   newCardsLoading: boolean = false;
   newCardsCount: Number = 0;
   newCards: CardModel[] = [];
@@ -35,7 +37,6 @@ export class HomeComponent implements OnInit {
   editedOffersLoading: boolean = false;
   editedOffersCount: Number = 0;
   editedOffers: OfferViewModel[] = [];
-  // purchaseOffers: PurchaseOffer[] = [];
   usersCount: Number = 0;
 
   constructor(
@@ -55,6 +56,22 @@ export class HomeComponent implements OnInit {
   ngOnInit(): void {
     this.authViewService.isLoggedIn$.subscribe(status => {
       this.isLoggedIn = status;
+    });
+    this.cardService.count_all_cards$().subscribe({
+      next: (count: number) => {
+        this.nbCards = count;
+      },
+      error: (error) => {
+        console.error('Error fetching card count:', error);
+      }
+    });
+    this.cardService.count_all_cards_in_market$().subscribe({
+      next: (count: number) => {
+        this.nbCardsInMarket = count;
+      },
+      error: (error) => {
+        console.error('Error fetching card count:', error);
+      }
     });
     this.newCardsLoading = true;
     this.cardService.get_last_added_cards$().subscribe({
@@ -94,7 +111,7 @@ export class HomeComponent implements OnInit {
     });
     this.userService.count_all_users$().subscribe({
       next: (response: number) => {
-        this.usersCount = response;
+        this.usersCount = Number(response);
       },
       error: (err: any) => this.toastService.show(err.message, 'error', 5000)
     });
