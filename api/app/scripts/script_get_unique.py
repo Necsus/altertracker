@@ -50,6 +50,8 @@ def run_script(faction=None, workers=3, forceUpdate=False):
         try:
             existing_references = {card.reference for card in session.query(Card.reference).all()}
             new_cards = [card for card in cards if card.reference not in existing_references]
+            for card in new_cards:
+                socketio.emit('script_output', {'data': f"Ajout de la carte : {card.name_en} ({card.reference})"})
             session.bulk_save_objects(new_cards)
             session.commit()
         except Exception as e:
@@ -181,7 +183,6 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                                     detailsCard = card_routine.get_card_by_reference(tempCard.reference)
                                     if detailsCard:
                                         tempCard = map_effect_to_card(tempCard, detailsCard)
-                                    socketio.emit('script_output', {'data': f"Ajout de la carte : {tempCard.name_en} ({tempCard.reference})"})
                                     cardToInsert.append(tempCard)
                                 session.commit()
                                 if len(cards['hydra:member']) < 36:
@@ -274,7 +275,6 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                                         detailsCard = card_routine.get_card_by_reference(tempCard.reference)
                                         if detailsCard:
                                             tempCard = map_effect_to_card(tempCard, detailsCard)
-                                        socketio.emit('script_output', {'data': f"Ajout de la carte : {tempCard.name_en} ({tempCard.reference})"})
                                         cardToInsert.append(tempCard)
                                     session.commit()
                                     if len(cards['hydra:member']) < 36:

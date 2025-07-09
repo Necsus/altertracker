@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, ComponentRef, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
+import { TranslateModule } from '@ngx-translate/core';
 import { EffectModel } from '../../01_models/03_business/effect.model';
 import { CardService } from '../../03_business/card.service';
 import { IconParserPipe } from '../../shared/pipes/icon-parser.pipe';
@@ -12,7 +13,7 @@ import { ModalService } from '../../shared/services/modal/modal.service';
   selector: 'app-effect-builder',
   templateUrl: './effect-builder.component.html',
   styleUrls: ['./effect-builder.component.css'],
-  imports: [CommonModule, FormsModule, NgSelectModule, IconParserPipe],
+  imports: [CommonModule, FormsModule, NgSelectModule, IconParserPipe, TranslateModule],
 })
 export class EffectBuilderComponent implements OnInit {
   modalRef?: ComponentRef<any>; // Ajoute ceci

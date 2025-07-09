@@ -10,8 +10,8 @@
   },
   "header": {
     "home": "Home",
-    "cards": "Cards",
-    "stats": "Stats",
+    "cards": "Search",
+    "stats": "Card",
     "about": "About",
     "admin": "Admin",
     "profile": "Profile",
@@ -36,6 +36,7 @@
     "description_link": "Altered TCG",
     "description_part2": ". Explore the game cards with advanced search, complete statistics, and real-time market tracking.",
     "create_account": "Create a free account",
+    "get_started": "Get Started",
     "limitations": "Limitations have been set by Altered. The retrieval process is currently managed in a queue, awaiting official guidance. 🙏 Thank you for your understanding and patience. This project is close to my heart, and I am fully committed to advancing it.",
     "advanced_search_title": "🔍 Advanced card search",
     "advanced_search_description": "Filter cards by name, faction, cost, rarity, effect and more. Easily find Altered cards that match your style or collection.",
@@ -70,6 +71,7 @@
     "remaining_cards": "cards remaining..."
   },
   "cards": {
+    "filters": "Filters",
     "title": "🔍 Search cards",
     "subtitle_1": "Search among the",
     "subtitle_2": "Altered cards including",
@@ -92,15 +94,15 @@
       "alize": "Trial by frost",
       "bise": "Whispers from the maze"
     },
+    "filter_effect": "Effects",
     "form_contain_effect": "Effect contains",
     "form_and_contain_effect": "And effect contains",
+    "exclude_effect": "Exclude",
     "form_contain_echo_effect": "Echo effect contains",
     "form_main_cost": "Main cost",
     "form_recall_cost": "Recall cost",
-    "form_forest_power": "🌿",
-    "form_mountain_power": "🗻",
-    "form_ocean_power": "💧",
     "form_delete_condition": "Delete If/When",
+    "filter_offers": "Offers",
     "form_db_market": "Available offers",
     "form_price_range": "Price (min-max)",
     "popover_db_market": "Only cards already scanned by the Live Market",
@@ -162,5 +164,32 @@
     },
     "loading": "Loading alerts...",
     "no_alerts": "No alerts..."
+  },
+  "cookies": {
+    "title": "Cookie management",
+    "message": "We use cookies to improve your experience, analyze traffic, and personalize content. You can accept or refuse non-essential cookies.",
+    "accept": "Accept",
+    "reject": "Reject"
+  },
+  "builder": {
+    "title": "Build an effect",
+    "trigger": "Trigger",
+    "condition": "Condition",
+    "effect": "Effect",
+    "valid": "Validate"
+  },
+  "authentication": {
+    "login": "Login",
+    "register": "Register",
+    "email": "Email address",
+    "password": "Password",
+    "pseudo": "Username",
+    "register_action": "Sign up",
+    "register_action_2": "Register",
+    "login_action": "Log in",
+    "login_action_2": "Sign in",
+    "already_have_account": "Already have an account?",
+    "forgot_password": "Forgot password?",
+    "not_registered": "Don't have an account yet?"
   }
 }

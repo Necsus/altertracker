@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { AuthService } from '../03_business/auth.service';
 import { withLoader } from '../shared/services/loader/loader.operator';
 import { LoaderService } from '../shared/services/loader/loader.service';
@@ -10,7 +11,7 @@ import { AuthViewService } from './auth-view.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  imports: [RouterModule, ReactiveFormsModule]
+  imports: [RouterModule, ReactiveFormsModule, TranslateModule]
 })
 export class LoginComponent implements OnInit {
   loginForm!: FormGroup;

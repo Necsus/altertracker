@@ -1,10 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-cookies',
   templateUrl: './cookies.component.html',
-  imports: [CommonModule]
+  imports: [CommonModule, TranslateModule]
 })
 export class CookiesComponent implements OnInit {
   showCookieConsent = false;

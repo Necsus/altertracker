@@ -10,8 +10,8 @@
   },
   "header": {
     "home": "Accueil",
-    "cards": "Cartes",
-    "stats": "Stats",
+    "cards": "Recherche",
+    "stats": "Carte",
     "about": "À propos",
     "admin": "Admin",
     "profile": "Profil",
@@ -36,6 +36,7 @@
     "description_link": "Altered TCG",
     "description_part2": ". Explorez les cartes du jeu grâce à une recherche avancée, des statistiques complètes et un suivi du marché en temps réel.",
     "create_account": "Créer un compte gratuitement",
+    "get_started": "Commencer une recherche",
     "limitations": "Des limitations ont été mises en place par Altered. Le processus de récupération est actuellement géré en file d’attente, en attendant les directives officielles. 🙏 Merci pour votre compréhension et votre patience. Ce projet me tient à cœur, et je suis pleinement engagé à le faire avancer.",
     "advanced_search_title": "🔍 Recherche avancée de cartes",
     "advanced_search_description": "Filtrez les cartes par nom, faction, coût, rareté, effet et plus encore. Retrouvez facilement les cartes Altered qui correspondent à votre style ou à votre collection.",
@@ -70,6 +71,7 @@
     "remaining_cards": "cartes restantes..."
   },
   "cards": {
+    "filters": "Filtres",
     "title": "🔍 Recherche de cartes",
     "subtitle_1": "Rechercher parmis les",
     "subtitle_2": "cartes d'Altered dont",
@@ -85,22 +87,22 @@
       "unique": "Unique"
     },
     "form_faction": "Faction",
-    "form_set": "Set",
+    "form_set": "Edition",
     "set": {
       "coreks": "Au-delà des portes - KS",
       "core": "Au-delà des portes",
       "alize": "Epreuve du froid",
       "bise": "Murmures du labyrinthe"
     },
+    "filter_effect": "Effets",
     "form_contain_effect": "Effet contient",
     "form_and_contain_effect": "Et effet contient",
+    "exclude_effect": "Exclure",
     "form_contain_echo_effect": "Effet support contient",
     "form_main_cost": "Coût main",
     "form_recall_cost": "Coût réserve",
-    "form_forest_power": "🌿",
-    "form_mountain_power": "🗻",
-    "form_ocean_power": "💧",
     "form_delete_condition": "Supprimer Si/S'il",
+    "filter_offers": "Offres",
     "form_db_market": "Offres disponibles",
     "form_price_range": "Prix (min-max)",
     "popover_db_market": "Uniquement les cartes ayant déjà été scannées par le Live Market",
@@ -162,5 +164,32 @@
     },
     "loading": "Chargement des alertes...",
     "no_alerts": "Aucune alerte enregistrée."
+  },
+  "cookies": {
+    "title": "Gestion des cookies",
+    "message": "Nous utilisons des cookies pour améliorer votre expérience, analyser le trafic et personnaliser le contenu. Vous pouvez accepter ou refuser les cookies non essentiels.",
+    "accept": "Accepter",
+    "reject": "Refuser"
+  },
+  "builder": {
+    "title": "Construire un effet",
+    "trigger": "Déclencheur",
+    "condition": "Condition",
+    "effect": "Effet",
+    "valid": "Valider"
+  },
+  "authentication": {
+    "login": "Connexion",
+    "register": "Inscription",
+    "email": "Adresse e-mail",
+    "password": "Mot de passe",
+    "pseudo": "Pseudo",
+    "register_action": "S'inscrire",
+    "register_action_2": "Inscrivez-vous",
+    "login_action": "Connectez-vous",
+    "login_action_2": "Se connecter",
+    "already_have_account": "Vous avez déjà un compte ?",
+    "forgot_password": "Mot de passe oublié ?",
+    "not_registered": "Pas encore de compte ?"
   }
 }

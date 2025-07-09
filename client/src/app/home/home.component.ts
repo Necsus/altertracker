@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CardModel } from '../01_models/03_business/card.model';
 import { OfferViewModel } from '../01_models/home/offer-view.model';
@@ -45,7 +45,8 @@ export class HomeComponent implements OnInit {
     private toastService: ToastService,
     private modalService: ModalService,
     private authViewService: AuthViewService,
-    private translate: TranslateService) {
+    private translate: TranslateService,
+    private router: Router) {
     this.currentLanguage = this.translate.currentLang || 'en'; // Définit la langue par défaut
     this.translate.onLangChange.subscribe((event) => {
       this.currentLanguage = event.lang;
@@ -101,5 +102,8 @@ export class HomeComponent implements OnInit {
   openModal(card: CardModel): void {
     const currentLanguage = this.translate.currentLang || 'fr';
     this.modalService.open(CardImgComponent, { src: currentLanguage === 'en' ? card.image_path_en : card.imagePath });
+  }
+  goToStats(reference: string): void {
+    this.router.navigate(['/stats', reference]);
   }
 }

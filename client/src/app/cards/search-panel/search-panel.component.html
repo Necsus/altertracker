@@ -2,7 +2,7 @@
 <form [formGroup]="searchForm" (ngSubmit)="onSubmit()">
   <div class="flex justify-between items-center mb-4 cursor-pointer select-none" *ngIf="!showFull"
     (click)="toggleFilters()">
-    <h2 class="text-xl font-bold">Filtres</h2>
+    <h2 class="text-xl font-bold">{{ 'cards.filters' | translate }}</h2>
     <span class="p-2 rounded-lg hover:bg-gray-600 transition cursor-pointer">
       <i class="fas" [ngClass]="areFiltersOpen ? 'fa-minus' : 'fa-plus'"></i>
     </span>
@@ -13,14 +13,14 @@
     <div *ngIf="areFiltersOpen" [ngClass]="showFull ? 'flex flex-col gap-4 m-3 max-w-64' : ''">
       <!-- Nom -->
       <div class="mb-4">
-        <label class="block mb-1 text-center text-sm font-semibold">Nom ou Référence</label>
+        <label class="block mb-1 text-center text-sm font-semibold">{{ 'cards.form_name' | translate }}</label>
         <input type="text" formControlName="name"
           class="w-full p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400">
       </div>
 
       <!-- Rareté -->
       <div class="mb-4">
-        <label class="block mb-1 text-center text-sm font-semibold">Rareté</label>
+        <label class="block mb-1 text-center text-sm font-semibold">{{ 'cards.form_rarity' | translate }}</label>
         <div class="grid grid-cols-3 gap-2">
           <a class="flex flex-col items-center justify-center p-1 rounded-lg transition cursor-pointer"
             [class.bg-amber-500]="selectedRarity.includes('COMMON')" (click)="toggleRarity('COMMON')">
@@ -39,7 +39,7 @@
 
       <!-- Faction -->
       <div class="mb-4">
-        <label class="block mb-1 text-center text-sm font-semibold">Faction</label>
+        <label class="block mb-1 text-center text-sm font-semibold">{{ 'cards.form_faction' | translate }}</label>
         <div class="grid grid-cols-3 gap-2">
           <a class="flex flex-col items-center justify-center p-1 rounded-lg transition cursor-pointer"
             [class.bg-amber-500]="selectedFactions.includes('AX')" (click)="toggleFaction('AX')">
@@ -72,10 +72,10 @@
     <div *ngIf="areFiltersOpen" [ngClass]="showFull ? 'flex flex-col gap-4 m-3 max-w-48' : ''">
       <!-- Set -->
       <div class="mb-4">
-        <label class="block mb-1 text-center text-sm font-semibold">Set</label>
+        <label class="block mb-1 text-center text-sm font-semibold">{{ 'cards.form_set' | translate }}</label>
         <select formControlName="set"
           class="w-full p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400">
-          <option value="">-- Set --</option>
+          <option value="">-- {{ 'cards.form_set' | translate }} --</option>
           <option value="BISE">{{ 'cards.set.bise' | translate }}</option>
           <option value="ALIZE">{{ 'cards.set.alize' | translate }}</option>
           <option value="CORE">{{ 'cards.set.core' | translate }}</option>
@@ -122,7 +122,7 @@
 
     <div class="flex justify-between items-center mb-4 cursor-pointer select-none" (click)="toggleEffects()"
       *ngIf="!showFull">
-      <h2 class="text-xl font-bold">Effets</h2>
+      <h2 class="text-xl font-bold">{{ 'cards.filter_effect' | translate }}</h2>
       <span class="p-2 rounded-lg hover:bg-gray-600 transition cursor-pointer">
         <i class="fas" [ngClass]="areEffectsOpen ? 'fa-minus' : 'fa-plus'"></i>
       </span>
@@ -130,7 +130,7 @@
 
     <div *ngIf="areEffectsOpen" [ngClass]="showFull ? 'flex flex-col gap-4 m-3 w-64' : ''">
       <div class="mb-4">
-        <label class="block mb-1 text-sm font-semibold">Effet contient</label>
+        <label class="block mb-1 text-sm font-semibold">{{ 'cards.form_contain_effect' | translate }}</label>
         <div class="relative">
           <input type="text" formControlName="main_effect"
             class="w-full bg-gray-700 text-white placeholder-gray-400 border border-amber-500 rounded-lg py-2 pl-2 pr-8 focus:ring-2 focus:ring-amber-500" />
@@ -141,7 +141,7 @@
         </div>
       </div>
       <div class="mb-4">
-        <label class="block mb-1 text-sm font-semibold">Et effet contient</label>
+        <label class="block mb-1 text-sm font-semibold">{{ 'cards.form_and_contain_effect' | translate }}</label>
         <div class="relative">
           <input type="text" formControlName="main_effect_2"
             class="w-full bg-gray-700 text-white placeholder-gray-400 border border-amber-500 rounded-lg py-2 pl-2 pr-8 focus:ring-2 focus:ring-amber-500" />
@@ -152,12 +152,12 @@
         </div>
       </div>
       <div class="mb-4">
-        <label class="block mb-1 text-sm font-semibold">Exclure</label>
+        <label class="block mb-1 text-sm font-semibold">{{ 'cards.exclude_effect' | translate }}</label>
         <input type="text" formControlName="exclude_effect"
           class="w-full p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400">
       </div>
       <div class="mb-4">
-        <label class="block mb-1 text-sm font-semibold">Effet echo contient</label>
+        <label class="block mb-1 text-sm font-semibold">{{ 'cards.form_contain_echo_effect' | translate }}</label>
         <input type="text" formControlName="echo_effect"
           class="w-full p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400">
       </div>
@@ -165,7 +165,7 @@
 
     <div class="flex justify-between items-center mb-4 cursor-pointer select-none" *ngIf="!showFull"
       (click)="toggleOffers()">
-      <h2 class="text-xl font-bold">Offres</h2>
+      <h2 class="text-xl font-bold">{{ 'cards.filter_offers' | translate }}</h2>
       <span class="p-2 rounded-lg hover:bg-gray-600 transition cursor-pointer">
         <i class="fas" [ngClass]="areOffersOpen ? 'fa-minus' : 'fa-plus'"></i>
       </span>
