@@ -31,13 +31,15 @@
         <li><a routerLink="/cards" routerLinkActive="text-amber-400" style="user-select: none;"
             class="hover:text-amber-400 transition duration-300 cursor-pointer" (click)="reloadPage($event)">{{
             'header.cards' | translate }}</a>
+        </li>
         <li><a routerLink="/stats" routerLinkActive="text-amber-400" style="user-select: none;"
             class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
             'header.stats' | translate }}</a>
         </li>
         <li><a routerLink="/about" routerLinkActive="text-amber-400" style="user-select: none;"
             class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
-            'header.about' | translate }}</a></li>
+            'header.about' | translate }}</a>
+        </li>
         <!-- Dropdown for logged-in users -->
         @if (isLoggedIn) {
         <li class="relative">

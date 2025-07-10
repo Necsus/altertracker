@@ -160,7 +160,6 @@ export class CardsComponent implements OnInit, OnDestroy {
     }
   }
 
-
   onCardsRetrieved(event: { cards: CardModel[]; searchOffers: boolean }): void {
     if (this.allGroupsOpen) {
       this.allGroupsOpen = false; // Si tous les groupes sont ouverts, ne pas en ouvrir un automatiquement
@@ -179,17 +178,6 @@ export class CardsComponent implements OnInit, OnDestroy {
       this.sidebarOpen = false; // Ferme le tiroir de filtre sur mobile
     }
   }
-
-  // groupCardsByName(): void {
-  //   this.groupedCards = this.cards.reduce((groups, card) => {
-  //     const name = card.name || 'Unknown';
-  //     if (!groups[name]) {
-  //       groups[name] = [];
-  //     }
-  //     groups[name].push(card);
-  //     return groups;
-  //   }, {} as { [key: string]: CardModel[] });
-  // }
 
   addCardsToQueue(cards: CardModel[]): void {
     cards.map((card) => card.isProcessing = true);
