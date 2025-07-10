@@ -38,19 +38,21 @@
       <div class="flex items-center gap-4">
         <div *ngIf="cards && cards.length > 0">
           <label class="mr-2 font-semibold">Trier par</label>
-          <select class="p-2 bg-gray-700 rounded-lg border border-amber-500">
-            <option>Nom</option>
-            <option>Rareté</option>
-            <option>Faction</option>
-            <option>Prix</option>
+          <select class="p-2 bg-gray-700 rounded-lg border border-amber-500" [(ngModel)]="sortBy"
+            (change)="onSortByChange($event)">
+            <option value="">Aucun tri</option>
+            <option value="priceAsc">Prix ↑ (croissant)</option>
+            <option value="priceDesc">Prix ↓ (décroissant)</option>
           </select>
         </div>
         <div *ngIf="cards && cards.length > 0">
           <label class="mr-2 font-semibold">Grouper par</label>
-          <select class="p-2 bg-gray-700 rounded-lg border border-amber-500">
-            <option>Nom</option>
-            <option>Faction</option>
-            <option>Cout de main</option>
+          <select class="p-2 bg-gray-700 rounded-lg border border-amber-500" [(ngModel)]="groupBy"
+            (change)="onGroupByChange($event)">
+            <option value="">Aucun groupement</option>
+            <option value="name">Nom</option>
+            <option value="faction">Faction</option>
+            <option value="main_cost">Coût de main</option>
           </select>
         </div>
         @if (isLoggedIn) {

@@ -1,4 +1,4 @@
-import { CommonModule, Location } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -10,7 +10,6 @@ import { withLoader } from '../../shared/services/loader/loader.operator';
 import { LoaderService } from '../../shared/services/loader/loader.service';
 import { ModalService } from '../../shared/services/modal/modal.service';
 import { EffectBuilderComponent } from './effect-builder.component';
-import { SearchFormService } from './search-form.service';
 
 @Component({
   selector: 'app-search-panel',
@@ -37,8 +36,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     private authViewService: AuthViewService,
     private router: Router,
     private translate: TranslateService,
-    private location: Location,
-    private searchFormService: SearchFormService,
     private modalService: ModalService
   ) { }
 

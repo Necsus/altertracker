@@ -36,6 +36,11 @@ export class HeaderComponent implements OnInit {
     });
   }
 
+  reloadPage(event: Event) {
+    event.preventDefault();
+    window.location.href = '/cards';
+  }
+
   onLogout(): void {
     this.authViewService.logout();
   }

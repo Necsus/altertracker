@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, HostListener, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { BehaviorSubject, catchError, delay, map, throwError } from 'rxjs';
 import { OfferLiveMarketRequest } from '../01_models/02_api/card/offer-live-market-request.model';
@@ -8,8 +9,6 @@ import { CardModel } from '../01_models/03_business/card.model';
 import { AlteredService } from '../03_business/altered.service';
 import { CardService } from '../03_business/card.service';
 import { AuthViewService } from '../authentication/auth-view.service';
-import { LoaderService } from '../shared/services/loader/loader.service';
-import { ToastService } from '../shared/services/toast/toast.service';
 import { CardGroupComponent } from './card-group/card-group.component';
 import { SaveSearchComponent } from './save-search/save-search.component';
 import { SearchPanelComponent } from './search-panel/search-panel.component';
@@ -18,10 +17,18 @@ import { SearchPanelComponent } from './search-panel/search-panel.component';
   selector: 'app-cards',
   templateUrl: './cards.component.html',
   styleUrls: ['./cards.component.css'],
-  imports: [CommonModule, SearchPanelComponent, CardGroupComponent, SaveSearchComponent, TranslateModule]
+  imports: [
+    CommonModule,
+    SearchPanelComponent,
+    CardGroupComponent,
+    SaveSearchComponent,
+    TranslateModule,
+    FormsModule
+  ]
 })
 export class CardsComponent implements OnInit, OnDestroy {
   @ViewChild('sidebar') sidebar!: ElementRef;
+  showAds = false;
   sidebarOpen: boolean = true;
   isMobile: boolean = false;
   cards: CardModel[] = [];
@@ -34,7 +41,8 @@ export class CardsComponent implements OnInit, OnDestroy {
   allGroupsOpen: boolean = false;
   remainingCards: CardModel[] = []; // Cartes restantes à traiter
   queueProcessing = false;
-  showAds = false;
+  groupBy: string = '';
+  sortBy: string = '';
   private requestQueue: OfferLiveMarketRequest[] = [];
   private progressSubject = new BehaviorSubject<number>(0);
   progress$ = this.progressSubject.asObservable();
@@ -44,8 +52,7 @@ export class CardsComponent implements OnInit, OnDestroy {
     private router: Router,
     private authViewService: AuthViewService,
     private alteredService: AlteredService,
-    private loaderService: LoaderService,
-    private toastService: ToastService) { }
+    private route: ActivatedRoute) { }
 
   @HostListener('window:resize', ['$event'])
   onResize(event: Event): void {
@@ -74,6 +81,66 @@ export class CardsComponent implements OnInit, OnDestroy {
         console.error('Error fetching card count:', error);
       }
     });
+    const queryParams = this.route.snapshot.queryParams;
+    this.groupBy = queryParams['groupBy'] || '';
+    this.groupCardsBy();
+    this.route.queryParams.subscribe(params => {
+      this.groupBy = params['groupBy'] || '';
+      this.groupCardsBy();
+    });
+  }
+
+  onSortByChange(event: any): void {
+    this.sortCards();
+    this.groupCardsBy();
+  }
+
+  sortCards(): void {
+    if (!this.sortBy) return;
+    if (this.sortBy === 'priceAsc') {
+      this.cards.sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity));
+    } else if (this.sortBy === 'priceDesc') {
+      this.cards.sort((a, b) => (b.price ?? -Infinity) - (a.price ?? -Infinity));
+    }
+  }
+
+  onGroupByChange(event: any): void {
+    // Met à jour l'URL avec le groupement choisi
+    this.router.navigate([], {
+      queryParams: { groupBy: this.groupBy },
+      queryParamsHandling: 'merge',
+      replaceUrl: true
+    });
+    this.groupCardsBy(); // Met à jour le groupement
+  }
+
+  groupCardsBy(): void {
+    if (!this.groupBy) {
+      // Pas de groupement
+      this.groupedCards = { 'Toutes les cartes': this.cards };
+      return;
+    }
+    this.groupedCards = this.cards.reduce((groups, card) => {
+      let key = '';
+      switch (this.groupBy) {
+        case 'name':
+          key = card.name || 'Unknown';
+          break;
+        case 'faction':
+          key = card.faction || 'Unknown';
+          break;
+        case 'main_cost':
+          key = card.MAIN_COST !== undefined ? String(card.MAIN_COST) : 'Unknown';
+          break;
+        default:
+          key = 'Unknown';
+      }
+      if (!groups[key]) {
+        groups[key] = [];
+      }
+      groups[key].push(card);
+      return groups;
+    }, {} as { [key: string]: CardModel[] });
   }
 
   toggleFilterSlider(): void {
@@ -101,7 +168,8 @@ export class CardsComponent implements OnInit, OnDestroy {
     const { cards, searchOffers } = event;
     this.cards = cards;
     this.searchOffers = searchOffers;
-    this.groupCardsByName();
+    this.sortCards();
+    this.groupCardsBy();
 
     // Détecter un seul groupe
     const groupNames = Object.keys(this.groupedCards);
@@ -112,16 +180,16 @@ export class CardsComponent implements OnInit, OnDestroy {
     }
   }
 
-  groupCardsByName(): void {
-    this.groupedCards = this.cards.reduce((groups, card) => {
-      const name = card.name || 'Unknown';
-      if (!groups[name]) {
-        groups[name] = [];
-      }
-      groups[name].push(card);
-      return groups;
-    }, {} as { [key: string]: CardModel[] });
-  }
+  // groupCardsByName(): void {
+  //   this.groupedCards = this.cards.reduce((groups, card) => {
+  //     const name = card.name || 'Unknown';
+  //     if (!groups[name]) {
+  //       groups[name] = [];
+  //     }
+  //     groups[name].push(card);
+  //     return groups;
+  //   }, {} as { [key: string]: CardModel[] });
+  // }
 
   addCardsToQueue(cards: CardModel[]): void {
     cards.map((card) => card.isProcessing = true);

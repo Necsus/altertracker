@@ -28,8 +28,8 @@
             style="user-select: none;" class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
             'header.home' | translate }}</a>
         </li>
-        <li><a routerLink="/cards" routerLinkActive="text-amber-400" [routerLinkActiveOptions]="{ exact: true }"
-            style="user-select: none;" class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
+        <li><a routerLink="/cards" routerLinkActive="text-amber-400" style="user-select: none;"
+            class="hover:text-amber-400 transition duration-300 cursor-pointer" (click)="reloadPage($event)">{{
             'header.cards' | translate }}</a>
         <li><a routerLink="/stats" routerLinkActive="text-amber-400" style="user-select: none;"
             class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
@@ -149,8 +149,7 @@
       }
       <div class="flex justify-between items-center">
         <a routerLink="/join-discord" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
-          class="block hover:text-amber-400 transition duration-300"><i
-              class="fa-brands fa-discord text-lg"></i></a>
+          class="block hover:text-amber-400 transition duration-300"><i class="fa-brands fa-discord text-lg"></i></a>
         <app-language-selector class="ml-auto"></app-language-selector>
       </div>
 
