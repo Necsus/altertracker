@@ -1,7 +1,5 @@
 import os
 import re
-import uuid
-import jwt
 import sib_api_v3_sdk
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import (
