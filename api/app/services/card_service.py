@@ -42,10 +42,10 @@ def get_card_by_reference_service(reference: str) -> Optional[Card]:
 
 def search_cards_service(name, rarity, faction, set, main_effect, main_effect_2, echo_effect, exclude_effect, main_cost_range, recall_cost_range,
     forest_cost_range, mountain_cost_range, ocean_cost_range, no_condition,
-    in_market, price_range, en, user_id) -> List[dict]:
+    in_market, price_range, en, dataset_type, user_id) -> List[dict]:
     return search_cards_data(name, rarity, faction, set, main_effect, main_effect_2, echo_effect, exclude_effect, 
         main_cost_range, recall_cost_range, forest_cost_range, mountain_cost_range, ocean_cost_range,
-        no_condition, in_market, price_range, en, user_id)
+        no_condition, in_market, price_range, en, dataset_type, user_id)
 
 def post_offer_live_market_service(data: List[dict]) -> None:
     """Optimisation de la gestion des offres pour réduire les appels à la base de données."""

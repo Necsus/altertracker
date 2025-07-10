@@ -70,10 +70,11 @@ def search_cards_route():
         in_market = data.get('in_market')
         price_range = data.get('price_range')
         en = data.get('en', False)
+        dataset_type = data.get('dataset_type')
         cards = search_cards_service(
             name, rarity, faction, set, main_effect, main_effect_2, echo_effect, exclude_effect,
             main_cost_range, recall_cost_range, forest_power_range, mountain_power_range, ocean_power_range,
-            no_condition, in_market, price_range, en, user_id
+            no_condition, in_market, price_range, en, dataset_type, user_id
         )
         return jsonify(cards), 200
     except Exception as e:

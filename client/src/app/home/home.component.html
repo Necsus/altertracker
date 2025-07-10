@@ -88,10 +88,16 @@
 
     <section>
       <div class="mt-8">
-        <h2 class="text-2xl font-semibold mb-4">
-          {{ 'home.new_cards_title' | translate }}&nbsp;<span class="text-green-400">+{{ newCardsCount
-            }}</span>
-        </h2>
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-2xl font-semibold">
+            {{ 'home.new_cards_title' | translate }}&nbsp;
+            <span class="text-green-400">+{{ newCardsCount }}</span>
+          </h2>
+          <a routerLink="/cards" [queryParams]="{ dataset_type: 'new_cards' }"
+            class="inline-block bg-amber-500 hover:bg-amber-400 text-black font-semibold py-2 px-4 rounded-xl shadow transition duration-200 text-sm">
+            {{ 'home.see_all' | translate }}
+          </a>
+        </div>
         <ng-container *ngIf="!newCardsLoading; else cardsLoadingSection">
           <div class="scroll-container flex flex-nowrap space-x-4 overflow-x-auto pb-2">
             <div *ngFor="let card of newCards" class="flex-shrink-0 w-48 bg-gray-800 rounded-xl shadow">

@@ -64,7 +64,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       ocean_power_range: [''],
       no_condition: [''],
       in_market: [''],
-      price_range: ['']
+      price_range: [''],
+      dataset_type: ['']
     });
 
     // Patch le formulaire avec les query params actuels dès l'init
@@ -102,7 +103,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       ocean_power_range: queryParams['ocean_power_range'] || '',
       in_market: queryParams['in_market'] || '',
       price_range: queryParams['price_range'] || '',
-      no_condition: queryParams['no_condition'] || ''
+      no_condition: queryParams['no_condition'] || '',
+      dataset_type: queryParams['dataset_type'] || ''
     }, { emitEvent: false }); // Ne pas déclencher valueChanges ici
 
     // Synchronise les tableaux pour l'affichage
@@ -213,7 +215,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       no_condition: criteria.no_condition,
       in_market: criteria.in_market,
       price_range: this.buildRange(criteria.price_range),
-      en: (this.translate.currentLang || 'fr') === 'en' ? true : false
+      en: (this.translate.currentLang || 'fr') === 'en' ? true : false,
+      dataset_type: criteria.dataset_type
     }
     let searchObservable = this.cardService.search_cards$(request);
     // Appliquer conditionnellement le pipe `withLoader`

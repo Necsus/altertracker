@@ -1,5 +1,6 @@
 import re
 from typing import Optional
+from app.models.offer import Offer
 from app.models.effect import Effect
 from app.models.user_alert import UserAlert
 from app.models.card import Card
@@ -36,7 +37,7 @@ def get_card_by_reference_data(reference: str) -> Optional[dict]:
 
 def search_cards_data(name, rarity, faction, set, main_effect, main_effect_2, echo_effect, exclude_effect,
     main_cost_range, recall_cost_range, forest_power_range, mountain_power_range, ocean_power_range,
-    no_condition, in_market, price_range, en, user_id):
+    no_condition, in_market, price_range, en, dataset_type, user_id):
     # Vérifier si le nom correspond à la regexp ^ALT_
     if name and re.match(r'^ALT_', name):
         query = db.session.query(Card) if not user_id else db.session.query(
@@ -72,6 +73,62 @@ def search_cards_data(name, rarity, faction, set, main_effect, main_effect_2, ec
         Card,
         UserAlert.id.label("alert_id")  # Ajoute une colonne booléenne pour indiquer si une alerte est activée
     )
+
+    # Filtrer sur les cartes créées aujourd'hui si demandé
+    if dataset_type == "new_cards":
+        paris_tz = timezone('Europe/Paris')
+        today_paris = datetime.now(paris_tz).date()
+        today_utc_start = datetime.combine(today_paris, datetime.min.time()).astimezone(timezone('UTC'))
+        today_utc_end = datetime.combine(today_paris, datetime.max.time()).astimezone(timezone('UTC'))
+        query = query.filter(
+            Card.created_at >= today_utc_start,
+            Card.created_at <= today_utc_end
+        )
+
+    if dataset_type == "new_offers":
+        paris_tz = timezone('Europe/Paris')
+        today_paris = datetime.now(paris_tz).date()
+        today_utc_start = datetime.combine(today_paris, datetime.min.time()).astimezone(timezone('UTC'))
+        today_utc_end = datetime.combine(today_paris, datetime.max.time()).astimezone(timezone('UTC'))
+        # Filtrer les cartes qui ont AU MOINS une offre ajoutée aujourd'hui (non supprimée, sans previous_offer)
+        query = query.join(
+            Offer, Offer.reference_card == Card.reference
+        ).filter(
+            Offer.created_at >= today_utc_start,
+            Offer.created_at <= today_utc_end,
+            Offer.is_deleted == False,
+            Offer.previous_offer == None
+        )
+
+    if dataset_type == "edit_offers":
+        paris_tz = timezone('Europe/Paris')
+        today_paris = datetime.now(paris_tz).date()
+        today_utc_start = datetime.combine(today_paris, datetime.min.time()).astimezone(timezone('UTC'))
+        today_utc_end = datetime.combine(today_paris, datetime.max.time()).astimezone(timezone('UTC'))
+        query = query.join(
+            Offer, Offer.reference_card == Card.reference
+        ).filter(
+            Offer.created_at >= today_utc_start,
+            Offer.created_at <= today_utc_end,
+            Offer.is_deleted == False,
+            Offer.previous_offer != None
+        )
+
+    if dataset_type == "deleted_offers":
+        paris_tz = timezone('Europe/Paris')
+        today_paris = datetime.now(paris_tz).date()
+        today_utc_start = datetime.combine(today_paris, datetime.min.time()).astimezone(timezone('UTC'))
+        today_utc_end = datetime.combine(today_paris, datetime.max.time()).astimezone(timezone('UTC'))
+        # Sous-requête pour récupérer les IDs présents dans previous_offer
+        subquery = db.session.query(Offer.previous_offer).filter(Offer.previous_offer != None).subquery()
+        query = query.join(
+            Offer, Offer.reference_card == Card.reference
+        ).filter(
+            Offer.deleted_at >= today_utc_start,
+            Offer.deleted_at <= today_utc_end,
+            Offer.is_deleted == True,
+            ~Offer.id.in_(subquery)
+        )
 
     # Jointure conditionnelle avec UserAlert si l'utilisateur est authentifié
     if user_id:
