@@ -110,6 +110,10 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     // Synchronise les tableaux pour l'affichage
     this.selectedFactions = (queryParams['faction'] || '').split(',').filter(Boolean);
     this.selectedRarity = (queryParams['rarity'] || '').split(',').filter(Boolean);
+
+    if (queryParams['dataset_type']) {
+      this.onSubmit();
+    }
   }
 
   toggleFilters(): void {
@@ -153,7 +157,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   isFormValid(): boolean {
     const { name, rarity, faction, set, main_effect, main_effect_2, echo_effect, exclude_effect,
       main_cost_range, recall_cost_range, forest_power_range, mountain_power_range, ocean_power_range,
-      in_market, price_range, no_condition } = this.searchForm.value;
+      in_market, price_range, no_condition, dataset_type } = this.searchForm.value;
     // Vérifie si au moins un champ est rempli ou si forest_power, mountain_power ou ocean_power est égal à 0
     return !!(
       name || rarity || faction || set || main_effect || main_effect_2 || echo_effect || exclude_effect || main_cost_range || recall_cost_range ||
@@ -161,7 +165,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       mountain_power_range !== '' && mountain_power_range !== null && mountain_power_range !== undefined ||
       ocean_power_range !== '' && ocean_power_range !== null && ocean_power_range !== undefined ||
       price_range !== '' && price_range !== null && price_range !== undefined ||
-      in_market || no_condition
+      in_market || no_condition || dataset_type
     );
   }
 

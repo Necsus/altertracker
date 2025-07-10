@@ -120,14 +120,13 @@ def search_cards_data(name, rarity, faction, set, main_effect, main_effect_2, ec
         today_utc_start = datetime.combine(today_paris, datetime.min.time()).astimezone(timezone('UTC'))
         today_utc_end = datetime.combine(today_paris, datetime.max.time()).astimezone(timezone('UTC'))
         # Sous-requête pour récupérer les IDs présents dans previous_offer
-        subquery = db.session.query(Offer.previous_offer).filter(Offer.previous_offer != None).subquery()
+        # subquery = db.session.query(Offer.previous_offer).filter(Offer.previous_offer != None).subquery()
         query = query.join(
             Offer, Offer.reference_card == Card.reference
         ).filter(
             Offer.deleted_at >= today_utc_start,
             Offer.deleted_at <= today_utc_end,
-            Offer.is_deleted == True,
-            ~Offer.id.in_(subquery)
+            Offer.is_deleted == True
         )
 
     # Jointure conditionnelle avec UserAlert si l'utilisateur est authentifié
