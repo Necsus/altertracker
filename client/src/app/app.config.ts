@@ -17,16 +17,20 @@ const createTranslateLoader = (http: HttpClient): TranslateHttpLoader => {
 const config: SocketIoConfig = { url: environment.socketio_url, options: {} };
 
 const browserLang = navigator.language.split('-')[0]; // 'fr' ou 'en'
+let navigatorLocale = navigator.language;
 
 switch (browserLang) {
   case 'fr':
+    navigatorLocale = 'fr-FR';
     registerLocaleData(localeFr);
     break;
   case 'en':
+    navigatorLocale = 'en-US';
     registerLocaleData(localeEn);
     break;
   // Ajoute d'autres cas si besoin
   default:
+    navigatorLocale = 'en-US';
     registerLocaleData(localeEn);
 }
 
@@ -45,7 +49,7 @@ export const appConfig: ApplicationConfig = {
       SocketIoModule.forRoot(config),
     ),
     {
-      provide: LOCALE_ID, useValue: navigator.language.split('-')[0]
+      provide: LOCALE_ID, useValue: navigatorLocale
     },
     provideHttpClient(),
     {
