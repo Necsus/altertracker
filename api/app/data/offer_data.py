@@ -136,9 +136,10 @@ def get_count_offers_edited_today_data() -> int:
     today_utc_start = datetime.combine(today_paris, datetime.min.time()).astimezone(timezone('UTC'))
     today_utc_end = datetime.combine(today_paris, datetime.max.time()).astimezone(timezone('UTC'))
 
-    return db.session.query(func.count(Offer.id)).filter(
+    return db.session.query(func.count(func.distinct(Offer.reference_card))).filter(
         Offer.created_at >= today_utc_start,
         Offer.created_at <= today_utc_end,
+        Offer.status == 'available',
         Offer.is_deleted == False,
         Offer.previous_offer != None
     ).scalar()
@@ -175,8 +176,11 @@ def get_count_offers_deleted_today_data() -> int:
     today_utc_start = datetime.combine(today_paris, datetime.min.time()).astimezone(timezone('UTC'))
     today_utc_end = datetime.combine(today_paris, datetime.max.time()).astimezone(timezone('UTC'))
 
-    return db.session.query(func.count(Offer.id)).filter(
+    available_subq = db.session.query(Offer.reference_card).filter(Offer.status == 'available').subquery()
+
+    return db.session.query(func.count(func.distinct(Offer.reference_card))).filter(
         Offer.deleted_at >= today_utc_start,
         Offer.deleted_at <= today_utc_end,
-        Offer.is_deleted == True
+        Offer.is_deleted == True,
+        ~Offer.reference_card.in_(available_subq)
     ).scalar()
