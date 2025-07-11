@@ -72,6 +72,10 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     const queryParams = this.route.snapshot.queryParams;
     this.patchFormWithQueryParams(queryParams);
 
+    if (queryParams['dataset_type']) {
+      this.onSubmit();
+    }
+
     this.routeSubscription = this.route.queryParams.subscribe((queryParams) => {
       this.patchFormWithQueryParams(queryParams);
 
@@ -110,10 +114,6 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     // Synchronise les tableaux pour l'affichage
     this.selectedFactions = (queryParams['faction'] || '').split(',').filter(Boolean);
     this.selectedRarity = (queryParams['rarity'] || '').split(',').filter(Boolean);
-
-    if (queryParams['dataset_type']) {
-      this.onSubmit();
-    }
   }
 
   toggleFilters(): void {
