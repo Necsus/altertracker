@@ -107,7 +107,8 @@
           </span>
           <span [ngClass]="{
             'text-green-400': !offer.is_deleted,
-            'text-red-400 line-through': offer.is_deleted,
+            'text-red-400 line-through': offer.is_deleted && !offer.previous_offer,
+            'text-amber-400 line-through': offer.is_deleted && offer.previous_offer,
             'font-medium': true
           }">
             {{ offer.price | currency:(offer.currency || ''):'symbol':'1.2-2' }}
