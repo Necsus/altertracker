@@ -29,8 +29,6 @@ export class ContactComponent implements OnInit {
     this.authViewService.isLoggedIn$.subscribe(status => {
       if (status) {
         this.username = this.authViewService.getUsername();
-      } else {
-        this.router.navigate(['/login']);
       }
     });
     this.contactForm = this.fb.group({

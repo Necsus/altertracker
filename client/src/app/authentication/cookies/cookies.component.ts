@@ -1,19 +1,25 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
+import { CookieConsentService } from './cookies.service';
 
 @Component({
   selector: 'app-cookies',
   templateUrl: './cookies.component.html',
   imports: [CommonModule, TranslateModule]
 })
-export class CookiesComponent implements OnInit {
+export class CookiesComponent implements OnInit, OnDestroy {
   showCookieConsent = false;
+  private sub?: Subscription;
 
-  constructor() { }
+  constructor(private cookieConsentService: CookieConsentService) { }
 
   ngOnInit(): void {
     this.showCookieConsent = !localStorage.getItem('cookieConsent');
+    this.sub = this.cookieConsentService.openConsent$.subscribe(() => {
+      this.openConsentPopin();
+    });
     if (this.showCookieConsent) {
       this.loadAdsenseScript();
       setTimeout(() => {
@@ -27,6 +33,9 @@ export class CookiesComponent implements OnInit {
         }
       }, 500);
     }
+  }
+  ngOnDestroy(): void {
+    this.sub?.unsubscribe();
   }
   acceptCookies(): void {
     localStorage.setItem('cookieConsent', 'accepted');
@@ -46,5 +55,10 @@ export class CookiesComponent implements OnInit {
   refuseCookies(): void {
     localStorage.setItem('cookieConsent', 'refused');
     this.showCookieConsent = false;
+  }
+
+  openConsentPopin(): void {
+    console.log('openConsentPopin called');
+    this.showCookieConsent = true;
   }
 }
