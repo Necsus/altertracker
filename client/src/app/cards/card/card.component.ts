@@ -12,6 +12,7 @@ import { CardService } from '../../03_business/card.service';
 import { PurchaseService } from '../../03_business/purchase.service';
 import { UserService } from '../../03_business/user.service';
 import { AuthViewService } from '../../authentication/auth-view.service';
+import { AlteredImgPipe } from '../../shared/pipes/altered-img.pipe';
 import { IconParserPipe } from '../../shared/pipes/icon-parser.pipe';
 import { LocalizedValuePipe } from '../../shared/pipes/localized-value.pipe';
 import { ToDatePipe } from '../../shared/pipes/to-date.pipe';
@@ -24,7 +25,8 @@ import { CardImgComponent } from './card-img.component';
   selector: 'app-card',
   templateUrl: './card.component.html',
   styleUrls: ['./card.component.css'],
-  imports: [CommonModule, RouterModule, FormsModule, TranslateModule, LocalizedValuePipe, IconParserPipe, ToDatePipe],
+  imports: [CommonModule, RouterModule, FormsModule, TranslateModule,
+    LocalizedValuePipe, IconParserPipe, ToDatePipe, AlteredImgPipe],
 })
 export class CardComponent {
   @Input() card!: CardModel; // Données de la carte
