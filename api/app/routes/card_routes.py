@@ -22,6 +22,7 @@ from app.extensions import cache
 card_bp = Blueprint('card', __name__)
 
 @card_bp.route('/count', methods=['GET'])
+@cache.cached(timeout=3600, query_string=True)
 def count_cards_route():
     try:
         # Assuming you have a function to count cards
@@ -31,6 +32,7 @@ def count_cards_route():
         return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
     
 @card_bp.route('/inmarketcount', methods=['GET'])
+@cache.cached(timeout=3600, query_string=True)
 def count_cards_in_market_route():
     try:
         # Assuming you have a function to count cards
@@ -101,6 +103,7 @@ def post_offer_live_market():
         return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
     
 @card_bp.route('/lastadded', methods=['GET'])
+@cache.cached(timeout=3600, query_string=True)
 def get_last_added_cards():
     try:
         count = get_count_cards_created_today_service()
