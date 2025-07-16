@@ -103,7 +103,6 @@ def post_offer_live_market():
         return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
     
 @card_bp.route('/lastadded', methods=['GET'])
-@cache.cached(timeout=3600, query_string=True)
 def get_last_added_cards():
     try:
         count = get_count_cards_created_today_service()
