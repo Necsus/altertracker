@@ -78,7 +78,7 @@ def post_offer_live_market_service(data: List[dict]) -> None:
             if existing_offer and not existing_offer.is_deleted:
                 if existing_offer.id_offer == new_offer.id_offer:
                     # Même offre, pas de mise à jour nécessaire
-                    if existing_card.price == new_offer.price or existing_offer.currency != new_offer.currency:
+                    if existing_offer.price == new_offer.price or existing_offer.currency != new_offer.currency:
                         cards_to_update.append(existing_card)
                         continue
                     else:
@@ -102,7 +102,8 @@ def post_offer_live_market_service(data: List[dict]) -> None:
                         existing_card.url_offer = new_offer.link_offer
                         existing_card.price_currency = new_offer.currency
                         existing_card.price_updated_at = datetime.now(timezone.utc)
-                        send_user_alert(existing_card, "edited" if existing_offer else "added")
+                        if abs((existing_offer.price or 0) - (new_offer.price or 0)) > 1:
+                            send_user_alert(existing_card, "edited" if existing_offer else "added")
                         continue
                 else:
                     # Nouvelle offre, marquer l'ancienne comme expirée
