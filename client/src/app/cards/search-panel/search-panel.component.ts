@@ -238,16 +238,22 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   openEffectBuilder(effectType: 'main_effect' | 'main_effect_2' | 'echo_effect' | 'exclude_effect') {
     const modalRef = this.modalService.open(EffectBuilderComponent);
     // Passe la référence au composant dynamique
-    setTimeout(() => {
+    const assignModalRef = () => {
       if (modalRef.instance.componentRef) {
         modalRef.instance.componentRef.instance.modalRef = modalRef;
+        return true;
       }
-    });
-
+      return false;
+    };
+    if (!assignModalRef()) {
+      // Si non dispo, réessaie rapidement jusqu’à ce que ce soit prêt
+      const interval = setInterval(() => {
+        if (assignModalRef()) clearInterval(interval);
+      }, 10);
+    }
     modalRef.onDestroy(() => {
       const result = modalRef.instance.componentRef?.instance.result;
       if (result) {
-        // Utilise la chaîne dans ton parent (ex: setValue sur le champ)
         this.searchForm.get(effectType)?.setValue(result);
       }
     });

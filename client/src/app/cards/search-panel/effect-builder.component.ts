@@ -6,7 +6,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { EffectModel } from '../../01_models/03_business/effect.model';
 import { CardService } from '../../03_business/card.service';
 import { IconParserPipe } from '../../shared/pipes/icon-parser.pipe';
-import { ModalService } from '../../shared/services/modal/modal.service';
 
 @Component({
   standalone: true,
@@ -16,7 +15,7 @@ import { ModalService } from '../../shared/services/modal/modal.service';
   imports: [CommonModule, FormsModule, NgSelectModule, IconParserPipe, TranslateModule],
 })
 export class EffectBuilderComponent implements OnInit {
-  modalRef?: ComponentRef<any>; // Ajoute ceci
+  modalRef?: ComponentRef<any>;
   triggers: EffectModel[] = [];
   conditions: EffectModel[] = [];
   effects: EffectModel[] = [];
@@ -26,8 +25,8 @@ export class EffectBuilderComponent implements OnInit {
   result: string = '';
 
   constructor(
-    private cardService: CardService,
-    private modalService: ModalService) { }
+    private cardService: CardService) { }
+
   ngOnInit(): void {
     this.cardService.getEffect$('fr').subscribe({
       next: (response: EffectModel[]) => {
@@ -76,8 +75,9 @@ export class EffectBuilderComponent implements OnInit {
       result += (values[i] ? joiner + values[i] : '');
     }
     this.result = result;
+
     if (this.modalRef) {
-      this.modalRef.destroy(); // Ferme la modale proprement
+      this.modalRef.destroy();
     }
   }
 }
