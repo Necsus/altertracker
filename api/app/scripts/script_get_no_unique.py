@@ -17,7 +17,7 @@ def run_script():
             faction = jsonCard['mainFaction']['reference'],
             rarity = jsonCard['rarity']['reference'],
             type = jsonCard['cardType']['reference'],
-            subtype = jsonCard['cardSubTypes']['reference'] if jsonCard['cardSubTypes']['reference'] else None,
+            subtype=None,
             set = jsonCard['cardSet']['reference'],
             imagePath = jsonCard['imagePath'],
             image_path_en=None,
@@ -30,7 +30,8 @@ def run_script():
             MAIN_EFFECT = None,
             main_effect_en=None,
             ECHO_EFFECT = None,
-            echo_effect_en=None
+            echo_effect_en=None,
+            price_updated_at=None
         )
         return card
 
@@ -41,6 +42,7 @@ def run_script():
     def map_effect_to_card(card: Card, jsonCard) -> Card:
         card.MAIN_EFFECT = None if 'MAIN_EFFECT' not in jsonCard['elements'] else jsonCard['elements']['MAIN_EFFECT'],
         card.ECHO_EFFECT = None if 'ECHO_EFFECT' not in jsonCard['elements'] else jsonCard['elements']['ECHO_EFFECT'],
+        card.subtype = ','.join([sub['reference'] for sub in jsonCard['cardSubTypes']]) if jsonCard.get('cardSubTypes') else None,
         return card
 
     def map_names(card: Card, name_fr: str, name_en: str):
@@ -52,7 +54,7 @@ def run_script():
         db.session.commit()
 
     def insert_cards_into_db(cards):
-        global nb_cards
+        nonlocal nb_cards
         try:
             add_card_len = 0
             for card in cards:
@@ -85,11 +87,8 @@ def run_script():
         for set in sets:
             page = 1
             while True:
-
                 # print(f"Récupération des cartes de la page {page}...")
-                print("0.1")
                 cards = card_routine.get_cards(page, set, rarity)
-                print("0.2")
                 socketio.emit('script_output',
                     {'data': f"Récupération des cartes de la page {page} {set} results : {cards['hydra:totalItems'] if cards and 'hydra:totalItems' in cards else 0}..."})
 
@@ -100,11 +99,8 @@ def run_script():
                     break
 
                 for card in cards['hydra:member']:
-                    print("1")
                     tempCard = map_jsoncard_to_card(card)
-                    print("2")
                     card_to_update = db.session.query(Card).filter_by(reference=tempCard.reference).first()
-                    print("3")
                     if card_to_update:
                         has_updated = False
                         # Vérifiez et mettez à jour uniquement si les valeurs sont différentes
@@ -139,6 +135,7 @@ def run_script():
                             card_to_update.edited_at = datetime.now(timezone.utc)
                             db.session.commit()
                         continue
+                    time.sleep(0.2)
                     socketio.emit('script_output', {'data': f"Récupération des stats de la carte {tempCard.reference}..."})
                     # print(f"\rRécupération des stats de la carte {tempCard.reference}...", end="", flush=True)
                     detailsCard = card_routine.get_card_by_reference(tempCard.reference)
