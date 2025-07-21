@@ -3,13 +3,20 @@ name: Deploy to Server k8s
 on:
   push:
     branches:
-      - production
+      - production-k8s
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Kubeconfig
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBECONFIG }}" > ~/.kube/config
+
       - name: Create/update Postgres secret
         run: |
           kubectl create secret generic postgres-secret \
@@ -17,3 +24,7 @@ jobs:
             --from-literal=POSTGRES_USER="${{ secrets.POSTGRES_USER }}" \
             --from-literal=POSTGRES_DB="${{ secrets.POSTGRES_DB }}" \
             --dry-run=client -o yaml | kubectl apply -f -
+
+      - name: Deploy manifests
+        run: |
+          kubectl apply -k ./k8s/
