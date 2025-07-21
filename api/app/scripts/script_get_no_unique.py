@@ -17,6 +17,7 @@ def run_script():
             faction = jsonCard['mainFaction']['reference'],
             rarity = jsonCard['rarity']['reference'],
             type = jsonCard['cardType']['reference'],
+            subtype = jsonCard['cardSubTypes']['reference'],
             set = jsonCard['cardSet']['reference'],
             imagePath = jsonCard['imagePath'],
             image_path_en=None,
@@ -133,7 +134,7 @@ def run_script():
                             card_to_update.edited_at = datetime.now(timezone.utc)
                             db.session.commit()
                         continue
-                    socketio.emit('script_output', {'data': f"\rRécupération des stats de la carte {tempCard.reference}..."})
+                    socketio.emit('script_output', {'data': f"Récupération des stats de la carte {tempCard.reference}..."})
                     # print(f"\rRécupération des stats de la carte {tempCard.reference}...", end="", flush=True)
                     detailsCard = card_routine.get_card_by_reference(tempCard.reference)
                     tempCard = map_effect_to_card(tempCard, detailsCard)
