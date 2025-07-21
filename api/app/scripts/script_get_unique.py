@@ -173,6 +173,7 @@ def run_script(faction=None, workers=3, forceUpdate=False):
 
 
                                         if card_to_update.MAIN_EFFECT is None and card_to_update.main_effect_en is not None:
+                                            time.sleep(0.1)
                                             detailsCard = card_routine.get_card_by_reference(tempCard.reference)
                                             if detailsCard:
                                                 temp_card = map_effect_to_card(tempCard, detailsCard)
@@ -183,6 +184,7 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                                             socketio.emit('script_output', {'data': f"Mise à jour de la carte : {card_to_update.name_en} ({card_to_update.reference})"})
                                             card_to_update.edited_at = datetime.now(timezone.utc)
                                         continue
+                                    time.sleep(0.1)
                                     detailsCard = card_routine.get_card_by_reference(tempCard.reference)
                                     if detailsCard:
                                         tempCard = map_effect_to_card(tempCard, detailsCard)

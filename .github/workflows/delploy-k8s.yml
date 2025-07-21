@@ -31,6 +31,17 @@ jobs:
             --from-literal=POSTGRES_DB="${{ secrets.POSTGRES_DB }}" \
             --dry-run=client -o yaml | kubectl apply -f -
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to local registry
+        run: echo ${{ secrets.REGISTRY_PASSWORD }} | docker login 100.64.12.34:5000 --username ${{ secrets.REGISTRY_USER }} --password-stdin
+
+      - name: Build and push API image
+        run: |
+          docker build -t 100.64.12.34:5000/altertracker-api:latest ./api
+          docker push 100.64.12.34:5000/altertracker-api:latest
+
       - name: Create API secret in Kubernetes
         run: |
           kubectl create secret generic api-secret \
