@@ -31,6 +31,22 @@ jobs:
             --from-literal=POSTGRES_DB="${{ secrets.POSTGRES_DB }}" \
             --dry-run=client -o yaml | kubectl apply -f -
 
+      - name: Create API secret in Kubernetes
+        run: |
+          kubectl create secret generic api-secret \
+            --from-literal=DATABASE_URL="postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@postgres:5432/${{ secrets.POSTGRES_DB }}" \
+            --from-literal=CORS_ORIGINS="${{ vars.CORS_ORIGINS }}" \
+            --from-literal=PASSWORD_PEPPER="${{ secrets.PASSWORD_PEPPER }}" \
+            --from-literal=SECRET_KEY="${{ secrets.SECRET_KEY }}" \
+            --from-literal=JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" \
+            --from-literal=BREVO_API_KEY="${{ secrets.BREVO_API_KEY }}" \
+            --from-literal=ANGULAR_URL="${{ vars.ANGULAR_URL }}" \
+            --from-literal=FLASK_ENV="${{ vars.FLASK_ENV }}" \
+            --from-literal=DISCORD_CLIENT_ID="${{ vars.DISCORD_CLIENT_ID }}" \
+            --from-literal=DISCORD_CLIENT_SECRET="${{ secrets.DISCORD_CLIENT_SECRET }}" \
+            --from-literal=DISCORD_REDIRECT_URI="${{ vars.DISCORD_REDIRECT_URI }}" \
+            --dry-run=client -o yaml | kubectl apply -f -
+
       - name: Deploy manifests
         run: |
           kubectl apply -f ./k8s/postgres/
