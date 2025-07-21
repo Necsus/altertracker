@@ -17,7 +17,7 @@ def run_script():
             faction = jsonCard['mainFaction']['reference'],
             rarity = jsonCard['rarity']['reference'],
             type = jsonCard['cardType']['reference'],
-            subtype = jsonCard['cardSubTypes']['reference'],
+            subtype = jsonCard['cardSubTypes']['reference'] if jsonCard['cardSubTypes']['reference'] else None,
             set = jsonCard['cardSet']['reference'],
             imagePath = jsonCard['imagePath'],
             image_path_en=None,
@@ -87,7 +87,9 @@ def run_script():
             while True:
 
                 # print(f"Récupération des cartes de la page {page}...")
+                print("0.1")
                 cards = card_routine.get_cards(page, set, rarity)
+                print("0.2")
                 socketio.emit('script_output',
                     {'data': f"Récupération des cartes de la page {page} {set} results : {cards['hydra:totalItems'] if cards and 'hydra:totalItems' in cards else 0}..."})
 
@@ -98,8 +100,11 @@ def run_script():
                     break
 
                 for card in cards['hydra:member']:
+                    print("1")
                     tempCard = map_jsoncard_to_card(card)
+                    print("2")
                     card_to_update = db.session.query(Card).filter_by(reference=tempCard.reference).first()
+                    print("3")
                     if card_to_update:
                         has_updated = False
                         # Vérifiez et mettez à jour uniquement si les valeurs sont différentes
