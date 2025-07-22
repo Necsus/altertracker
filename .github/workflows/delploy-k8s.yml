@@ -36,8 +36,8 @@ jobs:
 
       - name: Build and push API image
         run: |
-          docker build -t 100.64.12.34:5000/altertracker-api:latest ./api
-          docker push 100.64.12.34:5000/altertracker-api:latest
+          docker build -t 100.108.255.93:5000/altertracker-api:latest ./api
+          docker push 100.108.255.93:5000/altertracker-api:latest
 
       - name: Create API secret in Kubernetes
         run: |
