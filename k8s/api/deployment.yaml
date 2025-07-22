@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: api
+  namespace: altertracker
 spec:
   replicas: 1
   selector:
@@ -14,7 +15,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: <ton-image-docker>
+          image: registry.altertracker.com/altertracker-api:latest
           ports:
             - containerPort: 5001
           envFrom:
