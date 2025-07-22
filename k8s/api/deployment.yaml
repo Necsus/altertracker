@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api
+  template:
+    metadata:
+      labels:
+        app: api
+    spec:
+      containers:
+        - name: api
+          image: <ton-image-docker>
+          ports:
+            - containerPort: 5001
+          envFrom:
+            - secretRef:
+                name: api-env
+          # Si tu as besoin d'une readiness/liveness probe, ajoute-les ici

@@ -19,6 +19,7 @@ def run_script(faction=None, workers=3, forceUpdate=False):
             faction=jsonCard['mainFaction']['reference'],
             rarity=jsonCard['rarity']['reference'],
             type=jsonCard['cardType']['reference'],
+            subtype=None,
             set=jsonCard['cardSet']['reference'],
             imagePath=jsonCard['imagePath'],
             image_path_en=None,
@@ -31,12 +32,14 @@ def run_script(faction=None, workers=3, forceUpdate=False):
             MAIN_EFFECT=None,
             main_effect_en=None,
             ECHO_EFFECT=None,
-            echo_effect_en=None
+            echo_effect_en=None,
+            price_updated_at=None
         )
 
     def map_effect_to_card(card: Card, jsonCard) -> Card:
         card.MAIN_EFFECT = jsonCard['elements'].get('MAIN_EFFECT')
         card.ECHO_EFFECT = jsonCard['elements'].get('ECHO_EFFECT')
+        card.subtype = ','.join([sub['reference'] for sub in jsonCard['cardSubTypes']]) if jsonCard.get('cardSubTypes') else None,
         return card
     
     def map_jsoncard_to_card_en(card: Card, jsonCard) -> Card:
@@ -170,6 +173,7 @@ def run_script(faction=None, workers=3, forceUpdate=False):
 
 
                                         if card_to_update.MAIN_EFFECT is None and card_to_update.main_effect_en is not None:
+                                            time.sleep(0.1)
                                             detailsCard = card_routine.get_card_by_reference(tempCard.reference)
                                             if detailsCard:
                                                 temp_card = map_effect_to_card(tempCard, detailsCard)
@@ -180,6 +184,7 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                                             socketio.emit('script_output', {'data': f"Mise à jour de la carte : {card_to_update.name_en} ({card_to_update.reference})"})
                                             card_to_update.edited_at = datetime.now(timezone.utc)
                                         continue
+                                    time.sleep(0.1)
                                     detailsCard = card_routine.get_card_by_reference(tempCard.reference)
                                     if detailsCard:
                                         tempCard = map_effect_to_card(tempCard, detailsCard)

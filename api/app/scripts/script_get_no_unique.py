@@ -17,6 +17,7 @@ def run_script():
             faction = jsonCard['mainFaction']['reference'],
             rarity = jsonCard['rarity']['reference'],
             type = jsonCard['cardType']['reference'],
+            subtype=None,
             set = jsonCard['cardSet']['reference'],
             imagePath = jsonCard['imagePath'],
             image_path_en=None,
@@ -29,7 +30,8 @@ def run_script():
             MAIN_EFFECT = None,
             main_effect_en=None,
             ECHO_EFFECT = None,
-            echo_effect_en=None
+            echo_effect_en=None,
+            price_updated_at=None
         )
         return card
 
@@ -40,6 +42,7 @@ def run_script():
     def map_effect_to_card(card: Card, jsonCard) -> Card:
         card.MAIN_EFFECT = None if 'MAIN_EFFECT' not in jsonCard['elements'] else jsonCard['elements']['MAIN_EFFECT'],
         card.ECHO_EFFECT = None if 'ECHO_EFFECT' not in jsonCard['elements'] else jsonCard['elements']['ECHO_EFFECT'],
+        card.subtype = ','.join([sub['reference'] for sub in jsonCard['cardSubTypes']]) if jsonCard.get('cardSubTypes') else None,
         return card
 
     def map_names(card: Card, name_fr: str, name_en: str):
@@ -51,7 +54,7 @@ def run_script():
         db.session.commit()
 
     def insert_cards_into_db(cards):
-        global nb_cards
+        nonlocal nb_cards
         try:
             add_card_len = 0
             for card in cards:
@@ -84,7 +87,6 @@ def run_script():
         for set in sets:
             page = 1
             while True:
-
                 # print(f"Récupération des cartes de la page {page}...")
                 cards = card_routine.get_cards(page, set, rarity)
                 socketio.emit('script_output',
@@ -133,7 +135,8 @@ def run_script():
                             card_to_update.edited_at = datetime.now(timezone.utc)
                             db.session.commit()
                         continue
-                    socketio.emit('script_output', {'data': f"\rRécupération des stats de la carte {tempCard.reference}..."})
+                    time.sleep(0.2)
+                    socketio.emit('script_output', {'data': f"Récupération des stats de la carte {tempCard.reference}..."})
                     # print(f"\rRécupération des stats de la carte {tempCard.reference}...", end="", flush=True)
                     detailsCard = card_routine.get_card_by_reference(tempCard.reference)
                     tempCard = map_effect_to_card(tempCard, detailsCard)

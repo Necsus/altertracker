@@ -12,6 +12,7 @@ class Card(db.Model):
     faction = db.Column(db.String(2))
     rarity = db.Column(db.String(20))
     type = db.Column(db.String(20))
+    subtype = db.Column(db.String(80))
     set = db.Column(db.String(100))
     imagePath = db.Column(db.Text)
     image_path_en = db.Column(db.Text, default=None)
@@ -45,6 +46,7 @@ class Card(db.Model):
             'faction': self.faction,
             'rarity': self.rarity,
             'type': self.type,
+            'subtype': self.subtype,
             'set': self.set,
             'imagePath': self.imagePath,
             'image_path_en': self.image_path_en,
@@ -66,7 +68,7 @@ class Card(db.Model):
             'url_offer': self.url_offer
         }
     
-    def __init__(self, id_card, reference, name, name_en, faction, rarity, type, set, imagePath,
+    def __init__(self, id_card, reference, name, name_en, faction, rarity, type, subtype, set, imagePath,
                 image_path_en, isSuspended, MAIN_COST, RECALL_COST, MOUNTAIN_POWER, OCEAN_POWER, FOREST_POWER,
                 MAIN_EFFECT, main_effect_en, ECHO_EFFECT, echo_effect_en, created_at=None, edited_at=None,
                 price=None, price_currency=None, price_updated_at=None, url_offer=None):
@@ -77,6 +79,7 @@ class Card(db.Model):
         self.faction = faction
         self.rarity = rarity
         self.type = type
+        self.subtype = subtype
         self.set = set
         self.imagePath = imagePath
         self.image_path_en = image_path_en

@@ -13,4 +13,4 @@ RUN pip install -r requirements.txt
 
 ENV FLASK_APP=run.py
 
-CMD ["gunicorn", "-w", "1", "-k", "eventlet", "-b", "0.0.0.0:5000", "run:app"]
+CMD ["gunicorn", "-w", "1", "-k", "eventlet", "-b", "0.0.0.0:5001", "run:app"]
