@@ -26,16 +26,6 @@ jobs:
       - name: Create namespace altertracker (idempotent)
         run: kubectl create namespace altertracker || true
 
-      - name: Ensure Ingress NGINX Controller is installed
-        run: |
-          if ! kubectl get pods -n ingress-nginx 2>/dev/null | grep -q ingress-nginx-controller; then
-            kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.9.6/deploy/static/provider/cloud/deploy.yaml
-            # Optionally wait for the pod to be ready
-            kubectl rollout status deployment/ingress-nginx-controller -n ingress-nginx --timeout=120s
-          else
-            echo "Ingress NGINX Controller already installed."
-          fi
-
       - name: Create/update Postgres secret
         run: |
           kubectl create secret generic postgres-secret \
