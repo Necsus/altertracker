@@ -171,20 +171,21 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                                             card_to_update.created_at = datetime.now(timezone.utc)
                                             has_updated = True
 
-
-                                        if card_to_update.MAIN_EFFECT is None and card_to_update.main_effect_en is not None:
-                                            time.sleep(0.1)
+                                        if card_to_update.MAIN_EFFECT is None:
+                                            time.sleep(0.2)
                                             detailsCard = card_routine.get_card_by_reference(tempCard.reference)
                                             if detailsCard:
                                                 temp_card = map_effect_to_card(tempCard, detailsCard)
                                                 card_to_update.MAIN_EFFECT = temp_card.MAIN_EFFECT
+                                                card_to_update.ECHO_EFFECT = temp_card.ECHO_EFFECT
+                                                card_to_update.subtype = temp_card.subtype
                                                 has_updated = True
 
                                         if has_updated:
                                             socketio.emit('script_output', {'data': f"Mise à jour de la carte : {card_to_update.name_en} ({card_to_update.reference})"})
                                             card_to_update.edited_at = datetime.now(timezone.utc)
                                         continue
-                                    time.sleep(0.1)
+                                    time.sleep(0.2)
                                     detailsCard = card_routine.get_card_by_reference(tempCard.reference)
                                     if detailsCard:
                                         tempCard = map_effect_to_card(tempCard, detailsCard)
@@ -263,12 +264,14 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                                             if card_to_update.created_at is None:
                                                 card_to_update.created_at = datetime.now(timezone.utc)
                                                 has_updated = True
-
-                                            if card_to_update.MAIN_EFFECT is None and card_to_update.main_effect_en is not None:
+                                            if card_to_update.MAIN_EFFECT is None:
+                                                time.sleep(0.2)
                                                 detailsCard = card_routine.get_card_by_reference(tempCard.reference)
                                                 if detailsCard:
                                                     temp_card = map_effect_to_card(tempCard, detailsCard)
                                                     card_to_update.MAIN_EFFECT = temp_card.MAIN_EFFECT
+                                                    card_to_update.ECHO_EFFECT = temp_card.ECHO_EFFECT
+                                                    card_to_update.subtype = temp_card.subtype
                                                     has_updated = True
 
                                             # Si une modification a été effectuée, mettre à jour `edited_at`
@@ -277,6 +280,7 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                                                 card_to_update.edited_at = datetime.now(timezone.utc)
                                                 
                                             continue
+                                        time.sleep(0.2)
                                         detailsCard = card_routine.get_card_by_reference(tempCard.reference)
                                         if detailsCard:
                                             tempCard = map_effect_to_card(tempCard, detailsCard)

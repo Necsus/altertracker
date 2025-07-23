@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -18,7 +18,7 @@ import { ModalService } from '../shared/services/modal/modal.service';
   templateUrl: './chat.component.html',
   imports: [CommonModule, FormsModule, LocalizedValuePipe],
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnInit, OnDestroy {
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
   currentLanguage: string = 'fr';
   rooms: ChatRoom[] = [];
@@ -40,7 +40,7 @@ export class ChatComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.authViewService.isLoggedIn$.subscribe(status => {
       if (!status) this.router.navigate(['/login']);
     });
@@ -60,6 +60,10 @@ export class ChatComponent implements OnInit {
         this.activeRoomMessages = [];
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.socket.disconnect();
   }
 
   scrollToBottom() {
@@ -103,6 +107,7 @@ export class ChatComponent implements OnInit {
 
   selectRoom(room: ChatRoom) {
     this.activeRoom = room;
+    this.socket.connect();
     this.socket.emit('join_room', { room_id: room.id });
     this.socket.fromEvent('new_message').subscribe((msg: any) => {
       if (this.activeRoom && msg.room_id === this.activeRoom.id) {
