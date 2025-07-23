@@ -71,6 +71,15 @@ jobs:
         run: |
           kubectl apply -n altertracker -f ./k8s/api/
 
+      - name: Build and push CLIENT image
+        run: |
+          docker build -t registry.altertracker.com/altertracker-client:latest ./client
+          docker push registry.altertracker.com/altertracker-client:latest
+
+      - name: Deploy CLIENT manifests
+        run: |
+          kubectl apply -n altertracker -f ./k8s/client/
+
       - name: Deploy PersistentVolumeClaim
         run: |
           kubectl apply -n altertracker -f ./k8s/postgres/pvc.yaml
