@@ -42,7 +42,7 @@ jobs:
             --from-literal=DISCORD_BOT_TOKEN="${{ secrets.DISCORD_BOT_TOKEN }}" \
             --from-literal=GUILD_ID="${{ vars.GUILD_ID }}" \
             --from-literal=ROLE_ID="${{ vars.ROLE_ID }}" \
-            --dry-run=bot -o yaml | kubectl apply -f -
+            --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Create/update API secret
         run: |
