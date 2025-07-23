@@ -75,10 +75,6 @@ jobs:
         run: |
           kubectl apply -n altertracker -f ./k8s/postgres/pvc.yaml
 
-      - name: Deploy ClusterIssuer
-        run: |
-          kubectl apply -f ./k8s/cluster-issuer.yaml
-
       - name: Deploy Ingress
         run: |
           kubectl apply -n altertracker -f ./k8s/ingress.yaml
