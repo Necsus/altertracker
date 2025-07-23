@@ -6,24 +6,6 @@ metadata:
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
-    nginx.ingress.kubernetes.io/configuration-snippet: |
-      # Block bad IPs
-      geo $bad_ip {
-        default 0;
-        52.47.134.158 1;
-        13.37.84.159 1;
-        51.44.100.120 1;
-        87.255.194.135 1;
-      }
-      map $bad_ip $loggable {
-        1 0;
-        0 1;
-      }
-      if ($bad_ip) {
-        return 403;
-      }
-    nginx.ingress.kubernetes.io/server-snippet: |
-      access_log /var/log/nginx/access.log combined if=$loggable;
 spec:
   ingressClassName: nginx
   tls:
@@ -42,7 +24,7 @@ spec:
                 port:
                   number: 5001
           - path: /socket.io/
-            pathType: Prefix
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: api
