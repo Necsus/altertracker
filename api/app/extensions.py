@@ -23,6 +23,6 @@ limiter = Limiter(
 if ConfigEnv.FLASK_ENV == 'production':
     limiter = Limiter(
         key_func=get_remote_address,
-        storage_uri=f"redis://redis:6379"
+        storage_uri=f"redis://redis.altertracker.svc.cluster.local:6379"
     )
 

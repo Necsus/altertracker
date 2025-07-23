@@ -67,6 +67,10 @@ jobs:
         run: |
           kubectl apply -n altertracker -f ./k8s/postgres/
 
+      - name: Deploy Redis manifests
+        run: |
+          kubectl apply -n altertracker -f ./k8s/redis/
+
       - name: Deploy API manifests
         run: |
           kubectl apply -n altertracker -f ./k8s/api/
