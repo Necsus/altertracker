@@ -70,17 +70,17 @@ jobs:
 
       - name: Build and push BOT image
         run: |
-          docker build -t registry.altertracker.com/altertracker-bot:latest ./bot
+          docker build --no-cache -t registry.altertracker.com/altertracker-bot:latest ./bot
           docker push registry.altertracker.com/altertracker-bot:latest
 
       - name: Build and push API image
         run: |
-          docker build -t registry.altertracker.com/altertracker-api:latest ./api
+          docker build --no-cache -t registry.altertracker.com/altertracker-api:latest ./api
           docker push registry.altertracker.com/altertracker-api:latest
 
       - name: Build and push CLIENT image
         run: |
-          docker build -t registry.altertracker.com/altertracker-client:latest ./client
+          docker build --no-cache -t registry.altertracker.com/altertracker-client:latest ./client
           docker push registry.altertracker.com/altertracker-client:latest
 
       - name: Deploy Postgres manifests
