@@ -122,7 +122,7 @@ export class AdminComponent implements OnInit, OnDestroy {
       return;
     }
     const el = this.logsContainer.nativeElement;
-    const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 5;
+    const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 30;
     this.autoScroll = atBottom;
   }
   private scrollToBottom(): void {
