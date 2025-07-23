@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Socket } from 'ngx-socket-io';
 import { Subscription } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { SocketService } from './socket.service';
@@ -12,7 +13,7 @@ import { SocketService } from './socket.service';
   styleUrls: ['./admin.component.css'],
   imports: [CommonModule, FormsModule],
 })
-export class AdminComponent implements OnInit {
+export class AdminComponent implements OnInit, OnDestroy {
   @ViewChild('logsContainer') logsContainer!: ElementRef;
   socketConnected: boolean = false;
   status: 'idle' | 'running' | 'success' | 'error' = 'idle';
@@ -28,14 +29,17 @@ export class AdminComponent implements OnInit {
   selectedWorkers: number = 0;
   logs: string = '';
   subscriptions: Subscription[] = [];
-
+  autoScroll: boolean = true;
+  private isAutoScrolling = false;
   constructor(
     private http: HttpClient,
-    private socketService: SocketService
+    private socketService: SocketService,
+    private socket: Socket
   ) { }
 
-  ngOnInit() {
-    // Écouter les connexions
+  ngOnInit(): void {
+    this.socket.connect();
+
     const connectSub = this.socketService.onConnect().subscribe(() => {
       console.log('🟢 Connecté au serveur WebSocket');
       this.socketConnected = true;
@@ -81,11 +85,12 @@ export class AdminComponent implements OnInit {
       .replace(/\x1b\[0m/g, '</span>');                      // Réinitialisation
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
+    this.socket.disconnect();
   }
 
-  runScript() {
+  runScript(): void {
     let url = `${environment.api_url}/script/start/${this.selectedScript}`;
     if (this.selectedScript === 'script_get_unique' ||
       this.selectedScript === 'script_get_en' ||
@@ -107,12 +112,25 @@ export class AdminComponent implements OnInit {
       }
     });
   }
-  clearLogs() {
+  clearLogs(): void {
     this.logs = '';
   }
+  onLogsScroll(): void {
+    if (this.isAutoScrolling) {
+      // Ignore le scroll déclenché par scrollToBottom
+      this.isAutoScrolling = false;
+      return;
+    }
+    const el = this.logsContainer.nativeElement;
+    const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight < 5;
+    this.autoScroll = atBottom;
+  }
   private scrollToBottom(): void {
-    if (this.logsContainer) {
-      this.logsContainer.nativeElement.scrollTop = this.logsContainer.nativeElement.scrollHeight;
+    if (this.logsContainer && this.autoScroll) {
+      this.isAutoScrolling = true;
+      setTimeout(() => {
+        this.logsContainer.nativeElement.scrollTop = this.logsContainer.nativeElement.scrollHeight;
+      }, 0);
     }
   }
 }
