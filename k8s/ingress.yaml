@@ -30,29 +30,29 @@ spec:
                 name: api
                 port:
                   number: 80
-          - path: /socket.io/       # <--- slash final OBLIGATOIRE !
-            pathType: Prefix
+          - path: /socket.io/
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: api
                 port:
                   number: 80
           - path: /robots.txt
-            pathType: Prefix
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: static-files
                 port:
                   number: 80
           - path: /ads.txt
-            pathType: Prefix
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: static-files
                 port:
                   number: 80
           - path: /sitemap.xml
-            pathType: Prefix
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: static-files
