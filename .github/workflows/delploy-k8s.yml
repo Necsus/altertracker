@@ -35,6 +35,15 @@ jobs:
             --from-literal=POSTGRES_DB="${{ secrets.POSTGRES_DB }}" \
             --dry-run=client -o yaml | kubectl apply -f -
 
+      - name: Create/update BOT secret
+        run: |
+          kubectl create secret generic bot-secret \
+            --namespace altertracker \
+            --from-literal=DISCORD_BOT_TOKEN="${{ secrets.DISCORD_BOT_TOKEN }}" \
+            --from-literal=GUILD_ID="${{ vars.GUILD_ID }}" \
+            --from-literal=ROLE_ID="${{ vars.ROLE_ID }}" \
+            --dry-run=bot -o yaml | kubectl apply -f -
+
       - name: Create/update API secret
         run: |
           kubectl create secret generic api-secret \
@@ -50,6 +59,7 @@ jobs:
             --from-literal=DISCORD_CLIENT_ID="${{ vars.DISCORD_CLIENT_ID }}" \
             --from-literal=DISCORD_CLIENT_SECRET="${{ secrets.DISCORD_CLIENT_SECRET }}" \
             --from-literal=DISCORD_REDIRECT_URI="${{ vars.DISCORD_REDIRECT_URI }}" \
+            --from-literal=DISCORD_BOT_URI="${{ vars.DISCORD_BOT_URI }}" \
             --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Set up Docker Buildx
@@ -57,11 +67,21 @@ jobs:
 
       - name: Docker login to registry
         run: echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login registry.altertracker.com -u "${{ secrets.REGISTRY_USERNAME }}" --password-stdin
-            
+
+      - name: Build and push BOT image
+        run: |
+          docker build -t registry.altertracker.com/altertracker-bot:latest ./bot
+          docker push registry.altertracker.com/altertracker-bot:latest
+
       - name: Build and push API image
         run: |
           docker build -t registry.altertracker.com/altertracker-api:latest ./api
           docker push registry.altertracker.com/altertracker-api:latest
+
+      - name: Build and push CLIENT image
+        run: |
+          docker build -t registry.altertracker.com/altertracker-client:latest ./client
+          docker push registry.altertracker.com/altertracker-client:latest
 
       - name: Deploy Postgres manifests
         run: |
@@ -71,14 +91,13 @@ jobs:
         run: |
           kubectl apply -n altertracker -f ./k8s/redis/
 
+      - name: Deploy BOT manifests
+        run: |
+          kubectl apply -n altertracker -f ./k8s/bot/
+
       - name: Deploy API manifests
         run: |
           kubectl apply -n altertracker -f ./k8s/api/
-
-      - name: Build and push CLIENT image
-        run: |
-          docker build -t registry.altertracker.com/altertracker-client:latest ./client
-          docker push registry.altertracker.com/altertracker-client:latest
 
       - name: Deploy CLIENT manifests
         run: |
