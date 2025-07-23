@@ -20,5 +20,5 @@ spec:
             - containerPort: 5001
           envFrom:
             - secretRef:
-                name: api-env
+                name: api-secret
           # Si tu as besoin d'une readiness/liveness probe, ajoute-les ici
