@@ -5,6 +5,7 @@ metadata:
   namespace: altertracker
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 spec:
   ingressClassName: nginx
   tls:
@@ -37,24 +38,3 @@ spec:
                 name: api
                 port:
                   number: 5001
-          - path: /robots.txt
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: static-files
-                port:
-                  number: 80
-          - path: /ads.txt
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: static-files
-                port:
-                  number: 80
-          - path: /sitemap.xml
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: static-files
-                port:
-                  number: 80
