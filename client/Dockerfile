@@ -1,13 +1,11 @@
-# Build Stage
 FROM node:20-alpine AS build
 
 WORKDIR /client
 COPY package*.json ./
-RUN npm ci --legacy-peer-deps
+RUN npm install --legacy-peer-deps
 COPY . .
 RUN npm run build -- --configuration production
 
-# Nginx serve stage
 FROM nginx:alpine
 COPY --from=build /client/dist/client/browser /usr/share/nginx/html
 EXPOSE 80
