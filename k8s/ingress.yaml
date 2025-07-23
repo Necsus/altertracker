@@ -4,46 +4,18 @@ metadata:
   name: api-ingress
   namespace: altertracker
   annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
 spec:
   ingressClassName: nginx
-  tls:
-    - hosts:
-        - altertracker.com
-      secretName: altertracker-tls
   rules:
-    - host: altertracker.com
-      http:
-        paths:
-          - path: /api
-            pathType: Prefix
-            backend:
-              service:
-                name: api
-                port:
-                  number: 5001
-          - path: /socket.io/
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: api
-                port:
-                  number: 5001
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: angular
-                port:
-                  number: 80
-    - host: www.altertracker.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: angular
-                port:
-                  number: 80
+  - host: www.altertracker.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: angular
+            port:
+              number: 80
+        path: /
+        pathType: Prefix
