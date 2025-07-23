@@ -35,18 +35,7 @@ jobs:
             --from-literal=POSTGRES_DB="${{ secrets.POSTGRES_DB }}" \
             --dry-run=client -o yaml | kubectl apply -f -
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Docker login to registry
-        run: echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login registry.altertracker.com -u "${{ secrets.REGISTRY_USERNAME }}" --password-stdin
-            
-      - name: Build and push API image
-        run: |
-          docker build -t registry.altertracker.com/altertracker-api:latest ./api
-          docker push registry.altertracker.com/altertracker-api:latest
-
-      - name: Create API secret in Kubernetes
+      - name: Create/update API secret
         run: |
           kubectl create secret generic api-secret \
             --namespace altertracker \
@@ -63,7 +52,33 @@ jobs:
             --from-literal=DISCORD_REDIRECT_URI="${{ vars.DISCORD_REDIRECT_URI }}" \
             --dry-run=client -o yaml | kubectl apply -f -
 
-      - name: Deploy manifests
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Docker login to registry
+        run: echo "${{ secrets.REGISTRY_PASSWORD }}" | docker login registry.altertracker.com -u "${{ secrets.REGISTRY_USERNAME }}" --password-stdin
+            
+      - name: Build and push API image
+        run: |
+          docker build -t registry.altertracker.com/altertracker-api:latest ./api
+          docker push registry.altertracker.com/altertracker-api:latest
+
+      - name: Deploy Postgres manifests
         run: |
           kubectl apply -n altertracker -f ./k8s/postgres/
+
+      - name: Deploy API manifests
+        run: |
           kubectl apply -n altertracker -f ./k8s/api/
+
+      - name: Deploy PersistentVolumeClaim
+        run: |
+          kubectl apply -n altertracker -f ./k8s/postgres/pvc.yaml
+
+      - name: Deploy ClusterIssuer
+        run: |
+          kubectl apply -f ./k8s/cluster-issuer.yaml
+
+      - name: Deploy Ingress
+        run: |
+          kubectl apply -n altertracker -f ./k8s/ingress.yaml
