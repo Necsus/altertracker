@@ -20,7 +20,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: angular
+                name: client
                 port:
                   number: 80
           - path: /api
