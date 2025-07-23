@@ -50,7 +50,7 @@ jobs:
         run: |
           kubectl create secret generic api-secret \
             --namespace altertracker \
-            --from-literal=DATABASE_URL="postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@postgres:5432/${{ secrets.POSTGRES_DB }}" \
+            --from-literal=DATABASE_URL="postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@postgres.altertracker.svc.cluster.local:5432/${{ secrets.POSTGRES_DB }}" \
             --from-literal=CORS_ORIGINS="${{ vars.CORS_ORIGINS }}" \
             --from-literal=PASSWORD_PEPPER="${{ secrets.PASSWORD_PEPPER }}" \
             --from-literal=SECRET_KEY="${{ secrets.SECRET_KEY }}" \
