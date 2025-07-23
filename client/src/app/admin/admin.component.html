@@ -62,7 +62,8 @@
   </div>
 
   <div #logsContainer
-    class="scroll-container bg-gray-800 p-4 rounded-xl h-96 overflow-auto text-sm font-mono border border-gray-700">
+    class="scroll-container bg-gray-800 p-4 rounded-xl h-96 overflow-auto text-sm font-mono border border-gray-700"
+    (scroll)="onLogsScroll()">
     <pre [innerHTML]="logs"></pre>
   </div>
   <button (click)="clearLogs()"
