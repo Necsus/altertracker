@@ -5,19 +5,6 @@ metadata:
   namespace: altertracker
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
-    nginx.ingress.kubernetes.io/ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
-    nginx.ingress.kubernetes.io/websocket-services: "api" # si tu exposes les sockets via api
-    # Blocage IPs (server-snippet)
-    nginx.ingress.kubernetes.io/server-snippet: |
-      geo $bad_ip {
-          default 0;
-          52.47.134.158 1;
-          13.37.84.159 1;
-          51.44.100.120 1;
-          87.255.194.135 1;
-      }
-      if ($bad_ip) { return 403; }
 spec:
   ingressClassName: nginx
   tls:
@@ -26,20 +13,9 @@ spec:
         - www.altertracker.com
       secretName: altertracker-tls
   rules:
-    - host: www.altertracker.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: angular
-                port:
-                  number: 80
     - host: altertracker.com
       http:
         paths:
-          # Angular app (SPA)
           - path: /
             pathType: Prefix
             backend:
@@ -47,7 +23,6 @@ spec:
                 name: angular
                 port:
                   number: 80
-          # API
           - path: /api
             pathType: Prefix
             backend:
@@ -55,31 +30,29 @@ spec:
                 name: api
                 port:
                   number: 80
-          # Websocket
-          - path: /socket.io
+          - path: /socket.io/       # <--- slash final OBLIGATOIRE !
             pathType: Prefix
             backend:
               service:
                 name: api
                 port:
                   number: 80
-          # Fichiers statiques (à ajuster selon ta config)
           - path: /robots.txt
-            pathType: Exact
+            pathType: Prefix
             backend:
               service:
                 name: static-files
                 port:
                   number: 80
           - path: /ads.txt
-            pathType: Exact
+            pathType: Prefix
             backend:
               service:
                 name: static-files
                 port:
                   number: 80
           - path: /sitemap.xml
-            pathType: Exact
+            pathType: Prefix
             backend:
               service:
                 name: static-files
