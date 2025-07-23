@@ -29,14 +29,14 @@ spec:
               service:
                 name: api
                 port:
-                  number: 80
+                  number: 5001
           - path: /socket.io/
             pathType: ImplementationSpecific
             backend:
               service:
                 name: api
                 port:
-                  number: 80
+                  number: 5001
           - path: /robots.txt
             pathType: ImplementationSpecific
             backend:
