@@ -110,3 +110,12 @@ jobs:
       - name: Deploy Ingress
         run: |
           kubectl apply -n altertracker -f ./k8s/ingress.yaml
+
+      - name: Rollout restart BOT
+        run: kubectl rollout restart deployment bot -n altertracker
+
+      - name: Rollout restart API
+        run: kubectl rollout restart deployment api -n altertracker
+
+      - name: Rollout restart CLIENT
+        run: kubectl rollout restart deployment client -n altertracker
