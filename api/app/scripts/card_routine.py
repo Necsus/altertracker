@@ -203,7 +203,7 @@ def get_unique_offers(session, name: str, faction: str, set: str, page: int, ret
 
     # Construire l'URL avec les paramètres encodés
     url = f"{base_url}?{urlencode(params, doseq=True)}"
-    print(url)
+    # print(url)
     try:
         # Effectuer une requête GET vers l'URL
         response = requests.get(url, headers=headers)

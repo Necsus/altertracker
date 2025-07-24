@@ -1,5 +1,4 @@
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime, timezone
 import time
 from typing import List
 import requests
@@ -7,6 +6,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 from app.scripts import card_routine
 from app.models.card import Card
 from app.extensions import db, socketio
+from app.config import ConfigEnv
 
 class ApiOffer:
     lowerPrice = 0
@@ -20,8 +20,10 @@ def run_script(faction=None, workers=1):
 
     def post_offer_live_market_service(data: List[dict]) -> None:
         try:
-            # URL de votre API (à remplacer par l'URL réelle)
-            api_url = "http://127.0.0.1:5000/api/card/offerlivemarket"  # Exemple d'URL
+            if ConfigEnv.FLASK_ENV == 'production':
+                api_url = "http://api.altertracker.svc.cluster.local:5001/api/card/offerlivemarket"
+            else:
+                api_url = "http://127.0.0.1:5001/api/card/offerlivemarket"
 
             # Effectuer la requête POST
             response = requests.post(api_url, json=data)
