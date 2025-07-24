@@ -109,8 +109,9 @@ def get_card_by_reference(card_reference: str, en: bool = False):
         print(f"\033[91mErreur lors de la requête : {e}\033[0m")
         return None
 
-def get_offer_by_reference(reference: str, token: str):
+def get_offer_by_reference(session, reference: str, retry: bool = True):
     base_url = f"https://api.altered.gg/cards/{reference}/offers?itemsPerPage=10&page=1"
+    token = getToken(session)
     headers = {
         "authorization": f"Bearer {token}",
         "accept": "*/*"
@@ -121,16 +122,9 @@ def get_offer_by_reference(reference: str, token: str):
         
         # Vérifier si la requête a réussi (code 200)
         response.raise_for_status()
-        
+
         # Récupérer les données au format JSON
         data = response.json()
-
-        if 'code' in data and data['code'] == 401:
-            if 'message' in data and data['message']:
-                print(f"\033[91m{data['message']}\033[0m")
-            else:
-                print("\033[91mError lors de la requete card_routine.get_offer_by_reference\033[0m")
-            return None
         
         if data['hydra:totalItems'] <= 0 or len(data['hydra:member']) <= 0:
             return None
@@ -138,9 +132,14 @@ def get_offer_by_reference(reference: str, token: str):
         # Retourner les données
         return data['hydra:member']
     except requests.exceptions.RequestException as e:
-        # Gérer les erreurs de requête
-        print(f"\033[91mErreur lors de la requête : {e}\033[0m")
-        return None
+        if retry:
+            print(f"\033[93mTentative de récupération du token...\033[0m")
+            time.sleep(1)
+            getToken(session, True)
+            return get_offer_by_reference(session, reference, retry=False)
+        else:
+            print(f"\033[91mErreur lors de la requête : {e}\033[0m")
+            return None
     
 def _iso_to_timestamp(iso_str):
     # Gère le format ISO 8601 avec ou sans millisecondes

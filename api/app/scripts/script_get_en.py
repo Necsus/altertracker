@@ -31,35 +31,34 @@ def run_script(faction: str, workers: int):
         try:
             socketio.emit('script_output', {'data': f"\033[94mNb Cards : {len(subset)}\033[0m"})
             for index, dbcard in enumerate(subset, start=start_index):
-                  socketio.emit('script_output', {'data': f"Card {dbcard.name_en} ({index}/{len(subset)}) | {dbcard.id}"})
-                  if dbcard.image_path_en is None:
-                      detailsEn = card_routine.get_card_by_reference(dbcard.reference, True)
-                      if detailsEn:
-                          tempCard = map_jsoncard_to_card_en(dbcard, detailsEn)
-                          card_to_update = session.query(Card).filter_by(reference=tempCard.reference).first()
-                          # Initialiser un drapeau pour suivre les modifications
-                          if card_to_update:
-                              has_updated = False
-                              if tempCard.image_path_en is not None:
-                                  if str(card_to_update.image_path_en) != str(tempCard.imagePath) or card_to_update.image_path_en is None:
-                                      card_to_update.image_path_en = tempCard.image_path_en
-                                      has_updated = True
-                              if tempCard.main_effect_en is not None:
-                                  if str(card_to_update.main_effect_en) != str(tempCard.main_effect_en) \
-                                      or card_to_update.main_effect_en is None or tempCard.main_effect_en is None:
-                                      card_to_update.main_effect_en = tempCard.main_effect_en
-                                      has_updated = True
-                              if tempCard.echo_effect_en is not None:
-                                  if str(card_to_update.echo_effect_en) != str(tempCard.echo_effect_en) \
-                                      or card_to_update.echo_effect_en is None or tempCard.echo_effect_en is None:
-                                      card_to_update.echo_effect_en = tempCard.echo_effect_en
-                                      has_updated = True
-                              # Si une modification a été effectuée, mettre à jour `edited_at`
-                              if has_updated:
-                                  socketio.emit('script_output', {'data': f"Mise à jour de la carte : {card_to_update.name_en} ({card_to_update.reference})"})
-                                  card_to_update.edited_at = datetime.now(timezone.utc)
-                                  session.commit()
-                      time.sleep(0.2)
+                if dbcard.image_path_en is None:
+                    time.sleep(0.1)
+                    detailsEn = card_routine.get_card_by_reference(dbcard.reference, True)
+                    if detailsEn:
+                        tempCard = map_jsoncard_to_card_en(dbcard, detailsEn)
+                        card_to_update = session.query(Card).filter_by(reference=tempCard.reference).first()
+                        # Initialiser un drapeau pour suivre les modifications
+                        if card_to_update:
+                            has_updated = False
+                            if tempCard.image_path_en is not None:
+                                if str(card_to_update.image_path_en) != str(tempCard.imagePath) or card_to_update.image_path_en is None:
+                                    card_to_update.image_path_en = tempCard.image_path_en
+                                    has_updated = True
+                            if tempCard.main_effect_en is not None:
+                                if str(card_to_update.main_effect_en) != str(tempCard.main_effect_en) \
+                                    or card_to_update.main_effect_en is None or tempCard.main_effect_en is None:
+                                    card_to_update.main_effect_en = tempCard.main_effect_en
+                                    has_updated = True
+                            if tempCard.echo_effect_en is not None:
+                                if str(card_to_update.echo_effect_en) != str(tempCard.echo_effect_en) \
+                                    or card_to_update.echo_effect_en is None or tempCard.echo_effect_en is None:
+                                    card_to_update.echo_effect_en = tempCard.echo_effect_en
+                                    has_updated = True
+                            # Si une modification a été effectuée, mettre à jour `edited_at`
+                            if has_updated:
+                                socketio.emit('script_output', {'data': f"Mise à jour de la carte : {card_to_update.name_en} ({card_to_update.reference}) ({index}/{len(subset)})"})
+                                card_to_update.edited_at = datetime.now(timezone.utc)
+                                session.commit()
 
         except Exception as e:
             socketio.emit('script_output', {'data': f"\033[91mError : {e}\033[0m"})
