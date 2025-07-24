@@ -23,7 +23,9 @@ export class DiscordCallbackComponent implements OnInit {
           .subscribe({
             next: () => {
               this.authViewService.refreshToken();
-              this.router.navigate(['/me']);
+              setTimeout(() => {
+                this.router.navigate(['/me']);
+              }, 400);
             },
             error: (err) => {
               console.error('Erreur callback Discord', err);
