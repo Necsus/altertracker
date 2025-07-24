@@ -26,7 +26,6 @@ def run_script(workers: int):
                 socketio.emit('script_output', {'data': f"Update Offer : {dboffer_in_session.reference_card} ({index}/{len(subset)})"})
                 time.sleep(0.1)
                 offer = card_routine.get_offer_by_reference(session, dboffer_in_session.reference_card)
-                print(offer)
                 if offer and len(offer) > 0:
                     dboffer_in_session.currency = offer[0]['currency']
                     dboffer_in_session.price = offer[0]['price']

@@ -8,6 +8,7 @@ class UserSearch(db.Model):
     name_search = db.Column(db.String(300), nullable=False)
     url_search = db.Column(db.Text, nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc), nullable=False)
+    active_notification = db.Column(db.Boolean, default=False, nullable=True)
 
     def __repr__(self):
           return f"<UserSearch {self.name_search}>"
@@ -19,10 +20,12 @@ class UserSearch(db.Model):
             'name_search': self.name_search,
             'url_search': self.url_search,
             'created_at': self.created_at.isoformat() if self.created_at else None,
+            'active_notification': self.active_notification,
         }
       
-    def __init__(self, id_user, name_search, url_search, created_at):
+    def __init__(self, id_user, name_search, url_search, created_at, active_notification=False):
         self.id_user = id_user
         self.name_search = name_search
         self.url_search = url_search
         self.created_at = created_at
+        self.active_notification = active_notification

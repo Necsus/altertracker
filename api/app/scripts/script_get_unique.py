@@ -4,6 +4,7 @@ import time
 from sqlalchemy.orm import scoped_session, sessionmaker
 from app.scripts import card_routine
 from app.models.card import Card
+from api.app.models.new_card import NewCard
 from app.extensions import db, socketio
 
 def run_script(faction=None, workers=3, forceUpdate=False):
@@ -51,11 +52,12 @@ def run_script(faction=None, workers=3, forceUpdate=False):
 
     def insert_cards_into_db(cards, session):
         try:
-            existing_references = {card.reference for card in session.query(Card.reference).all()}
-            new_cards = [card for card in cards if card.reference not in existing_references]
-            for card in new_cards:
-                socketio.emit('script_output', {'data': f"Ajout de la carte : {card.name_en} ({card.reference})"})
-            session.bulk_save_objects(new_cards)
+            # existing_references = {card.reference for card in session.query(Card.reference).all()}
+            # new_cards = [card for card in cards if card.reference not in existing_references]
+            socketio.emit('script_output', {'data': f"Cartes insérées : {len(cards)}"})
+            new_cards_objs = [NewCard(reference=card.reference) for card in cards.values()]
+            session.bulk_save_objects(cards)
+            session.bulk_save_objects(new_cards_objs)
             session.commit()
         except Exception as e:
             session.rollback()
@@ -199,7 +201,6 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                                 page = 1
                                 forestPowers = list(range(0, 11))
                                 while True:
-                                    
                                     cards = card_routine.get_unique_cards_name_faction(
                                         dbcard.name_en, dbcard.faction, dbcard.set, mainCost, recallCost, [fp for fp in forestPowers if fp != mainCost], page
                                     )
@@ -306,6 +307,7 @@ def run_script(faction=None, workers=3, forceUpdate=False):
 
         session = Session()
         try:
+            session.execute("TRUNCATE TABLE new_cards;")
             query = session.query(Card).filter(Card.rarity == 'RARE', Card.type == 'CHARACTER')
 
             # Appliquer le filtre de faction si fourni
