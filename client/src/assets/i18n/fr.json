@@ -202,5 +202,27 @@
     "confirmed_email": "Votre adresse a été vérifiée avec succès.",
     "confirm_error": "Échec de confirmation",
     "invalid_link": "Le lien est invalide ou a expiré."
+  },
+  "discord": {
+    "connection_pending": "Connexion à Discord en cours...",
+    "connection_waiting": "Veuillez patienter pendant que nous établissons la connexion."
+  },
+  "me": {
+    "title": "Mon profil",
+    "pseudo": "Pseudo",
+    "save": "Sauvegarder",
+    "link_discord": "Link Discord",
+    "discord_linked": "Compte lié ✅",
+    "discord_connecting": "Connexion...",
+    "unlink_discord": "Délier Discord",
+    "change_password_title": "Changer de mot de passe",
+    "old_password": "Ancien mot de passe",
+    "new_password": "Nouveau mot de passe",
+    "change_password": "Changer le mot de passe",
+    "delete_account_title": "Supprimer le compte",
+    "delete_account_warning": "Cette action est irréversible.",
+    "delete_account_password": "Mot de passe",
+    "delete_account_confirm_label": "Voulez-vous vraiment supprimer votre compte ? Tapez",
+    "delete_account_button": "Supprimer mon compte"
   }
 }
