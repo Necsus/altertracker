@@ -40,10 +40,10 @@ def get_card_by_reference_with_alert_service(reference: str, user_id: int) -> Op
 def get_card_by_reference_service(reference: str) -> Optional[Card]:
     return get_card_by_reference_data(reference)
 
-def search_cards_service(name, rarity, faction, set, main_effect, main_effect_2, echo_effect, exclude_effect, main_cost_range, recall_cost_range,
+def search_cards_service(name, rarity, faction, set, subtype, main_effect, main_effect_2, echo_effect, exclude_effect, main_cost_range, recall_cost_range,
     forest_cost_range, mountain_cost_range, ocean_cost_range, no_condition,
     in_market, price_range, en, dataset_type, user_id) -> List[dict]:
-    return search_cards_data(name, rarity, faction, set, main_effect, main_effect_2, echo_effect, exclude_effect, 
+    return search_cards_data(name, rarity, faction, set, subtype, main_effect, main_effect_2, echo_effect, exclude_effect, 
         main_cost_range, recall_cost_range, forest_cost_range, mountain_cost_range, ocean_cost_range,
         no_condition, in_market, price_range, en, dataset_type, user_id)
 

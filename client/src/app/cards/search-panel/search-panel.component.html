@@ -83,6 +83,46 @@
         </select>
       </div>
 
+      <div class="mb-4">
+        <label class="block mb-1 text-center text-sm font-semibold">{{ 'cards.form_subtype' | translate }}</label>
+        <select formControlName="subtype"
+          class="w-full p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400">
+          <option value="">-- {{ 'cards.form_subtype' | translate }} --</option>
+          <option value="ADVENTURER">ADVENTURER</option>
+          <option value="ANIMAL">ANIMAL</option>
+          <option value="APPRENTICE">APPRENTICE</option>
+          <option value="ARTIST">ARTIST</option>
+          <option value="BOON">BOON</option>
+          <option value="BUREAUCRAT">BUREAUCRAT</option>
+          <option value="CITIZEN">CITIZEN</option>
+          <option value="CONJURATION">CONJURATION</option>
+          <option value="CONSTRUCTION">CONSTRUCTION</option>
+          <option value="DEITY">DEITY</option>
+          <option value="DISRUPTION">DISRUPTION</option>
+          <option value="DRAGON">DRAGON</option>
+          <option value="DRUID">DRUID</option>
+          <option value="ELEMENTAL">ELEMENTAL</option>
+          <option value="ENGINEER">ENGINEER</option>
+          <option value="FAIRY">FAIRY</option>
+          <option value="GEAR">GEAR</option>
+          <option value="LANDMARK">LANDMARK</option>
+          <option value="LEVIATHAN">LEVIATHAN</option>
+          <option value="MAGE">MAGE</option>
+          <option value="MANEUVER">MANEUVER</option>
+          <option value="MESSENGER">MESSENGER</option>
+          <option value="NOBLE">NOBLE</option>
+          <option value="PLANT">PLANT</option>
+          <option value="ROBOT">ROBOT</option>
+          <option value="SCHOLAR">SCHOLAR</option>
+          <option value="SITE">SITE</option>
+          <option value="SOLDIER">SOLDIER</option>
+          <option value="SONG">SONG</option>
+          <option value="SPIRIT">SPIRIT</option>
+          <option value="TITAN">TITAN</option>
+          <option value="TRAINER">TRAINER</option>
+        </select>
+      </div>
+
       <div class="grid grid-cols-2 gap-2 mb-4">
         <div class="flex flex-col items-center justify-center">
           <label class="block mb-1 text-sm font-semibold">{{ 'cards.form_main_cost' | translate

@@ -53,9 +53,12 @@
             }
           </div>
         </div>
-        <ul class="grid grid-cols-2 gap-4 text-sm text-gray-300">
+        <ul class="grid grid-cols-3 gap-4 text-sm text-gray-300">
           <li><strong>{{ 'cards.form_rarity' | translate }}:</strong> {{ card.rarity }}</li>
           <li><strong>{{ 'cards.form_set' | translate }}:</strong> {{ card.set }}</li>
+          <li><strong>{{ 'cards.form_subtype' | translate }}:</strong> {{ card.subtype }}</li>
+        </ul>
+        <ul class="grid grid-cols-2 gap-4 text-sm text-gray-300 mt-4">
           <li *ngIf="card.MAIN_EFFECT" class="col-span-2"><span
               [innerHTML]="(card | localizedValue:'main_effect_en':'MAIN_EFFECT') | iconParser"></span></li>
           <li *ngIf="card.ECHO_EFFECT" class="col-span-2">
