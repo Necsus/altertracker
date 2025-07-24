@@ -1,10 +1,11 @@
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 import time
+from sqlalchemy import text
 from sqlalchemy.orm import scoped_session, sessionmaker
 from app.scripts import card_routine
 from app.models.card import Card
-from api.app.models.new_card import NewCard
+from app.models.new_card import NewCard
 from app.extensions import db, socketio
 
 def run_script(faction=None, workers=3, forceUpdate=False):
@@ -55,7 +56,7 @@ def run_script(faction=None, workers=3, forceUpdate=False):
             # existing_references = {card.reference for card in session.query(Card.reference).all()}
             # new_cards = [card for card in cards if card.reference not in existing_references]
             socketio.emit('script_output', {'data': f"Cartes insérées : {len(cards)}"})
-            new_cards_objs = [NewCard(reference=card.reference) for card in cards.values()]
+            new_cards_objs = [NewCard(reference=card.reference) for card in cards]
             session.bulk_save_objects(cards)
             session.bulk_save_objects(new_cards_objs)
             session.commit()
@@ -307,7 +308,7 @@ def run_script(faction=None, workers=3, forceUpdate=False):
 
         session = Session()
         try:
-            session.execute("TRUNCATE TABLE new_cards;")
+            session.execute(text("TRUNCATE TABLE new_cards;"))
             query = session.query(Card).filter(Card.rarity == 'RARE', Card.type == 'CHARACTER')
 
             # Appliquer le filtre de faction si fourni
