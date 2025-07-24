@@ -47,7 +47,7 @@ def run_script(workers: int):
         socketio.emit('script_output', {'data': "----------- GET CURRENCY -----------"})
         session = Session()
         try:
-            query = session.query(Offer).filter(Offer.status == 'available')
+            query = session.query(Offer).filter(Offer.status == 'available', Offer.currency != 'USD')
 
             # Appliquer le filtre de faction si fourni
             existing_offers = {
