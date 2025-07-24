@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { environment } from '../../../environments/environment';
 import { DiscordService } from '../../03_business/discord.service';
 import { UserService } from '../../03_business/user.service';
@@ -12,7 +13,7 @@ import { ToastService } from '../../shared/services/toast/toast.service';
   selector: 'app-me',
   templateUrl: './me.component.html',
   styleUrls: ['./me.component.css'],
-  imports: [CommonModule, FormsModule]
+  imports: [CommonModule, FormsModule, TranslateModule]
 })
 export class MeComponent implements OnInit {
   username: string = '';
