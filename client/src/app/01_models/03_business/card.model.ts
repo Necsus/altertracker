@@ -11,6 +11,7 @@ export interface CardModel {
   rarity: string;
   type: string;
   set: string;
+  subtype?: string;
   imagePath: string;
   image_path_en?: string;
   isSuspended: boolean;

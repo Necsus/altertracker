@@ -9,7 +9,7 @@ from datetime import datetime
 from pytz import timezone
 
 def get_cards_in_market_count_data() -> int:
-    return db.session.query(func.count(Offer.id)).filter(Offer.is_deleted == False).scalar()
+    return db.session.query(func.count(Offer.id)).filter(Offer.status == 'available').scalar()
 
 def insert_offers_bulk(offers: List[dict]) -> None:
     if not offers:

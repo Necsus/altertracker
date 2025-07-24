@@ -97,6 +97,7 @@
       "alize": "Trial by frost",
       "bise": "Whispers from the maze"
     },
+    "form_subtype": "Subtype",
     "filter_effect": "Effects",
     "form_contain_effect": "Effect contains",
     "form_and_contain_effect": "And effect contains",

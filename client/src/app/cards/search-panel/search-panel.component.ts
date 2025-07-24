@@ -53,6 +53,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       rarity: [''],
       faction: [''],
       set: [''],
+      subtype: [''],
       main_effect: [''],
       main_effect_2: [''],
       echo_effect: [''],
@@ -83,7 +84,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       this.areOffersOpen = this.showFull || !!(queryParams['in_market'] || queryParams['price_range']);
       this.areEffectsOpen = this.showFull || !!(queryParams['main_effect'] || queryParams['main_effect_2'] || queryParams['echo_effect'] || queryParams['exclude_effect']);
       this.areFiltersOpen = this.showFull || !!(
-        queryParams['name'] || queryParams['rarity'] || queryParams['faction'] || queryParams['set'] ||
+        queryParams['name'] || queryParams['rarity'] || queryParams['faction'] || queryParams['set'] || queryParams['subtype'] ||
         queryParams['main_cost_range'] || queryParams['recall_cost_range'] ||
         queryParams['forest_power_range'] || queryParams['mountain_power_range'] || queryParams['ocean_power_range']
       );
@@ -96,6 +97,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       rarity: queryParams['rarity'] || '',
       faction: queryParams['faction'] || '',
       set: queryParams['set'] || '',
+      subtype: queryParams['subtype'] || '',
       main_effect: queryParams['main_effect'] || '',
       main_effect_2: queryParams['main_effect_2'] || '',
       echo_effect: queryParams['echo_effect'] || '',
@@ -155,12 +157,12 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   }
 
   isFormValid(): boolean {
-    const { name, rarity, faction, set, main_effect, main_effect_2, echo_effect, exclude_effect,
+    const { name, rarity, faction, set, subtype, main_effect, main_effect_2, echo_effect, exclude_effect,
       main_cost_range, recall_cost_range, forest_power_range, mountain_power_range, ocean_power_range,
       in_market, price_range, no_condition, dataset_type } = this.searchForm.value;
     // Vérifie si au moins un champ est rempli ou si forest_power, mountain_power ou ocean_power est égal à 0
     return !!(
-      name || rarity || faction || set || main_effect || main_effect_2 || echo_effect || exclude_effect || main_cost_range || recall_cost_range ||
+      name || rarity || faction || set || subtype || main_effect || main_effect_2 || echo_effect || exclude_effect || main_cost_range || recall_cost_range ||
       forest_power_range !== '' && forest_power_range !== null && forest_power_range !== undefined ||
       mountain_power_range !== '' && mountain_power_range !== null && mountain_power_range !== undefined ||
       ocean_power_range !== '' && ocean_power_range !== null && ocean_power_range !== undefined ||
@@ -207,6 +209,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       rarity: criteria.rarity,
       faction: criteria.faction,
       set: criteria.set,
+      subtype: criteria.subtype,
       main_effect: criteria.main_effect,
       main_effect_2: criteria.main_effect_2,
       echo_effect: criteria.echo_effect,

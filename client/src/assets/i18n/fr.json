@@ -97,6 +97,7 @@
       "alize": "Epreuve du froid",
       "bise": "Murmures du labyrinthe"
     },
+    "form_subtype": "Sous-type",
     "filter_effect": "Effets",
     "form_contain_effect": "Effet contient",
     "form_and_contain_effect": "Et effet contient",

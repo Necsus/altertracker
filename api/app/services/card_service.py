@@ -40,10 +40,10 @@ def get_card_by_reference_with_alert_service(reference: str, user_id: int) -> Op
 def get_card_by_reference_service(reference: str) -> Optional[Card]:
     return get_card_by_reference_data(reference)
 
-def search_cards_service(name, rarity, faction, set, main_effect, main_effect_2, echo_effect, exclude_effect, main_cost_range, recall_cost_range,
+def search_cards_service(name, rarity, faction, set, subtype, main_effect, main_effect_2, echo_effect, exclude_effect, main_cost_range, recall_cost_range,
     forest_cost_range, mountain_cost_range, ocean_cost_range, no_condition,
     in_market, price_range, en, dataset_type, user_id) -> List[dict]:
-    return search_cards_data(name, rarity, faction, set, main_effect, main_effect_2, echo_effect, exclude_effect, 
+    return search_cards_data(name, rarity, faction, set, subtype, main_effect, main_effect_2, echo_effect, exclude_effect, 
         main_cost_range, recall_cost_range, forest_cost_range, mountain_cost_range, ocean_cost_range,
         no_condition, in_market, price_range, en, dataset_type, user_id)
 
@@ -170,28 +170,29 @@ def is_image_url_accessible(url: str) -> bool:
         return False
     
 def send_user_alert(card: Card, type_changement: str):
-    alerts = get_user_alert_by_reference_card_data(card.reference)
-    for alert in alerts:
-        user = get_user_by_id_data(alert.id_user)
-        if user and user.discord_id: 
-            socketio.emit('script_output', {'data': f"discord alert send : {card.name_en} {card.reference} {user.username}"})
-            print(f"discord alert send : {card.name_en} {card.reference} {user.username}")
-            image_url = card.imagePath if is_image_url_accessible(card.imagePath) else "/static/img/cardback.webp"
-            embed_message = {
-                "username": user.username,
-                "name_card": card.name,
-                "reference": card.reference,
-                "changement_type": type_changement,
-                "price": f"{card.price} {card.price_currency}" if card.price and card.price_currency else "N/A",
-                "date_effective": card.price_updated_at.strftime("%Y-%m-%d %H:%M:%S") if card.price_updated_at else "",
-                "url_image_card": image_url,
-                "lien_vers_alerts": f"https://altertracker.com/stats/{card.reference}"
-            }
-            response = requests.post(f"{ConfigEnv.DISCORD_BOT_URI}/sendalert", json={"discord_id": user.discord_id, "embed_message": embed_message})
-            print(response)
-        # else:
-        #     if user:
-        #         send_user_alert_mail(card, type_changement, user)
+    if ConfigEnv.FLASK_ENV == 'production':
+        alerts = get_user_alert_by_reference_card_data(card.reference)
+        for alert in alerts:
+            user = get_user_by_id_data(alert.id_user)
+            if user and user.discord_id: 
+                socketio.emit('script_output', {'data': f"discord alert send : {card.name_en} {card.reference} {user.username}"})
+                print(f"discord alert send : {card.name_en} {card.reference} {user.username}")
+                image_url = card.imagePath if is_image_url_accessible(card.imagePath) else "/static/img/cardback.webp"
+                embed_message = {
+                    "username": user.username,
+                    "name_card": card.name,
+                    "reference": card.reference,
+                    "changement_type": type_changement,
+                    "price": f"{card.price} {card.price_currency}" if card.price and card.price_currency else "N/A",
+                    "date_effective": card.price_updated_at.strftime("%Y-%m-%d %H:%M:%S") if card.price_updated_at else "",
+                    "url_image_card": image_url,
+                    "lien_vers_alerts": f"https://altertracker.com/stats/{card.reference}"
+                }
+                response = requests.post(f"{ConfigEnv.DISCORD_BOT_URI}/sendalert", json={"discord_id": user.discord_id, "embed_message": embed_message})
+                print(response)
+            # else:
+            #     if user:
+            #         send_user_alert_mail(card, type_changement, user)
 
 def send_user_alert_mail(card: Card, type_changement: str, user: User):
     socketio.emit('script_output', {'data': f"mail send : {card.name_en} {card.reference} {user.username}"})

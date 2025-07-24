@@ -35,7 +35,7 @@ def get_card_by_reference_with_alert_data(reference: str, user_id: int) -> Optio
 def get_card_by_reference_data(reference: str) -> Optional[dict]:
     return db.session.query(Card).filter_by(reference=reference).first()
 
-def search_cards_data(name, rarity, faction, set, main_effect, main_effect_2, echo_effect, exclude_effect,
+def search_cards_data(name, rarity, faction, set, subtype, main_effect, main_effect_2, echo_effect, exclude_effect,
     main_cost_range, recall_cost_range, forest_power_range, mountain_power_range, ocean_power_range,
     no_condition, in_market, price_range, en, dataset_type, user_id):
     # Vérifier si le nom correspond à la regexp ^ALT_
@@ -164,6 +164,11 @@ def search_cards_data(name, rarity, faction, set, main_effect, main_effect_2, ec
 
     if set:
         query = query.filter(Card.set == set)
+
+    if subtype:
+        query = query.filter(
+            func.concat(',', Card.subtype, ',').like(f'%,{subtype},%')
+        )
 
     if main_effect and not main_effect_2:
         # Si seulement main_effect est fourni

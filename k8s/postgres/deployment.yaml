@@ -32,10 +32,21 @@ spec:
             secretKeyRef:
               name: postgres-secret
               key: POSTGRES_DB
+        - name: TZ
+          value: "Europe/Paris"
+        - name: PGTZ
+          value: "Europe/Paris"
         volumeMounts:
         - name: postgres-data
           mountPath: /var/lib/postgresql/data
+        - name: tz-config
+          mountPath: /etc/localtime
+          readOnly: true
       volumes:
       - name: postgres-data
         persistentVolumeClaim:
           claimName: postgres-pvc
+      - name: tz-config
+        hostPath:
+          path: /usr/share/zoneinfo/Europe/Paris
+          type: File
