@@ -171,7 +171,7 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                                             card_to_update.created_at = datetime.now(timezone.utc)
                                             has_updated = True
 
-                                        if card_to_update.MAIN_EFFECT is None:
+                                        if card_to_update.MAIN_EFFECT is None and card_to_update.ECHO_EFFECT is None:
                                             time.sleep(0.2)
                                             detailsCard = card_routine.get_card_by_reference(tempCard.reference)
                                             if detailsCard:
@@ -264,7 +264,7 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                                             if card_to_update.created_at is None:
                                                 card_to_update.created_at = datetime.now(timezone.utc)
                                                 has_updated = True
-                                            if card_to_update.MAIN_EFFECT is None:
+                                            if card_to_update.MAIN_EFFECT is None and card_to_update.ECHO_EFFECT is None:
                                                 time.sleep(0.2)
                                                 detailsCard = card_routine.get_card_by_reference(tempCard.reference)
                                                 if detailsCard:
