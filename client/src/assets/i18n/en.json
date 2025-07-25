@@ -92,10 +92,11 @@
     "form_faction": "Faction",
     "form_set": "Set",
     "set": {
-      "coreks": "Beyond the Gates - KS",
-      "core": "Beyond the Gates",
+      "coreks": "Beyond the gates - KS",
+      "core": "Beyond the gates",
       "alize": "Trial by frost",
-      "bise": "Whispers from the maze"
+      "bise": "Whispers from the maze",
+      "cyclone": "Skybound odyssey"
     },
     "form_subtype": "Subtype",
     "filter_effect": "Effects",

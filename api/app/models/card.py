@@ -6,7 +6,7 @@ class Card(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     id_card = db.Column(db.String(200))
-    reference = db.Column(db.String(200))
+    reference = db.Column(db.String(200), unique=True)
     name = db.Column(db.String(200))
     name_en = db.Column(db.String(200), default=None)
     faction = db.Column(db.String(2))

@@ -302,7 +302,6 @@ def run_script(faction=None, workers=3, forceUpdate=False):
     def get_unique():
         print("----------- GET UNIQUE -----------")
         socketio.emit('script_output', {'data': "----------- GET UNIQUE -----------"})
-        # sets = ['COREKS', 'CORE', 'ALIZE', 'BISE']
         mainCosts = list(range(1, 11))
         recallCosts = list(range(1, 11))
 
