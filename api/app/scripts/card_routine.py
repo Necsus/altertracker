@@ -1,9 +1,7 @@
 import datetime
-import sys
 import time
 import requests
 from urllib.parse import urlencode
-from app.extensions import db
 from app.models.cookie_manager import CookieManager
 
 _token = None
@@ -169,10 +167,10 @@ def getToken(session, clearToken: bool = False) -> str:
 
         for cookie in response.cookies:
             if cookie.name == '__Secure-next-auth.session-token.0':
-                print(f"token.0 : {cookie.value}")
+                print(f"token.0 : {cookie.value[-10:]}...")
                 _token0.value = cookie.value
             elif cookie.name == '__Secure-next-auth.session-token.1':
-                print(f"token.1 : {cookie.value}")
+                print(f"token.1 : {cookie.value[-10:]}...")
                 _token1.value = cookie.value
         session.commit()
         data = response.json()
@@ -197,15 +195,29 @@ def get_unique_offers(session, name: str, faction: str, set: str, page: int, ret
     token = getToken(session)
     headers = {
         "authorization": f"Bearer {token}",
-        "accept": "*/*"
+        "accept": "*/*",
+        "user-agent": "insomnia/11.0.2"
     }
 
     # Construire l'URL avec les paramètres encodés
     url = f"{base_url}?{urlencode(params, doseq=True)}"
-    # print(url)
+    print(f"🔄 URL: {url}")
+    print(f"📋 Headers envoyés:")
+    for key, value in headers.items():
+        if key == "authorization":
+            print(f"  {key}: Bearer {value[-10:]}...")  # Masque le token
+        else:
+            print(f"  {key}: {value}")
+    
+    start_time = time.time()
     try:
         # Effectuer une requête GET vers l'URL
         response = requests.get(url, headers=headers)
+
+        elapsed_time = time.time() - start_time
+        print(f"⏱️ Temps de réponse: {elapsed_time:.2f}s")
+        print(f"📨 Status code: {response.status_code}")
+        print(f"📋 Headers de réponse:")
         
         # Vérifier si la requête a réussi (code 200)
         response.raise_for_status()
@@ -217,7 +229,7 @@ def get_unique_offers(session, name: str, faction: str, set: str, page: int, ret
         
         if data['hydra:totalItems'] >= 1000:
             print(params)
-
+        print(data['hydra:totalItems'])
         # Retourner les données
         return data
     except requests.exceptions.RequestException as e:

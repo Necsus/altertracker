@@ -52,7 +52,7 @@ def run_script(faction=None, workers=1):
                 page = 1
                 cancelUpdate = False
                 while True:
-                    time.sleep(0.5)
+                    time.sleep(0.2)
                     cards = card_routine.get_unique_offers(
                         session, dbcard.name_en, dbcard.faction, dbcard.set, page
                     )

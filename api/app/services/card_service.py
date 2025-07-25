@@ -20,7 +20,6 @@ from app.data.card_data import (
   update_card_data
 )
 from app.data.offer_data import (
-  get_last_offer_by_reference_data,
   get_cards_in_market_count_data,
 )
 from app.data.user_data import (
@@ -73,8 +72,10 @@ def post_offer_live_market_service(data: List[dict]) -> None:
             continue
 
         existing_offer = existing_offers.get(reference_card)
+        print(new_offer.status == 'available' and (not existing_offer or (existing_offer and existing_offer.currency == 'USD')))
         if new_offer.status == 'available' and (not existing_offer or (existing_offer and existing_offer.currency == 'USD')):
             time.sleep(0.1)
+            print(f"Fetching offer for {reference_card} from altered.gg")
             offer = get_offer_by_reference(db.session, reference_card)
             if offer and len(offer) > 0:
                 new_offer.currency = offer[0]['currency']
