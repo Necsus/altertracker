@@ -41,7 +41,7 @@ def run_script(faction=None, workers=3, forceUpdate=False):
     def map_effect_to_card(card: Card, jsonCard) -> Card:
         card.MAIN_EFFECT = jsonCard['elements'].get('MAIN_EFFECT')
         card.ECHO_EFFECT = jsonCard['elements'].get('ECHO_EFFECT')
-        card.subtype = ','.join([sub['reference'] for sub in jsonCard['cardSubTypes']]) if jsonCard.get('cardSubTypes') else None,
+        card.subtype = ','.join([sub['reference'] for sub in jsonCard['cardSubTypes']]) if jsonCard.get('cardSubTypes') else None
         return card
     
     def map_jsoncard_to_card_en(card: Card, jsonCard) -> Card:

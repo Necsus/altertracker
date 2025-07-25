@@ -109,7 +109,9 @@ with app.app_context():
             insert_effect(type_value, value)
 
         if i % 500 == 0:
+            print(f"Processed {i} cards, committing changes...")
             db.session.commit()
+            db.session.expunge_all()
 
     db.session.commit()
     print("Insertion terminée avec succès (V6.4 ULTRA CLEAN FINAL ✅)")

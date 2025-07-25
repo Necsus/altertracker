@@ -91,7 +91,7 @@ def insert_effect(type_value, value, language='en'):
     if value.strip() == '[]' or value.strip() == '':
         return
     existing = Effect.query.filter_by(type=type_value, value=value, language=language).first()
-    if not existing:
+    if not existing or existing.language == 'fr':
         effect = Effect(type=type_value, value=value, language=language)
         print(f"Add : {type_value} = {value}")
         db.session.add(effect)
@@ -109,7 +109,9 @@ with app.app_context():
             insert_effect(type_value, value)
 
         if i % 500 == 0:
+            print(f"Processed {i} cards, committing changes...")
             db.session.commit()
+            db.session.expunge_all()
 
     db.session.commit()
     print("Insertion terminée avec succès (V6.4 ULTRA CLEAN FINAL ✅)")
