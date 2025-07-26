@@ -201,23 +201,23 @@ def get_unique_offers(session, name: str, faction: str, set: str, page: int, ret
 
     # Construire l'URL avec les paramètres encodés
     url = f"{base_url}?{urlencode(params, doseq=True)}"
-    print(f"🔄 URL: {url}")
-    print(f"📋 Headers envoyés:")
-    for key, value in headers.items():
-        if key == "authorization":
-            print(f"  {key}: Bearer {value[-10:]}...")  # Masque le token
-        else:
-            print(f"  {key}: {value}")
+    # print(f"🔄 URL: {url}")
+    # print(f"📋 Headers envoyés:")
+    # for key, value in headers.items():
+    #     if key == "authorization":
+    #         print(f"  {key}: Bearer {value[-10:]}...")  # Masque le token
+    #     else:
+    #         print(f"  {key}: {value}")
     
-    start_time = time.time()
+    # start_time = time.time()
     try:
         # Effectuer une requête GET vers l'URL
         response = requests.get(url, headers=headers)
 
-        elapsed_time = time.time() - start_time
-        print(f"⏱️ Temps de réponse: {elapsed_time:.2f}s")
-        print(f"📨 Status code: {response.status_code}")
-        print(f"📋 Headers de réponse:")
+        # elapsed_time = time.time() - start_time
+        # print(f"⏱️ Temps de réponse: {elapsed_time:.2f}s")
+        # print(f"📨 Status code: {response.status_code}")
+        # print(f"📋 Headers de réponse:")
         
         # Vérifier si la requête a réussi (code 200)
         response.raise_for_status()
@@ -229,7 +229,7 @@ def get_unique_offers(session, name: str, faction: str, set: str, page: int, ret
         
         if data['hydra:totalItems'] >= 1000:
             print(params)
-        print(data['hydra:totalItems'])
+        # print(data['hydra:totalItems'])
         # Retourner les données
         return data
     except requests.exceptions.RequestException as e:

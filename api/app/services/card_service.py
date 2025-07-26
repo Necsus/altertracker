@@ -72,7 +72,7 @@ def post_offer_live_market_service(data: List[dict]) -> None:
             continue
 
         existing_offer = existing_offers.get(reference_card)
-        print(new_offer.status == 'available' and (not existing_offer or (existing_offer and existing_offer.currency == 'USD')))
+
         if new_offer.status == 'available' and (not existing_offer or (existing_offer and existing_offer.currency == 'USD')):
             time.sleep(0.1)
             print(f"Fetching offer for {reference_card} from altered.gg")
