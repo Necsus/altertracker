@@ -28,7 +28,7 @@ export class CardApiService {
   search_cards$(request: any): Observable<any> {
     return this.wabApiService.callPost$(this.controller, 'search', request);
   }
-  post_offer_live_market$(request: OfferLiveMarketRequest[]): Observable<void> {
+  post_offer_live_market$(request: { from_script: boolean, offers: OfferLiveMarketRequest[] }): Observable<void> {
     return this.wabApiService.callPost$(this.controller, 'offerlivemarket', request);
   }
 

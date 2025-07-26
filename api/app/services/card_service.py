@@ -48,7 +48,7 @@ def search_cards_service(name, rarity, faction, set, subtype, main_effect, main_
         main_cost_range, recall_cost_range, forest_cost_range, mountain_cost_range, ocean_cost_range,
         no_condition, in_market, price_range, en, dataset_type, user_id)
 
-def post_offer_live_market_service(data: List[dict]) -> None:
+def post_offer_live_market_service(data: List[dict], from_script: bool=False) -> None:
     """Optimisation de la gestion des offres pour réduire les appels à la base de données."""
     # Précharger les cartes et les offres existantes pour éviter des requêtes répétées
     references = [item['reference'] for item in data]
@@ -65,7 +65,6 @@ def post_offer_live_market_service(data: List[dict]) -> None:
             status=item['status'],
             link_offer=None
         )
-            
 
         existing_card = existing_cards.get(reference_card)
         if not existing_card:
@@ -73,7 +72,7 @@ def post_offer_live_market_service(data: List[dict]) -> None:
 
         existing_offer = existing_offers.get(reference_card)
 
-        if new_offer.status == 'available' and (not existing_offer or (existing_offer and existing_offer.currency == 'USD')):
+        if from_script and new_offer.status == 'available' and (not existing_offer or (existing_offer and existing_offer.currency == 'USD')):
             time.sleep(0.1)
             print(f"Fetching offer for {reference_card} from altered.gg")
             offer = get_offer_by_reference(db.session, reference_card)

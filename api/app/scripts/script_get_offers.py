@@ -26,7 +26,7 @@ def run_script(faction=None, workers=1):
                 api_url = "http://127.0.0.1:5001/api/card/offerlivemarket"
 
             # Effectuer la requête POST
-            response = requests.post(api_url, json=data)
+            response = requests.post(api_url, json={'from_script': True, 'offers': data})
 
             # Vérifier le statut de la réponse
             if response.status_code == 200 or response.status_code == 201:
@@ -59,10 +59,10 @@ def run_script(faction=None, workers=1):
                     if not cards or 'hydra:member' not in cards or not cards['hydra:member']:
                         cancelUpdate = True
                         break
-                    
+
                     if 'hydra:totalItems' in cards and cards['hydra:totalItems'] >= 1000:
                         socketio.emit('script_output', {'data': f"\033[91mTROP DE RESULTATS pour {dbcard.name_en} ({dbcard.faction}) ({dbcard.set})\033[0m"})
-                    
+
                     socketio.emit('script_output', {'data': f"\033[92mpage : {page} pour {cards.get('hydra:totalItems', 0)} offres trouvées\033[0m"})
 
                     for card in cards['hydra:member']:
