@@ -79,7 +79,7 @@ def run_script(faction: str, workers: int):
 
             existing_cards = {
                 card.id: card
-                for card in query.order_by(Card.id.asc()).all()
+                for card in query.order_by(Card.id.desc()).all()
             }
         finally:
             session.close()
