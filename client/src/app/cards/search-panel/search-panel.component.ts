@@ -186,8 +186,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
         queryParams.append(key, formValues[key]);
       }
     });
-    const searchUrl = `/cards?${queryParams.toString()}`;
-    localStorage.setItem('lastSearchUrl', searchUrl);
+    // const searchUrl = `/cards?${queryParams.toString()}`;
+    // localStorage.setItem('lastSearchUrl', searchUrl);
     this.searchCards(formValues);
   }
 

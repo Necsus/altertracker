@@ -30,7 +30,8 @@ export class SaveSearchComponent {
   toggleSlider(): void {
     this.sliderOpen = !this.sliderOpen; // Ouvre/ferme le slider
     this.updateBodyScroll();
-    this.lastSearchUrl = localStorage.getItem('lastSearchUrl');
+    this.lastSearchUrl = this.getCurrentUrl();
+    this.canSaveSearch = !!this.lastSearchUrl && !!this.lastSearchUrl.includes('?');
     this.isLoading = true; // Démarre le chargement
     this.userService.get_user_searches$().subscribe({
       next: (response: UserSearchModel[]) => {
@@ -52,8 +53,8 @@ export class SaveSearchComponent {
   }
 
   saveSearch(): void {
-    if (this.searchName.trim()) {
-      this.isLoading = true; // Démarre le chargement
+    if (this.searchName.trim() && this.canSaveSearch) {
+      this.isLoading = true;
       let request = <UserSearchModel>{
         name_search: this.searchName.trim(),
         url_search: this.lastSearchUrl
@@ -80,6 +81,17 @@ export class SaveSearchComponent {
   goSearch(url: string): void {
     this.closeSlider(); // Ferme le slider
     this.router.navigateByUrl(url); // Redirige vers l'URL de recherche
+  }
+
+  private getCurrentUrl(): string {
+    const currentUrl = this.router.url;
+    const url = new URL(currentUrl, window.location.origin);
+
+    // Supprimer le paramètre 'dataset' s'il existe
+    // url.searchParams.delete('dataset');
+
+    // Retourner l'URL sans le domaine (juste le pathname + search)
+    return url.pathname + url.search;
   }
 
   private updateBodyScroll(): void {
