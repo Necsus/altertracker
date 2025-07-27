@@ -73,8 +73,8 @@ def post_offer_live_market_service(data: List[dict], from_script: bool=False) ->
         existing_offer = existing_offers.get(reference_card)
 
         if from_script and new_offer.status == 'available' and (not existing_offer or (existing_offer and existing_offer.currency == 'USD')):
-            time.sleep(0.1)
-            print(f"Fetching offer for {reference_card} from altered.gg")
+            time.sleep(0.2)
+            # print(f"Fetching offer for {reference_card} from altered.gg")
             offer = get_offer_by_reference(db.session, reference_card)
             if offer and len(offer) > 0:
                 new_offer.currency = offer[0]['currency']
