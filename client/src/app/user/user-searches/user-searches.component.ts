@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { UserSearchModel } from '../../01_models/03_business/user-search.model';
 import { UserService } from '../../03_business/user.service';
 import { AuthViewService } from '../../authentication/auth-view.service';
@@ -10,7 +11,7 @@ import { ToastService } from '../../shared/services/toast/toast.service';
   selector: 'app-user-searches',
   templateUrl: './user-searches.component.html',
   styleUrls: ['./user-searches.component.css'],
-  imports: [CommonModule]
+  imports: [CommonModule, TranslateModule]
 })
 export class UserSearchesComponent implements OnInit {
   isLoading: boolean = false; // État de chargement

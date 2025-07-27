@@ -1,11 +1,30 @@
 <meta name="robots" content="noindex">
 <div class="container mx-auto px-4 py-8">
-  <h1 class="text-2xl font-bold text-center mb-4">Mes recherches enregistrées</h1>
-
+  <h1 class="text-2xl font-bold text-center mb-4">{{ 'user_searches.title' | translate }}</h1>
+  <div class="bg-gray-800 border border-gray-700 text-white p-4 rounded-xl mb-4">
+    <h2 class="text-xl font-semibold mb-2">{{ 'user_alerts.instructions.title' | translate }}</h2>
+    <ol class="list-decimal list-inside mb-2 space-y-1">
+      <li>
+        {{ 'user_alerts.instructions.step_1' | translate }}
+        <a href="https://altertracker.com/join-discord" target="_blank" class="text-blue-400 hover:underline">
+          {{ 'user_alerts.instructions.step_1_link' | translate }}
+        </a>
+      </li>
+      <li>
+        {{ 'user_alerts.instructions.step_2' | translate }}
+        <a href="https://altertracker.com/me" target="_blank" class="text-blue-400 hover:underline">
+          {{ 'user_alerts.instructions.step_2_link' | translate }}
+        </a>
+      </li>
+      <li>
+        {{ 'user_alerts.instructions.step_3' | translate }}
+      </li>
+    </ol>
+  </div>
   <!-- Gestion du chargement -->
   <div *ngIf="isLoading" class="text-center text-gray-400">
     <i class="fas fa-spinner fa-spin text-2xl"></i>
-    <p>Chargement des recherches...</p>
+    <p>{{ 'user_searches.is_loading' | translate }}</p>
   </div>
 
   <!-- Liste des recherches -->
@@ -17,7 +36,8 @@
           <div>
             <h4 class="text-white font-medium">{{ search.name_search }}</h4>
             <p class="text-sm text-gray-400 break-all">{{ search.url_search }}</p>
-            <p class="text-xs text-gray-500">Créé le : {{ search.created_at | date:'short' }}</p>
+            <p class="text-xs text-gray-500">{{ 'cards.create_at' | translate }} : {{ search.created_at | date:'short'
+              }}</p>
           </div>
           <div class="flex space-x-2 px-4">
             <button (click)="deleteSearch(search.id); $event.stopPropagation()"
@@ -32,6 +52,6 @@
 
   <!-- Message si aucune recherche -->
   <div *ngIf="!isLoading && searches.length === 0" class="text-center text-gray-400">
-    <p>Aucune recherche enregistrée.</p>
+    <p>{{ 'user_searches.no_searches' | translate }}</p>
   </div>
 </div>

@@ -163,7 +163,7 @@
       "step_1": "Rejoignez notre serveur Discord AlterTracker 👉",
       "step_1_link": "Lien du serveur Discord",
       "step_2": "Liez votre compte Discord à AlterTracker 👉",
-      "step_2_link": "Lien vers AlterTracker",
+      "step_2_link": "Lien vers votre profil",
       "step_3": "Si ce n'est pas fait, autoriser le serveur AlterTracker à envoyer des messages privés à votre compte Discord.",
       "alert": "En raison d'un trop grand nombre de mails envoyés, les alertes par emails sont désactivées. Nous vous recommandons d'utiliser les notifications Discord pour recevoir vos alertes."
     },
@@ -225,5 +225,10 @@
     "delete_account_password": "Mot de passe",
     "delete_account_confirm_label": "Voulez-vous vraiment supprimer votre compte ? Tapez",
     "delete_account_button": "Supprimer mon compte"
+  },
+  "user_searches": {
+    "title": "Mes recherches 🔍",
+    "is_loading": "Chargement des recherches...",
+    "no_searches": "Aucune recherche enregistrée."
   }
 }
