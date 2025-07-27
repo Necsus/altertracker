@@ -25,8 +25,13 @@ def run_script(faction=None, workers=1):
             else:
                 api_url = "http://127.0.0.1:5001/api/card/offerlivemarket"
 
+            payload = {
+                'from_script': True,
+                'offers': data  # data contient la liste des offres
+            }
+
             # Effectuer la requête POST
-            response = requests.post(api_url, json={'from_script': True, 'offers': data})
+            response = requests.post(api_url, json=payload)
 
             # Vérifier le statut de la réponse
             if response.status_code == 200 or response.status_code == 201:

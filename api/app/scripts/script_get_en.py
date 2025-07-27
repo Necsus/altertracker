@@ -56,7 +56,7 @@ def run_script(faction: str, workers: int):
                                     has_updated = True
                             # Si une modification a été effectuée, mettre à jour `edited_at`
                             if has_updated:
-                                socketio.emit('script_output', {'data': f"Mise à jour de la carte : {card_to_update.name_en} ({card_to_update.reference}) ({index}/{len(subset)})"})
+                                socketio.emit('script_output', {'data': f"{card_to_update.name_en} ({card_to_update.reference}) ({index}/{len(subset)})"})
                                 card_to_update.edited_at = datetime.now(timezone.utc)
                                 session.commit()
 
