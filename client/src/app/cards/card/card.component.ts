@@ -151,7 +151,7 @@ export class CardComponent {
   }
   toggleEmailNotifications(): void {
     if (!this.discordLinked) {
-      this.toastService.show('Veuillez lier votre compte Discord pour activer les notifications.', 'info', 5000);
+      this.toastService.show('Veuillez rejoindre le serveur Discord et lier votre compte Discord pour activer les notifications.', 'info', 5000);
       this.router.navigate(['/me']);
       return;
     }

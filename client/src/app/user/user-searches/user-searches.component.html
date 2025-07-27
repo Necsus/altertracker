@@ -40,6 +40,22 @@
               }}</p>
           </div>
           <div class="flex space-x-2 px-4">
+            <div class="flex items-center gap-3 w-full" *ngIf="search.active_notification !== undefined">
+              <label for="emailToggle" class=" flex items-center gap-2">
+                <i class="fa-brands fa-discord text-lg text-blue"></i>
+              </label>
+
+              <div class="relative inline-flex items-center cursor-pointer"
+                (click)="toggleSearchNotifications(search); $event.stopPropagation()">
+                <div [ngClass]="{
+                'bg-amber-500': search.active_notification,
+                'bg-gray-600': !search.active_notification
+              }" class="w-11 h-6 rounded-full transition duration-300"></div>
+                <div class="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-300"
+                  [style.transform]="search.active_notification ? 'translateX(20px)' : 'translateX(0)'">
+                </div>
+              </div>
+            </div>
             <button (click)="deleteSearch(search.id); $event.stopPropagation()"
               class="delete-btn bg-red-600 hover:bg-red-700 text-white py-1 px-3 rounded-md transition duration-300">
               <i class="fas fa-trash"></i>
