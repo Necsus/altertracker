@@ -1,15 +1,15 @@
-from datetime import datetime, timezone
 import re
 import time
-from urllib.parse import urlparse, parse_qs, unquote
+from urllib.parse import parse_qs, unquote
+import requests
 from sqlalchemy import func
+from app.services.card_service import is_image_url_accessible
+from app.data.user_data import get_user_by_id_data
+from app.config import ConfigEnv
 from app.data.card_data import lower_strip, prepare_like_query
-from app.models.offer import Offer
-from app.models.user_alert import UserAlert
 from app.models.new_card import NewCard
 from app.models.user import User
 from app.models.user_search import UserSearch
-from app.scripts import card_routine
 from app.models.card import Card
 from app.extensions import db, socketio
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -207,6 +207,23 @@ def run_script(workers: int):
                     dataset=new_cards  # ou ce que tu utilises comme dataset
                 )
                 # notif discord
+                if ConfigEnv.FLASK_ENV == 'production':
+                    for card in result:
+                        user = get_user_by_id_data(search.id_user)
+                        if user and user.discord_id: 
+                            socketio.emit('script_output', {'data': f"discord alert send : {card.name_en} {card.reference} {user.username}"})
+                            print(f"discord alert send : {card.name_en} {card.reference} {user.username}")
+                            image_url = card.imagePath if is_image_url_accessible(card.imagePath) else "/static/img/cardback.webp"
+                            embed_message = {
+                                "username": user.username,
+                                "name_search": search.name_search,
+                                "name_card": card.name,
+                                "reference": card.reference,
+                                "url_image_card": image_url,
+                                "lien_vers_alerts": f"https://altertracker.com/stats/{card.reference}"
+                            }
+                            response = requests.post(f"{ConfigEnv.DISCORD_BOT_URI}/sendalertnewcard", json={"discord_id": user.discord_id, "embed_message": embed_message})
+                            print(response)
 
 
         except Exception as e:
