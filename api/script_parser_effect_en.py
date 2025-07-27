@@ -91,7 +91,7 @@ def insert_effect(type_value, value, language='en'):
     if value.strip() == '[]' or value.strip() == '':
         return
     existing = Effect.query.filter_by(type=type_value, value=value, language=language).first()
-    if not existing or existing.language == 'fr':
+    if not existing:
         effect = Effect(type=type_value, value=value, language=language)
         print(f"Add : {type_value} = {value}")
         db.session.add(effect)
