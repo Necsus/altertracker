@@ -188,4 +188,16 @@ export class CardComponent {
     localStorage.removeItem('cgu_altered_token');
     this.loaderService.hide();
   }
+
+  isNewCard(): boolean {
+    if (!this.card.created_at) {
+      return false;
+    }
+
+    const today = new Date();
+    const createdDate = new Date(this.card.created_at);
+
+    // Vérifier si c'est le même jour
+    return today.toDateString() === createdDate.toDateString();
+  }
 }

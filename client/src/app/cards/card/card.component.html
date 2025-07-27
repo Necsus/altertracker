@@ -10,6 +10,11 @@
   <div class="p-4 flex flex-col justify-between flex-grow relative">
     <!-- Zone Actions fixes (favori + stats) -->
     <div class="absolute top-3 right-3 flex gap-3 z-10">
+      <div *ngIf="isNewCard()">
+        <span class="bg-amber-500 text-white text-xs font-bold p-1 rounded-full shadow-lg animate-pulse">
+          NEW
+        </span>
+      </div>
       <button (click)="copyToClipboard(card.reference)" class="text-gray-400 hover:text-amber-400 text-sm">
         <i class="fas fa-copy ml-1"></i>
       </button>
