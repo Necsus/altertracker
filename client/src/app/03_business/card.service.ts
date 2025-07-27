@@ -41,7 +41,11 @@ export class CardService {
     }));
   }
 
-  post_offer_live_market$(request: OfferLiveMarketRequest[]): Observable<void> {
+  post_offer_live_market$(offers: OfferLiveMarketRequest[]): Observable<void> {
+    const request = {
+      from_script: false,
+      offers: offers
+    }
     return this.cardApiService.post_offer_live_market$(request).pipe(map(() => void 0));
   }
 

@@ -1,4 +1,5 @@
 import os
+import time
 from typing import List, Optional
 import sib_api_v3_sdk
 from app.models.user import User
@@ -19,13 +20,13 @@ from app.data.card_data import (
   update_card_data
 )
 from app.data.offer_data import (
-  get_last_offer_by_reference_data,
   get_cards_in_market_count_data,
 )
 from app.data.user_data import (
   get_user_by_id_data,
   get_user_alert_by_reference_card_data
 )
+from app.scripts.card_routine import get_offer_by_reference
 import requests
 
 def get_cards_count_service() -> int:
@@ -47,15 +48,12 @@ def search_cards_service(name, rarity, faction, set, subtype, main_effect, main_
         main_cost_range, recall_cost_range, forest_cost_range, mountain_cost_range, ocean_cost_range,
         no_condition, in_market, price_range, en, dataset_type, user_id)
 
-def post_offer_live_market_service(data: List[dict]) -> None:
+def post_offer_live_market_service(data: List[dict], from_script: bool=False) -> None:
     """Optimisation de la gestion des offres pour réduire les appels à la base de données."""
     # Précharger les cartes et les offres existantes pour éviter des requêtes répétées
     references = [item['reference'] for item in data]
     existing_cards = {card.reference: card for card in db.session.query(Card).filter(Card.reference.in_(references)).all()}
     existing_offers = {offer.reference_card: offer for offer in db.session.query(Offer).filter(Offer.reference_card.in_(references), ~Offer.is_deleted).all()}
-
-    # Liste temporaire pour les mises à jour des cartes
-    cards_to_update = []
 
     for item in data:
         reference_card = item['reference']
@@ -74,18 +72,25 @@ def post_offer_live_market_service(data: List[dict]) -> None:
 
         existing_offer = existing_offers.get(reference_card)
 
+        if from_script and new_offer.status == 'available' and (not existing_offer or (existing_offer and existing_offer.currency == 'USD')):
+            time.sleep(0.2)
+            # print(f"Fetching offer for {reference_card} from altered.gg")
+            offer = get_offer_by_reference(db.session, reference_card)
+            if offer and len(offer) > 0:
+                new_offer.currency = offer[0]['currency']
+                new_offer.price = offer[0]['price']
+
         if new_offer.status == 'available':
-            if existing_offer and not existing_offer.is_deleted:
+            # Vérifier si il y a une offre disponible
+            if existing_offer:
+                # Si l'offre existe déjà, vérifier si elle doit être mise à jour
                 if existing_offer.id_offer == new_offer.id_offer:
                     # Même offre, pas de mise à jour nécessaire
-                    if existing_offer.price == new_offer.price or existing_offer.currency != new_offer.currency:
-                        cards_to_update.append(existing_card)
-                        continue
-                    else:
-                        # Préparer la nouvelle offre
+                    if existing_offer.price != new_offer.price:
+                        # Modifier l'offre actuelle
                         existing_offer.is_deleted = True
                         existing_offer.deleted_at = datetime.now(timezone.utc)
-                        existing_offer.status = 'expired'
+                        existing_offer.status = 'edited'
 
                         # Préparer la nouvelle offre
                         new_offer.link_offer = f"https://www.altered.gg/fr-fr/cards/{new_offer.reference_card}/offers"
@@ -94,7 +99,7 @@ def post_offer_live_market_service(data: List[dict]) -> None:
                         new_offer.deleted_at = None
                         new_offer.user_altered = None
                         new_offer.user_id = None
-                        new_offer.previous_offer = existing_offer.id if existing_offer else None
+                        new_offer.previous_offer = existing_offer.id
                         db.session.add(new_offer)
 
                         # Mettre à jour la carte
@@ -102,14 +107,13 @@ def post_offer_live_market_service(data: List[dict]) -> None:
                         existing_card.url_offer = new_offer.link_offer
                         existing_card.price_currency = new_offer.currency
                         existing_card.price_updated_at = datetime.now(timezone.utc)
-                        if abs((existing_offer.price or 0) - (new_offer.price or 0)) > 1:
-                            send_user_alert(existing_card, "edited" if existing_offer else "added")
-                        continue
+                        send_user_alert(existing_card, "edited")
+                    continue
                 else:
-                    # Nouvelle offre, marquer l'ancienne comme expirée
+                    # Modifier l'offre actuelle
                     existing_offer.is_deleted = True
                     existing_offer.deleted_at = datetime.now(timezone.utc)
-                    existing_offer.status = 'expired'
+                    existing_offer.status = 'edited'
 
             # Préparer la nouvelle offre
             new_offer.link_offer = f"https://www.altered.gg/fr-fr/cards/{new_offer.reference_card}/offers"
@@ -128,7 +132,7 @@ def post_offer_live_market_service(data: List[dict]) -> None:
             existing_card.price_updated_at = datetime.now(timezone.utc)
             send_user_alert(existing_card, "edited" if existing_offer else "added")
         else:
-            if existing_offer and not existing_offer.is_deleted:
+            if existing_offer:
                 # Marquer l'offre existante comme expirée
                 existing_offer.is_deleted = True
                 existing_offer.deleted_at = datetime.now(timezone.utc)
@@ -146,12 +150,6 @@ def post_offer_live_market_service(data: List[dict]) -> None:
                 existing_card.price_currency = None
                 existing_card.url_offer = None
                 existing_card.price_updated_at = datetime.now(timezone.utc)
-
-    # Appliquer les mises à jour de `price_updated_at` en une seule fois
-    now = datetime.now(timezone.utc)
-    for card in cards_to_update:
-        card.price_updated_at = now
-
 
     # Commit toutes les modifications en une seule fois
     db.session.commit()

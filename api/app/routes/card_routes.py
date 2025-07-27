@@ -94,9 +94,11 @@ class OfferLiveMarketSchema(Schema):
 def post_offer_live_market():
     try:
         data = request.get_json()
+        from_script = data.get('from_script', False)
+        offers_data = data.get('offers', [])
         schema = OfferLiveMarketSchema(many=True)
-        validated_data = schema.load(data)
-        post_offer_live_market_service(validated_data)
+        validated_data = schema.load(offers_data)
+        post_offer_live_market_service(validated_data, from_script)
         return jsonify({'success': 'ok'}), 201
     except ValidationError as ve:
         return make_response(jsonify({'message': 'Invalid data', 'errors': ve.messages}), 400)

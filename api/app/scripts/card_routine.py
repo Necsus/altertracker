@@ -1,9 +1,7 @@
 import datetime
-import sys
 import time
 import requests
 from urllib.parse import urlencode
-from app.extensions import db
 from app.models.cookie_manager import CookieManager
 
 _token = None
@@ -109,8 +107,9 @@ def get_card_by_reference(card_reference: str, en: bool = False):
         print(f"\033[91mErreur lors de la requête : {e}\033[0m")
         return None
 
-def get_offer_by_reference(reference: str, token: str):
+def get_offer_by_reference(session, reference: str, retry: bool = True):
     base_url = f"https://api.altered.gg/cards/{reference}/offers?itemsPerPage=10&page=1"
+    token = getToken(session)
     headers = {
         "authorization": f"Bearer {token}",
         "accept": "*/*"
@@ -121,16 +120,9 @@ def get_offer_by_reference(reference: str, token: str):
         
         # Vérifier si la requête a réussi (code 200)
         response.raise_for_status()
-        
+
         # Récupérer les données au format JSON
         data = response.json()
-
-        if 'code' in data and data['code'] == 401:
-            if 'message' in data and data['message']:
-                print(f"\033[91m{data['message']}\033[0m")
-            else:
-                print("\033[91mError lors de la requete card_routine.get_offer_by_reference\033[0m")
-            return None
         
         if data['hydra:totalItems'] <= 0 or len(data['hydra:member']) <= 0:
             return None
@@ -138,9 +130,14 @@ def get_offer_by_reference(reference: str, token: str):
         # Retourner les données
         return data['hydra:member']
     except requests.exceptions.RequestException as e:
-        # Gérer les erreurs de requête
-        print(f"\033[91mErreur lors de la requête : {e}\033[0m")
-        return None
+        if retry:
+            print(f"\033[93mTentative de récupération du token...\033[0m")
+            time.sleep(1)
+            getToken(session, True)
+            return get_offer_by_reference(session, reference, retry=False)
+        else:
+            print(f"\033[91mErreur lors de la requête : {e}\033[0m")
+            return None
     
 def _iso_to_timestamp(iso_str):
     # Gère le format ISO 8601 avec ou sans millisecondes
@@ -170,10 +167,10 @@ def getToken(session, clearToken: bool = False) -> str:
 
         for cookie in response.cookies:
             if cookie.name == '__Secure-next-auth.session-token.0':
-                print(f"token.0 : {cookie.value}")
+                print(f"token.0 : {cookie.value[-10:]}...")
                 _token0.value = cookie.value
             elif cookie.name == '__Secure-next-auth.session-token.1':
-                print(f"token.1 : {cookie.value}")
+                print(f"token.1 : {cookie.value[-10:]}...")
                 _token1.value = cookie.value
         session.commit()
         data = response.json()
@@ -198,15 +195,29 @@ def get_unique_offers(session, name: str, faction: str, set: str, page: int, ret
     token = getToken(session)
     headers = {
         "authorization": f"Bearer {token}",
-        "accept": "*/*"
+        "accept": "*/*",
+        "user-agent": "insomnia/11.0.2"
     }
 
     # Construire l'URL avec les paramètres encodés
     url = f"{base_url}?{urlencode(params, doseq=True)}"
-    # print(url)
+    # print(f"🔄 URL: {url}")
+    # print(f"📋 Headers envoyés:")
+    # for key, value in headers.items():
+    #     if key == "authorization":
+    #         print(f"  {key}: Bearer {value[-10:]}...")  # Masque le token
+    #     else:
+    #         print(f"  {key}: {value}")
+    
+    # start_time = time.time()
     try:
         # Effectuer une requête GET vers l'URL
         response = requests.get(url, headers=headers)
+
+        # elapsed_time = time.time() - start_time
+        # print(f"⏱️ Temps de réponse: {elapsed_time:.2f}s")
+        # print(f"📨 Status code: {response.status_code}")
+        # print(f"📋 Headers de réponse:")
         
         # Vérifier si la requête a réussi (code 200)
         response.raise_for_status()
@@ -218,7 +229,7 @@ def get_unique_offers(session, name: str, faction: str, set: str, page: int, ret
         
         if data['hydra:totalItems'] >= 1000:
             print(params)
-
+        # print(data['hydra:totalItems'])
         # Retourner les données
         return data
     except requests.exceptions.RequestException as e:
