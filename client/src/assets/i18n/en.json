@@ -225,5 +225,10 @@
     "delete_account_password": "Password",
     "delete_account_confirm_label": "Do you really want to delete your account? Type",
     "delete_account_button": "Delete my account"
+  },
+  "user_searches": {
+    "title": "My searches 🔍",
+    "is_loading": "Searches loading...",
+    "no_searches": "No search saved."
   }
 }
