@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: discord-bot
+  name: bot
   namespace: altertracker
 spec:
   selector:
-    app: discord-bot
+    app: bot
   ports:
     - protocol: TCP
       port: 8080
