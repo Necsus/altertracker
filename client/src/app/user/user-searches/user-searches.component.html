@@ -42,7 +42,7 @@
             </p>
             <button (click)="deleteSearch(search.id)"
               class="text-red-600 hover:text-red-700 text-white py-2 rounded-md transition duration-300">
-              supprimer
+              {{ 'user_searches.delete' | translate }}
             </button>
           </div>
           <div class="flex space-x-2 px-4">
@@ -58,10 +58,10 @@
                 class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none shadow-lg w-64 sm:w-80 max-w-xs sm:max-w-sm">
                 <div class="text-center leading-relaxed">
                   <div class="text-xs opacity-90">
-                    Active les alertes pour les offres des cartes de cette recherche.
+                    {{ 'user_searches.popover_favorite_1' | translate }}
                   </div>
                   <div class="text-xs opacity-75 mt-1">
-                    ⚠️ Uniquement pour les cartes existantes
+                    {{ 'user_searches.popover_favorite_2' | translate }}
                   </div>
                 </div>
                 <div
@@ -79,7 +79,7 @@
                 class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none shadow-lg w-64 sm:w-80 max-w-xs sm:max-w-sm">
                 <div class="text-center leading-relaxed">
                   <div class="text-xs opacity-90">
-                    Active les alertes pour les nouvelles cartes intégrant cette recherche.
+                    {{ 'user_searches.popover_new_card_notification' | translate }}
                   </div>
                 </div>
                 <div
