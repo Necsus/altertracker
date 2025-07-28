@@ -114,7 +114,7 @@
             'text-amber-400 line-through': offer.is_deleted && offer.previous_offer,
             'font-medium': true
           }">
-            {{ offer.price | currency:(offer.currency || ''):'symbol':'1.2-2' }}
+            {{ offer.price | currency:(offer.currency || ''):'symbol':'1.0-2' }}
           </span>
         </li>
       </ul>
@@ -160,7 +160,7 @@
           </div>
           <!-- Price -->
           <div class="text-green-400 font-semibold text-right flex-grow">
-            {{ purchase.price | currency:(purchase.currency || ''):'symbol':'1.2-2' }}
+            {{ purchase.price | currency:(purchase.currency || ''):'symbol':'1.0-2' }}
           </div>
         </li>
       </ul>
