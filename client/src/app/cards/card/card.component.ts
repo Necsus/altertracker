@@ -151,7 +151,7 @@ export class CardComponent {
   }
   toggleEmailNotifications(): void {
     if (!this.discordLinked) {
-      this.toastService.show('Veuillez lier votre compte Discord pour activer les notifications.', 'info', 5000);
+      this.toastService.show('Veuillez rejoindre le serveur Discord et lier votre compte Discord pour activer les notifications.', 'info', 5000);
       this.router.navigate(['/me']);
       return;
     }
@@ -187,5 +187,17 @@ export class CardComponent {
     localStorage.removeItem('altered_token');
     localStorage.removeItem('cgu_altered_token');
     this.loaderService.hide();
+  }
+
+  isNewCard(): boolean {
+    if (!this.card.created_at) {
+      return false;
+    }
+
+    const today = new Date();
+    const createdDate = new Date(this.card.created_at);
+
+    // Vérifier si c'est le même jour
+    return today.toDateString() === createdDate.toDateString();
   }
 }

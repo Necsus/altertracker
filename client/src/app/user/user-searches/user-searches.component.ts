@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 import { UserSearchModel } from '../../01_models/03_business/user-search.model';
 import { UserService } from '../../03_business/user.service';
 import { AuthViewService } from '../../authentication/auth-view.service';
@@ -10,11 +11,12 @@ import { ToastService } from '../../shared/services/toast/toast.service';
   selector: 'app-user-searches',
   templateUrl: './user-searches.component.html',
   styleUrls: ['./user-searches.component.css'],
-  imports: [CommonModule]
+  imports: [CommonModule, TranslateModule]
 })
 export class UserSearchesComponent implements OnInit {
   isLoading: boolean = false; // État de chargement
   searches: UserSearchModel[] = []; // Liste des recherches
+  discordLinked: boolean = false; // État de la liaison Discord
 
   constructor(
     private userService: UserService,
@@ -26,6 +28,7 @@ export class UserSearchesComponent implements OnInit {
   ngOnInit(): void {
     this.authViewService.isLoggedIn$.subscribe(status => {
       if (!status) this.router.navigate(['/login']);
+      this.discordLinked = this.authViewService.getDiscordIdLinked() ?? false;
     });
     this.loadUserSearches();
   }
@@ -64,5 +67,26 @@ export class UserSearchesComponent implements OnInit {
         this.isLoading = false; // Arrête le chargement
       }
     });
+  }
+
+  toggleSearchNotifications(search: UserSearchModel): void {
+    this.toastService.show('Fonctionnalitée en cours d\'implementation', 'info', 5000);
+    if (!this.discordLinked) {
+      this.toastService.show('Veuillez rejoindre le serveur Discord et lier votre compte Discord pour activer les notifications.', 'info', 5000);
+      this.router.navigate(['/me']);
+      return;
+    }
+    if (search.active_notification !== undefined) {// Inverse l'état des notifications par e-mail
+      search.active_notification = !search.active_notification;
+      // this.userService.put_user_alert$(this.card.alert).subscribe({
+      //   next: () => { },
+      //   error: (err: any) => {// Rétablit l'état précédent en cas d'erreur
+      //     this.toastService.show(err.message, 'error', 5000);
+      //     if (this.card.alert) {
+      //       this.card.alert.mail_active = !this.card.alert.mail_active;
+      //     }
+      //   },
+      // });
+    }
   }
 }

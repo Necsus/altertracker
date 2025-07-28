@@ -18,8 +18,8 @@
     "messages": "Messages",
     "chat": "Chat",
     "token": "Token Altered",
-    "searches": "My Searches",
-    "alerts": "My alerts ❤️",
+    "searches": "🔍 My Searches",
+    "alerts": "❤️ My alerts",
     "collection": "My Collection",
     "purchase_offers": "Purchase Offers",
     "logout": "Logout",
@@ -163,7 +163,7 @@
       "step_1": "Join our AlterTracker Discord server 👉",
       "step_1_link": "Discord server link",
       "step_2": "Link your Discord account to AlterTracker 👉",
-      "step_2_link": "Link to AlterTracker",
+      "step_2_link": "Link to your profile",
       "step_3": "If not already done, allow the AlterTracker server to send private messages to your Discord account.",
       "alert": "Due to too many emails being sent, email alerts are disabled. We recommend using Discord notifications to receive your alerts."
     },
@@ -225,5 +225,10 @@
     "delete_account_password": "Password",
     "delete_account_confirm_label": "Do you really want to delete your account? Type",
     "delete_account_button": "Delete my account"
+  },
+  "user_searches": {
+    "title": "My searches 🔍",
+    "is_loading": "Searches loading...",
+    "no_searches": "No search saved."
   }
 }
