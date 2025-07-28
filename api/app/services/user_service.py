@@ -17,7 +17,8 @@ from app.data.user_data import (
   delete_user_data,
   get_user_collections_data,
   save_user_collections_bulk,
-  get_card_is_in_collection_data
+  get_card_is_in_collection_data,
+  update_user_search_alerts_data
 )
 
 def get_user_by_id_service(id_user: int) -> Dict:
@@ -99,12 +100,6 @@ def save_user_collections_service(id_user: int, data: List[Dict]) -> None:
 def get_card_is_in_collection_service(id_user: int, reference: str) -> bool:
     return get_card_is_in_collection_data(id_user, reference)
 
-# def update_user_search_notification_service(id_search: int, active_notification: bool) -> Dict:
-#     data = {"active_notification": active_notification}
-#     updated_search = edit_user_search_data(id_search, data)
-#     return updated_search.json()
-
-# def update_user_search_favorite_service(id_search: int, active_favorite: bool) -> Dict:
-#     data = {"active_favorite": active_favorite}
-#     updated_search = edit_user_search_data(id_search, data)
-#     return updated_search.json()
+def update_user_search_alerts_service(data: Dict) -> Dict:
+    updated_search = update_user_search_alerts_data(data)
+    return updated_search.json()

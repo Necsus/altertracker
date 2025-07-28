@@ -60,7 +60,16 @@ export class UserSearchesComponent implements OnInit {
       this.router.navigate(['/me']);
       return;
     }
-    console.log(search);
+    search.active_favorite = !search.active_favorite;
+    this.userService.post_user_search_alerts$(search).subscribe({
+      next: () => { },
+      error: (err: any) => {// Rétablit l'état précédent en cas d'erreur
+        this.toastService.show(err.message, 'error', 5000);
+        if (search) {
+          search.active_favorite = !search.active_favorite;
+        }
+      },
+    });
   }
 
   deleteSearch(id: number): void {
@@ -87,14 +96,14 @@ export class UserSearchesComponent implements OnInit {
       return;
     }
     search.active_notification = !search.active_notification;
-    // this.userService.put_user_alert$(this.card.alert).subscribe({
-    //   next: () => { },
-    //   error: (err: any) => {// Rétablit l'état précédent en cas d'erreur
-    //     this.toastService.show(err.message, 'error', 5000);
-    //     if (this.card.alert) {
-    //       this.card.alert.mail_active = !this.card.alert.mail_active;
-    //     }
-    //   },
-    // });
+    this.userService.post_user_search_alerts$(search).subscribe({
+      next: () => { },
+      error: (err: any) => {// Rétablit l'état précédent en cas d'erreur
+        this.toastService.show(err.message, 'error', 5000);
+        if (search) {
+          search.active_notification = !search.active_notification;
+        }
+      },
+    });
   }
 }

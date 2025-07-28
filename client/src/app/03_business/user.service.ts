@@ -79,4 +79,9 @@ export class UserService {
       return response;
     }));
   }
+  post_user_search_alerts$(request: UserSearchModel): Observable<UserAlertModel> {
+    return this.userApiService.post_user_search_alerts$(request).pipe(map((response: any) => {
+      return response;
+    }));
+  }
 }

@@ -226,3 +226,19 @@ def save_user_collections_bulk(id_user: int, collections: list[str]) -> list[dic
     except SQLAlchemyError as e:
         db.session.rollback()
         raise Exception(f"Erreur lors de la sauvegarde des collections utilisateur : {str(e)}")
+
+def update_user_search_alerts_data(data: dict) -> UserSearch:
+    try:
+        user_search = db.session.query(UserSearch).filter_by(id=data["id"]).first()
+        if not user_search:
+            raise Exception(f"Aucune recherche trouvée avec l'ID {data['id']}")
+
+        # Mise à jour des champs
+        user_search.active_notification = data.get("active_notification", user_search.active_notification)
+        user_search.active_favorite = data.get("active_favorite", user_search.active_favorite)
+        print(user_search)
+        db.session.commit()
+        return user_search
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        raise Exception(f"Erreur lors de la mise à jour de la recherche utilisateur : {str(e)}")
