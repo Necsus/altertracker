@@ -19,7 +19,8 @@ from app.services.user_service import (
     get_user_by_username_service,
     put_username_service,
     save_user_collections_service,
-    get_user_collections_service
+    get_user_collections_service,
+    update_user_search_alerts_service
 )
 
 user_bp = Blueprint('user', __name__)
@@ -69,7 +70,23 @@ def delete_user_search_route(id_search: int):
         return jsonify({'message': 'Recherche supprimée avec succès'}), 200
     except Exception as e:
         return make_response(jsonify({'message': f'Une erreur est survenue : {str(e)}'}), 500)
-    
+
+@user_bp.route('/searches/alerts', methods=['PUT'])
+@jwt_required()
+def update_user_search_alert():
+    try:
+        user_id = get_jwt_identity()
+        data = request.get_json()
+
+        searches = get_user_search_service(user_id)
+        if not any(search["id"] == data["id"] for search in searches):
+            return jsonify({"message": "Search not found"}), 403
+
+        updated_search = update_user_search_alerts_service(data)
+        return jsonify(updated_search), 200
+    except Exception as e:
+        return jsonify({"message": f"Erreur lors de la mise à jour de l'alerte : {str(e)}"}), 400
+
 @user_bp.route('/alerts', methods=['GET'])
 @jwt_required()
 def get_user_alerts():
@@ -128,7 +145,7 @@ def update_user_alert():
         return jsonify(updated_alert), 200
     except Exception as e:
         return jsonify({"message": f"Erreur lors de la mise à jour de l'alerte : {str(e)}"}), 400
-    
+
 @user_bp.route('/contact', methods=['POST'])
 @jwt_required()
 def contact_form():

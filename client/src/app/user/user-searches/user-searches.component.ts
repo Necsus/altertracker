@@ -53,6 +53,25 @@ export class UserSearchesComponent implements OnInit {
     this.router.navigateByUrl(url); // Redirige vers l'URL de recherche
   }
 
+  toggleFavorite(search: UserSearchModel): void {
+    this.toastService.show('Fonctionnalitée en cours d\'implementation', 'info', 5000);
+    if (!this.discordLinked) {
+      this.toastService.show('Veuillez rejoindre le serveur Discord et lier votre compte Discord pour activer les notifications.', 'info', 5000);
+      this.router.navigate(['/me']);
+      return;
+    }
+    search.active_favorite = !search.active_favorite;
+    this.userService.post_user_search_alerts$(search).subscribe({
+      next: () => { },
+      error: (err: any) => {// Rétablit l'état précédent en cas d'erreur
+        this.toastService.show(err.message, 'error', 5000);
+        if (search) {
+          search.active_favorite = !search.active_favorite;
+        }
+      },
+    });
+  }
+
   deleteSearch(id: number): void {
     this.isLoading = true; // Démarre le chargement
     this.userService.delete_user_search$(id).subscribe({
@@ -76,17 +95,15 @@ export class UserSearchesComponent implements OnInit {
       this.router.navigate(['/me']);
       return;
     }
-    if (search.active_notification !== undefined) {// Inverse l'état des notifications par e-mail
-      search.active_notification = !search.active_notification;
-      // this.userService.put_user_alert$(this.card.alert).subscribe({
-      //   next: () => { },
-      //   error: (err: any) => {// Rétablit l'état précédent en cas d'erreur
-      //     this.toastService.show(err.message, 'error', 5000);
-      //     if (this.card.alert) {
-      //       this.card.alert.mail_active = !this.card.alert.mail_active;
-      //     }
-      //   },
-      // });
-    }
+    search.active_notification = !search.active_notification;
+    this.userService.post_user_search_alerts$(search).subscribe({
+      next: () => { },
+      error: (err: any) => {// Rétablit l'état précédent en cas d'erreur
+        this.toastService.show(err.message, 'error', 5000);
+        if (search) {
+          search.active_notification = !search.active_notification;
+        }
+      },
+    });
   }
 }

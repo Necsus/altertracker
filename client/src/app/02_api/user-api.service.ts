@@ -57,4 +57,7 @@ export class UserApiService {
   post_user_collection$(request: any): Observable<any> {
     return this.wabApiService.callPost$(this.controller, 'collection', request);
   }
+  post_user_search_alerts$(request: UserSearchModel): Observable<any> {
+    return this.wabApiService.callPut$(this.controller, 'searches/alerts', request);
+  }
 }

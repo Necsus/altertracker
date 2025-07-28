@@ -229,6 +229,10 @@
   "user_searches": {
     "title": "Mes recherches 🔍",
     "is_loading": "Chargement des recherches...",
+    "delete": "supprimer",
+    "popover_favorite_1": "Active les alertes pour les offres des cartes de cette recherche.",
+    "popover_favorite_2": "⚠️ Uniquement pour les cartes existantes",
+    "popover_new_card_notification": "Active les alertes pour les nouvelles cartes intégrant cette recherche.",
     "no_searches": "Aucune recherche enregistrée."
   }
 }

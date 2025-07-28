@@ -68,7 +68,7 @@
           <ng-container *ngIf="card.price; else unavailable">
             <button (click)="goToOffer()"
               class="text-green-400 hover:text-green-600 font-semibold flex items-center gap-1">
-              {{ card.price | currency:(card.price_currency || ''):'symbol':'1.2-2' }}
+              {{ card.price | currency:(card.price_currency || ''):'symbol':'1.0-2' }}
               <i class="fas fa-external-link-alt text-xs"></i>
             </button>
             <button *ngIf="isRefreshButtonVisible" (click)="refreshOffer()" class="text-blue-400 hover:text-blue-600">
@@ -94,7 +94,7 @@
         <div *ngFor="let offer of card.mine_purchase_offers" class="flex items-center mb-2">
           <i class="fas fa-tags text-yellow-400 mr-2"></i>
           <span class="text-gray-300 text-sm mr-2"> {{ offer.price | currency:(offer.currency ||
-            ''):'symbol':'1.2-2' }}</span>
+            ''):'symbol':'1.0-2' }}</span>
           <a href="/chat/{{ offer.room_id }}" *ngIf="offer.room_id">
             <i class="fas fa-message text-blue-400 mr-2"></i>
           </a>

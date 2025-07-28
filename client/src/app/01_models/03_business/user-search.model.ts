@@ -5,4 +5,5 @@ export interface UserSearchModel {
   url_search: string; // URL de la recherche
   created_at: string; // Date de création au format ISO
   active_notification?: boolean; // Indique si les notifications sont actives pour cette recherche
+  active_favorite?: boolean; // Indique si la recherche est marquée comme favorite
 }
