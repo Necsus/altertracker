@@ -10,7 +10,7 @@ def start_scheduler(app):
     #     lambda: run_script_with_context(app, 'script_get_unique', 5),
     #     trigger=CronTrigger(hour='2,14', minute=0))
 
-    # Script toutes les 4h
+    # Script toutes les 8h
     scheduler.add_job(
         lambda: run_script_with_context(app, 'script_get_offers', 1),
         trigger=CronTrigger(hour='6,14,22', minute=0))
