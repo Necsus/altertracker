@@ -86,7 +86,6 @@ def save_user_alert_service(data: Dict) -> Dict:
 def delete_user_alert_service(id_alert: int) -> None:
     delete_user_alert_data(id_alert)
 
-
 def edit_user_alert_service(id_alert: int, data: Dict) -> Dict:
     updated_alert = edit_user_alert_data(id_alert, data)
     return updated_alert.json()
@@ -99,3 +98,13 @@ def save_user_collections_service(id_user: int, data: List[Dict]) -> None:
 
 def get_card_is_in_collection_service(id_user: int, reference: str) -> bool:
     return get_card_is_in_collection_data(id_user, reference)
+
+# def update_user_search_notification_service(id_search: int, active_notification: bool) -> Dict:
+#     data = {"active_notification": active_notification}
+#     updated_search = edit_user_search_data(id_search, data)
+#     return updated_search.json()
+
+# def update_user_search_favorite_service(id_search: int, active_favorite: bool) -> Dict:
+#     data = {"active_favorite": active_favorite}
+#     updated_search = edit_user_search_data(id_search, data)
+#     return updated_search.json()

@@ -69,7 +69,43 @@ def delete_user_search_route(id_search: int):
         return jsonify({'message': 'Recherche supprimée avec succès'}), 200
     except Exception as e:
         return make_response(jsonify({'message': f'Une erreur est survenue : {str(e)}'}), 500)
+
+@user_bp.route('/searches/offersalerts', methods=['PUT'])
+@jwt_required()
+def update_user_search_favorite():
+    try:
+        user_id = get_jwt_identity()
+        data = request.get_json()
+
+        # Vérifie si l'alerte appartient à l'utilisateur authentifié
+        alerts = get_user_alert_service(user_id)
+        if not any(alert["id"] == data["id"] for alert in alerts):
+            return jsonify({"message": "Alerte non trouvée ou non autorisée"}), 403
+
+        updated_alert = edit_user_alert_service(data["id"], data)
+        return jsonify(updated_alert), 200
+    except Exception as e:
+        return jsonify({"message": f"Erreur lors de la mise à jour de l'alerte : {str(e)}"}), 400
     
+@user_bp.route('/searches/cardsalerts', methods=['PUT'])
+@jwt_required()
+def update_user_search_notification():
+    try:
+        user_id = get_jwt_identity()
+        data = request.get_json()
+        # Supprime la clé 'card' si elle est présente
+        data.pop('card', None)
+
+        # Vérifie si l'alerte appartient à l'utilisateur authentifié
+        alerts = get_user_alert_service(user_id)
+        if not any(alert["id"] == data["id"] for alert in alerts):
+            return jsonify({"message": "Alerte non trouvée ou non autorisée"}), 403
+
+        updated_alert = edit_user_alert_service(data["id"], data)
+        return jsonify(updated_alert), 200
+    except Exception as e:
+        return jsonify({"message": f"Erreur lors de la mise à jour de l'alerte : {str(e)}"}), 400
+
 @user_bp.route('/alerts', methods=['GET'])
 @jwt_required()
 def get_user_alerts():
@@ -128,7 +164,7 @@ def update_user_alert():
         return jsonify(updated_alert), 200
     except Exception as e:
         return jsonify({"message": f"Erreur lors de la mise à jour de l'alerte : {str(e)}"}), 400
-    
+
 @user_bp.route('/contact', methods=['POST'])
 @jwt_required()
 def contact_form():
