@@ -70,11 +70,9 @@
             </button>
 
             <button (click)="toggleSearchNotifications(search)"
-              class="text-gray-400 hover:text-amber-500 transition relative group">
-              <!-- <i [class]="is_favorite ? 'fas fa-heart text-red-500 text-lg' : 'far fa-heart text-lg'"></i> -->
+              class="text-gray-400 hover:text-green-500 transition relative group">
               <i
-                [class]="search.active_notification ? 'fa-brands fa-discord text-amber-500 text-lg' : 'fa-brands fa-discord text-lg'"></i>
-
+                [class]="search.active_notification ? 'fa-brands fa-discord text-green-500 text-lg' : 'fa-brands fa-discord text-lg'"></i>
               <div
                 class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none shadow-lg w-64 sm:w-80 max-w-xs sm:max-w-sm">
                 <div class="text-center leading-relaxed">

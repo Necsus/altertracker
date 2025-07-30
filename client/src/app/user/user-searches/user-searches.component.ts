@@ -89,7 +89,6 @@ export class UserSearchesComponent implements OnInit {
   }
 
   toggleSearchNotifications(search: UserSearchModel): void {
-    this.toastService.show('Fonctionnalitée en cours d\'implementation', 'info', 5000);
     if (!this.discordLinked) {
       this.toastService.show('Veuillez rejoindre le serveur Discord et lier votre compte Discord pour activer les notifications.', 'info', 5000);
       this.router.navigate(['/me']);
