@@ -15,15 +15,23 @@ from app.scripts import (
 )
 
 script_bp = Blueprint('script', __name__)
-ALLOWED_SCRIPTS = {'script_get_no_unique', 'script_get_unique', 'script_get_en', 'script_get_offers', 'script_reload_main_effect', 'script_get_offer_currency'}
+ALLOWED_SCRIPTS = {
+    'script_get_no_unique',
+    'script_get_unique',
+    'script_get_en',
+    'script_get_offers',
+    'script_reload_main_effect',
+    'script_get_offer_currency',
+    'script_user_search_notify'
+}
 
 def dispatch_script(script: str, workers: int = 3, faction: str = None):
     if script == 'script_get_unique':
         script_get_unique.run_script(faction, workers, True)
         time.sleep(5)
         script_get_en.run_script(faction, 1)
-        # time.sleep(5)
-        # script_user_search_notify.run_script(1)
+        time.sleep(5)
+        script_user_search_notify.run_script(1)
     if script == 'script_get_no_unique':
         script_get_no_unique.run_script()
         # time.sleep(5)
@@ -36,6 +44,8 @@ def dispatch_script(script: str, workers: int = 3, faction: str = None):
         script_reload_main_effect.run_script(faction, 1)
     if script == 'script_get_offer_currency':
         script_get_offer_currency.run_script(workers)
+    if script == 'script_user_search_notify':
+        script_user_search_notify.run_script(workers)
 
 def run_with_app_context(app, script_name: str, workers: int = None, faction: str = None):
     def task():

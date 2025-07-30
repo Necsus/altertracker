@@ -26,7 +26,7 @@ def run_script(workers: int):
         return [data[i * k + min(i, m):(i + 1) * k + min(i + 1, m)] for i in range(n)]
     
     def search_cards_data(name, rarity, faction, set, subtype, main_effect, main_effect_2, echo_effect, exclude_effect,
-        main_cost_range, recall_cost_range, forest_power_range, mountain_power_range, ocean_power_range,
+        main_cost_range, recall_cost_range, forest_power_range, mountain_power_range, ocean_power_range, in_market, price_range,
         no_condition, en, dataset):
         # Vérifier si le nom correspond à la regexp ^ALT_
         if name and re.match(r'^ALT_', name):
@@ -145,6 +145,17 @@ def run_script(workers: int):
                 if 'max' in ocean_power_range:
                     query = query.filter(Card.OCEAN_POWER <= ocean_power_range['max'])
 
+        if in_market:
+            query = query.filter(Card.price.isnot(None))
+            if price_range:
+                if 'min' in price_range and 'max' in price_range and price_range['min'] == price_range['max']:
+                    query = query.filter(Card.price == price_range['min'])
+                else:
+                    if 'min' in price_range:
+                        query = query.filter(Card.price >= price_range['min'])
+                    if 'max' in price_range:
+                        query = query.filter(Card.price <= price_range['max'])
+
         if no_condition:
             if not en:
                 query = query.filter(
@@ -164,10 +175,32 @@ def run_script(workers: int):
         results = query.all()
 
         # Transformation des résultats en JSON
-        return [
-            card.json()
-            for card in results]
+        return results
     
+    def parse_range_param(range_value):
+        if not range_value:
+            return None
+        
+        if '-' in range_value:
+            # Cas "1-2"
+            parts = range_value.split('-')
+            if len(parts) == 2:
+                try:
+                    min_val = int(parts[0].strip())
+                    max_val = int(parts[1].strip())
+                    return {"min": min_val, "max": max_val}
+                except ValueError:
+                    return None
+        else:
+            # Cas "1" (valeur unique)
+            try:
+                val = int(range_value.strip())
+                return {"min": val, "max": val}
+            except ValueError:
+                return None
+        
+        return None
+
     def parse_search_params(url_search):
         # Enlève le préfixe '/cards?' si présent
         if url_search.startswith('/cards?'):
@@ -176,8 +209,17 @@ def run_script(workers: int):
         params = parse_qs(url_search)
         # Décoder les valeurs et simplifier (prend le premier élément de chaque liste)
         clean_params = {k: unquote(v[0]) if v else None for k, v in params.items()}
+        
+        # Parser les valeurs de range
+        range_fields = ['main_cost_range', 'recall_cost_range', 'forest_power_range', 
+                      'mountain_power_range', 'ocean_power_range', 'price_range']
+        
+        for field in range_fields:
+            if field in clean_params:
+                clean_params[field] = parse_range_param(clean_params[field])
+        
         return clean_params
-    
+
     def process_notify(subset, start_index):
         session = Session()
         try:
@@ -187,6 +229,10 @@ def run_script(workers: int):
             for index, search in enumerate(subset, start=start_index):
                 socketio.emit('script_output', {'data': f"Notify ({index}/{len(subset)})"})
                 params = parse_search_params(search.url_search)
+
+                if 'dataset_type' in params:
+                    socketio.emit('script_output', {'data': f"Skip search with dataset_type : {search.name_search} ({search.id})"})
+                    continue
                 result = search_cards_data(
                     name=params.get('name'),
                     rarity=params.get('rarity'),
@@ -202,14 +248,15 @@ def run_script(workers: int):
                     forest_power_range=params.get('forest_power_range'),
                     mountain_power_range=params.get('mountain_power_range'),
                     ocean_power_range=params.get('ocean_power_range'),
+                    in_market=params.get('in_market'),
+                    price_range=params.get('price_range'),
                     no_condition=params.get('no_condition'),
                     en=params.get('en'),
                     dataset=new_cards  # ou ce que tu utilises comme dataset
                 )
-                # notif discord
                 if ConfigEnv.FLASK_ENV == 'production':
                     for card in result:
-                        user = get_user_by_id_data(search.id_user)
+                        user = session.query(User).filter(User.id == search.id_user).first()
                         if user and user.discord_id: 
                             socketio.emit('script_output', {'data': f"discord alert send : {card.name_en} {card.reference} {user.username}"})
                             print(f"discord alert send : {card.name_en} {card.reference} {user.username}")
@@ -224,6 +271,11 @@ def run_script(workers: int):
                             }
                             response = requests.post(f"{ConfigEnv.DISCORD_BOT_URI}/sendalertnewcard", json={"discord_id": user.discord_id, "embed_message": embed_message})
                             print(response)
+                else:
+                    socketio.emit('script_output', {'data': f"Search : {search.name_search} ({search.id})"})
+                    for card in result:
+                        user = session.query(User).filter(User.id == search.id_user).first()
+                        socketio.emit('script_output', {'data': f"discord alert send : {card.name_en} {card.reference} {user.username}"})
 
 
         except Exception as e:
