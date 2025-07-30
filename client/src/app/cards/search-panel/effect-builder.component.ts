@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, ComponentRef, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { EffectModel } from '../../01_models/03_business/effect.model';
 import { CardService } from '../../03_business/card.service';
 import { IconParserPipe } from '../../shared/pipes/icon-parser.pipe';
@@ -15,6 +15,7 @@ import { IconParserPipe } from '../../shared/pipes/icon-parser.pipe';
   imports: [CommonModule, FormsModule, NgSelectModule, IconParserPipe, TranslateModule],
 })
 export class EffectBuilderComponent implements OnInit {
+  currentLanguage: string = 'fr';
   modalRef?: ComponentRef<any>;
   triggers: EffectModel[] = [];
   conditions: EffectModel[] = [];
@@ -25,10 +26,16 @@ export class EffectBuilderComponent implements OnInit {
   result: string = '';
 
   constructor(
-    private cardService: CardService) { }
+    private cardService: CardService,
+    private translate: TranslateService,) {
+    this.currentLanguage = this.translate.currentLang || 'en'; // Définit la langue par défaut
+    this.translate.onLangChange.subscribe((event) => {
+      this.currentLanguage = event.lang;
+    });
+  }
 
   ngOnInit(): void {
-    this.cardService.getEffect$('fr').subscribe({
+    this.cardService.getEffect$(this.currentLanguage).subscribe({
       next: (response: EffectModel[]) => {
         this.triggers = [];
         const nullTrigger = <EffectModel>({
