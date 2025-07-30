@@ -23,7 +23,8 @@ export class AdminComponent implements OnInit, OnDestroy {
     'script_get_en',
     'script_get_offers',
     'script_reload_main_effect',
-    'script_get_offer_currency'
+    'script_get_offer_currency',
+    'script_user_search_notify'
   ];
   selectedScript: string = 'script_get_offers';
   selectedFaction: string = '';
@@ -97,7 +98,8 @@ export class AdminComponent implements OnInit, OnDestroy {
       this.selectedScript === 'script_get_en' ||
       this.selectedScript === 'script_get_offers' ||
       this.selectedScript === 'script_reload_main_effect' ||
-      this.selectedScript === 'script_get_offer_currency') {
+      this.selectedScript === 'script_get_offer_currency' ||
+      this.selectedScript === 'script_user_search_notify') {
       if (this.selectedWorkers) {
         url += `/${this.selectedWorkers}`;
       }
