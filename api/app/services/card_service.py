@@ -42,10 +42,10 @@ def get_card_by_reference_service(reference: str) -> Optional[Card]:
     return get_card_by_reference_data(reference)
 
 def search_cards_service(name, rarity, faction, set, subtype, main_effect, main_effect_2, echo_effect, exclude_effect, main_cost_range, recall_cost_range,
-    forest_cost_range, mountain_cost_range, ocean_cost_range, no_condition,
+    forest_cost_range, mountain_cost_range, ocean_cost_range, zero_power, no_condition,
     in_market, price_range, en, dataset_type, user_id) -> List[dict]:
     return search_cards_data(name, rarity, faction, set, subtype, main_effect, main_effect_2, echo_effect, exclude_effect, 
-        main_cost_range, recall_cost_range, forest_cost_range, mountain_cost_range, ocean_cost_range,
+        main_cost_range, recall_cost_range, forest_cost_range, mountain_cost_range, ocean_cost_range, zero_power,
         no_condition, in_market, price_range, en, dataset_type, user_id)
 
 def post_offer_live_market_service(data: List[dict], from_script: bool=False) -> None:

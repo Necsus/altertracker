@@ -26,8 +26,8 @@ def run_script(workers: int):
         return [data[i * k + min(i, m):(i + 1) * k + min(i + 1, m)] for i in range(n)]
     
     def search_cards_data(name, rarity, faction, set, subtype, main_effect, main_effect_2, echo_effect, exclude_effect,
-        main_cost_range, recall_cost_range, forest_power_range, mountain_power_range, ocean_power_range, in_market, price_range,
-        no_condition, en, dataset):
+        main_cost_range, recall_cost_range, forest_power_range, mountain_power_range, ocean_power_range, zero_power,
+        in_market, price_range, no_condition, en, dataset):
         # Vérifier si le nom correspond à la regexp ^ALT_
         if name and re.match(r'^ALT_', name):
             # Si oui, on ne fait pas de recherche
@@ -116,7 +116,7 @@ def run_script(workers: int):
                     query = query.filter(Card.RECALL_COST <= recall_cost_range['max'])
 
         # Recherche par plage pour forest_power
-        if forest_power_range:
+        if forest_power_range and zero_power is not True:
             if 'min' in forest_power_range and 'max' in forest_power_range and forest_power_range['min'] == forest_power_range['max']:
                 query = query.filter(Card.FOREST_POWER == forest_power_range['min'])
             else:
@@ -126,7 +126,7 @@ def run_script(workers: int):
                     query = query.filter(Card.FOREST_POWER <= forest_power_range['max'])
 
         # Recherche par plage pour mountain_power
-        if mountain_power_range:
+        if mountain_power_range and zero_power is not True:
             if 'min' in mountain_power_range and 'max' in mountain_power_range and mountain_power_range['min'] == mountain_power_range['max']:
                 query = query.filter(Card.MOUNTAIN_POWER == mountain_power_range['min'])
             else:
@@ -136,7 +136,7 @@ def run_script(workers: int):
                     query = query.filter(Card.MOUNTAIN_POWER <= mountain_power_range['max'])
 
         # Recherche par plage pour ocean_power
-        if ocean_power_range:
+        if ocean_power_range and zero_power is not True:
             if 'min' in ocean_power_range and 'max' in ocean_power_range and ocean_power_range['min'] == ocean_power_range['max']:
                 query = query.filter(Card.OCEAN_POWER == ocean_power_range['min'])
             else:
@@ -144,6 +144,13 @@ def run_script(workers: int):
                     query = query.filter(Card.OCEAN_POWER >= ocean_power_range['min'])
                 if 'max' in ocean_power_range:
                     query = query.filter(Card.OCEAN_POWER <= ocean_power_range['max'])
+
+        if zero_power is True:
+            query = query.filter(
+                (Card.FOREST_POWER == 0) | 
+                (Card.MOUNTAIN_POWER == 0) | 
+                (Card.OCEAN_POWER == 0)
+            )
 
         if in_market:
             query = query.filter(Card.price.isnot(None))
@@ -248,6 +255,7 @@ def run_script(workers: int):
                     forest_power_range=params.get('forest_power_range'),
                     mountain_power_range=params.get('mountain_power_range'),
                     ocean_power_range=params.get('ocean_power_range'),
+                    zero_power=params.get('zero_power'),
                     in_market=params.get('in_market'),
                     price_range=params.get('price_range'),
                     no_condition=params.get('no_condition'),

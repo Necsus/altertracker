@@ -36,7 +36,7 @@ def get_card_by_reference_data(reference: str) -> Optional[dict]:
     return db.session.query(Card).filter_by(reference=reference).first()
 
 def search_cards_data(name, rarity, faction, set, subtype, main_effect, main_effect_2, echo_effect, exclude_effect,
-    main_cost_range, recall_cost_range, forest_power_range, mountain_power_range, ocean_power_range,
+    main_cost_range, recall_cost_range, forest_power_range, mountain_power_range, ocean_power_range, zero_power,
     no_condition, in_market, price_range, en, dataset_type, user_id):
     # Vérifier si le nom correspond à la regexp ^ALT_
     if name and re.match(r'^ALT_', name):
@@ -216,7 +216,7 @@ def search_cards_data(name, rarity, faction, set, subtype, main_effect, main_eff
                 query = query.filter(Card.RECALL_COST <= recall_cost_range['max'])
 
     # Recherche par plage pour forest_power
-    if forest_power_range:
+    if forest_power_range and zero_power is not True:
         if 'min' in forest_power_range and 'max' in forest_power_range and forest_power_range['min'] == forest_power_range['max']:
             query = query.filter(Card.FOREST_POWER == forest_power_range['min'])
         else:
@@ -226,7 +226,7 @@ def search_cards_data(name, rarity, faction, set, subtype, main_effect, main_eff
                 query = query.filter(Card.FOREST_POWER <= forest_power_range['max'])
 
     # Recherche par plage pour mountain_power
-    if mountain_power_range:
+    if mountain_power_range and zero_power is not True:
         if 'min' in mountain_power_range and 'max' in mountain_power_range and mountain_power_range['min'] == mountain_power_range['max']:
             query = query.filter(Card.MOUNTAIN_POWER == mountain_power_range['min'])
         else:
@@ -236,7 +236,7 @@ def search_cards_data(name, rarity, faction, set, subtype, main_effect, main_eff
                 query = query.filter(Card.MOUNTAIN_POWER <= mountain_power_range['max'])
 
     # Recherche par plage pour ocean_power
-    if ocean_power_range:
+    if ocean_power_range and zero_power is not True:
         if 'min' in ocean_power_range and 'max' in ocean_power_range and ocean_power_range['min'] == ocean_power_range['max']:
             query = query.filter(Card.OCEAN_POWER == ocean_power_range['min'])
         else:
@@ -244,6 +244,14 @@ def search_cards_data(name, rarity, faction, set, subtype, main_effect, main_eff
                 query = query.filter(Card.OCEAN_POWER >= ocean_power_range['min'])
             if 'max' in ocean_power_range:
                 query = query.filter(Card.OCEAN_POWER <= ocean_power_range['max'])
+    
+    if zero_power is True:
+        # Si zero_power est True, on filtre les cartes avec au moins un pouvoir égal à 0
+        query = query.filter(
+            (Card.FOREST_POWER == 0) | 
+            (Card.MOUNTAIN_POWER == 0) | 
+            (Card.OCEAN_POWER == 0)
+        )
 
     if in_market:
         query = query.filter(Card.price.isnot(None))

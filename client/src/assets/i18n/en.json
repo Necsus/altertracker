@@ -99,6 +99,7 @@
       "cyclone": "Skybound odyssey"
     },
     "form_subtype": "Subtype",
+    "form_zero_power": "At least one stat at 0",
     "filter_effect": "Effects",
     "form_contain_effect": "Effect contains",
     "form_and_contain_effect": "And effect contains",
