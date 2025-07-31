@@ -69,6 +69,7 @@ def search_cards_route():
         forest_power_range = data.get('forest_power_range')
         mountain_power_range = data.get('mountain_power_range')
         ocean_power_range = data.get('ocean_power_range')
+        zero_power = data.get('zero_power')  # New field for zero power
         no_condition = data.get('no_condition')
         in_market = data.get('in_market')
         price_range = data.get('price_range')
@@ -77,7 +78,7 @@ def search_cards_route():
         cards = search_cards_service(
             name, rarity, faction, set, subtype, main_effect, main_effect_2, echo_effect, exclude_effect,
             main_cost_range, recall_cost_range, forest_power_range, mountain_power_range, ocean_power_range,
-            no_condition, in_market, price_range, en, dataset_type, user_id
+            zero_power, no_condition, in_market, price_range, en, dataset_type, user_id
         )
         return jsonify(cards), 200
     except Exception as e:

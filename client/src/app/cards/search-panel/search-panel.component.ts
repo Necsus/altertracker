@@ -63,6 +63,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       forest_power_range: [''],
       mountain_power_range: [''],
       ocean_power_range: [''],
+      zero_power: [''],
       no_condition: [''],
       in_market: [''],
       price_range: [''],
@@ -107,6 +108,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       forest_power_range: queryParams['forest_power_range'] || '',
       mountain_power_range: queryParams['mountain_power_range'] || '',
       ocean_power_range: queryParams['ocean_power_range'] || '',
+      zero_power: queryParams['zero_power'] || '',
       in_market: queryParams['in_market'] || '',
       price_range: queryParams['price_range'] || '',
       no_condition: queryParams['no_condition'] || '',
@@ -158,14 +160,14 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
   isFormValid(): boolean {
     const { name, rarity, faction, set, subtype, main_effect, main_effect_2, echo_effect, exclude_effect,
-      main_cost_range, recall_cost_range, forest_power_range, mountain_power_range, ocean_power_range,
+      main_cost_range, recall_cost_range, forest_power_range, mountain_power_range, ocean_power_range, zero_power,
       in_market, price_range, no_condition, dataset_type } = this.searchForm.value;
     // Vérifie si au moins un champ est rempli ou si forest_power, mountain_power ou ocean_power est égal à 0
     return !!(
       name || rarity || faction || set || subtype || main_effect || main_effect_2 || echo_effect || exclude_effect || main_cost_range || recall_cost_range ||
       forest_power_range !== '' && forest_power_range !== null && forest_power_range !== undefined ||
       mountain_power_range !== '' && mountain_power_range !== null && mountain_power_range !== undefined ||
-      ocean_power_range !== '' && ocean_power_range !== null && ocean_power_range !== undefined ||
+      ocean_power_range !== '' && ocean_power_range !== null && ocean_power_range !== undefined || zero_power ||
       price_range !== '' && price_range !== null && price_range !== undefined ||
       in_market || no_condition || dataset_type
     );
@@ -219,6 +221,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       forest_power_range: this.buildRange(criteria.forest_power_range),
       mountain_power_range: this.buildRange(criteria.mountain_power_range),
       ocean_power_range: this.buildRange(criteria.ocean_power_range),
+      zero_power: criteria.zero_power,
       no_condition: criteria.no_condition,
       in_market: criteria.in_market,
       price_range: this.buildRange(criteria.price_range),

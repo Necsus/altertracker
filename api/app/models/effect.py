@@ -9,7 +9,7 @@ class Effect(db.Model):
     language = db.Column(db.String(2), nullable=False)
 
     __table_args__ = (
-        db.UniqueConstraint('type', 'value', name='uix_type_value'),
+        db.UniqueConstraint('type', 'value', 'language', name='uix_type_value_language'),
     )
 
     def __repr__(self):

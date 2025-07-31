@@ -99,6 +99,7 @@
       "cyclone": "Odyssée des cieux"
     },
     "form_subtype": "Sous-type",
+    "form_zero_power": "Au moins une stat à 0",
     "filter_effect": "Effets",
     "form_contain_effect": "Effet contient",
     "form_and_contain_effect": "Et effet contient",
