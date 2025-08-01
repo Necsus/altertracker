@@ -31,6 +31,8 @@ export class UserAlertsComponent implements OnInit, OnDestroy {
   filteredAlerts: CardModel[] = []; // Liste filtrée
   searchQuery: string = ''; // Texte de recherche
   selectedFaction: string = ''; // Filtre sélectionné
+  showOnlyWithPrice: boolean = false;
+  sortBy: string = '';
 
   constructor(
     private userService: UserService,
@@ -48,21 +50,12 @@ export class UserAlertsComponent implements OnInit, OnDestroy {
     this.loadUserAlerts();
   }
 
-  onSearchChange(): void {
-    this.filterAlerts();
+  onFiltersChange(): void {
+    this.applyFilters();
   }
 
-
-  onFactionChange(): void {
-    this.filterAlerts();
-  }
-
-  filterAlerts(): void {
-    this.filteredAlerts = this.alerts.filter(alert => {
-      const matchesSearch = alert.name.toLowerCase().includes(this.searchQuery.toLowerCase());
-      const matchesFaction = alert.faction.includes(this.selectedFaction);
-      return matchesSearch && matchesFaction;
-    });
+  onSortChange(): void {
+    this.applyFilters();
   }
 
   addCardsToQueue(alerts: CardModel[]): void {
@@ -167,5 +160,48 @@ export class UserAlertsComponent implements OnInit, OnDestroy {
     console.error('Erreur 401 détectée : Redirection vers la page /token.');
     localStorage.removeItem('altered_token');
     localStorage.removeItem('cgu_altered_token');
+  }
+  private applyFilters(): void {
+    let filtered = [...this.alerts];
+
+    // Filtre par faction
+    if (this.selectedFaction) {
+      filtered = filtered.filter(card => card.faction === this.selectedFaction);
+    }
+
+    // Filtre par recherche
+    if (this.searchQuery.trim()) {
+      const query = this.searchQuery.toLowerCase();
+      filtered = filtered.filter(card =>
+        card.name.toLowerCase().includes(query) ||
+        card.reference.toLowerCase().includes(query)
+      );
+    }
+
+    // Filtre cartes avec prix uniquement
+    if (this.showOnlyWithPrice) {
+      filtered = filtered.filter(card => card.price && card.price > 0);
+    }
+
+    // Tri
+    if (this.sortBy) {
+      filtered = this.sortCards(filtered, this.sortBy);
+    }
+
+    this.filteredAlerts = filtered;
+  }
+  private sortCards(cards: any[], sortBy: string): any[] {
+    switch (sortBy) {
+      case 'name_asc':
+        return cards.sort((a, b) => a.name.localeCompare(b.name));
+      case 'name_desc':
+        return cards.sort((a, b) => b.name.localeCompare(a.name));
+      case 'price_asc':
+        return cards.sort((a, b) => (a.price || 0) - (b.price || 0));
+      case 'price_desc':
+        return cards.sort((a, b) => (b.price || 0) - (a.price || 0));
+      default:
+        return cards;
+    }
   }
 }

@@ -1,11 +1,6 @@
 <button (click)="toggleSlider()" class="p-2 bg-amber-600 rounded hover:bg-amber-700 transition cursor-pointer">
   <span class="hidden md:block">
-    @if (canSaveSearch) {
-    {{ 'cards.save_search' | translate }}
-    }
-    @else {
     {{ 'cards.my_searches' | translate }}
-    }
   </span>
   <span class="block md:hidden">
     <i class="fas fa-save"></i>

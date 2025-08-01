@@ -233,12 +233,24 @@ def update_user_search_alerts_data(data: dict) -> UserSearch:
         if not user_search:
             raise Exception(f"Aucune recherche trouvée avec l'ID {data['id']}")
 
+        # Stocker l'ancienne valeur pour détecter les changements
+        old_active_favorite = user_search.active_favorite
+
         # Mise à jour des champs
         user_search.active_notification = data.get("active_notification", user_search.active_notification)
         user_search.active_favorite = data.get("active_favorite", user_search.active_favorite)
-        print(user_search)
+        
+        # Vérifier si active_favorite a été modifié
+        new_active_favorite = data.get("active_favorite")
+        if new_active_favorite is not None and old_active_favorite != new_active_favorite:
+            # Exécuter la fonction spécifique quand active_favorite change
+            handle_active_favorite_change(user_search)
+
         db.session.commit()
         return user_search
     except SQLAlchemyError as e:
         db.session.rollback()
         raise Exception(f"Erreur lors de la mise à jour de la recherche utilisateur : {str(e)}")
+    
+def handle_active_favorite_change(user_search: UserSearch):
+    print(f"Envoi d'un email de notification pour la recherche favorite : {user_search.active_favorite}")

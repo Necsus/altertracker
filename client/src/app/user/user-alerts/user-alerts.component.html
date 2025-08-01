@@ -21,24 +21,47 @@
       </li>
     </ol>
   </div>
-  <div class="flex items-center justify-between gap-4 mb-4">
+  <div class="flex flex-col lg:flex-row lg:items-center gap-4 mb-4">
     <!-- Champ de recherche -->
-    <input type="text"
-      class="w-full bg-gray-800 text-white placeholder-gray-400 rounded-lg py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-amber-500"
-      placeholder="Rechercher une carte..." [(ngModel)]="searchQuery" (input)="onSearchChange()" />
+    <div class="w-full lg:flex-1">
+      <input type="text"
+        class="w-full bg-gray-800 text-white placeholder-gray-400 rounded-lg py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-amber-500"
+        placeholder="Rechercher une carte..." [(ngModel)]="searchQuery" (input)="onFiltersChange()" />
+    </div>
 
-    <!-- Menu déroulant -->
-    <select
-      class="p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400 outline-none transition"
-      [(ngModel)]="selectedFaction" (change)="onFactionChange()">
-      <option value="">-- {{ 'cards.form_faction' | translate }} --</option>
-      <option value="AX">Axiom</option>
-      <option value="BR">Bravos</option>
-      <option value="LY">Lyra</option>
-      <option value="MU">Muna</option>
-      <option value="OR">Ordis</option>
-      <option value="YZ">Yzmir</option>
-    </select>
+    <!-- Filtres et tri - s'adaptent en mobile -->
+    <div class="flex flex-col sm:flex-row gap-4 lg:gap-2">
+      <!-- Menu faction -->
+      <select
+        class="w-full sm:w-auto p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400 outline-none transition text-white"
+        [(ngModel)]="selectedFaction" (change)="onFiltersChange()">
+        <option value="">-- {{ 'cards.form_faction' | translate }} --</option>
+        <option value="AX">Axiom</option>
+        <option value="BR">Bravos</option>
+        <option value="LY">Lyra</option>
+        <option value="MU">Muna</option>
+        <option value="OR">Ordis</option>
+        <option value="YZ">Yzmir</option>
+      </select>
+
+      <!-- Checkbox pour cartes avec prix -->
+      <label class="flex items-center text-white cursor-pointer whitespace-nowrap">
+        <input type="checkbox" class="mr-2 rounded border-gray-600 bg-gray-700 text-amber-500 focus:ring-amber-500"
+          [(ngModel)]="showOnlyWithPrice" (change)="onFiltersChange()">
+        <span class="text-sm">{{ 'user_alerts.filters.with_price_only' | translate }}</span>
+      </label>
+
+      <!-- Menu tri -->
+      <select
+        class="w-full sm:w-auto p-2 bg-gray-700 rounded-lg border border-gray-600 focus:ring-2 focus:ring-amber-400 outline-none transition text-white"
+        [(ngModel)]="sortBy" (change)="onSortChange()">
+        <option value="">{{ 'user_alerts.sort.default' | translate }}</option>
+        <option value="name_asc">{{ 'user_alerts.sort.name_asc' | translate }}</option>
+        <option value="name_desc">{{ 'user_alerts.sort.name_desc' | translate }}</option>
+        <option value="price_asc">{{ 'user_alerts.sort.price_asc' | translate }}</option>
+        <option value="price_desc">{{ 'user_alerts.sort.price_desc' | translate }}</option>
+      </select>
+    </div>
   </div>
 
   <!-- Gestion du chargement -->
@@ -51,13 +74,6 @@
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
       <div *ngFor="let card of filteredAlerts" class="relative">
         <app-card [card]="card"></app-card>
-        <!-- Checkbox notifications -->
-        <!-- <div class="absolute bottom-2 right-2 flex items-center space-x-2">
-          <label class="flex items-center cursor-pointer">
-            <input type="checkbox" [(ngModel)]="card.alert.mail_active" (change)="onToggleNotification(card.alert)" />
-            <span class="ml-2 text-sm text-gray-300 dark:text-gray-300">Mail</span>
-          </label>
-        </div> -->
       </div>
     </div>
   </div>
