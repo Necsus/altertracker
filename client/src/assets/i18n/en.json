@@ -249,5 +249,14 @@
     "popover_favorite_2": "⚠️ Only for existing cards",
     "popover_new_card_notification": "Activate alerts for new cards matching this search.",
     "no_searches": "No saved searches."
+  },
+  "buymeacoffee": {
+    "title": "Do you like AlterTracker?",
+    "subtitle": "Support the development!",
+    "message": "If this application helps you in your Altered games, a small coffee would be welcome to support development and servers! ☕",
+    "help_message": "Every donation helps keep the service free",
+    "support_btn": "Buy me a coffee",
+    "later_btn": "Later",
+    "never_ask": "Don't ask me again"
   }
 }

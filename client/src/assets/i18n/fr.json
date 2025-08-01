@@ -249,5 +249,14 @@
     "popover_favorite_2": "⚠️ Uniquement pour les cartes existantes",
     "popover_new_card_notification": "Active les alertes pour les nouvelles cartes intégrant cette recherche.",
     "no_searches": "Aucune recherche enregistrée."
+  },
+  "buymeacoffee": {
+    "title": "Vous aimez AlterTracker ?",
+    "subtitle": "Soutenez le développement !",
+    "message": "Si cette application vous aide dans vos parties d'Altered, un petit café serait le bienvenu pour soutenir le développement et les serveurs ! ☕",
+    "help_message": "Chaque don aide à maintenir le service gratuit",
+    "support_btn": "Offrir un café",
+    "later_btn": "Plus tard",
+    "never_ask": "Ne plus me demander"
   }
 }
