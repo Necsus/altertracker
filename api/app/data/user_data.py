@@ -71,6 +71,7 @@ def delete_user_search_data(id_search: int) -> None:
     try:
         user_search = db.session.query(UserSearch).filter_by(id=id_search).first()
         if user_search:
+            db.session.query(UserAlert).filter_by(id_search=user_search.id).delete()
             db.session.delete(user_search)
             db.session.commit()
         else:
