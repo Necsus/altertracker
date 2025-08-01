@@ -23,9 +23,9 @@ class UserAlert(db.Model):
             'created_at': self.created_at.isoformat() if self.created_at else None,
         }
       
-    def __init__(self, id_user, id_search, reference_card, mail_active, created_at):
+    def __init__(self, id_user, id_search=None, reference_card, mail_active, created_at=None):
         self.id_user = id_user
         self.id_search = id_search
         self.reference_card = reference_card
         self.mail_active = mail_active
-        self.created_at =  created_at if created_at else datetime.datetime.now(datetime.timezone.utc)
+        self.created_at = created_at if created_at else datetime.datetime.now(datetime.timezone.utc)
