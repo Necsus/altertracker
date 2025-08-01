@@ -282,12 +282,24 @@ def handle_active_favorite_change(user_search: UserSearch):
                 dataset_type=None,
                 user_id=user_search.id_user
             )
-            print(f"{len(result)} cards found for search {user_search.name_search}")
+            if not result:
+                raise Exception(f"No cards found for search '{user_search.name_search}' with the given parameters.")
+            if len(result) > 1000:
+                raise Exception(f"Too many results for search '{user_search.name_search}' ({len(result)} cards found). Please refine your search criteria to reduce the number of results below 1000.")
+            for card in result:
+                if card['alert_id'] is None:
+                    alert_data = {
+                        "id_user": user_search.id_user,
+                        "reference_card": card['reference'],
+                        "id_search": user_search.id,
+                        "mail_active": True,
+                        "created_at": datetime.datetime.now(datetime.timezone.utc)
+                    }
+                    save_user_alert_data(alert_data)
     else:
         # Supprimer tous les UserAlert ayant pour id_search user_search.id
         db.session.query(UserAlert).filter_by(id_search=user_search.id).delete()
         db.session.commit()
-        print(f"All alerts deleted for search {user_search.name_search}")
 
 def parse_range_param(range_value):
     if not range_value:

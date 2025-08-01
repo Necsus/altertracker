@@ -245,7 +245,7 @@
     "title": "My searches 🔍",
     "is_loading": "Loading searches...",
     "delete": "delete",
-    "popover_favorite_1": "Activate alerts for card offers from this search.",
+    "popover_favorite_1": "Activate alerts for card offers from this search <= 1000",
     "popover_favorite_2": "⚠️ Only for existing cards",
     "popover_new_card_notification": "Activate alerts for new cards matching this search.",
     "no_searches": "No saved searches."

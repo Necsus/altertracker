@@ -85,7 +85,7 @@ def update_user_search_alert():
         updated_search = update_user_search_alerts_service(data)
         return jsonify(updated_search), 200
     except Exception as e:
-        return jsonify({"message": f"Erreur lors de la mise à jour de l'alerte : {str(e)}"}), 400
+        return jsonify({"message": f"Error : {str(e)}"}), 400
 
 @user_bp.route('/alerts', methods=['GET'])
 @jwt_required()
@@ -95,7 +95,7 @@ def get_user_alerts():
         alerts = get_user_alert_with_card_service(user_id)
         return jsonify(alerts), 200
     except Exception as e:
-        return jsonify({"message": f"Erreur lors de la récupération des alertes : {str(e)}"}), 400
+        return jsonify({"message": f"Error : {str(e)}"}), 400
 
 
 @user_bp.route('/alerts', methods=['POST'])
