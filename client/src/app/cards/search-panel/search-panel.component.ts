@@ -9,6 +9,7 @@ import { AuthViewService } from '../../authentication/auth-view.service';
 import { withLoader } from '../../shared/services/loader/loader.operator';
 import { LoaderService } from '../../shared/services/loader/loader.service';
 import { ModalService } from '../../shared/services/modal/modal.service';
+import { ToastService } from '../../shared/services/toast/toast.service';
 import { EffectBuilderComponent } from './effect-builder.component';
 
 @Component({
@@ -36,7 +37,8 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     private authViewService: AuthViewService,
     private router: Router,
     private translate: TranslateService,
-    private modalService: ModalService
+    private modalService: ModalService,
+    private toastService: ToastService
   ) { }
 
   ngOnInit() {
@@ -234,6 +236,11 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     searchObservable.subscribe({
       next: (data: CardModel[]) => {
         this.cardsRetrieved.emit({ cards: data, searchOffers: criteria.in_market });
+        if (data.length === 0) {
+          this.translate.get('cards.no_result').subscribe((message: string) => {
+            this.toastService.show(message, 'error', 5000);
+          });
+        }
       },
       error: (error) => {
         console.error('Error fetching card data:', error);

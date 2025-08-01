@@ -88,7 +88,7 @@
       <div class="flex items-center mb-2" *ngIf="card.purchase_offers && card.purchase_offers.length > 0">
         <i class="fas fa-tags text-yellow-400 mr-2"></i>
         <span class="text-gray-300 text-sm">{{ card.purchase_offers && card.purchase_offers.length || 0 }}
-          Offre(s)</span>
+          {{ 'cards.offer_s' | translate }}</span>
       </div>
       <section *ngIf="card.mine_purchase_offers">
         <div *ngFor="let offer of card.mine_purchase_offers" class="flex items-center mb-2">
@@ -105,13 +105,6 @@
         </div>
       </section>
 
-      <!-- Room chat -->
-      <!-- <div *ngIf="card.room_id" class="flex items-center mb-2">
-      <button (click)="openChat(card.room_id)" class="text-indigo-400 hover:text-indigo-600 flex items-center gap-2">
-        <i class="fas fa-comments text-lg"></i> {{ 'cards.chat' | translate }}
-      </button>
-    </div> -->
-
       <!-- Effet principal -->
       @if (prettierText) {
       <p class="text-gray-300 text-sm leading-relaxed"
@@ -119,8 +112,9 @@
       <hr *ngIf="card.ECHO_EFFECT" class="my-1">
       <p class="text-gray-300 text-sm leading-relaxed"
         [innerHTML]="(card | localizedValue:'echo_effect_en':'ECHO_EFFECT') | iconParser"></p>
-      <a class="cursor-pointer text-amber-500 hover:text-amber-600" (click)="prettierText = !prettierText">voir le texte
-        original</a>
+      <a class="cursor-pointer text-amber-500 hover:text-amber-600" (click)="prettierText = !prettierText">
+        {{ 'cards.see_original_text' | translate }}
+      </a>
       }
       @else
       {
@@ -132,3 +126,4 @@
 
     </div>
   </div>
+</div>

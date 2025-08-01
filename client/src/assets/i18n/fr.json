@@ -126,7 +126,10 @@
     "in_market": "En vente",
     "load_more": "Charger plus",
     "suspended": "Suspendue",
-    "unavailable": "Indisponible"
+    "unavailable": "Indisponible",
+    "no_result": "Aucun résultat trouvé pour cette recherche.",
+    "offer_s": "Offre(s)",
+    "see_original_text": "voir le texte original"
   },
   "about": {
     "title": "À propos d'AlterTracker",
@@ -169,7 +172,18 @@
       "alert": "En raison d'un trop grand nombre de mails envoyés, les alertes par emails sont désactivées. Nous vous recommandons d'utiliser les notifications Discord pour recevoir vos alertes."
     },
     "loading": "Chargement des alertes...",
-    "no_alerts": "Aucune alerte enregistrée."
+    "no_alerts": "Aucune alerte enregistrée.",
+    "filters": {
+      "with_price_only": "Cartes avec prix"
+    },
+    "sort": {
+      "default": "Tri par défaut",
+      "name_asc": "Nom (A-Z)",
+      "name_desc": "Nom (Z-A)",
+      "price_asc": "Prix croissant",
+      "price_desc": "Prix décroissant",
+      "faction": "Faction"
+    }
   },
   "cookies": {
     "title": "Gestion des cookies",

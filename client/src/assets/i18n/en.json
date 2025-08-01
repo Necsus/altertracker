@@ -126,7 +126,10 @@
     "in_market": "In market",
     "load_more": "Load more",
     "suspended": "Suspended",
-    "unavailable": "Unavailable"
+    "unavailable": "Unavailable",
+    "no_result": "No results found for this search.",
+    "offer_s": "Offre(s)",
+    "see_original_text": "see original text"
   },
   "about": {
     "title": "About AlterTracker",
@@ -169,7 +172,18 @@
       "alert": "Due to too many emails being sent, email alerts are disabled. We recommend using Discord notifications to receive your alerts."
     },
     "loading": "Loading alerts...",
-    "no_alerts": "No alerts..."
+    "no_alerts": "No alerts...",
+    "filters": {
+      "with_price_only": "Cards with price"
+    },
+    "sort": {
+      "default": "Default sort",
+      "name_asc": "Name (A-Z)",
+      "name_desc": "Name (Z-A)",
+      "price_asc": "Price ascending",
+      "price_desc": "Price descending",
+      "faction": "Faction"
+    }
   },
   "cookies": {
     "title": "Cookie management",
