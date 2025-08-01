@@ -84,6 +84,12 @@ export class UserAlertsComponent implements OnInit, OnDestroy {
     });
   }
 
+  ngOnDestroy(): void {
+    this.flushRequestQueue(); // Vide la file d'attente des requêtes
+    this.queueProcessing = false; // Arrête le traitement des requêtes
+    this.remainingCards = []; // Vide la file d'attente des cartes
+  }
+
   private processQueue(): void {
     if (this.remainingCards.length === 0) {
       this.progressSubject.next(0); // Réinitialise la progression si la file d'attente est vide
@@ -124,21 +130,6 @@ export class UserAlertsComponent implements OnInit, OnDestroy {
           }
         });
     }
-  }
-
-  // onToggleNotification(alert: UserAlertModel): void {
-  //   this.userService.put_user_alert$(alert).subscribe({
-  //     next: () => { },
-  //     error: (err: any) => {
-  //       alert.mail_active = !alert.mail_active; // Rétablit l'état précédent en cas d'erreur
-  //     },
-  //   });
-  // }
-
-  ngOnDestroy(): void {
-    this.flushRequestQueue(); // Vide la file d'attente des requêtes
-    this.queueProcessing = false; // Arrête le traitement des requêtes
-    this.remainingCards = []; // Vide la file d'attente des cartes
   }
 
   private flushRequestQueue(): void {

@@ -1,6 +1,7 @@
 import datetime
 from typing import Optional
 from sqlalchemy import func
+from app.data.card_data import search_cards_data
 from app.models.offer_purchase import OfferPurchase
 from app.models.user_collection import UserCollection
 from app.models.card import Card
@@ -9,6 +10,7 @@ from app.models.user import User
 from app.models.user_search import UserSearch
 from app.extensions import db
 from sqlalchemy.exc import SQLAlchemyError
+from urllib.parse import parse_qs, unquote
 
 def get_user_count_data() -> int:
     return db.session.query(func.count(User.id)).filter(User.is_email_verified == True).scalar()
@@ -253,4 +255,91 @@ def update_user_search_alerts_data(data: dict) -> UserSearch:
         raise Exception(f"Erreur lors de la mise à jour de la recherche utilisateur : {str(e)}")
     
 def handle_active_favorite_change(user_search: UserSearch):
-    print(f"Envoi d'un email de notification pour la recherche favorite : {user_search.active_favorite}")
+    if user_search.active_favorite:
+        params = parse_search_params(user_search.url_search)
+
+        if 'dataset_type' not in params:
+            result = search_cards_data(
+                name=params.get('name'),
+                rarity=params.get('rarity'),
+                faction=params.get('faction'),
+                set=params.get('set'),
+                subtype=params.get('subtype'),
+                main_effect=params.get('main_effect'),
+                main_effect_2=params.get('main_effect_2'),
+                echo_effect=params.get('echo_effect'),
+                exclude_effect=params.get('exclude_effect'),
+                main_cost_range=params.get('main_cost_range'),
+                recall_cost_range=params.get('recall_cost_range'),
+                forest_power_range=params.get('forest_power_range'),
+                mountain_power_range=params.get('mountain_power_range'),
+                ocean_power_range=params.get('ocean_power_range'),
+                zero_power=params.get('zero_power'),
+                no_condition=params.get('no_condition'),
+                in_market=params.get('in_market'),
+                price_range=params.get('price_range'),
+                en=params.get('en'),
+                dataset_type=None,
+                user_id=user_search.id_user
+            )
+            if not result:
+                raise Exception(f"No cards found for search '{user_search.name_search}' with the given parameters.")
+            if len(result) > 1000:
+                raise Exception(f"Too many results for search '{user_search.name_search}' ({len(result)} cards found). Please refine your search criteria to reduce the number of results below 1000.")
+            for card in result:
+                if card['alert_id'] is None:
+                    alert_data = {
+                        "id_user": user_search.id_user,
+                        "reference_card": card['reference'],
+                        "id_search": user_search.id,
+                        "mail_active": True,
+                        "created_at": datetime.datetime.now(datetime.timezone.utc)
+                    }
+                    save_user_alert_data(alert_data)
+    else:
+        # Supprimer tous les UserAlert ayant pour id_search user_search.id
+        db.session.query(UserAlert).filter_by(id_search=user_search.id).delete()
+        db.session.commit()
+
+def parse_range_param(range_value):
+    if not range_value:
+        return None
+    
+    if '-' in range_value:
+        # Cas "1-2"
+        parts = range_value.split('-')
+        if len(parts) == 2:
+            try:
+                min_val = int(parts[0].strip())
+                max_val = int(parts[1].strip())
+                return {"min": min_val, "max": max_val}
+            except ValueError:
+                return None
+    else:
+        # Cas "1" (valeur unique)
+        try:
+            val = int(range_value.strip())
+            return {"min": val, "max": val}
+        except ValueError:
+            return None
+    
+    return None
+
+def parse_search_params(url_search):
+    # Enlève le préfixe '/cards?' si présent
+    if url_search.startswith('/cards?'):
+        url_search = url_search[len('/cards?'):]
+    # Parse les paramètres
+    params = parse_qs(url_search)
+    # Décoder les valeurs et simplifier (prend le premier élément de chaque liste)
+    clean_params = {k: unquote(v[0]) if v else None for k, v in params.items()}
+    
+    # Parser les valeurs de range
+    range_fields = ['main_cost_range', 'recall_cost_range', 'forest_power_range', 
+                  'mountain_power_range', 'ocean_power_range', 'price_range']
+    
+    for field in range_fields:
+        if field in clean_params:
+            clean_params[field] = parse_range_param(clean_params[field])
+    
+    return clean_params

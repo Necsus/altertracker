@@ -30,6 +30,7 @@ def run_script(faction: str, workers: int):
             socketio.emit('script_output', {'data': f"\033[94mNb Cards : {len(subset)}\033[0m"})
             for index, dbcard in enumerate(subset, start=start_index):
                   socketio.emit('script_output', {'data': f"Card {dbcard.name_en} ({index}/{len(subset)}) | {dbcard.id}"})
+                  time.sleep(0.2)
                   details = card_routine.get_card_by_reference(dbcard.reference)
                   if details:
                       tempCard = map_jsoncard_to_card_en(dbcard, details)
@@ -37,17 +38,21 @@ def run_script(faction: str, workers: int):
                       # Initialiser un drapeau pour suivre les modifications
                       if card_to_update:
                           has_updated = False
-                          if tempCard.MAIN_EFFECT is not None and card_to_update.MAIN_EFFECT is None:
+                          if tempCard.MAIN_EFFECT != card_to_update.MAIN_EFFECT:
                               card_to_update.MAIN_EFFECT = tempCard.MAIN_EFFECT
                               has_updated = True
-                          if tempCard.ECHO_EFFECT is not None and card_to_update.ECHO_EFFECT is None:
+                          if tempCard.ECHO_EFFECT != card_to_update.ECHO_EFFECT:
                               card_to_update.ECHO_EFFECT = tempCard.ECHO_EFFECT
                               has_updated = True
                           # Si une modification a été effectuée, mettre à jour `edited_at`
                           if has_updated:
+                              time.sleep(0.2)
+                              detailsEn = card_routine.get_card_by_reference(dbcard.reference, True)
+                              card_to_update.main_effect_en = None if 'MAIN_EFFECT' not in detailsEn['elements'] else detailsEn['elements']['MAIN_EFFECT']
+                              card_to_update.echo_effect_en = None if 'ECHO_EFFECT' not in detailsEn['elements'] else detailsEn['elements']['ECHO_EFFECT']
                               socketio.emit('script_output', {'data': f"Mise à jour de la carte : {card_to_update.name_en} ({card_to_update.reference})"})
                               session.commit()
-                      time.sleep(0.50)
+
 
         except Exception as e:
             socketio.emit('script_output', {'data': f"\033[91mError : {e}\033[0m"})
@@ -59,7 +64,7 @@ def run_script(faction: str, workers: int):
         socketio.emit('script_output', {'data': "----------- FIX EFFECT CARDS -----------"})
         session = Session()
         try:
-            query = session.query(Card).filter(Card.MAIN_EFFECT == None, Card.main_effect_en != None)
+            query = session.query(Card).filter((Card.rarity == 'COMMON') | (Card.rarity == 'RARE'))
 
             # Appliquer le filtre de faction si fourni
             if faction:

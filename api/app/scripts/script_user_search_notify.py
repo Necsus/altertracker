@@ -4,7 +4,6 @@ from urllib.parse import parse_qs, unquote
 import requests
 from sqlalchemy import func
 from app.services.card_service import is_image_url_accessible
-from app.data.user_data import get_user_by_id_data
 from app.config import ConfigEnv
 from app.data.card_data import lower_strip, prepare_like_query
 from app.models.new_card import NewCard
