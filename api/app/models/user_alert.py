@@ -23,7 +23,7 @@ class UserAlert(db.Model):
             'created_at': self.created_at.isoformat() if self.created_at else None,
         }
       
-    def __init__(self, id_user, id_search=None, reference_card, mail_active, created_at=None):
+    def __init__(self, id_user, reference_card, mail_active, id_search=None, created_at=None):
         self.id_user = id_user
         self.id_search = id_search
         self.reference_card = reference_card
