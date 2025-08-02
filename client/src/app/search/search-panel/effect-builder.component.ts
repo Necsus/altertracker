@@ -163,7 +163,6 @@ export class EffectBuilderComponent implements OnInit {
       const foundEffect = this.effects.find(e => e.id === this.initialEffect?.id);
       if (foundEffect) {
         this.selectedEffect = foundEffect;
-        console.log('Effet restauré:', foundEffect);
       }
     }
   }
