@@ -25,10 +25,10 @@
   </div>
 
   <!-- Title centered below -->
-  <div *ngIf="card" class="mt-6 text-center">
+  @if (card) {
+  <div class="mt-6 text-center">
     <h1 class="text-3xl md:text-4xl font-extrabold">{{ card | localizedValue:'name_en':'name' }}</h1>
   </div>
-  @if (card) {
   <div class="flex flex-col md:flex-row gap-6">
     <!-- Left: Image & Actions -->
     <div class="md:w-1/3 rounded-2xl">
@@ -59,20 +59,50 @@
           <li><strong>{{ 'cards.form_subtype' | translate }}:</strong> {{ card.subtype }}</li>
         </ul>
         <ul class="grid grid-cols-2 gap-4 text-sm text-gray-300 mt-4">
-          <li *ngIf="card.MAIN_EFFECT" class="col-span-2"><span
+          @if (card.MAIN_EFFECT) {
+          <li class="col-span-2"><span
               [innerHTML]="(card | localizedValue:'main_effect_en':'MAIN_EFFECT') | iconParser"></span></li>
-          <li *ngIf="card.ECHO_EFFECT" class="col-span-2">
+          }
+          @if (card.ECHO_EFFECT) {
+          <li class="col-span-2">
             <hr class="my-2"><span
               [innerHTML]="(card | localizedValue:'echo_effect_en':'ECHO_EFFECT') | iconParser"></span>
           </li>
+          }
         </ul>
       </div>
 
       <!-- Price History Chart (placeholder) -->
-      <div class="bg-gray-800 rounded-xl p-4 h-64">
-        <canvas baseChart [datasets]="chartData" [labels]="chartLabels" [options]="chartOptions" [legend]="true"
-          [type]="'line'">
-        </canvas>
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-semibold text-white">Historique des prix</h3>
+        @if (offers && offers.length > 0) {
+        <div class="text-sm text-gray-400">
+          {{ offers.length }} offre(s)
+        </div>
+        }
+      </div>
+      <div class="bg-gray-800 rounded-xl h-80">
+        @if (offers && offers.length > 0) {
+        <div class="w-full">
+          <apx-chart [series]="chartOptions.series!" [chart]="chartOptions.chart!"
+            [dataLabels]="chartOptions.dataLabels!" [plotOptions]="chartOptions.plotOptions!"
+            [yaxis]="chartOptions.yAxis!" [xaxis]="chartOptions.xAxis!" [stroke]="chartOptions.stroke!"
+            [tooltip]="chartOptions.tooltip!" [fill]="chartOptions.fill!" [legend]="chartOptions.legend!"
+            [grid]="chartOptions.grid!" [markers]="chartOptions.markers!" class="w-full h-full">
+          </apx-chart>
+        </div>
+        }
+
+        <!-- Message si aucune donnée -->
+        @if (!offers || offers.length === 0) {
+        <div class="h-64 flex items-center justify-center">
+          <div class="text-center text-gray-400">
+            <i class="fas fa-chart-line text-4xl mb-4 opacity-50"></i>
+            <p class="text-lg">Aucune donnée de prix disponible</p>
+            <p class="text-sm">Les données apparaîtront dès qu'une offre sera créée</p>
+          </div>
+        </div>
+        }
       </div>
     </div>
   </div>
@@ -101,13 +131,16 @@
       </div>
       @if (offers && offers.length > 0) {
       <ul class="space-y-2 text-sm text-gray-300">
-        <li *ngFor="let offer of offers" class="flex justify-between border-b border-gray-700 pb-1">
+        @for (offer of offers; track offer) {
+        <li class="flex justify-between border-b border-gray-700 pb-1">
           <span class="text-gray-400">
             {{ offer.created_at | toDate | date:'dd/MM/yyyy HH:mm' }}
           </span>
-          <span class="text-gray-400" *ngIf="offer.is_deleted">
+          @if (offer.is_deleted) {
+          <span class="text-gray-400">
             {{ offer.deleted_at | toDate | date:'dd/MM/yyyy HH:mm' }}
           </span>
+          }
           <span [ngClass]="{
             'text-green-400': !offer.is_deleted,
             'text-red-400 line-through': offer.is_deleted && !offer.previous_offer,
@@ -117,6 +150,7 @@
             {{ offer.price | currency:(offer.currency || ''):'symbol':'1.0-2' }}
           </span>
         </li>
+        }
       </ul>
       }
       @else {
@@ -137,14 +171,16 @@
       </div>
       @if (purchases && purchases.length > 0) {
       <ul class="space-y-2 text-gray-300 text-sm">
-        <li *ngFor="let purchase of purchases" class="flex items-center border-b border-gray-700 pb-2">
+        @for (purchase of purchases; track purchase) {
+        <li class="flex items-center border-b border-gray-700 pb-2">
           <!-- Username and Date -->
           <div class="flex flex-col">
             <!-- <span class="font-medium">{{ purchase.username }}</span> -->
             <span class="text-gray-500 text-xs">{{ purchase.created_at | toDate | date:'dd/MM/yyyy HH:mm' }}</span>
           </div>
           <!-- Button -->
-          <div class="flex justify-center items-center mx-4" *ngIf="isLoggedIn && is_mine">
+          @if (isLoggedIn && is_mine) {
+          <div class="flex justify-center items-center mx-4">
             @if (purchase.room_id) {
             <a href="/chat/{{ purchase.room_id }}"
               class="inline-flex items-center bg-amber-600 hover:bg-amber-500 text-white px-4 py-2 rounded-lg transition">
@@ -158,11 +194,13 @@
             </button>
             }
           </div>
+          }
           <!-- Price -->
           <div class="text-green-400 font-semibold text-right flex-grow">
             {{ purchase.price | currency:(purchase.currency || ''):'symbol':'1.0-2' }}
           </div>
         </li>
+        }
       </ul>
       }
       @else {
@@ -173,30 +211,30 @@
 
   <!-- Similar Cards & Estimation -->
   <!-- <div class="bg-gray-800 rounded-xl p-4">
-    <h2 class="text-xl font-semibold mb-4">Similar Cards (under construction)</h2>
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-      <div class="bg-gray-700 rounded-lg p-2">
-        <img src="/assets/img/cardback.webp" class="rounded-md w-full mb-2" />
-        <div class="text-sm text-gray-300">Random Nam</div>
-        <div class="text-sm text-green-400">$82.50</div>
-      </div>
-      <div class="bg-gray-700 rounded-lg p-2">
-        <img src="/assets/img/cardback.webp" class="rounded-md w-full mb-2" />
-        <div class="text-sm text-gray-300">Arcane Fire</div>
-        <div class="text-sm text-green-400">$74.00</div>
-      </div>
-      <div class="bg-gray-700 rounded-lg p-2">
-        <img src="/assets/img/cardback.webp" class="rounded-md w-full mb-2" />
-        <div class="text-sm text-gray-300">Spectral Fury</div>
-        <div class="text-sm text-green-400">$65.20</div>
-      </div>
-      <div class="bg-gray-700 rounded-lg p-2">
-        <img src="/assets/img/cardback.webp" class="rounded-md w-full mb-2" />
-        <div class="text-sm text-gray-300">Ancient Root</div>
-        <div class="text-sm text-green-400">$79.90</div>
-      </div>
+  <h2 class="text-xl font-semibold mb-4">Similar Cards (under construction)</h2>
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+    <div class="bg-gray-700 rounded-lg p-2">
+      <img src="/assets/img/cardback.webp" class="rounded-md w-full mb-2" />
+      <div class="text-sm text-gray-300">Random Nam</div>
+      <div class="text-sm text-green-400">$82.50</div>
     </div>
-  </div> -->
+    <div class="bg-gray-700 rounded-lg p-2">
+      <img src="/assets/img/cardback.webp" class="rounded-md w-full mb-2" />
+      <div class="text-sm text-gray-300">Arcane Fire</div>
+      <div class="text-sm text-green-400">$74.00</div>
+    </div>
+    <div class="bg-gray-700 rounded-lg p-2">
+      <img src="/assets/img/cardback.webp" class="rounded-md w-full mb-2" />
+      <div class="text-sm text-gray-300">Spectral Fury</div>
+      <div class="text-sm text-green-400">$65.20</div>
+    </div>
+    <div class="bg-gray-700 rounded-lg p-2">
+      <img src="/assets/img/cardback.webp" class="rounded-md w-full mb-2" />
+      <div class="text-sm text-gray-300">Ancient Root</div>
+      <div class="text-sm text-green-400">$79.90</div>
+    </div>
+  </div>
+</div> -->
   }
   @else {
   @if (reference) {

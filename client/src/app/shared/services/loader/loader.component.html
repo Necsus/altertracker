@@ -1,3 +1,5 @@
-<div *ngIf="loaderService.loading$ | async" class="loader-overlay">
-  <div class="loader"></div>
-</div>
+@if (loaderService.loading$ | async) {
+  <div class="loader-overlay">
+    <div class="loader"></div>
+  </div>
+}

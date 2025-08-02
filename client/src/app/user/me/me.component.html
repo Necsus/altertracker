@@ -10,80 +10,81 @@
       </div>
 
       <!-- <div class="mb-4">
-        <label class="block mb-1">Statistiques</label>
-        <textarea [(ngModel)]="user.stats" name="stats" class="w-full p-2 bg-gray-700 rounded" rows="3"></textarea>
-      </div> -->
+      <label class="block mb-1">Statistiques</label>
+      <textarea [(ngModel)]="user.stats" name="stats" class="w-full p-2 bg-gray-700 rounded" rows="3"></textarea>
+    </div> -->
 
-      <button type="submit" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">{{ 'me.save' | translate }}</button>
-    </form>
+    <button type="submit" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded">{{ 'me.save' | translate }}</button>
+  </form>
 
-    <hr class="my-6 border-gray-600" />
+  <hr class="my-6 border-gray-600" />
     <button (click)="linkDiscord()" [ngClass]="{
       'bg-gray-500 cursor-not-allowed rounded-l-lg': discordLinked || loadingDiscord,
       'btn-discord rounded-lg': !discordLinked
     }" [disabled]="discordLinked || loadingDiscord" class="inline-flex items-center gap-2 px-4 py-2 font-semibold transition-all shadow-md
       text-white disabled:bg-gray-400 disabled:cursor-not-allowed">
-      <ng-container *ngIf="loadingDiscord; else notLoading">
-        <i class="fas fa-spinner animate-spin text-xl"></i>
-        {{ 'me.discord_connecting' | translate }}
-      </ng-container>
+    @if (loadingDiscord) {
+      <i class="fas fa-spinner animate-spin text-xl"></i>
+      {{ 'me.discord_connecting' | translate }}
+    } @else {
+      <i class="fab fa-discord text-xl"></i>
+      {{ discordLinked ? ('me.discord_linked' | translate) : ('me.link_discord' | translate) }}
+    }
 
-      <ng-template #notLoading>
-        <i class="fab fa-discord text-xl"></i>
-        {{ discordLinked ? ('me.discord_linked' | translate) : ('me.link_discord' | translate) }}
-      </ng-template>
-    </button>
+  </button>
 
-    <button *ngIf="discordLinked" (click)="unlinkDiscord()" class="inline-flex items-center gap-2 px-4 py-2 rounded-r-lg font-semibold transition-all shadow-md
+  @if (discordLinked) {
+<button (click)="unlinkDiscord()" class="inline-flex items-center gap-2 px-4 py-2 rounded-r-lg font-semibold transition-all shadow-md
           text-white
           bg-red-600 hover:bg-red-700
           disabled:bg-gray-400 disabled:cursor-not-allowed">
       <i class="fas fa-unlink text-xl"></i>
     </button>
+  }
 
-    <hr class="my-6 border-gray-600" />
+  <hr class="my-6 border-gray-600" />
 
-    <form (ngSubmit)="changePassword()">
-      <h3 class="text-xl font-semibold mb-2">{{ 'me.change_password_title' | translate }}</h3>
-      <div class="mb-2">
-        <label class="block mb-1">{{ 'me.old_password' | translate }}</label>
-        <input type="password" [(ngModel)]="oldPassword" name="oldPassword" class="w-full p-2 bg-gray-700 rounded"
-          required />
+  <form (ngSubmit)="changePassword()">
+    <h3 class="text-xl font-semibold mb-2">{{ 'me.change_password_title' | translate }}</h3>
+    <div class="mb-2">
+      <label class="block mb-1">{{ 'me.old_password' | translate }}</label>
+      <input type="password" [(ngModel)]="oldPassword" name="oldPassword" class="w-full p-2 bg-gray-700 rounded"
+        required />
       </div>
 
       <div class="mb-2">
         <label class="block mb-1">{{ 'me.new_password' | translate }}</label>
         <input type="password" [(ngModel)]="newPassword" name="newPassword" class="w-full p-2 bg-gray-700 rounded"
           required />
-      </div>
+        </div>
 
-      <button type="submit" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded">{{ 'me.change_password' |
+        <button type="submit" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded">{{ 'me.change_password' |
         translate }}</button>
-    </form>
+      </form>
 
-    <hr class="my-6 border-gray-600" />
+      <hr class="my-6 border-gray-600" />
 
-    <div>
-      <h3 class="text-xl font-semibold mb-2 text-red-400">{{ 'me.delete_account_title' | translate }}</h3>
-      <p class="mb-4">{{ 'me.delete_account_warning' | translate }}</p>
-      <div class="mb-2">
-        <label class="block mb-1">{{ 'me.delete_account_password' | translate }}</label>
-        <input type="password" [(ngModel)]="passwordForDelete" name="passwordForDelete"
-          class="w-full p-2 bg-gray-700 rounded" required />
-      </div>
-      <div class="mb-2">
-        <label style="user-select: none;" class="block mb-1">
-          {{ 'me.delete_account_confirm_label' | translate }}&nbsp;<strong>"Oui je
-            veux
+      <div>
+        <h3 class="text-xl font-semibold mb-2 text-red-400">{{ 'me.delete_account_title' | translate }}</h3>
+        <p class="mb-4">{{ 'me.delete_account_warning' | translate }}</p>
+        <div class="mb-2">
+          <label class="block mb-1">{{ 'me.delete_account_password' | translate }}</label>
+          <input type="password" [(ngModel)]="passwordForDelete" name="passwordForDelete"
+            class="w-full p-2 bg-gray-700 rounded" required />
+          </div>
+          <div class="mb-2">
+            <label style="user-select: none;" class="block mb-1">
+              {{ 'me.delete_account_confirm_label' | translate }}&nbsp;<strong>"Oui je
+              veux
             supprimer mon compte"</strong></label>
-        <input type="text" [(ngModel)]="yesIWantToDelete" name="yesIWantToDelete" class="w-full p-2 bg-gray-700 rounded"
-          required />
+            <input type="text" [(ngModel)]="yesIWantToDelete" name="yesIWantToDelete" class="w-full p-2 bg-gray-700 rounded"
+              required />
+            </div>
+            <button (click)="deleteAccount()"
+              [ngClass]="{'bg-gray-500 cursor-not-allowed': !validateDeleteAccount, 'bg-red-600 hover:bg-red-700': validateDeleteAccount}"
+              class="px-4 py-2 rounded" [disabled]="!validateDeleteAccount">
+              {{ 'me.delete_account_button' | translate }}
+            </button>
+          </div>
+        </div>
       </div>
-      <button (click)="deleteAccount()"
-        [ngClass]="{'bg-gray-500 cursor-not-allowed': !validateDeleteAccount, 'bg-red-600 hover:bg-red-700': validateDeleteAccount}"
-        class="px-4 py-2 rounded" [disabled]="!validateDeleteAccount">
-        {{ 'me.delete_account_button' | translate }}
-      </button>
-    </div>
-  </div>
-</div>

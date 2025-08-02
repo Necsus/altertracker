@@ -21,14 +21,16 @@
         <!-- Boutons raccourcis pour les triggers les plus utilisés -->
         <div class="mb-3">
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-            <button *ngFor="let shortcut of shortcutTriggers" type="button" (click)="selectShortcutTrigger(shortcut)"
-              [class.bg-amber-500]="selectedTrigger?.id === shortcut.id"
-              [class.text-black]="selectedTrigger?.id === shortcut.id"
-              [class.bg-gray-600]="selectedTrigger?.id !== shortcut.id"
-              [class.text-white]="selectedTrigger?.id !== shortcut.id"
-              class="px-2 py-1 text-xs rounded hover:bg-amber-400 transition duration-200 truncate cursor-pointer">
-              <span [innerHTML]="shortcut.value | iconParser:{ skipEmptyBrackets: true }"></span>
-            </button>
+            @for (shortcut of shortcutTriggers; track shortcut) {
+              <button type="button" (click)="selectShortcutTrigger(shortcut)"
+                [class.bg-amber-500]="selectedTrigger?.id === shortcut.id"
+                [class.text-black]="selectedTrigger?.id === shortcut.id"
+                [class.bg-gray-600]="selectedTrigger?.id !== shortcut.id"
+                [class.text-white]="selectedTrigger?.id !== shortcut.id"
+                class="px-2 py-1 text-xs rounded hover:bg-amber-400 transition duration-200 truncate cursor-pointer">
+                <span [innerHTML]="shortcut.value | iconParser:{ skipEmptyBrackets: true }"></span>
+              </button>
+            }
           </div>
         </div>
 

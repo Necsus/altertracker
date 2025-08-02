@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -6,7 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'app-buymecoffee',
   templateUrl: './buymecoffee.component.html',
   styleUrls: ['./buymecoffee.component.css'],
-  imports: [CommonModule, TranslateModule]
+  imports: [TranslateModule]
 })
 export class BuyMeCoffeeComponent implements OnInit, OnDestroy {
   showBuyMeACoffeeModal = false;

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, ComponentRef, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -14,7 +14,7 @@ import { ModalService } from '../../shared/services/modal/modal.service';
   selector: 'app-effect-builder',
   templateUrl: './effect-builder.component.html',
   styleUrls: ['./effect-builder.component.css'],
-  imports: [CommonModule, FormsModule, NgSelectModule, IconParserPipe, TranslateModule, ModalComponent, ModalCloseDirective],
+  imports: [FormsModule, NgSelectModule, IconParserPipe, TranslateModule, ModalComponent, ModalCloseDirective],
 })
 export class EffectBuilderComponent implements OnInit {
   currentLanguage: string = 'fr';

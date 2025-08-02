@@ -5,123 +5,142 @@
     <img (click)="openModal()" [src]="(card | localizedValue:'image_path_en':'imagePath') | alteredImg"
       [alt]="card | localizedValue:'name_en':'name'" onerror="this.onerror=null; this.src='/assets/img/cardback.webp';"
       loading="lazy" class="w-full h-full object-contain bg-gray-900 cursor-pointer">
-  </div>
-
-  <div class="p-4 flex flex-col justify-between flex-grow relative">
-    <!-- Zone Actions fixes (favori + stats) -->
-    <div class="absolute top-3 right-3 flex gap-3 z-10">
-      <div *ngIf="isNewCard()">
-        <span class="bg-amber-500 text-white text-xs font-bold p-1 rounded-full shadow-lg animate-pulse">
-          NEW
-        </span>
-      </div>
-      <button (click)="copyToClipboard(card.reference)" class="text-gray-400 hover:text-amber-400 text-sm">
-        <i class="fas fa-copy ml-1"></i>
-      </button>
-      <a [routerLink]="['/stats', card.reference]" class="text-gray-400 hover:text-amber-400 transition">
-        <i class="fas fa-eye text-lg"></i>
-      </a>
-      <button *ngIf="isLoggedIn" (click)="toggleFavorite()" class="text-gray-400 hover:text-red-500 transition">
-        <i [class]="is_favorite ? 'fas fa-heart text-red-500 text-lg' : 'far fa-heart text-lg'"></i>
-      </button>
     </div>
 
-    <!-- Infos -->
-    <div class="flex flex-col justify-between flex-grow">
-
-      <!-- Statut suspension -->
-      <div *ngIf="card.isSuspended" class="mb-2">
-        <span class="text-red-500 font-bold">{{ 'cards.suspended' | translate }}</span>
+    <div class="p-4 flex flex-col justify-between flex-grow relative">
+      <!-- Zone Actions fixes (favori + stats) -->
+      <div class="absolute top-3 right-3 flex gap-3 z-10">
+        @if (isNewCard()) {
+          <div>
+            <span class="bg-amber-500 text-white text-xs font-bold p-1 rounded-full shadow-lg animate-pulse">
+              NEW
+            </span>
+          </div>
+        }
+        <button (click)="copyToClipboard(card.reference)" class="text-gray-400 hover:text-amber-400 text-sm">
+          <i class="fas fa-copy ml-1"></i>
+        </button>
+        <a [routerLink]="['/stats', card.reference]" class="text-gray-400 hover:text-amber-400 transition">
+          <i class="fas fa-eye text-lg"></i>
+        </a>
+        @if (isLoggedIn) {
+          <button (click)="toggleFavorite()" class="text-gray-400 hover:text-red-500 transition">
+            <i [class]="is_favorite ? 'fas fa-heart text-red-500 text-lg' : 'far fa-heart text-lg'"></i>
+          </button>
+        }
       </div>
 
-      <!-- Prix + Refresh -->
-      <div class="flex items-center flex-wrap mb-2 gap-2">
-        <div class="flex items-center w-full">
-          <span class="text-xs text-gray-500 block">{{ card.price_updated_at | toDate | date:'dd/MM/yyyy HH:mm'
+      <!-- Infos -->
+      <div class="flex flex-col justify-between flex-grow">
+
+        <!-- Statut suspension -->
+        @if (card.isSuspended) {
+          <div class="mb-2">
+            <span class="text-red-500 font-bold">{{ 'cards.suspended' | translate }}</span>
+          </div>
+        }
+
+        <!-- Prix + Refresh -->
+        <div class="flex items-center flex-wrap mb-2 gap-2">
+          <div class="flex items-center w-full">
+            <span class="text-xs text-gray-500 block">{{ card.price_updated_at | toDate | date:'dd/MM/yyyy HH:mm'
             }}</span>
-        </div>
+          </div>
 
-        <div class="flex items-center gap-3 w-full" *ngIf="card.alert">
-          <label for="emailToggle" class=" flex items-center gap-2">
-            <i class="fa-brands fa-discord text-lg text-blue"></i>
-          </label>
-
-          <div class="relative inline-flex items-center cursor-pointer" (click)="toggleEmailNotifications()">
+          @if (card.alert) {
+            <div class="flex items-center gap-3 w-full">
+              <label for="emailToggle" class=" flex items-center gap-2">
+                <i class="fa-brands fa-discord text-lg text-blue"></i>
+              </label>
+              <div class="relative inline-flex items-center cursor-pointer" (click)="toggleEmailNotifications()">
             <div [ngClass]="{
             'bg-amber-500': card.alert.mail_active,
             'bg-gray-600': !card.alert.mail_active
           }" class="w-11 h-6 rounded-full transition duration-300"></div>
-            <div class="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-300"
-              [style.transform]="card.alert.mail_active ? 'translateX(20px)' : 'translateX(0)'">
+                <div class="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform duration-300"
+                  [style.transform]="card.alert.mail_active ? 'translateX(20px)' : 'translateX(0)'">
+                </div>
+              </div>
             </div>
+          }
+
+          @if (card.isProcessing) {
+            <svg class="animate-spin h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+            </svg>
+          } @else {
+            @if (card.price) {
+              <button (click)="goToOffer()"
+                class="text-green-400 hover:text-green-600 font-semibold flex items-center gap-1">
+                {{ card.price | currency:(card.price_currency || ''):'symbol':'1.0-2' }}
+                <i class="fas fa-external-link-alt text-xs"></i>
+              </button>
+              @if (isRefreshButtonVisible) {
+                <button (click)="refreshOffer()" class="text-blue-400 hover:text-blue-600">
+                  <i class="fas fa-rotate-right text-xs"></i>
+                </button>
+              }
+            } @else {
+              <span class="text-gray-500">-</span>
+              <button (click)="refreshOffer()" class="text-blue-400 hover:text-blue-600 ml-2">
+                <i class="fas fa-rotate-right text-xs"></i>
+              </button>
+            }
+          }
+
+        </div>
+
+        <!-- Nombre d'offres -->
+        @if (card.purchase_offers && card.purchase_offers.length > 0) {
+          <div class="flex items-center mb-2">
+            <i class="fas fa-tags text-yellow-400 mr-2"></i>
+            <span class="text-gray-300 text-sm">{{ card.purchase_offers && card.purchase_offers.length || 0 }}
+            {{ 'cards.offer_s' | translate }}</span>
           </div>
-        </div>
+        }
+        @if (card.mine_purchase_offers) {
+          <section>
+            @for (offer of card.mine_purchase_offers; track offer) {
+              <div class="flex items-center mb-2">
+                <i class="fas fa-tags text-yellow-400 mr-2"></i>
+                <span class="text-gray-300 text-sm mr-2"> {{ offer.price | currency:(offer.currency ||
+                ''):'symbol':'1.0-2' }}</span>
+                @if (offer.room_id) {
+                  <a href="/chat/{{ offer.room_id }}">
+                    <i class="fas fa-message text-blue-400 mr-2"></i>
+                  </a>
+                }
+                <button class="ml-auto">
+                  <i class="fas fa-trash text-red-400 hover:text-red-600 cursor-pointer"
+                  (click)="deletePurchaseOffer(offer)"></i>
+                </button>
+              </div>
+            }
+          </section>
+        }
 
-        <ng-container *ngIf="card.isProcessing; else priceBlock">
-          <svg class="animate-spin h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-          </svg>
-        </ng-container>
-
-        <ng-template #priceBlock>
-          <ng-container *ngIf="card.price; else unavailable">
-            <button (click)="goToOffer()"
-              class="text-green-400 hover:text-green-600 font-semibold flex items-center gap-1">
-              {{ card.price | currency:(card.price_currency || ''):'symbol':'1.0-2' }}
-              <i class="fas fa-external-link-alt text-xs"></i>
-            </button>
-            <button *ngIf="isRefreshButtonVisible" (click)="refreshOffer()" class="text-blue-400 hover:text-blue-600">
-              <i class="fas fa-rotate-right text-xs"></i>
-            </button>
-          </ng-container>
-          <ng-template #unavailable>
-            <span class="text-gray-500">-</span>
-            <button (click)="refreshOffer()" class="text-blue-400 hover:text-blue-600 ml-2">
-              <i class="fas fa-rotate-right text-xs"></i>
-            </button>
-          </ng-template>
-        </ng-template>
-      </div>
-
-      <!-- Nombre d'offres -->
-      <div class="flex items-center mb-2" *ngIf="card.purchase_offers && card.purchase_offers.length > 0">
-        <i class="fas fa-tags text-yellow-400 mr-2"></i>
-        <span class="text-gray-300 text-sm">{{ card.purchase_offers && card.purchase_offers.length || 0 }}
-          {{ 'cards.offer_s' | translate }}</span>
-      </div>
-      <section *ngIf="card.mine_purchase_offers">
-        <div *ngFor="let offer of card.mine_purchase_offers" class="flex items-center mb-2">
-          <i class="fas fa-tags text-yellow-400 mr-2"></i>
-          <span class="text-gray-300 text-sm mr-2"> {{ offer.price | currency:(offer.currency ||
-            ''):'symbol':'1.0-2' }}</span>
-          <a href="/chat/{{ offer.room_id }}" *ngIf="offer.room_id">
-            <i class="fas fa-message text-blue-400 mr-2"></i>
+        <!-- Effet principal -->
+        @if (prettierText) {
+          <p class="text-gray-300 text-sm leading-relaxed"
+          [innerHTML]="(card | localizedValue:'main_effect_en':'MAIN_EFFECT') | iconParser"></p>
+          @if (card.ECHO_EFFECT) {
+            <hr class="my-1">
+          }
+          <p class="text-gray-300 text-sm leading-relaxed"
+          [innerHTML]="(card | localizedValue:'echo_effect_en':'ECHO_EFFECT') | iconParser"></p>
+          <a class="cursor-pointer text-amber-500 hover:text-amber-600" (click)="prettierText = !prettierText">
+            {{ 'cards.see_original_text' | translate }}
           </a>
-          <button class="ml-auto">
-            <i class="fas fa-trash text-red-400 hover:text-red-600 cursor-pointer"
-              (click)="deletePurchaseOffer(offer)"></i>
-          </button>
-        </div>
-      </section>
-
-      <!-- Effet principal -->
-      @if (prettierText) {
-      <p class="text-gray-300 text-sm leading-relaxed"
-        [innerHTML]="(card | localizedValue:'main_effect_en':'MAIN_EFFECT') | iconParser"></p>
-      <hr *ngIf="card.ECHO_EFFECT" class="my-1">
-      <p class="text-gray-300 text-sm leading-relaxed"
-        [innerHTML]="(card | localizedValue:'echo_effect_en':'ECHO_EFFECT') | iconParser"></p>
-      <a class="cursor-pointer text-amber-500 hover:text-amber-600" (click)="prettierText = !prettierText">
-        {{ 'cards.see_original_text' | translate }}
-      </a>
-      }
-      @else
-      {
-      <p class="text-gray-300 text-sm leading-relaxed">{{ card | localizedValue:'main_effect_en':'MAIN_EFFECT' }}</p>
-      <hr *ngIf="card.ECHO_EFFECT" class="my-1">
-      <p class="text-gray-300 text-sm leading-relaxed">{{ card | localizedValue:'echo_effect_en':'ECHO_EFFECT' }}</p>
-      <a class="cursor-pointer text-amber-500 hover:text-amber-600" (click)="prettierText = !prettierText">retour</a>
+        }
+        @else
+        {
+        <p class="text-gray-300 text-sm leading-relaxed">{{ card | localizedValue:'main_effect_en':'MAIN_EFFECT' }}</p>
+        @if (card.ECHO_EFFECT) {
+          <hr class="my-1">
+        }
+        <p class="text-gray-300 text-sm leading-relaxed">{{ card | localizedValue:'echo_effect_en':'ECHO_EFFECT' }}</p>
+        <a class="cursor-pointer text-amber-500 hover:text-amber-600" (click)="prettierText = !prettierText">retour</a>
       }
 
     </div>

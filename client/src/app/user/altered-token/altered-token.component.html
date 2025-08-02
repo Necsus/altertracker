@@ -21,14 +21,17 @@
       <!-- Textarea -->
       <label class="block mb-2 text-sm font-medium text-gray-300" for="token">
         Votre token
-        <span *ngIf="token">
-          <span *ngIf="isTokenValid(); else invalid" class="text-green-400 ml-2">
-            (valide)
+        @if (token) {
+          <span>
+            @if (isTokenValid()) {
+              <span class="text-green-400 ml-2">
+                (valide)
+              </span>
+            } @else {
+              <span class="text-red-400 ml-2">(invalide)</span>
+            }
           </span>
-          <ng-template #invalid>
-            <span class="text-red-400 ml-2">(invalide)</span>
-          </ng-template>
-        </span>
+        }
       </label>
       <textarea id="token" name="token" [(ngModel)]="token" required rows="4"
         class="w-full p-3 rounded-xl border border-gray-600 bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -47,18 +50,18 @@
         <input type="checkbox" id="cgu" name="cgu" [(ngModel)]="acceptedCGU" required class="mt-1 accent-blue-600" />
         <label for="cgu" class="ml-2 text-sm text-gray-300" style="user-select: none;">
           J'accepte les <a (click)="cguClick(); $event.preventDefault(); $event.stopPropagation()"
-            class="text-blue-400 hover:underline cursor-pointer">Conditions
-            Générales d'Utilisation</a>.
-        </label>
-      </div>
+          class="text-blue-400 hover:underline cursor-pointer">Conditions
+        Générales d'Utilisation</a>.
+      </label>
+    </div>
 
-      <!-- Bouton -->
-      <button type="submit" [disabled]="!isFormValid()"
-        [ngClass]="{'bg-gray-500 cursor-not-allowed': !isFormValid(), 'bg-blue-600 hover:bg-blue-700': isFormValid()}"
+    <!-- Bouton -->
+    <button type="submit" [disabled]="!isFormValid()"
+      [ngClass]="{'bg-gray-500 cursor-not-allowed': !isFormValid(), 'bg-blue-600 hover:bg-blue-700': isFormValid()}"
         class="mt-6 w-full py-2 px-4 rounded-xl transition text-white 
               bg-blue-600 hover:bg-blue-700 disabled:bg-gray-600 disabled:cursor-not-allowed">
-        Continuer
-      </button>
-    </form>
-  </div>
+      Continuer
+    </button>
+  </form>
+</div>
 </div>

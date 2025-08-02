@@ -1,57 +1,60 @@
 <meta name="robots" content="noindex">
 <div class="py-32 flex items-center justify-center bg-gray-900 text-gray-100 px-4">
   <div class="bg-gray-800 shadow-xl rounded-2xl p-8 text-center max-w-md w-full">
-    <ng-container [ngSwitch]="status">
-
+    @switch (status) {
       <!-- En cours -->
-      <div *ngSwitchCase="'loading'">
-        <div class="animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4">
+      @case ('loading') {
+        <div>
+          <div class="animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full mx-auto mb-4">
+          </div>
+          <h2 class="text-xl font-semibold">{{ 'authentication.confirm_loading' | translate }}</h2>
+          <p class="text-gray-400 mt-2">{{ 'authentication.waiting' | translate }}</p>
         </div>
-        <h2 class="text-xl font-semibold">{{ 'authentication.confirm_loading' | translate }}</h2>
-        <p class="text-gray-400 mt-2">{{ 'authentication.waiting' | translate }}</p>
-      </div>
-
+      }
       <!-- Succès -->
-      <div *ngSwitchCase="'success'">
-        <div class="text-green-400 mb-4">
-          <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-          </svg>
+      @case ('success') {
+        <div>
+          <div class="text-green-400 mb-4">
+            <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h2 class="text-2xl font-bold">{{ 'authentication.confirmed_email_title' | translate }}</h2>
+          <p class="text-gray-300 mt-2">{{ 'authentication.confirmed_email' | translate }}</p>
+          <a routerLink="/login"
+            class="mt-6 inline-block px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition cursor-pointer">
+            {{ 'authentication.login_action_2' | translate }}
+          </a>
         </div>
-        <h2 class="text-2xl font-bold">{{ 'authentication.confirmed_email_title' | translate }}</h2>
-        <p class="text-gray-300 mt-2">{{ 'authentication.confirmed_email' | translate }}</p>
-        <a routerLink="/login"
-          class="mt-6 inline-block px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition cursor-pointer">
-          {{ 'authentication.login_action_2' | translate }}
-        </a>
-      </div>
-
+      }
       <!-- Erreur -->
-      <div *ngSwitchCase="'error'">
-        <div class="text-red-500 mb-4">
-          <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
+      @case ('error') {
+        <div>
+          <div class="text-red-500 mb-4">
+            <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </div>
+          <h2 class="text-2xl font-bold">{{ 'authentication.confirm_error' | translate }}</h2>
+          <p class="text-gray-400 mt-2">{{ 'authentication.invalid_link' | translate }}</p>
+          <a (click)="resendEmail()"
+            class="mt-6 inline-block px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition cursor-pointer">
+            {{ 'authentication.resend_link' | translate }}
+          </a>
         </div>
-        <h2 class="text-2xl font-bold">{{ 'authentication.confirm_error' | translate }}</h2>
-        <p class="text-gray-400 mt-2">{{ 'authentication.invalid_link' | translate }}</p>
-        <a (click)="resendEmail()"
-          class="mt-6 inline-block px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 transition cursor-pointer">
-          {{ 'authentication.resend_link' | translate }}
-        </a>
-      </div>
-
+      }
       <!-- Erreur -->
-      <div *ngSwitchCase="'noresend'">
-        <div class="text-red-500 mb-4">
-          <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
+      @case ('noresend') {
+        <div>
+          <div class="text-red-500 mb-4">
+            <svg class="w-16 h-16 mx-auto" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </div>
+          <h2 class="text-2xl font-bold">{{ 'authentication.confirm_error' | translate }}</h2>
+          <p class="text-gray-400 mt-2">{{ 'authentication.invalid_link' | translate }}</p>
         </div>
-        <h2 class="text-2xl font-bold">{{ 'authentication.confirm_error' | translate }}</h2>
-        <p class="text-gray-400 mt-2">{{ 'authentication.invalid_link' | translate }}</p>
-      </div>
-
-    </ng-container>
+      }
+    }
   </div>
 </div>

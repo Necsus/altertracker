@@ -22,77 +22,83 @@
     </ol>
   </div>
   <!-- Gestion du chargement -->
-  <div *ngIf="isLoading" class="text-center text-gray-400">
-    <i class="fas fa-spinner fa-spin text-2xl"></i>
-    <p>{{ 'user_searches.is_loading' | translate }}</p>
-  </div>
+  @if (isLoading) {
+    <div class="text-center text-gray-400">
+      <i class="fas fa-spinner fa-spin text-2xl"></i>
+      <p>{{ 'user_searches.is_loading' | translate }}</p>
+    </div>
+  }
 
   <!-- Liste des recherches -->
-  <div *ngIf="!isLoading && searches.length > 0" class="space-y-4">
-    <ul class="space-y-2">
-      <li *ngFor="let search of searches" class="bg-gray-700 p-4 rounded-lg shadow-md">
-        <div class="flex justify-between items-center">
-          <div>
-            <h4 class="text-white font-medium cursor-pointer" (click)="goSearch(search.url_search)">{{
-              search.name_search }}</h4>
-            <p class="text-sm text-gray-400 break-all cursor-pointer" (click)="goSearch(search.url_search)">{{
-              search.url_search }}</p>
-            <p class="text-xs text-gray-500">
-              {{ 'cards.create_at' | translate }} : {{ search.created_at | date:'short' }}
-            </p>
-            <button (click)="deleteSearch(search.id)"
-              class="text-red-600 hover:text-red-700 text-white py-2 rounded-md transition duration-300">
-              {{ 'user_searches.delete' | translate }}
-            </button>
-          </div>
-          <div class="flex space-x-2 px-4">
-            <button (click)="goSearch(search.url_search)"
-              class="bg-gray-600 hover:bg-amber-500 text-white py-1 px-3 rounded-md transition duration-300">
-              <i class="fas fa-search"></i>
-            </button>
-            <button (click)="toggleFavorite(search)" class="text-gray-400 hover:text-red-500 transition relative group">
-              <i [class]="search.active_favorite ?  'fas fa-heart text-red-500 text-lg' : 'far fa-heart text-lg'"></i>
-
-              <div
-                class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none shadow-lg w-64 sm:w-80 max-w-xs sm:max-w-sm">
-                <div class="text-center leading-relaxed">
-                  <div class="text-xs opacity-90">
-                    {{ 'user_searches.popover_favorite_1' | translate }}
-                  </div>
-                  <div class="text-xs opacity-75 mt-1">
-                    {{ 'user_searches.popover_favorite_2' | translate }}
-                  </div>
-                </div>
-                <div
-                  class="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900">
-                </div>
+  @if (!isLoading && searches.length > 0) {
+    <div class="space-y-4">
+      <ul class="space-y-2">
+        @for (search of searches; track search) {
+          <li class="bg-gray-700 p-4 rounded-lg shadow-md">
+            <div class="flex justify-between items-center">
+              <div>
+                <h4 class="text-white font-medium cursor-pointer" (click)="goSearch(search.url_search)">{{
+                search.name_search }}</h4>
+                <p class="text-sm text-gray-400 break-all cursor-pointer" (click)="goSearch(search.url_search)">{{
+                search.url_search }}</p>
+                <p class="text-xs text-gray-500">
+                  {{ 'cards.create_at' | translate }} : {{ search.created_at | date:'short' }}
+                </p>
+                <button (click)="deleteSearch(search.id)"
+                  class="text-red-600 hover:text-red-700 text-white py-2 rounded-md transition duration-300">
+                  {{ 'user_searches.delete' | translate }}
+                </button>
               </div>
-            </button>
-
-            <button (click)="toggleSearchNotifications(search)"
-              class="text-gray-400 hover:text-green-500 transition relative group">
-              <i
-                [class]="search.active_notification ? 'fa-brands fa-discord text-green-500 text-lg' : 'fa-brands fa-discord text-lg'"></i>
-              <div
-                class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none shadow-lg w-64 sm:w-80 max-w-xs sm:max-w-sm">
-                <div class="text-center leading-relaxed">
-                  <div class="text-xs opacity-90">
-                    {{ 'user_searches.popover_new_card_notification' | translate }}
+              <div class="flex space-x-2 px-4">
+                <button (click)="goSearch(search.url_search)"
+                  class="bg-gray-600 hover:bg-amber-500 text-white py-1 px-3 rounded-md transition duration-300">
+                  <i class="fas fa-search"></i>
+                </button>
+                <button (click)="toggleFavorite(search)" class="text-gray-400 hover:text-red-500 transition relative group">
+                  <i [class]="search.active_favorite ?  'fas fa-heart text-red-500 text-lg' : 'far fa-heart text-lg'"></i>
+                  <div
+                    class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none shadow-lg w-64 sm:w-80 max-w-xs sm:max-w-sm">
+                    <div class="text-center leading-relaxed">
+                      <div class="text-xs opacity-90">
+                        {{ 'user_searches.popover_favorite_1' | translate }}
+                      </div>
+                      <div class="text-xs opacity-75 mt-1">
+                        {{ 'user_searches.popover_favorite_2' | translate }}
+                      </div>
+                    </div>
+                    <div
+                      class="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900">
+                    </div>
                   </div>
-                </div>
-                <div
-                  class="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900">
-                </div>
+                </button>
+                <button (click)="toggleSearchNotifications(search)"
+                  class="text-gray-400 hover:text-green-500 transition relative group">
+                  <i
+                  [class]="search.active_notification ? 'fa-brands fa-discord text-green-500 text-lg' : 'fa-brands fa-discord text-lg'"></i>
+                  <div
+                    class="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white text-xs rounded-lg px-3 py-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none shadow-lg w-64 sm:w-80 max-w-xs sm:max-w-sm">
+                    <div class="text-center leading-relaxed">
+                      <div class="text-xs opacity-90">
+                        {{ 'user_searches.popover_new_card_notification' | translate }}
+                      </div>
+                    </div>
+                    <div
+                      class="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900">
+                    </div>
+                  </div>
+                </button>
               </div>
-            </button>
-          </div>
-        </div>
-      </li>
-    </ul>
-  </div>
+            </div>
+          </li>
+        }
+      </ul>
+    </div>
+  }
 
   <!-- Message si aucune recherche -->
-  <div *ngIf="!isLoading && searches.length === 0" class="text-center text-gray-400">
-    <p>{{ 'user_searches.no_searches' | translate }}</p>
-  </div>
+  @if (!isLoading && searches.length === 0) {
+    <div class="text-center text-gray-400">
+      <p>{{ 'user_searches.no_searches' | translate }}</p>
+    </div>
+  }
 </div>

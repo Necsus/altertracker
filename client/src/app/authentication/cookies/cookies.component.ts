@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
@@ -7,7 +7,7 @@ import { CookieConsentService } from './cookies.service';
 @Component({
   selector: 'app-cookies',
   templateUrl: './cookies.component.html',
-  imports: [CommonModule, TranslateModule]
+  imports: [TranslateModule]
 })
 export class CookiesComponent implements OnInit, OnDestroy {
   showCookieConsent = false;
