@@ -133,7 +133,12 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   openModal(card: CardModel): void {
     const currentLanguage = this.translate.currentLang || 'fr';
-    this.modalService.open(CardImgComponent, { src: currentLanguage === 'en' ? card.image_path_en : card.imagePath });
+    this.modalService.open({
+      component: CardImgComponent,
+      inputs: { src: currentLanguage === 'en' ? card.image_path_en : card.imagePath },
+      closeOnBackdrop: true,
+      closeOnEscape: true
+    });
   }
 }
 

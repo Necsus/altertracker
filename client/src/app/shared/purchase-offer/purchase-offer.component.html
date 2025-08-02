@@ -1,31 +1,37 @@
-<div class="bg-gray-900 text-white p-6 rounded-2xl shadow-xl max-w-md w-full">
-  <h2 class="text-xl font-semibold mb-4">Poster une offre d'achat</h2>
+<app-modal>
+  <div class="bg-gray-900 text-white p-4 sm:p-6 rounded-2xl shadow-xl w-full max-w-md mx-auto">
+    <h2 class="text-lg sm:text-xl font-semibold mb-4">Poster une offre d'achat</h2>
 
-  <form [formGroup]="purchaseForm" (ngSubmit)="onSubmit()" class="space-y-4">
-    <!-- Prix -->
-    <div>
-      <label for="price" class="block text-sm font-medium mb-1">Prix</label>
-      <input type="number" id="price" name="price" placeholder="Entrez un prix" formControlName="price"
-        class="w-full rounded-lg border border-gray-700 bg-gray-800 text-white p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
-    </div>
+    <form [formGroup]="purchaseForm" (ngSubmit)="onSubmit()" class="space-y-4">
+      <!-- Prix -->
+      <div>
+        <label for="price" class="block text-sm font-medium mb-1">Prix</label>
+        <input type="number" id="price" name="price" placeholder="Entrez un prix" formControlName="price"
+          class="w-full rounded-lg border border-gray-700 bg-gray-800 text-white p-2 focus:outline-none focus:ring-2 focus:ring-blue-500" />
+      </div>
 
-    <!-- Devise -->
-    <div>
-      <label for="currency" class="block text-sm font-medium mb-1">Devise</label>
-      <select id="currency" name="currency" formControlName="currency"
-        class="w-full rounded-lg border border-gray-700 bg-gray-800 text-white p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-        <option value="USD">USD - Dollar</option>
-        <option value="EUR">EUR - Euro</option>
-      </select>
-    </div>
+      <!-- Devise -->
+      <div>
+        <label for="currency" class="block text-sm font-medium mb-1">Devise</label>
+        <select id="currency" name="currency" formControlName="currency"
+          class="w-full rounded-lg border border-gray-700 bg-gray-800 text-white p-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="USD">USD - Dollar</option>
+          <option value="EUR">EUR - Euro</option>
+        </select>
+      </div>
 
-    <!-- Actions -->
-    <div class="flex justify-end space-x-2 pt-4">
-      <button type="submit" [disabled]="!isFormValid()"
-        [ngClass]="{'bg-gray-500 cursor-not-allowed': !isFormValid(), 'bg-blue-600 hover:bg-blue-700': isFormValid()}"
-        class="md:col-span-3 w-full text-white py-2 px-4 rounded-md transition duration-300">
-        Poster
-      </button>
-    </div>
-  </form>
-</div>
+      <!-- Actions -->
+      <div class="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-2 pt-4">
+        <button type="button" appModalClose
+          class="w-full sm:w-auto px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-md transition order-2 sm:order-1">
+          Annuler
+        </button>
+        <button type="submit" [disabled]="!isFormValid()"
+          [ngClass]="{'bg-gray-500 cursor-not-allowed': !isFormValid(), 'bg-blue-600 hover:bg-blue-700': isFormValid()}"
+          class="w-full sm:w-auto text-white py-2 px-4 rounded-md transition duration-300 order-1 sm:order-2">
+          Poster
+        </button>
+      </div>
+    </form>
+  </div>
+</app-modal>

@@ -1,35 +1,105 @@
-::ng-deep .ng-select {
-  background-color: #1f2937;
-  /* gray-800 */
-  color: #fff;
-  border: 1px solid #f59e0b;
-  /* amber-500 */
-  border-radius: 0.5rem;
-  /* rounded-lg */
+/* Conteneur modal avec position relative pour contraindre les dropdowns */
+::ng-deep app-modal .modal {
+  position: relative !important;
+  overflow: visible !important;
 }
 
-::ng-deep .ng-select .ng-select-container {
-  background-color: transparent;
-  color: #fff;
-  padding: 0.5rem 0.75rem;
+/* Styles pour ng-select */
+::ng-deep app-modal .ng-select {
+  background-color: #1f2937 !important;
+  color: #fff !important;
+  border: 1px solid #f59e0b !important;
+  border-radius: 0.5rem !important;
+  position: relative !important;
 }
 
-::ng-deep .ng-select .ng-dropdown-panel {
-  background-color: #374151;
-  /* gray-700 */
-  color: #fff;
-  border-color: #f59e0b;
+::ng-deep app-modal .ng-select .ng-select-container {
+  background-color: transparent !important;
+  color: #fff !important;
+  padding: 0.5rem 0.75rem !important;
+  border: none !important;
 }
 
-::ng-deep .ng-select .ng-option {
-  background-color: #374151;
-  color: #fff;
-  padding: 2px;
+::ng-deep app-modal .ng-select .ng-placeholder {
+  color: #9ca3af !important;
+}
+
+::ng-deep app-modal .ng-select .ng-arrow-wrapper {
+  color: #f59e0b !important;
+}
+
+::ng-deep app-modal .ng-select .ng-clear-wrapper {
+  color: #f59e0b !important;
+}
+
+::ng-deep app-modal .ng-select.ng-select-focused .ng-select-container {
+  border-color: #f59e0b !important;
+  box-shadow: 0 0 0 1px #f59e0b !important;
+}
+
+/* Dropdown panel - KEY FIX */
+::ng-deep app-modal .ng-select .ng-dropdown-panel {
+  background-color: #374151 !important;
+  color: #fff !important;
+  border: 1px solid #f59e0b !important;
+  border-top: none !important;
+  max-height: 200px !important;
+  overflow-y: auto !important;
+  z-index: 1050 !important;
+  position: absolute !important;
+  top: 100% !important;
+  left: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Options */
+::ng-deep app-modal .ng-select .ng-option {
+  background-color: #374151 !important;
+  color: #fff !important;
+  padding: 8px 12px !important;
   white-space: normal !important;
-  word-break: break-word;
+  word-break: break-word !important;
+  min-height: auto !important;
+  border: none !important;
 }
 
-::ng-deep .ng-select .ng-option:hover {
-  background-color: #f59e0b;
-  color: #000;
+::ng-deep app-modal .ng-select .ng-option:hover,
+::ng-deep app-modal .ng-select .ng-option.ng-option-highlighted {
+  background-color: #f59e0b !important;
+  color: #000 !important;
+}
+
+::ng-deep app-modal .ng-select .ng-option.ng-option-selected {
+  background-color: #f59e0b !important;
+  color: #000 !important;
+}
+
+/* Form group avec position relative pour les dropdowns */
+.form-group {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* Container principal avec overflow visible */
+.effect-builder-container {
+  overflow: visible !important;
+  position: relative !important;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  ::ng-deep app-modal .ng-select .ng-dropdown-panel {
+    max-height: 150px !important;
+  }
+
+  ::ng-deep app-modal .ng-select .ng-option {
+    padding: 6px 8px !important;
+    font-size: 14px !important;
+  }
+
+  ::ng-deep app-modal .ng-select .ng-select-container {
+    padding: 0.4rem 0.6rem !important;
+  }
 }

@@ -6,13 +6,15 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { EffectModel } from '../../01_models/03_business/effect.model';
 import { CardService } from '../../03_business/card.service';
 import { IconParserPipe } from '../../shared/pipes/icon-parser.pipe';
+import { ModalCloseDirective } from '../../shared/services/modal/modal-close.directive';
+import { ModalComponent } from '../../shared/services/modal/modal.component';
+import { ModalService } from '../../shared/services/modal/modal.service';
 
 @Component({
-  standalone: true,
   selector: 'app-effect-builder',
   templateUrl: './effect-builder.component.html',
   styleUrls: ['./effect-builder.component.css'],
-  imports: [CommonModule, FormsModule, NgSelectModule, IconParserPipe, TranslateModule],
+  imports: [CommonModule, FormsModule, NgSelectModule, IconParserPipe, TranslateModule, ModalComponent, ModalCloseDirective],
 })
 export class EffectBuilderComponent implements OnInit {
   currentLanguage: string = 'fr';
@@ -27,7 +29,8 @@ export class EffectBuilderComponent implements OnInit {
 
   constructor(
     private cardService: CardService,
-    private translate: TranslateService,) {
+    private translate: TranslateService,
+    private modalService: ModalService) {
     this.currentLanguage = this.translate.currentLang || 'en'; // Définit la langue par défaut
     this.translate.onLangChange.subscribe((event) => {
       this.currentLanguage = event.lang;
@@ -77,14 +80,11 @@ export class EffectBuilderComponent implements OnInit {
 
     let result = values[0] || '';
     for (let i = 1; i < values.length; i++) {
-      // Si la précédente est '[]', on ne met pas d'espace
       const joiner = values[i - 1] === '[]' ? '' : ' ';
       result += (values[i] ? joiner + values[i] : '');
     }
     this.result = result;
 
-    if (this.modalRef) {
-      this.modalRef.destroy();
-    }
+    this.modalService.closeAll();
   }
 }

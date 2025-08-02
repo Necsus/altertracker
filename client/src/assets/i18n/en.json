@@ -196,7 +196,8 @@
     "trigger": "Trigger",
     "condition": "Condition",
     "effect": "Effect",
-    "valid": "Validate"
+    "valid": "Validate",
+    "cancel": "Cancel"
   },
   "authentication": {
     "login": "Login",

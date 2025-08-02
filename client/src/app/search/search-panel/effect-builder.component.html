@@ -1,13 +1,19 @@
-<div class="w-3xl">
-  <div class="bg-gray-800 rounded-2xl shadow-2xl max-w-7xl w-full mx-8 p-8">
-    <h2 class="text-2xl font-bold mb-8 text-center w-5xl tracking-wide">{{ 'builder.title' | translate }}</h2>
-    <div class="grid grid-cols-1 gap-8">
+<app-modal>
+  <div
+    class="effect-builder-container bg-gray-800 rounded-2xl shadow-2xl w-full max-w-md sm:max-w-2xl lg:max-w-6xl xl:max-w-7xl 2xl:max-w-screen-xl mx-auto p-4 sm:p-6 lg:p-8 xl:p-10">
+    <h2 class="text-xl sm:text-2xl lg:text-3xl font-bold mb-6 sm:mb-8 lg:mb-10 text-center tracking-wide text-white">
+      {{ 'builder.title' | translate }}
+    </h2>
+
+    <div class="grid grid-cols-1 gap-4 sm:gap-6 lg:gap-8 xl:gap-10">
       <!-- Déclencheur -->
-      <div>
-        <label class="block mb-2 font-semibold">{{ 'builder.trigger' | translate }}</label>
+      <div class="form-group">
+        <label class="block mb-2 font-semibold text-sm sm:text-base lg:text-lg text-white">
+          {{ 'builder.trigger' | translate }}
+        </label>
         <ng-select [items]="triggers" bindLabel="value" [(ngModel)]="selectedTrigger" [clearable]="true"
-          [searchable]="true" dropdownPosition="auto" placeholder="Rechercher un déclencheur..."
-          class="bg-gray-800 text-white border-amber-500 rounded-lg">
+          [searchable]="true" dropdownPosition="bottom" placeholder="Rechercher un déclencheur..."
+          class="effect-builder-select">
           <ng-template ng-option-tmp let-item="item">
             <div [innerHTML]="item.value | iconParser:{ skipEmptyBrackets: true }"></div>
           </ng-template>
@@ -16,12 +22,15 @@
           </ng-template>
         </ng-select>
       </div>
+
       <!-- Condition -->
-      <div>
-        <label class="block mb-2 font-semibold">{{ 'builder.condition' | translate }}</label>
+      <div class="form-group">
+        <label class="block mb-2 font-semibold text-sm sm:text-base lg:text-lg text-white">
+          {{ 'builder.condition' | translate }}
+        </label>
         <ng-select [items]="conditions" bindLabel="value" [(ngModel)]="selectedCondition" [clearable]="true"
-          [searchable]="true" dropdownPosition="auto" placeholder="Rechercher une condition..."
-          class="bg-gray-800 text-white border-amber-500 rounded-lg">
+          [searchable]="true" dropdownPosition="bottom" placeholder="Rechercher une condition..."
+          class="effect-builder-select">
           <ng-template ng-option-tmp let-item="item">
             <div [innerHTML]="item.value | iconParser:{ skipEmptyBrackets: true }"></div>
           </ng-template>
@@ -30,12 +39,14 @@
           </ng-template>
         </ng-select>
       </div>
+
       <!-- Effet -->
-      <div>
-        <label class="block mb-2 font-semibold">{{ 'builder.effect' | translate }}</label>
+      <div class="form-group">
+        <label class="block mb-2 font-semibold text-sm sm:text-base lg:text-lg text-white">
+          {{ 'builder.effect' | translate }}
+        </label>
         <ng-select [items]="effects" bindLabel="value" [(ngModel)]="selectedEffect" [clearable]="true"
-          [searchable]="true" dropdownPosition="auto" placeholder="Rechercher un effet..."
-          class="bg-gray-800 text-white border-amber-500 rounded-lg">
+          [searchable]="true" dropdownPosition="top" placeholder="Rechercher un effet..." class="effect-builder-select">
           <ng-template ng-option-tmp let-item="item">
             <div [innerHTML]="item.value | iconParser:{ skipEmptyBrackets: true }"></div>
           </ng-template>
@@ -45,10 +56,18 @@
         </ng-select>
       </div>
     </div>
+
     <!-- Boutons d'action -->
-    <div class="flex justify-end mt-10 gap-4">
-      <button class="px-6 py-2 rounded bg-amber-500 text-black font-bold hover:bg-amber-400 transition"
-        (click)="validate()">{{ 'builder.valid' | translate }}</button>
+    <div class="flex flex-col sm:flex-row justify-end mt-6 sm:mt-10 lg:mt-12 gap-3 sm:gap-4 lg:gap-6">
+      <button appModalClose
+        class="w-full sm:w-auto px-4 sm:px-6 lg:px-8 py-2 lg:py-3 rounded bg-gray-500 text-white font-bold hover:bg-gray-400 transition order-2 sm:order-1 text-sm lg:text-base">
+        {{ 'builder.cancel' | translate }}
+      </button>
+      <button
+        class="w-full sm:w-auto px-4 sm:px-6 lg:px-8 py-2 lg:py-3 rounded bg-amber-500 text-black font-bold hover:bg-amber-400 transition order-1 sm:order-2 text-sm lg:text-base"
+        (click)="validate()">
+        {{ 'builder.valid' | translate }}
+      </button>
     </div>
   </div>
-</div>
+</app-modal>

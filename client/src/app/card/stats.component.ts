@@ -195,17 +195,20 @@ export class StatsComponent implements OnInit {
       }
     }
   }
-
   openPurchaseOfferModal(): void {
     if (this.isLoggedIn) {
       if (this.card) {
-        this.modalService.open(PurchaseOfferComponent, { model: { card: this.card, purchases: this.purchases } });
+        this.modalService.open({
+          component: PurchaseOfferComponent,
+          inputs: { model: { card: this.card, purchases: this.purchases } }
+        });
       } else {
         this.toastService.show('Aucune carte sélectionnée', 'warning', 5000);
       }
     } else {
       this.toastService.show('Veuillez vous connecter pour déposer une offre d\'achat', 'warning', 5000);
     }
+
   }
   refreshCardFromAltered(): void {
     if (this.card) {

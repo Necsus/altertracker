@@ -119,7 +119,12 @@ export class HomeComponent implements OnInit {
   }
   openModal(card: CardModel): void {
     const currentLanguage = this.translate.currentLang || 'fr';
-    this.modalService.open(CardImgComponent, { src: currentLanguage === 'en' ? card.image_path_en : card.imagePath });
+    this.modalService.open({
+      component: CardImgComponent,
+      inputs: { src: currentLanguage === 'en' ? card.image_path_en : card.imagePath },
+      closeOnBackdrop: true,
+      closeOnEscape: true
+    });
   }
   goToStats(reference: string): void {
     this.router.navigate(['/stats', reference]);

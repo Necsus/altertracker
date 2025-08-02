@@ -196,7 +196,8 @@
     "trigger": "Déclencheur",
     "condition": "Condition",
     "effect": "Effet",
-    "valid": "Valider"
+    "valid": "Valider",
+    "cancel": "Annuler"
   },
   "authentication": {
     "login": "Connexion",

@@ -4,12 +4,13 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CardModel } from '../../01_models/03_business/card.model';
 import { OfferPurchase } from '../../01_models/03_business/offer-purchase.model';
 import { PurchaseService } from '../../03_business/purchase.service';
+import { ModalComponent } from '../services/modal/modal.component';
 import { ToastService } from '../services/toast/toast.service';
 
 @Component({
   selector: 'app-purchase-offer',
   templateUrl: './purchase-offer.component.html',
-  imports: [CommonModule, ReactiveFormsModule]
+  imports: [CommonModule, ReactiveFormsModule, ModalComponent]
 })
 export class PurchaseOfferComponent implements OnInit {
   @Input() model!: { card: CardModel, purchases: OfferPurchase[] | null };
