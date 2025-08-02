@@ -14,7 +14,7 @@
     "stats": "Carte",
     "about": "À propos",
     "admin": "Admin",
-    "profile": "Profil",
+    "profile": "👤 Profil",
     "messages": "Messages",
     "chat": "Chat",
     "token": "Token Altered",
@@ -232,7 +232,7 @@
     "connection_waiting": "Veuillez patienter pendant que nous établissons la connexion."
   },
   "me": {
-    "title": "Mon profil",
+    "title": "👤 Mon profil",
     "pseudo": "Pseudo",
     "save": "Sauvegarder",
     "link_discord": "Link Discord",
@@ -247,7 +247,8 @@
     "delete_account_warning": "Cette action est irréversible.",
     "delete_account_password": "Mot de passe",
     "delete_account_confirm_label": "Voulez-vous vraiment supprimer votre compte ? Tapez",
-    "delete_account_button": "Supprimer mon compte"
+    "delete_account_button": "Supprimer mon compte",
+    "discord_test_message": "Envoyer un message de test"
   },
   "user_searches": {
     "title": "Mes recherches 🔍",

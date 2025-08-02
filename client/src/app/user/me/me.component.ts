@@ -77,6 +77,10 @@ export class MeComponent implements OnInit {
     });
   }
 
+  testDiscordMessage(): void {
+    this.toastService.show('Discord message test is not implemented yet', 'info', 5000);
+  }
+
   changePassword(): void {
     this.userService.put_user_password$({ old_password: this.oldPassword, new_password: this.newPassword }).subscribe({
       next: (response) => {
