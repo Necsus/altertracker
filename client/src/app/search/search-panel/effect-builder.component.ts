@@ -154,7 +154,6 @@ export class EffectBuilderComponent implements OnInit {
       const foundCondition = this.conditions.find(c => c.id === this.initialCondition?.id);
       if (foundCondition) {
         this.selectedCondition = foundCondition;
-        console.log('Condition restaurée:', foundCondition);
       }
     }
 
