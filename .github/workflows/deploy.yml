@@ -77,7 +77,7 @@ jobs:
           cd ~/geekom/uniquetracker/client
           rm -rf node_modules package-lock.json dist
           npm cache clean --force
-          npm install --legacy-peer-deps
+          npm install
           npm run build --production
 
           cd ~/geekom/uniquetracker
