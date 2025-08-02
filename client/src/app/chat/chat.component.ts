@@ -9,7 +9,7 @@ import { ChatMessage } from '../01_models/03_business/chat-message.model';
 import { ChatRoom } from '../01_models/03_business/chat-room.model';
 import { ChatService } from '../03_business/chat.service';
 import { AuthViewService } from '../authentication/auth-view.service';
-import { CardImgComponent } from '../cards/card/card-img.component';
+import { CardImgComponent } from '../search/card/card-img.component';
 import { LocalizedValuePipe } from '../shared/pipes/localized-value.pipe';
 import { ModalService } from '../shared/services/modal/modal.service';
 

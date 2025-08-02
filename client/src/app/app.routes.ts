@@ -7,14 +7,14 @@ import { ForgotPasswordComponent } from './authentication/forgot-password/forgot
 import { LoginComponent } from './authentication/login.component';
 import { RegisterComponent } from './authentication/register.component';
 import { ResetPasswordComponent } from './authentication/reset-password/reset-password.component';
-import { CardsComponent } from './cards/cards.component';
+import { StatsComponent } from './card/stats.component';
 import { ChatComponent } from './chat/chat.component';
 import { HomeComponent } from './home/home.component';
 import { CookiesPolicyComponent } from './policy/cookies.component';
 import { PolicyComponent } from './policy/policy.component';
+import { CardsComponent } from './search/cards.component';
 import { NotFoundComponent } from './shared/error-pages/not-found/not-found.component';
 import { UnauthorizedComponent } from './shared/error-pages/unauthorized/unauthorized.component';
-import { StatsComponent } from './stats/stats.component';
 import { CollectionComponent } from './user/collection/collection.component';
 import { ContactComponent } from './user/contact/contact.component';
 import { JoinDiscordComponent } from './user/contact/join-discord.component';

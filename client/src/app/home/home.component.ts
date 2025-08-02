@@ -8,7 +8,7 @@ import { CardService } from '../03_business/card.service';
 import { OfferService } from '../03_business/offer.service';
 import { UserService } from '../03_business/user.service';
 import { AuthViewService } from '../authentication/auth-view.service';
-import { CardImgComponent } from '../cards/card/card-img.component';
+import { CardImgComponent } from '../search/card/card-img.component';
 import { AlteredImgPipe } from '../shared/pipes/altered-img.pipe';
 import { LocalizedValuePipe } from '../shared/pipes/localized-value.pipe';
 import { ToDatePipe } from '../shared/pipes/to-date.pipe';
