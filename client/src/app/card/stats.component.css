@@ -42,3 +42,26 @@
     width: 100% !important;
   }
 }
+
+/* Animation pulse pour le skeleton */
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Amélioration de l'apparence du code */
+code {
+  font-family: 'Courier New', monospace;
+  font-size: 0.9em;
+}
