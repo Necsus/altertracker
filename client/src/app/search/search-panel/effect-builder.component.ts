@@ -135,12 +135,6 @@ export class EffectBuilderComponent implements OnInit {
   }
 
   private restoreInitialValues(): void {
-    console.log('Restoration des valeurs initiales:', {
-      trigger: this.initialTrigger,
-      condition: this.initialCondition,
-      effect: this.initialEffect
-    });
-
     // Restaurer le trigger
     if (this.initialTrigger) {
       const foundTrigger = this.triggers.find(t => t.id === this.initialTrigger?.id);
