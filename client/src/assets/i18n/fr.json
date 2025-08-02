@@ -20,7 +20,7 @@
     "token": "Token Altered",
     "searches": "🔍 Mes recherches",
     "alerts": "❤️ Mes alertes",
-    "collection": "Ma collection",
+    "collection": "🗂️ Ma collection",
     "purchase_offers": "Offres d'achat",
     "logout": "Déconnexion",
     "login": "Login",
@@ -268,7 +268,7 @@
     "never_ask": "Ne plus me demander"
   },
   "collection": {
-    "title": "Ma Collection",
+    "title": "🗂️ Ma Collection",
     "chrome_extension": "Extension Chrome",
     "firefox_extension": "Extension Firefox",
     "search_placeholder": "Rechercher une carte...",

@@ -20,7 +20,7 @@
     "token": "Token Altered",
     "searches": "🔍 My Searches",
     "alerts": "❤️ My alerts",
-    "collection": "My Collection",
+    "collection": "🗂️ My Collection",
     "purchase_offers": "Purchase Offers",
     "logout": "Logout",
     "login": "Login",
@@ -268,7 +268,7 @@
     "never_ask": "Don't ask me again"
   },
   "collection": {
-    "title": "My Collection",
+    "title": "🗂️ My Collection",
     "chrome_extension": "Chrome Extension",
     "firefox_extension": "Firefox Extension",
     "search_placeholder": "Search for a card...",
