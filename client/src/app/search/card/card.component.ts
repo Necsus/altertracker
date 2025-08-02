@@ -104,7 +104,12 @@ export class CardComponent {
 
   openModal(): void {
     const currentLanguage = this.translate.currentLang || 'fr';
-    this.modalService.open(CardImgComponent, { src: currentLanguage === 'en' ? this.card.image_path_en : this.card.imagePath });
+    this.modalService.open({
+      component: CardImgComponent,
+      inputs: { src: currentLanguage === 'en' ? this.card.image_path_en : this.card.imagePath },
+      closeOnBackdrop: true,
+      closeOnEscape: true
+    });
   }
 
   copyToClipboard(reference: string): void {

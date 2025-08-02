@@ -9,7 +9,7 @@ import { ChatMessage } from '../01_models/03_business/chat-message.model';
 import { ChatRoom } from '../01_models/03_business/chat-room.model';
 import { ChatService } from '../03_business/chat.service';
 import { AuthViewService } from '../authentication/auth-view.service';
-import { CardImgComponent } from '../cards/card/card-img.component';
+import { CardImgComponent } from '../search/card/card-img.component';
 import { LocalizedValuePipe } from '../shared/pipes/localized-value.pipe';
 import { ModalService } from '../shared/services/modal/modal.service';
 
@@ -133,7 +133,12 @@ export class ChatComponent implements OnInit, OnDestroy {
 
   openModal(card: CardModel): void {
     const currentLanguage = this.translate.currentLang || 'fr';
-    this.modalService.open(CardImgComponent, { src: currentLanguage === 'en' ? card.image_path_en : card.imagePath });
+    this.modalService.open({
+      component: CardImgComponent,
+      inputs: { src: currentLanguage === 'en' ? card.image_path_en : card.imagePath },
+      closeOnBackdrop: true,
+      closeOnEscape: true
+    });
   }
 }
 

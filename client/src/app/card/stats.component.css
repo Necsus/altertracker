@@ -1,0 +1,67 @@
+/* Styles pour ApexCharts */
+::ng-deep .apexcharts-canvas {
+  background: transparent !important;
+}
+
+::ng-deep .apexcharts-tooltip {
+  background: #1f2937 !important;
+  border: 1px solid #374151 !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+}
+
+::ng-deep .apexcharts-tooltip-title {
+  background: #374151 !important;
+  border-bottom: 1px solid #4b5563 !important;
+  color: #f3f4f6 !important;
+}
+
+::ng-deep .apexcharts-tooltip-text {
+  color: #f3f4f6 !important;
+}
+
+/* Animation d'entrée */
+.chart-container {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  ::ng-deep .apexcharts-canvas {
+    width: 100% !important;
+  }
+}
+
+/* Animation pulse pour le skeleton */
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Amélioration de l'apparence du code */
+code {
+  font-family: 'Courier New', monospace;
+  font-size: 0.9em;
+}

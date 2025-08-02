@@ -3,8 +3,21 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-import { ChartConfiguration, ChartOptions } from 'chart.js';
-import { BaseChartDirective } from 'ng2-charts';
+import {
+  ApexAxisChartSeries,
+  ApexChart,
+  ApexDataLabels,
+  ApexFill,
+  ApexGrid,
+  ApexLegend,
+  ApexMarkers,
+  ApexPlotOptions,
+  ApexStroke,
+  ApexTooltip,
+  ApexXAxis,
+  ApexYAxis,
+  NgApexchartsModule
+} from 'ng-apexcharts';
 import { OfferLiveMarketRequest } from '../01_models/02_api/card/offer-live-market-request.model';
 import { CardModel } from '../01_models/03_business/card.model';
 import { OfferPurchase } from '../01_models/03_business/offer-purchase.model';
@@ -22,6 +35,21 @@ import { PurchaseOfferComponent } from '../shared/purchase-offer/purchase-offer.
 import { ModalService } from '../shared/services/modal/modal.service';
 import { ToastService } from '../shared/services/toast/toast.service';
 
+export type ChartOptions = {
+  series: ApexAxisChartSeries;
+  chart: ApexChart;
+  dataLabels: ApexDataLabels;
+  plotOptions: ApexPlotOptions;
+  yAxis: ApexYAxis;
+  xAxis: ApexXAxis;
+  fill: ApexFill;
+  tooltip: ApexTooltip;
+  stroke: ApexStroke;
+  legend: ApexLegend;
+  grid: ApexGrid;
+  markers: ApexMarkers;
+};
+
 @Component({
   selector: 'app-stats',
   templateUrl: './stats.component.html',
@@ -29,7 +57,7 @@ import { ToastService } from '../shared/services/toast/toast.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    BaseChartDirective,
+    NgApexchartsModule, // Remplace BaseChartDirective
     LocalizedValuePipe,
     TranslateModule,
     IconParserPipe,
@@ -43,22 +71,11 @@ export class StatsComponent implements OnInit {
   searchForm!: FormGroup;
   card!: CardModel | null;
   offers!: OfferModel[] | null;
-  purchases!: OfferPurchase[] | null; // Ajouté pour les achats
-  is_favorite: boolean = false; // État favori de la carte
-  is_mine: boolean = false; // Indique si l'utilisateur est le propriétaire de la carte
-
-  // Propriétés pour le graphique
-  chartData: ChartConfiguration['data']['datasets'] = [];
-  chartLabels: string[] = [];
-  chartOptions: ChartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        display: true,
-        position: 'top'
-      }
-    }
-  };
+  purchases!: OfferPurchase[] | null;
+  is_favorite: boolean = false;
+  is_mine: boolean = false;
+  mainCurrency: string = '€';
+  chartOptions: Partial<ChartOptions> = {};
 
   constructor(
     private route: ActivatedRoute,
@@ -72,12 +89,14 @@ export class StatsComponent implements OnInit {
     private alteredService: AlteredService,
     private chatService: ChatService
   ) { }
+
   get availableInMarket(): boolean {
     if (this.offers && this.offers.length > 0) {
       return this.offers[0].is_deleted === false;
     }
     return false;
   }
+
   ngOnInit(): void {
     this.authViewService.isLoggedIn$.subscribe(status => {
       this.isLoggedIn = status;
@@ -87,10 +106,10 @@ export class StatsComponent implements OnInit {
     this.searchForm = this.fb.group({
       reference: [this.reference || ''],
     });
+    this.initializeChartOptions();
     if (this.reference) {
       this.loadCardStats(this.reference);
     }
-    // Scroll to top when route changes
     this.router.events.subscribe(() => {
       window.scrollTo(0, 0);
     });
@@ -98,16 +117,13 @@ export class StatsComponent implements OnInit {
 
   isFormValid(): boolean {
     const { reference } = this.searchForm.value;
-    // Vérifie si au moins un champ est rempli ou si forest_power, mountain_power ou ocean_power est égal à 0
-    return !!(
-      reference
-    );
+    return !!(reference);
   }
 
   onSubmit(): void {
     const reference = this.searchForm.get('reference')?.value;
     this.router.navigate(['/stats', reference]).then(() => {
-      window.location.reload(); // Recharge complètement la page
+      window.location.reload();
     });
   }
 
@@ -130,25 +146,87 @@ export class StatsComponent implements OnInit {
     });
   }
 
+  formatPrice(value: number, currency: string): string {
+    const formattedValue = value.toFixed(2);
+    switch (currency) {
+      case '$':
+      case 'USD':
+        return '$' + formattedValue;
+      case '€':
+      case 'EUR':
+        return '€' + formattedValue;
+      default:
+        return formattedValue + ' ' + currency;
+    }
+  }
+
+  getCurrencyForDataPoint(index: number): string {
+    if (this.offers && this.offers[index]) {
+      return this.offers[index].currency || this.mainCurrency;
+    }
+    return this.mainCurrency;
+  }
+
+  detectMainCurrency(): string {
+    if (!this.offers || this.offers.length === 0) return '€';
+
+    // Compter les occurrences de chaque devise
+    const currencyCount: { [key: string]: number } = {};
+    this.offers.forEach(offer => {
+      const currency = offer.currency || '€';
+      currencyCount[currency] = (currencyCount[currency] || 0) + 1;
+    });
+
+    // Retourner la devise la plus fréquente
+    return Object.keys(currencyCount).reduce((a, b) =>
+      currencyCount[a] > currencyCount[b] ? a : b
+    );
+  }
+
   prepareChartData(): void {
-    if (this.offers) {
-      // Extraire les prix et les dates des offres
+    if (this.offers && this.offers.length > 0) {
+      // Détecter la devise principale
+      this.mainCurrency = this.detectMainCurrency();
+
       const copiedOffers = this.offers.slice();
       const sortedOffers = copiedOffers.sort((a, b) => {
         const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
         const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
-        return dateA - dateB; // Tri croissant
+        return dateA - dateB;
       });
-      this.chartData = [
-        {
-          data: sortedOffers.map(offer => offer.price || 0),
-          label: 'Prix des offres',
-          borderColor: '#4caf50',
-          backgroundColor: 'rgba(76, 175, 80, 0.2)',
-          fill: true
+
+      // Préparer les données pour ApexCharts
+      const chartData = sortedOffers.map(offer => ({
+        x: offer.created_at ? new Date(offer.created_at).getTime() : 0,
+        y: offer.price || 0,
+        currency: offer.currency || this.mainCurrency // Stocker la devise
+      }));
+
+      // Mettre à jour la série du graphique avec le nom de la devise
+      this.chartOptions = {
+        ...this.chartOptions,
+        series: [{
+          name: `Prix des offres (${this.mainCurrency})`,
+          data: chartData
+        }],
+        yAxis: {
+          ...this.chartOptions.yAxis,
+          labels: {
+            ...this.chartOptions.yAxis?.labels,
+            formatter: (val) => {
+              return this.formatPrice(val, this.mainCurrency);
+            }
+          }
         }
-      ];
-      this.chartLabels = sortedOffers.map(offer => offer.created_at ? new Date(offer.created_at).toLocaleDateString() : '');
+      };
+    } else {
+      this.chartOptions = {
+        ...this.chartOptions,
+        series: [{
+          name: 'Prix des offres',
+          data: []
+        }]
+      };
     }
   }
 
@@ -169,7 +247,7 @@ export class StatsComponent implements OnInit {
           next: (response: UserAlertModel) => {
             if (this.card) {
               this.is_favorite = !this.is_favorite;
-              this.card.alert_id = response.id; // Inverse l'état de la carte
+              this.card.alert_id = response.id;
               this.toastService.show(`${reference} ajoutée aux favoris`, 'success', 5000);
             }
           },
@@ -199,7 +277,10 @@ export class StatsComponent implements OnInit {
   openPurchaseOfferModal(): void {
     if (this.isLoggedIn) {
       if (this.card) {
-        this.modalService.open(PurchaseOfferComponent, { model: { card: this.card, purchases: this.purchases } });
+        this.modalService.open({
+          component: PurchaseOfferComponent,
+          inputs: { model: { card: this.card, purchases: this.purchases } }
+        });
       } else {
         this.toastService.show('Aucune carte sélectionnée', 'warning', 5000);
       }
@@ -207,6 +288,7 @@ export class StatsComponent implements OnInit {
       this.toastService.show('Veuillez vous connecter pour déposer une offre d\'achat', 'warning', 5000);
     }
   }
+
   refreshCardFromAltered(): void {
     if (this.card) {
       this.alteredService.getMarketOffer$(this.card).subscribe({
@@ -239,8 +321,8 @@ export class StatsComponent implements OnInit {
       });
     }
   }
+
   startChatRoom(offerPurchase: OfferPurchase) {
-    // this.toastService.show('not implemented', 'info', 5000);
     this.chatService.create_room$(offerPurchase.id).subscribe({
       next: (room_id: string) => {
         this.router.navigate(['/chat', room_id]);
@@ -251,5 +333,121 @@ export class StatsComponent implements OnInit {
       }
     });
   }
-}
 
+  private initializeChartOptions(): void {
+    this.chartOptions = {
+      series: [{
+        name: 'Prix des offres',
+        data: []
+      }],
+      chart: {
+        type: 'line',
+        height: 300,
+        background: 'transparent',
+        foreColor: '#9ca3af',
+        toolbar: {
+          show: false
+        },
+        zoom: {
+          enabled: false
+        }
+      },
+      dataLabels: {
+        enabled: false
+      },
+      stroke: {
+        curve: 'smooth',
+        colors: ['#f59e0b'],
+        width: 3
+      },
+      xAxis: {
+        type: 'datetime',
+        labels: {
+          style: {
+            colors: '#9ca3af'
+          },
+          datetimeFormatter: {
+            year: 'yyyy',
+            month: 'MMM \'yy',
+            day: 'dd MMM',
+            hour: 'HH:mm'
+          }
+        },
+        axisBorder: {
+          color: '#374151'
+        },
+        axisTicks: {
+          color: '#374151'
+        }
+      },
+      yAxis: {
+        labels: {
+          style: {
+            colors: '#9ca3af'
+          },
+          formatter: (val: number) => {
+            return this.formatPrice(val, this.mainCurrency);
+          }
+        }
+      },
+      tooltip: {
+        theme: 'dark',
+        x: {
+          format: 'dd/MM/yyyy HH:mm'
+        },
+        y: {
+          formatter: (val: number, opts?: any) => {
+            // Utiliser la devise principale par défaut
+            return this.formatPrice(val, this.mainCurrency);
+          }
+        },
+        style: {
+          fontSize: '12px'
+        }
+      },
+      grid: {
+        borderColor: '#374151',
+        strokeDashArray: 3,
+        xaxis: {
+          lines: {
+            show: true
+          }
+        },
+        yaxis: {
+          lines: {
+            show: true
+          }
+        }
+      },
+      markers: {
+        size: 4,
+        colors: ['#f59e0b'],
+        strokeColors: '#1f2937',
+        strokeWidth: 2,
+        hover: {
+          size: 6
+        }
+      },
+      fill: {
+        type: 'gradient',
+        gradient: {
+          shade: 'dark',
+          gradientToColors: ['#fbbf24'],
+          shadeIntensity: 1,
+          type: 'horizontal',
+          opacityFrom: 0.7,
+          opacityTo: 0.3,
+          stops: [0, 100]
+        }
+      },
+      legend: {
+        show: true,
+        position: 'top',
+        horizontalAlign: 'left',
+        labels: {
+          colors: '#9ca3af'
+        }
+      }
+    };
+  }
+}

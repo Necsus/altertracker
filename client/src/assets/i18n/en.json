@@ -14,13 +14,13 @@
     "stats": "Card",
     "about": "About",
     "admin": "Admin",
-    "profile": "Profile",
+    "profile": "👤 Profile",
     "messages": "Messages",
     "chat": "Chat",
     "token": "Token Altered",
     "searches": "🔍 My Searches",
     "alerts": "❤️ My alerts",
-    "collection": "My Collection",
+    "collection": "🗂️ My Collection",
     "purchase_offers": "Purchase Offers",
     "logout": "Logout",
     "login": "Login",
@@ -149,16 +149,21 @@
   },
   "stats": {
     "title": "Statistics",
-    "enter_reference": "Please enter a reference to view card details.",
-    "no_result": "No results found for the reference.",
+    "enter_reference": "Please enter a reference to display card details.",
+    "no_result": "No results found for reference",
     "no_purchase_offer": "No purchase offers available.",
-    "send_message": "Send a message",
-    "make_offer": "Make an offer",
+    "send_message": "Send message",
+    "make_offer": "Make offer",
     "purchase_offers": "Purchase offers",
     "no_market_offers": "No market offers available.",
     "buy_on_altered": "Buy on Altered.gg",
     "market_offers": "Market offers",
-    "view_on_altered": "View on Altered.gg"
+    "view_on_altered": "View on Altered.gg",
+    "price_history": "Price history",
+    "no_price_data": "No price data available",
+    "no_price_data_2": "Data will appear as soon as an offer is created",
+    "join_chat": "Join conversation",
+    "discover_stats": "Discover card statistics"
   },
   "user_alerts": {
     "title": "My Alerts ❤️",
@@ -192,11 +197,14 @@
     "reject": "Reject"
   },
   "builder": {
-    "title": "Build an effect",
+    "title": "Build Effect",
     "trigger": "Trigger",
     "condition": "Condition",
     "effect": "Effect",
-    "valid": "Validate"
+    "erase": "Clear",
+    "preview": "Preview",
+    "valid": "Validate",
+    "cancel": "Cancel"
   },
   "authentication": {
     "login": "Login",
@@ -224,7 +232,7 @@
     "connection_waiting": "Please wait while we establish the connection."
   },
   "me": {
-    "title": "My profile",
+    "title": "👤 My profile",
     "pseudo": "Username",
     "save": "Save",
     "link_discord": "Link Discord",
@@ -239,7 +247,8 @@
     "delete_account_warning": "This action is irreversible.",
     "delete_account_password": "Password",
     "delete_account_confirm_label": "Do you really want to delete your account? Type",
-    "delete_account_button": "Delete my account"
+    "delete_account_button": "Delete my account",
+    "discord_test_message": "Send test message"
   },
   "user_searches": {
     "title": "My searches 🔍",
@@ -249,5 +258,27 @@
     "popover_favorite_2": "⚠️ Only for existing cards",
     "popover_new_card_notification": "Activate alerts for new cards matching this search.",
     "no_searches": "No saved searches."
+  },
+  "buymeacoffee": {
+    "title": "Do you like AlterTracker?",
+    "subtitle": "Support the development!",
+    "message": "If this application helps you in your Altered games, a small coffee would be welcome to support development and servers! ☕",
+    "help_message": "Every donation helps keep the service free",
+    "support_btn": "Buy me a coffee",
+    "later_btn": "Later",
+    "never_ask": "Don't ask me again"
+  },
+  "collection": {
+    "title": "🗂️ My Collection",
+    "chrome_extension": "Chrome Extension",
+    "firefox_extension": "Firefox Extension",
+    "search_placeholder": "Search for a card...",
+    "empty_description": "To import your collection, use our browser extension:",
+    "empty_step_1": "Install the extension on your browser.",
+    "empty_step_2": "Follow the instructions in the extension popup to connect your accounts.",
+    "empty_step_3": "The import will be automatic and your collection will appear here.",
+    "need_help": "Need help?",
+    "discord_help": "You can join our",
+    "discord_server": "discord server"
   }
 }

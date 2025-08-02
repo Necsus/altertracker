@@ -10,7 +10,7 @@ import { AlteredService } from '../../03_business/altered.service';
 import { CardService } from '../../03_business/card.service';
 import { UserService } from '../../03_business/user.service';
 import { AuthViewService } from '../../authentication/auth-view.service';
-import { CardComponent } from '../../cards/card/card.component';
+import { CardComponent } from '../../search/card/card.component';
 import { ToastService } from '../../shared/services/toast/toast.service';
 
 @Component({

@@ -3,26 +3,32 @@
   <div class="bg-gray-800 p-4 rounded-lg shadow-lg relative">
     <!-- Case à cocher et bouton en haut à droite -->
     <!-- <div class="absolute top-4 right-4 flex items-center space-x-2">
-      @if (cards.length > 0) {
+    @if (cards.length > 0) {
       <label for="{{ groupName }}-groupCheckbox" class="text-gray-300 text-sm">{{ 'cards.only_in_market' | translate
-        }}</label>
+      }}</label>
       <input (change)="onOnlyCardsWithPrice($event)" type="checkbox" id="{{ groupName }}-groupCheckbox"
         class="h-4 w-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500 focus:ring-offset-gray-800">
       }
     </div> -->
     <button (click)="toggleGroup()"
       class="w-full text-left text-2xl font-semibold mb-4 focus:outline-none cursor-pointer">{{
-      groupName }} ({{ cards.length }})<span *ngIf="onlyCardsWithPrice">&nbsp;{{ 'cards.in_market' | translate
+      groupName }} ({{ cards.length }})@if (onlyCardsWithPrice) {
+      <span>&nbsp;{{ 'cards.in_market' | translate
         }}&nbsp;({{ visibleCards.length
-        }})</span></button>
+      }})</span>
+    }</button>
     @if (isGroupOpen) {
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-      <app-card *ngFor="let card of visibleCards | slice:0:displayedCards" [card]="card"></app-card>
-    </div>
-    <button *ngIf="cards.length > displayedCards" (click)="loadMore()"
-      class="bg-amber-600 hover:bg-amber-700 w-full text-white py-2 px-4 rounded-md transition duration-300 mt-4 flex items-center justify-center">
-      {{ 'cards.load_more' | translate }}
-    </button>
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        @for (card of visibleCards | slice:0:displayedCards; track card) {
+          <app-card [card]="card"></app-card>
+        }
+      </div>
+      @if (cards.length > displayedCards) {
+        <button (click)="loadMore()"
+          class="bg-amber-600 hover:bg-amber-700 w-full text-white py-2 px-4 rounded-md transition duration-300 mt-4 flex items-center justify-center">
+          {{ 'cards.load_more' | translate }}
+        </button>
+      }
     }
   </div>
 </div>

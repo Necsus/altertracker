@@ -1,0 +1,135 @@
+<div class="flex bg-gray-900 text-white">
+  @if (!isMobile) {
+    @if (cards && cards.length > 0) {
+      <div #sidebar [class.-translate-x-full]="!sidebarOpen || !cards || cards.length <= 0"
+        class="w-64 bg-gradient-to-b from-gray-800 to-gray-900 p-4 transition-transform duration-300">
+        <app-search-panel (cardsRetrieved)="onCardsRetrieved($event)"></app-search-panel>
+      </div>
+    }
+  }
+  @else {
+  <button
+    class="fixed left-1/2 transform -translate-x-1/2 bg-amber-600 text-white p-3 rounded-full shadow-lg hover:bg-amber-500 transition-transform duration-300 z-50"
+    [style.top]="sidebarOpen ? '40px' : 'calc(100% - 80px)'" (click)="toggleFilterSlider()">
+    <i [ngClass]="sidebarOpen ? 'fa-chevron-down' : 'fa-chevron-up'" class="fas text-xl"></i>
+  </button>
+
+  <!-- Sidebar (Tiroir en mode mobile) -->
+  @if (sidebarOpen) {
+    <div class="fixed bg-red-300 inset-0 z-40 sm:hidden" style="background: transparent;">
+    </div>
+  }
+  <div
+    class="fixed bottom-0 left-0 w-full bg-gradient-to-b from-gray-800 to-gray-900 p-4 transition-transform duration-300 z-50"
+    [class.translate-y-full]="!sidebarOpen" [class.translate-y-0]="sidebarOpen"
+    style="height: calc(100% - 100px); overflow-y: auto;" (touchstart)="onTouchStart($event)"
+    (touchmove)="onTouchMove($event)" (touchend)="onTouchEnd($event)">
+    <app-search-panel (cardsRetrieved)="onCardsRetrieved($event)"></app-search-panel>
+  </div>
+}
+
+<!-- Main content -->
+<div class="flex-1 flex w-full flex-col transition-all duration-300 z-30" [class.-ml-64]="!sidebarOpen && !isMobile">
+  <!-- Top bar -->
+  <div class="flex justify-between items-center p-4 transition-all duration-300">
+    <div class="hidden sm:block">
+      @if (cards && cards.length > 0) {
+        <button id="toggleSlider" class="p-2 bg-gray-700 rounded hover:bg-gray-600 transition cursor-pointer"
+          (click)="toggleFilterSlider()">
+          <i [ngClass]="sidebarOpen ? 'fa-chevron-left' : 'fa-chevron-right'" class="fas text-xl"></i>
+        </button>
+      }
+    </div>
+    <div class="flex items-center gap-4">
+      @if (cards && cards.length > 0) {
+        <div class="text-center">
+          <label class="mr-2 font-semibold">Trier par</label>
+          <select class="p-2 bg-gray-700 rounded-lg border border-amber-500" [(ngModel)]="sortBy"
+            (change)="onSortByChange($event)">
+            <option value="">-</option>
+            <option value="priceAsc">Prix ↑</option>
+            <option value="priceDesc">Prix ↓</option>
+          </select>
+        </div>
+      }
+      @if (cards && cards.length > 0) {
+        <div class="text-center">
+          <label class="mr-2 font-semibold">Grouper par</label>
+          <select class="p-2 bg-gray-700 rounded-lg border border-amber-500" [(ngModel)]="groupBy"
+            (change)="onGroupByChange($event)">
+            <option value="">-</option>
+            <option value="name">Nom</option>
+            <option value="faction">Faction</option>
+            <option value="main_cost">Coût de main</option>
+          </select>
+        </div>
+      }
+      @if (isLoggedIn) {
+        <app-save-search [canSaveSearch]="true"></app-save-search>
+      }
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="flex-1 overflow-auto p-4">
+    @if (!isMobile && (!cards || cards.length <= 0)) { <div
+      class="bg-gradient-to-b from-gray-800 to-gray-900 p-4 transition-transform duration-300">
+      <app-search-panel (cardsRetrieved)="onCardsRetrieved($event)" [showFull]="true"></app-search-panel>
+      @if (showAds) {
+        <ng-container>
+          <script async
+            src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4001144292832515"
+          crossorigin="anonymous"></script>
+          <ins class="adsbygoogle" style="display:block" data-ad-format="fluid" data-ad-layout-key="-ea+6u+8c-jk+8f"
+          data-ad-client="ca-pub-4001144292832515" data-ad-slot="5520714519"></ins>
+          <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+          </script>
+        </ng-container>
+      }
+    </div>
+  }
+  @if (!cards || cards.length <= 0) { <p class="text-center text-gray-500 mb-8">
+    {{
+    'cards.subtitle_1' | translate }}&nbsp;<strong>{{nbCards}}</strong>&nbsp;{{
+    'cards.subtitle_2' | translate }}
+    <strong>{{nbCardsInMarket}}</strong>&nbsp;{{
+    'cards.subtitle_3' | translate }}
+  </p>
+}
+<!-- Ici tu mettras ton affichage de cartes -->
+@if (cards && cards.length > 0) {
+  <div class="text-gray-400">
+    <p class="text-lg pb-4"><span class="font-bold">@if (cards.length >= 10000) {
+      <span
+      >+</span>
+    }{{cards.length}}</span>
+  &nbsp;{{ 'cards.found_cards' | translate }}</p>
+  @for (group of groupedCards | keyvalue; track group; let i = $index) {
+    <div class="mb-8">
+      <app-card-group [groupName]="group.key" [cards]="group.value" [autoOpen]="group.key === autoOpenGroup"
+        [allGroupsOpen]="allGroupsOpen" (visibleCardsChange)="onVisibleCardsChange($event)">
+      </app-card-group>
+      @if (showAds && i % 2 === 1) {
+        <script async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4001144292832515"
+        crossorigin="anonymous"></script>
+        <ins class="adsbygoogle" style="display:block" data-ad-format="fluid" data-ad-layout-key="-fb+5q+57-cn+4i"
+        data-ad-client="ca-pub-4001144292832515" data-ad-slot="5520714519"></ins>
+        <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+      }
+    </div>
+  }
+</div>
+}
+</div>
+</div>
+
+@if (progress$ | async; as progress) {
+  <div class="progress-tooltip">
+    <p>{{ 'progress.progress' | translate }}&nbsp;{{remainingCards.length + 1}}&nbsp;{{ 'progress.remaining_cards' |
+    translate }}</p>
+  </div>
+}
