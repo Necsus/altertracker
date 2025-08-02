@@ -22,16 +22,23 @@ export class EffectBuilderComponent implements OnInit {
   triggers: EffectModel[] = [];
   conditions: EffectModel[] = [];
   effects: EffectModel[] = [];
-  selectedTrigger?: EffectModel;
-  selectedCondition?: EffectModel;
-  selectedEffect?: EffectModel;
-  result: string = '';
+  selectedTrigger?: EffectModel | null = null;
+  selectedCondition?: EffectModel | null = null;
+  selectedEffect?: EffectModel | null = null;
+  shortcutTriggers: EffectModel[] = [];
+
+  initialTrigger?: EffectModel | null;
+  initialCondition?: EffectModel | null;
+  initialEffect?: EffectModel | null;
+
+  // Callback pour récupérer le résultat
+  onValidate?: (result: string, trigger: EffectModel | null, condition: EffectModel | null, effect: EffectModel | null) => void;
 
   constructor(
     private cardService: CardService,
     private translate: TranslateService,
     private modalService: ModalService) {
-    this.currentLanguage = this.translate.currentLang || 'en'; // Définit la langue par défaut
+    this.currentLanguage = this.translate.currentLang || 'en';
     this.translate.onLangChange.subscribe((event) => {
       this.currentLanguage = event.lang;
     });
@@ -41,20 +48,9 @@ export class EffectBuilderComponent implements OnInit {
     this.cardService.getEffect$(this.currentLanguage).subscribe({
       next: (response: EffectModel[]) => {
         this.triggers = [];
-        const nullTrigger = <EffectModel>({
-          id: 0,
-          type: 'declencheur',
-          value: '[]'
-        });
-        this.triggers.push(nullTrigger);
         this.conditions = [];
-        const nullCondition = <EffectModel>({
-          id: 0,
-          type: 'condition',
-          value: '[]'
-        });
-        this.conditions.push(nullCondition);
         this.effects = [];
+
         response.forEach((effect: EffectModel) => {
           if (effect.type === 'declencheur') {
             this.triggers.push(effect);
@@ -64,6 +60,8 @@ export class EffectBuilderComponent implements OnInit {
             this.effects.push(effect);
           }
         });
+        this.setShortcutTriggers();
+        this.restoreInitialValues();
       },
       error: (error) => {
         console.error('Error fetching effects:', error);
@@ -71,20 +69,119 @@ export class EffectBuilderComponent implements OnInit {
     });
   }
 
-  validate(): void {
-    const values = [
-      this.selectedTrigger?.value ?? '[]',
-      this.selectedCondition?.value ?? '[]',
-      this.selectedEffect?.value ?? ''
-    ];
+  // Getter pour l'aperçu en temps réel
+  get previewResult(): string {
+    const triggerValue = this.selectedTrigger?.value || '';
+    const conditionValue = this.selectedCondition?.value || '';
+    const effectValue = this.selectedEffect?.value || '';
 
-    let result = values[0] || '';
-    for (let i = 1; i < values.length; i++) {
-      const joiner = values[i - 1] === '[]' ? '' : ' ';
-      result += (values[i] ? joiner + values[i] : '');
+    let result = '';
+
+    // Construction du résultat
+    if (triggerValue) {
+      result += triggerValue;
+    } else {
+      result += '[]';
     }
-    this.result = result;
+
+    if (conditionValue) {
+      if (triggerValue) {
+        result += ' ';
+      }
+      result += conditionValue;
+    } else {
+      if (triggerValue) {
+        result += ' ';
+      }
+      result += '[]';
+    }
+
+    if (effectValue) {
+      if (conditionValue) {
+        result += ' ';
+      }
+      result += effectValue;
+    }
+
+    return result || 'Aucun effet sélectionné';
+  }
+
+  // Méthodes pour clear manuellement
+  clearTrigger(): void {
+    this.selectedTrigger = null;
+  }
+
+  clearCondition(): void {
+    this.selectedCondition = null;
+  }
+
+  clearEffect(): void {
+    this.selectedEffect = null;
+  }
+
+  selectShortcutTrigger(trigger: EffectModel): void {
+    console.log(trigger);
+    this.selectedTrigger = trigger;
+  }
+
+  validate(): void {
+    const finalResult = this.previewResult === 'Aucun effet sélectionné' ? '' : this.previewResult;
+
+    // Appeler le callback s'il existe
+    if (this.onValidate) {
+      this.onValidate(finalResult, this.selectedTrigger ?? null, this.selectedCondition ?? null, this.selectedEffect ?? null);
+    }
 
     this.modalService.closeAll();
+  }
+
+  private restoreInitialValues(): void {
+    console.log('Restoration des valeurs initiales:', {
+      trigger: this.initialTrigger,
+      condition: this.initialCondition,
+      effect: this.initialEffect
+    });
+
+    // Restaurer le trigger
+    if (this.initialTrigger) {
+      const foundTrigger = this.triggers.find(t => t.id === this.initialTrigger?.id);
+      if (foundTrigger) {
+        this.selectedTrigger = foundTrigger;
+        console.log('Trigger restauré:', foundTrigger);
+      }
+    }
+
+    // Restaurer la condition
+    if (this.initialCondition) {
+      const foundCondition = this.conditions.find(c => c.id === this.initialCondition?.id);
+      if (foundCondition) {
+        this.selectedCondition = foundCondition;
+        console.log('Condition restaurée:', foundCondition);
+      }
+    }
+
+    // Restaurer l'effet
+    if (this.initialEffect) {
+      const foundEffect = this.effects.find(e => e.id === this.initialEffect?.id);
+      if (foundEffect) {
+        this.selectedEffect = foundEffect;
+        console.log('Effet restauré:', foundEffect);
+      }
+    }
+  }
+
+  private setShortcutTriggers(): void {
+    // Définir les IDs ou valeurs des triggers les plus utilisés
+    const mostUsedTriggerValues = [
+      '{J}',
+      '{H}',
+      '{R}',
+    ];
+
+    this.shortcutTriggers = this.triggers.filter(trigger =>
+      mostUsedTriggerValues.some(value =>
+        trigger.value.toLowerCase().includes(value.toLowerCase())
+      )
+    ).slice(0, 3); // Limiter à 4 éléments
   }
 }

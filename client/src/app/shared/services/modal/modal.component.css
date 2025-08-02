@@ -41,9 +41,7 @@
 }
 
 /* Largeur spécifique pour effect-builder sur desktop */
-@media (min-width: 1024px) {
-  .modal:has([class*="effect-builder"]) {
-    width: 90vw;
-    max-width: 1400px;
-  }
+.modal:has([class*="effect-builder"]) {
+  width: 90vw;
+  max-width: 800px;
 }

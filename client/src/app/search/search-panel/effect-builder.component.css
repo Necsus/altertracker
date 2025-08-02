@@ -29,7 +29,7 @@
 }
 
 ::ng-deep app-modal .ng-select .ng-clear-wrapper {
-  color: #f59e0b !important;
+  display: none !important;
 }
 
 ::ng-deep app-modal .ng-select.ng-select-focused .ng-select-container {
@@ -43,7 +43,7 @@
   color: #fff !important;
   border: 1px solid #f59e0b !important;
   border-top: none !important;
-  max-height: 200px !important;
+  max-height: 250px !important;
   overflow-y: auto !important;
   z-index: 1050 !important;
   position: absolute !important;
@@ -79,7 +79,6 @@
 /* Form group avec position relative pour les dropdowns */
 .form-group {
   position: relative !important;
-  z-index: 1 !important;
 }
 
 /* Container principal avec overflow visible */
@@ -91,7 +90,7 @@
 /* Responsive */
 @media (max-width: 640px) {
   ::ng-deep app-modal .ng-select .ng-dropdown-panel {
-    max-height: 150px !important;
+    max-height: 250px !important;
   }
 
   ::ng-deep app-modal .ng-select .ng-option {
@@ -101,5 +100,31 @@
 
   ::ng-deep app-modal .ng-select .ng-select-container {
     padding: 0.4rem 0.6rem !important;
+  }
+}
+
+.shortcut-button {
+  transition: all 0.2s ease;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.shortcut-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.shortcut-button.selected {
+  box-shadow: 0 0 0 2px #f59e0b;
+}
+
+/* Responsive pour les boutons raccourcis */
+@media (max-width: 640px) {
+  .shortcut-button {
+    font-size: 0.625rem;
+    padding: 0.25rem 0.5rem;
   }
 }

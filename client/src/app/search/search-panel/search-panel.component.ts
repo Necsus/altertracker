@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { CardModel } from '../../01_models/03_business/card.model';
+import { EffectModel } from '../../01_models/03_business/effect.model';
 import { CardService } from '../../03_business/card.service';
 import { AuthViewService } from '../../authentication/auth-view.service';
 import { withLoader } from '../../shared/services/loader/loader.operator';
@@ -248,44 +249,52 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     });
   }
 
-  openEffectBuilder(effectType: 'main_effect' | 'main_effect_2' | 'echo_effect' | 'exclude_effect') {
+  openEffectBuilder(effectType: 'main_effect' | 'main_effect_2' | 'echo_effect' | 'exclude_effect'): void {
+    const storedData = this.getStoredEffectData(effectType);
     this.modalService.open({
       component: EffectBuilderComponent,
-      inputs: { /* vos inputs */ },
+      inputs: {
+        initialTrigger: storedData.trigger,
+        initialCondition: storedData.condition,
+        initialEffect: storedData.effect,
+        onValidate: (result: string, trigger: EffectModel | null, condition: EffectModel | null, effect: EffectModel | null) => {
+          this.handleEffectBuilderResult(result, effectType, trigger, condition, effect);
+        }
+      },
       closeOnBackdrop: true,
       closeOnEscape: true
     });
   }
 
-  // openEffectBuilder(effectType: 'main_effect' | 'main_effect_2' | 'echo_effect' | 'exclude_effect') {
-  //   const modalRef = this.modalService.open(EffectBuilderComponent);
-  //   // Passe la référence au composant dynamique
-  //   const assignModalRef = () => {
-  //     if (modalRef.instance.componentRef) {
-  //       modalRef.instance.componentRef.instance.modalRef = modalRef;
-  //       return true;
-  //     }
-  //     return false;
-  //   };
-  //   if (!assignModalRef()) {
-  //     // Si non dispo, réessaie rapidement jusqu’à ce que ce soit prêt
-  //     const interval = setInterval(() => {
-  //       if (assignModalRef()) clearInterval(interval);
-  //     }, 10);
-  //   }
-  //   modalRef.onDestroy(() => {
-  //     const result = modalRef.instance.componentRef?.instance.result;
-  //     if (result) {
-  //       this.searchForm.get(effectType)?.setValue(result);
-  //     }
-  //   });
-  // }
+  showPopover(index: number) {
+    this.popoverIndex = index;
+  }
+
+  hidePopover() {
+    this.popoverIndex = null;
+  }
+
+  private handleEffectBuilderResult(
+    result: string,
+    effectType: 'main_effect' | 'main_effect_2' | 'echo_effect' | 'exclude_effect',
+    trigger: EffectModel | null,
+    condition: EffectModel | null,
+    effect: EffectModel | null
+  ): void {
+    // Mettre à jour le champ visible avec le résultat
+    if (result) {
+      this.searchForm.get(effectType)?.setValue(result);
+    }
+
+    // Stocker les 3 valeurs sélectionnées pour la réouverture
+    this.storeEffectData(effectType, trigger, condition, effect);
+  }
 
   private cleanFormValues(values: any): any {
     // Conserve les valeurs 0 et remplace uniquement null ou false par une chaîne vide
     return Object.keys(values).reduce((acc: any, key) => {
       if (key === 'forest_power_range' || key === 'mountain_power_range' || key === 'ocean_power_range') {
-        acc[key] = values[key]; // Conserve la valeur telle quelle, y compris 0
+        acc[key] = values[key];
       } else {
         acc[key] = values[key] === null || values[key] === false ? '' : values[key];
       }
@@ -318,11 +327,20 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
     return { min, max };
   }
-  showPopover(index: number) {
-    this.popoverIndex = index;
+
+
+  private effectDataStorage: { [key: string]: { trigger: EffectModel | null, condition: EffectModel | null, effect: EffectModel | null } } = {};
+
+  private storeEffectData(
+    effectType: string,
+    trigger: EffectModel | null,
+    condition: EffectModel | null,
+    effect: EffectModel | null
+  ): void {
+    this.effectDataStorage[effectType] = { trigger, condition, effect };
   }
 
-  hidePopover() {
-    this.popoverIndex = null;
+  private getStoredEffectData(effectType: string): { trigger: EffectModel | null, condition: EffectModel | null, effect: EffectModel | null } {
+    return this.effectDataStorage[effectType] || { trigger: null, condition: null, effect: null };
   }
 }

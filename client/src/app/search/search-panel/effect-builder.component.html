@@ -8,12 +8,32 @@
     <div class="grid grid-cols-1 gap-4 sm:gap-6 lg:gap-8 xl:gap-10">
       <!-- Déclencheur -->
       <div class="form-group">
-        <label class="block mb-2 font-semibold text-sm sm:text-base lg:text-lg text-white">
-          {{ 'builder.trigger' | translate }}
-        </label>
-        <ng-select [items]="triggers" bindLabel="value" [(ngModel)]="selectedTrigger" [clearable]="true"
-          [searchable]="true" dropdownPosition="bottom" placeholder="Rechercher un déclencheur..."
-          class="effect-builder-select">
+        <div class="flex items-center justify-between mb-2">
+          <label class="font-semibold text-sm sm:text-base lg:text-lg text-white">
+            {{ 'builder.trigger' | translate }}
+          </label>
+          <button type="button" (click)="clearTrigger()"
+            class="text-amber-500 hover:text-amber-400 text-xs px-2 py-1 rounded">
+            Effacer
+          </button>
+        </div>
+
+        <!-- Boutons raccourcis pour les triggers les plus utilisés -->
+        <div class="mb-3">
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            <button *ngFor="let shortcut of shortcutTriggers" type="button" (click)="selectShortcutTrigger(shortcut)"
+              [class.bg-amber-500]="selectedTrigger?.id === shortcut.id"
+              [class.text-black]="selectedTrigger?.id === shortcut.id"
+              [class.bg-gray-600]="selectedTrigger?.id !== shortcut.id"
+              [class.text-white]="selectedTrigger?.id !== shortcut.id"
+              class="px-2 py-1 text-xs rounded hover:bg-amber-400 transition duration-200 truncate cursor-pointer">
+              <span [innerHTML]="shortcut.value | iconParser:{ skipEmptyBrackets: true }"></span>
+            </button>
+          </div>
+        </div>
+
+        <ng-select [items]="triggers" bindLabel="value" [(ngModel)]="selectedTrigger" [searchable]="true"
+          dropdownPosition="bottom" placeholder="Rechercher un déclencheur..." class="effect-builder-select">
           <ng-template ng-option-tmp let-item="item">
             <div [innerHTML]="item.value | iconParser:{ skipEmptyBrackets: true }"></div>
           </ng-template>
@@ -25,12 +45,17 @@
 
       <!-- Condition -->
       <div class="form-group">
-        <label class="block mb-2 font-semibold text-sm sm:text-base lg:text-lg text-white">
-          {{ 'builder.condition' | translate }}
-        </label>
-        <ng-select [items]="conditions" bindLabel="value" [(ngModel)]="selectedCondition" [clearable]="true"
-          [searchable]="true" dropdownPosition="bottom" placeholder="Rechercher une condition..."
-          class="effect-builder-select">
+        <div class="flex items-center justify-between mb-2">
+          <label class="font-semibold text-sm sm:text-base lg:text-lg text-white">
+            {{ 'builder.condition' | translate }}
+          </label>
+          <button type="button" (click)="clearCondition()"
+            class="text-amber-500 hover:text-amber-400 text-xs px-2 py-1 rounded">
+            Effacer
+          </button>
+        </div>
+        <ng-select [items]="conditions" bindLabel="value" [(ngModel)]="selectedCondition" [searchable]="true"
+          dropdownPosition="bottom" placeholder="Rechercher une condition..." class="effect-builder-select">
           <ng-template ng-option-tmp let-item="item">
             <div [innerHTML]="item.value | iconParser:{ skipEmptyBrackets: true }"></div>
           </ng-template>
@@ -42,11 +67,17 @@
 
       <!-- Effet -->
       <div class="form-group">
-        <label class="block mb-2 font-semibold text-sm sm:text-base lg:text-lg text-white">
-          {{ 'builder.effect' | translate }}
-        </label>
-        <ng-select [items]="effects" bindLabel="value" [(ngModel)]="selectedEffect" [clearable]="true"
-          [searchable]="true" dropdownPosition="top" placeholder="Rechercher un effet..." class="effect-builder-select">
+        <div class="flex items-center justify-between mb-2">
+          <label class="font-semibold text-sm sm:text-base lg:text-lg text-white">
+            {{ 'builder.effect' | translate }}
+          </label>
+          <button type="button" (click)="clearEffect()"
+            class="text-amber-500 hover:text-amber-400 text-xs px-2 py-1 rounded">
+            Effacer
+          </button>
+        </div>
+        <ng-select [items]="effects" bindLabel="value" [(ngModel)]="selectedEffect" [searchable]="true"
+          dropdownPosition="top" placeholder="Rechercher un effet..." class="effect-builder-select">
           <ng-template ng-option-tmp let-item="item">
             <div [innerHTML]="item.value | iconParser:{ skipEmptyBrackets: true }"></div>
           </ng-template>
@@ -54,6 +85,14 @@
             <div [innerHTML]="item.value | iconParser:{ skipEmptyBrackets: true }"></div>
           </ng-template>
         </ng-select>
+      </div>
+    </div>
+
+    <!-- Aperçu du résultat EN TEMPS RÉEL -->
+    <div class="mt-6 p-4 bg-gray-700 rounded-lg">
+      <label class="block text-sm font-medium text-white mb-2">Aperçu :</label>
+      <div class="text-amber-500 min-h-[2rem] p-2 bg-gray-800 rounded border border-gray-600"
+        [innerHTML]="previewResult">
       </div>
     </div>
 
