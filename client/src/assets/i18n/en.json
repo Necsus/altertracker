@@ -192,10 +192,12 @@
     "reject": "Reject"
   },
   "builder": {
-    "title": "Build an effect",
+    "title": "Build Effect",
     "trigger": "Trigger",
     "condition": "Condition",
     "effect": "Effect",
+    "erase": "Clear",
+    "preview": "Preview",
     "valid": "Validate",
     "cancel": "Cancel"
   },

@@ -196,6 +196,8 @@
     "trigger": "Déclencheur",
     "condition": "Condition",
     "effect": "Effet",
+    "erase": "Effacer",
+    "preview": "Aperçu",
     "valid": "Valider",
     "cancel": "Annuler"
   },

@@ -14,7 +14,7 @@
           </label>
           <button type="button" (click)="clearTrigger()"
             class="text-amber-500 hover:text-amber-400 text-xs px-2 py-1 rounded">
-            Effacer
+            {{ 'builder.erase' | translate }}
           </button>
         </div>
 
@@ -51,7 +51,7 @@
           </label>
           <button type="button" (click)="clearCondition()"
             class="text-amber-500 hover:text-amber-400 text-xs px-2 py-1 rounded">
-            Effacer
+            {{ 'builder.erase' | translate }}
           </button>
         </div>
         <ng-select [items]="conditions" bindLabel="value" [(ngModel)]="selectedCondition" [searchable]="true"
@@ -73,7 +73,7 @@
           </label>
           <button type="button" (click)="clearEffect()"
             class="text-amber-500 hover:text-amber-400 text-xs px-2 py-1 rounded">
-            Effacer
+            {{ 'builder.erase' | translate }}
           </button>
         </div>
         <ng-select [items]="effects" bindLabel="value" [(ngModel)]="selectedEffect" [searchable]="true"
@@ -90,7 +90,7 @@
 
     <!-- Aperçu du résultat EN TEMPS RÉEL -->
     <div class="mt-6 p-4 bg-gray-700 rounded-lg">
-      <label class="block text-sm font-medium text-white mb-2">Aperçu :</label>
+      <label class="block text-sm font-medium text-white mb-2">{{ 'builder.preview' | translate }} :</label>
       <div class="text-amber-500 min-h-[2rem] p-2 bg-gray-800 rounded border border-gray-600"
         [innerHTML]="previewResult">
       </div>
