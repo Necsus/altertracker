@@ -158,7 +158,12 @@
     "no_market_offers": "Aucune offre de marché disponible.",
     "buy_on_altered": "Acheter sur Altered.gg",
     "market_offers": "Offres du marché",
-    "view_on_altered": "Voir sur Altered.gg"
+    "view_on_altered": "Voir sur Altered.gg",
+    "price_history": "Historique des prix",
+    "no_price_data": "Aucune donnée de prix disponible",
+    "no_price_data_2": "Les données apparaîtront dès qu'une offre sera créée",
+    "join_chat": "Rejoindre la conversation",
+    "discover_stats": "Découvrez les statistiques d'une carte"
   },
   "user_alerts": {
     "title": "Mes alertes ❤️",

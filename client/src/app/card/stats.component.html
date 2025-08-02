@@ -74,7 +74,7 @@
 
       <!-- Price History Chart (placeholder) -->
       <div class="flex justify-between items-center mb-4">
-        <h3 class="text-lg font-semibold text-white">Historique des prix</h3>
+        <h3 class="text-lg font-semibold text-white">{{ 'stats.price_history' | translate }}</h3>
         @if (offers && offers.length > 0) {
         <div class="text-sm text-gray-400">
           {{ offers.length }} offre(s)
@@ -98,8 +98,8 @@
         <div class="h-64 flex items-center justify-center">
           <div class="text-center text-gray-400">
             <i class="fas fa-chart-line text-4xl mb-4 opacity-50"></i>
-            <p class="text-lg">Aucune donnée de prix disponible</p>
-            <p class="text-sm">Les données apparaîtront dès qu'une offre sera créée</p>
+            <p class="text-lg">{{ 'stats.no_price_data' | translate }}</p>
+            <p class="text-sm">{{ 'stats.no_price_data_2' | translate }}</p>
           </div>
         </div>
         }
@@ -184,13 +184,13 @@
             @if (purchase.room_id) {
             <a href="/chat/{{ purchase.room_id }}"
               class="inline-flex items-center bg-amber-600 hover:bg-amber-500 text-white px-4 py-2 rounded-lg transition">
-              Rejoindre la conversation
+              {{ 'stats.join_chat' | translate }}
             </a>
             }
             @else {
             <button (click)="startChatRoom(purchase)"
               class="inline-flex items-center bg-amber-600 hover:bg-amber-500 text-white px-4 py-2 rounded-lg transition">
-              Envoyer un message
+              {{ 'stats.send_message' | translate }}
             </button>
             }
           </div>
@@ -249,8 +249,8 @@
     <div class="mb-4">
       <i class="fas fa-search text-4xl text-amber-500 mb-4"></i>
     </div>
-    <h3 class="text-xl font-semibold mb-2">Découvrez les statistiques d'une carte</h3>
-    <p class="text-gray-400 mb-6">Entrez une référence de carte
+    <h3 class="text-xl font-semibold mb-2">{{ 'stats.discover_stats' | translate }}</h3>
+    <p class="text-gray-400 mb-6">{{ 'stats.enter_reference' | translate }}
     </p>
   </div>
   <!-- SKELETON LOADER : AUCUNE RÉFÉRENCE -->

@@ -149,16 +149,21 @@
   },
   "stats": {
     "title": "Statistics",
-    "enter_reference": "Please enter a reference to view card details.",
-    "no_result": "No results found for the reference.",
+    "enter_reference": "Please enter a reference to display card details.",
+    "no_result": "No results found for reference",
     "no_purchase_offer": "No purchase offers available.",
-    "send_message": "Send a message",
-    "make_offer": "Make an offer",
+    "send_message": "Send message",
+    "make_offer": "Make offer",
     "purchase_offers": "Purchase offers",
     "no_market_offers": "No market offers available.",
     "buy_on_altered": "Buy on Altered.gg",
     "market_offers": "Market offers",
-    "view_on_altered": "View on Altered.gg"
+    "view_on_altered": "View on Altered.gg",
+    "price_history": "Price history",
+    "no_price_data": "No price data available",
+    "no_price_data_2": "Data will appear as soon as an offer is created",
+    "join_chat": "Join conversation",
+    "discover_stats": "Discover card statistics"
   },
   "user_alerts": {
     "title": "My Alerts ❤️",
