@@ -58,7 +58,7 @@ export class BuyMeCoffeeComponent implements OnInit, OnDestroy {
 
   openBuyMeACoffee(): void {
     // Remplace par ton vrai lien Buy Me a Coffee
-    window.open('https://buymeacoffee.com/necsus_dev', '_blank');
+    window.open('https://buymeacoffee.com/necsus_dev', '_blank', 'noopener,noreferrer');
     this.closeBuyMeACoffeeModal();
   }
 
