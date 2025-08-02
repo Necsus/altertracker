@@ -146,7 +146,6 @@ export class EffectBuilderComponent implements OnInit {
       const foundTrigger = this.triggers.find(t => t.id === this.initialTrigger?.id);
       if (foundTrigger) {
         this.selectedTrigger = foundTrigger;
-        console.log('Trigger restauré:', foundTrigger);
       }
     }
 
