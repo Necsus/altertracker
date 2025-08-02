@@ -120,7 +120,6 @@ export class EffectBuilderComponent implements OnInit {
   }
 
   selectShortcutTrigger(trigger: EffectModel): void {
-    console.log(trigger);
     this.selectedTrigger = trigger;
   }
 
