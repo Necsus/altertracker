@@ -266,5 +266,18 @@
     "support_btn": "Offrir un café",
     "later_btn": "Plus tard",
     "never_ask": "Ne plus me demander"
+  },
+  "collection": {
+    "title": "Ma Collection",
+    "chrome_extension": "Extension Chrome",
+    "firefox_extension": "Extension Firefox",
+    "search_placeholder": "Rechercher une carte...",
+    "empty_description": "Pour importer votre collection, utilisez notre extension navigateur :",
+    "empty_step_1": "Installez l'extension sur votre navigateur.",
+    "empty_step_2": "Suivez les instructions dans la popup de l'extension pour connecter vos comptes.",
+    "empty_step_3": "L'importation sera automatique et votre collection apparaîtra ici.",
+    "need_help": "Besoin d'aide ?",
+    "discord_help": "Vous pouvez rejoindre notre",
+    "discord_server": "serveur discord"
   }
 }

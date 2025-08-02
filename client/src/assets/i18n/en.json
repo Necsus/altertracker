@@ -266,5 +266,18 @@
     "support_btn": "Buy me a coffee",
     "later_btn": "Later",
     "never_ask": "Don't ask me again"
+  },
+  "collection": {
+    "title": "My Collection",
+    "chrome_extension": "Chrome Extension",
+    "firefox_extension": "Firefox Extension",
+    "search_placeholder": "Search for a card...",
+    "empty_description": "To import your collection, use our browser extension:",
+    "empty_step_1": "Install the extension on your browser.",
+    "empty_step_2": "Follow the instructions in the extension popup to connect your accounts.",
+    "empty_step_3": "The import will be automatic and your collection will appear here.",
+    "need_help": "Need help?",
+    "discord_help": "You can join our",
+    "discord_server": "discord server"
   }
 }
