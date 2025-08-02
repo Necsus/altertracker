@@ -23,7 +23,7 @@
       <!-- Champ de recherche -->
       <input type="text"
         class="w-full bg-gray-800 text-white placeholder-gray-400 rounded-lg py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-amber-500"
-        placeholder="'collection.search_placeholder' | translate" [(ngModel)]="searchQuery"
+        [placeholder]="'collection.search_placeholder' | translate" [(ngModel)]="searchQuery"
         (input)="onSearchChange()" />
 
       <!-- Menu déroulant -->
