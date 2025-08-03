@@ -79,3 +79,16 @@ def discord_unlink():
 def assign_discord_role(discord_id: str) -> str:
     response = requests.post(f"{ConfigEnv.DISCORD_BOT_URI}/assign", json={"discord_id": discord_id})
     return response.text
+
+@discord_bp.route('/testmessage', methods=['GET'])
+@jwt_required()
+def discord_testmessage():
+    user_id = get_jwt_identity()
+    user = User.query.filter_by(id=user_id).first()
+
+    if user and user.discord_id:
+        response = requests.post(f"{ConfigEnv.DISCORD_BOT_URI}/testmessage", json={"discord_id": user.discord_id})
+        print(response.text)
+        return jsonify({'message': 'Discord ID unlinked successfully'}), 200
+    else:
+        return jsonify({'error': 'User or discord id not found'}), 404

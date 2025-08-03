@@ -25,6 +25,38 @@ async def assign_role(discord_id):
         await member.add_roles(role)
         await member.send("Tu as reçu le rôle utilisateur.")
 
+async def handle_test_message(request):
+    data = await request.json()
+    discord_id = data.get("discord_id")
+    guild = bot.get_guild(int(os.getenv("GUILD_ID")))
+
+    if not guild:
+        print("[ERROR] Guild non trouvée", flush=True)
+        return web.Response(status=500, text="Guild non trouvée")
+
+    try:
+        member = await guild.fetch_member(int(discord_id))  # ⬅️ force un appel API
+        print(f"[INFO] Membre {member.display_name} récupéré", flush=True)
+        embed_color = discord.Color.default()
+        embed = discord.Embed(
+            title="Ceci est un message de test",
+            description="Si tu vois ce message, c'est que le bot fonctionne correctement.",
+            color=embed_color,
+        )
+    
+        embed.set_author(name=f"AlterTracker", icon_url="https://altertracker.com/favicon.ico")  # si tu as un logo en url
+        embed.set_footer(text="Merci pour votre confiance • AlterTracker © 2025")
+        embed.timestamp = discord.utils.utcnow()
+
+        if member:
+            await member.send(embed=embed)
+        return web.Response(text="Alert sent")
+    except discord.NotFound:
+        return web.Response(status=404, text="Membre introuvable")
+    except Exception as e:
+        print(f"[ERROR] Erreur fetch_member : {e}", flush=True)
+        return web.Response(status=500, text="Erreur lors de la récupération du membre")
+
 async def handle_send_alert(request):
     data = await request.json()
     discord_id = data.get("discord_id")
@@ -192,6 +224,7 @@ async def handle_assign(request):
 async def start_web():
     app = web.Application()
     app.router.add_post("/assign", handle_assign)
+    app.router.add_post("/testmessage", handle_test_message)
     app.router.add_post("/sendalert", handle_send_alert)
     app.router.add_post("/sendalertnewcard", handle_send_alert_new_card)
     app.router.add_post("/sendchat", handle_send_chat)
