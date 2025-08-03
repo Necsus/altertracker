@@ -22,20 +22,20 @@
         <div class="mb-3">
           <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
             @for (shortcut of shortcutTriggers; track shortcut) {
-              <button type="button" (click)="selectShortcutTrigger(shortcut)"
-                [class.bg-amber-500]="selectedTrigger?.id === shortcut.id"
-                [class.text-black]="selectedTrigger?.id === shortcut.id"
-                [class.bg-gray-600]="selectedTrigger?.id !== shortcut.id"
-                [class.text-white]="selectedTrigger?.id !== shortcut.id"
-                class="px-2 py-1 text-xs rounded hover:bg-amber-400 transition duration-200 truncate cursor-pointer">
-                <span [innerHTML]="shortcut.value | iconParser:{ skipEmptyBrackets: true }"></span>
-              </button>
+            <button type="button" (click)="selectShortcutTrigger(shortcut)"
+              [class.bg-amber-500]="selectedTrigger?.id === shortcut.id"
+              [class.text-black]="selectedTrigger?.id === shortcut.id"
+              [class.bg-gray-600]="selectedTrigger?.id !== shortcut.id"
+              [class.text-white]="selectedTrigger?.id !== shortcut.id"
+              class="px-2 py-1 text-xs rounded hover:bg-amber-400 transition duration-200 truncate cursor-pointer">
+              <span [innerHTML]="shortcut.value | iconParser:{ skipEmptyBrackets: true }"></span>
+            </button>
             }
           </div>
         </div>
 
         <ng-select [items]="triggers" bindLabel="value" [(ngModel)]="selectedTrigger" [searchable]="true"
-          dropdownPosition="bottom" placeholder="Rechercher un déclencheur..." class="effect-builder-select">
+          dropdownPosition="bottom" [placeholder]="'builder.search_trigger' | translate" class="effect-builder-select">
           <ng-template ng-option-tmp let-item="item">
             <div [innerHTML]="item.value | iconParser:{ skipEmptyBrackets: true }"></div>
           </ng-template>
@@ -57,7 +57,8 @@
           </button>
         </div>
         <ng-select [items]="conditions" bindLabel="value" [(ngModel)]="selectedCondition" [searchable]="true"
-          dropdownPosition="bottom" placeholder="Rechercher une condition..." class="effect-builder-select">
+          dropdownPosition="bottom" [placeholder]="'builder.search_condition' | translate"
+          class="effect-builder-select">
           <ng-template ng-option-tmp let-item="item">
             <div [innerHTML]="item.value | iconParser:{ skipEmptyBrackets: true }"></div>
           </ng-template>
@@ -79,7 +80,7 @@
           </button>
         </div>
         <ng-select [items]="effects" bindLabel="value" [(ngModel)]="selectedEffect" [searchable]="true"
-          dropdownPosition="top" placeholder="Rechercher un effet..." class="effect-builder-select">
+          dropdownPosition="top" [placeholder]="'builder.search_effect' | translate" class="effect-builder-select">
           <ng-template ng-option-tmp let-item="item">
             <div [innerHTML]="item.value | iconParser:{ skipEmptyBrackets: true }"></div>
           </ng-template>

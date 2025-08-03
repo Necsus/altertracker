@@ -18,4 +18,9 @@ export class DiscordService {
       return;
     }));
   }
+  test_message$(): Observable<void> {
+    return this.discordApiService.test_message$().pipe(map(() => {
+      return;
+    }));
+  }
 }

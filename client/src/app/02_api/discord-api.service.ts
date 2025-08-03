@@ -16,4 +16,7 @@ export class DiscordApiService {
   discord_unlink$(): Observable<void> {
     return this.wabApiService.callGet$(this.controller, 'unlink');
   }
+  test_message$(): Observable<void> {
+    return this.wabApiService.callGet$(this.controller, 'testmessage');
+  }
 }

@@ -204,7 +204,10 @@
     "erase": "Effacer",
     "preview": "Aperçu",
     "valid": "Valider",
-    "cancel": "Annuler"
+    "cancel": "Annuler",
+    "search_trigger": "Rechercher un déclencheur...",
+    "search_condition": "Rechercher une condition...",
+    "search_effect": "Rechercher un effet..."
   },
   "authentication": {
     "login": "Connexion",

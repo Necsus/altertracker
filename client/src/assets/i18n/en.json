@@ -204,7 +204,10 @@
     "erase": "Clear",
     "preview": "Preview",
     "valid": "Validate",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "search_trigger": "Search for a trigger...",
+    "search_condition": "Search for a condition...",
+    "search_effect": "Search for an effect..."
   },
   "authentication": {
     "login": "Login",
