@@ -80,7 +80,7 @@ export class MeComponent implements OnInit {
   testDiscordMessage(): void {
     this.discordService.test_message$().subscribe({
       next: (response) => {
-        this.toastService.show('Discord message test sent', 'success', 5000);
+        // this.toastService.show('Discord message test sent', 'success', 5000);
       },
       error: (err: any) => this.toastService.show(`Error: ${err.message}`, 'error', 5000)
     });

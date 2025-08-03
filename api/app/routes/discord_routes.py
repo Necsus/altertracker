@@ -89,6 +89,6 @@ def discord_testmessage():
     if user and user.discord_id:
         response = requests.post(f"{ConfigEnv.DISCORD_BOT_URI}/testmessage", json={"discord_id": user.discord_id})
         print(response.text)
-        return jsonify({'message': 'Discord ID unlinked successfully'}), 200
+        return jsonify({'message': 'Discord message test sent'}), 200
     else:
         return jsonify({'error': 'User or discord id not found'}), 404
