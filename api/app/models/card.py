@@ -32,6 +32,7 @@ class Card(db.Model):
     price_currency = db.Column(db.String(10), default=None)
     price_updated_at = db.Column(db.DateTime, default=None)
     url_offer = db.Column(db.Text, default=None)
+    errated = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return f"<Card {self.name}>"
@@ -65,12 +66,13 @@ class Card(db.Model):
             'price': self.price,
             'price_currency': self.price_currency,
             'price_updated_at': self.price_updated_at.isoformat() if self.price_updated_at else None,
-            'url_offer': self.url_offer
+            'url_offer': self.url_offer,
+            'errated': self.errated
         }
     
     def __init__(self, id_card, reference, name, name_en, faction, rarity, type, subtype, set, imagePath,
                 image_path_en, isSuspended, MAIN_COST, RECALL_COST, MOUNTAIN_POWER, OCEAN_POWER, FOREST_POWER,
-                MAIN_EFFECT, main_effect_en, ECHO_EFFECT, echo_effect_en, created_at=None, edited_at=None,
+                MAIN_EFFECT, main_effect_en, ECHO_EFFECT, echo_effect_en, errated, created_at=None, edited_at=None,
                 price=None, price_currency=None, price_updated_at=None, url_offer=None):
         self.id_card = id_card
         self.reference = reference
@@ -99,3 +101,4 @@ class Card(db.Model):
         self.price_currency = price_currency
         self.price_updated_at = price_updated_at if price_updated_at else datetime.datetime.now(datetime.timezone.utc)
         self.url_offer = url_offer
+        self.errated = errated

@@ -31,7 +31,8 @@ def run_script():
             main_effect_en=None,
             ECHO_EFFECT = None,
             echo_effect_en=None,
-            price_updated_at=None
+            price_updated_at=None,
+            errated = jsonCard['isErrated'],
         )
         return card
 
@@ -124,6 +125,9 @@ def run_script():
                             has_updated = True
                         if str(card_to_update.FOREST_POWER) != str(tempCard.FOREST_POWER):
                             card_to_update.FOREST_POWER = tempCard.FOREST_POWER
+                            has_updated = True
+                        if str(card_to_update.errated) != str(tempCard.errated):
+                            card_to_update.errated = tempCard.errated
                             has_updated = True
                         if card_to_update.created_at is None:
                             card_to_update.created_at = datetime.now(timezone.utc)

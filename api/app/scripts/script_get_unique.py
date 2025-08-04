@@ -35,7 +35,8 @@ def run_script(faction=None, workers=3, forceUpdate=False):
             main_effect_en=None,
             ECHO_EFFECT=None,
             echo_effect_en=None,
-            price_updated_at=None
+            price_updated_at=None,
+            errated = jsonCard['isErrated']
         )
 
     def map_effect_to_card(card: Card, jsonCard) -> Card:
@@ -160,6 +161,9 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                                         if str(card_to_update.FOREST_POWER) != str(tempCard.FOREST_POWER):
                                             card_to_update.FOREST_POWER = tempCard.FOREST_POWER
                                             has_updated = True
+                                        if str(card_to_update.errated) != str(tempCard.errated):
+                                            card_to_update.errated = tempCard.errated
+                                            has_updated = True
                                         if tempCard.main_effect_en is not None:
                                             if str(card_to_update.main_effect_en) != str(tempCard.main_effect_en) \
                                                 or card_to_update.main_effect_en is None or tempCard.main_effect_en is None:
@@ -214,9 +218,6 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                                     for card in cards['hydra:member']:
                                         tempCard = map_jsoncard_to_card(card, dbcard.name_en)
                                         card_to_update = next((c for c in cards_to_update if c.reference == tempCard.reference), None)
-                                        # detailsEn = card_routine.get_card_by_reference(tempCard.reference, True)
-                                        # if detailsEn:
-                                        #     tempCard = map_jsoncard_to_card_en(tempCard, detailsEn)
                                         if card_to_update:
                                             # Initialiser un drapeau pour suivre les modifications
                                             has_updated = False
@@ -252,6 +253,9 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                                                 has_updated = True
                                             if str(card_to_update.FOREST_POWER) != str(tempCard.FOREST_POWER):
                                                 card_to_update.FOREST_POWER = tempCard.FOREST_POWER
+                                                has_updated = True
+                                            if str(card_to_update.errated) != str(tempCard.errated):
+                                                card_to_update.errated = tempCard.errated
                                                 has_updated = True
                                             if tempCard.main_effect_en is not None:
                                                 if str(card_to_update.main_effect_en) != str(tempCard.main_effect_en) \
