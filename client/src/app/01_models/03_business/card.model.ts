@@ -30,6 +30,7 @@ export interface CardModel {
   price_currency?: string;
   price_updated_at?: string; // ISO date string
   url_offer?: string;
+  errated?: boolean;
 
   alert_id?: number;
   visible?: boolean;
