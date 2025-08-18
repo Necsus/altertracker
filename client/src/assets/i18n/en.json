@@ -129,7 +129,24 @@
     "unavailable": "Unavailable",
     "no_result": "No results found for this search.",
     "offer_s": "Offer(s)",
-    "see_original_text": "see original text"
+    "see_original_text": "see original text",
+    "sort": {
+      "label": "Sort by",
+      "default": "-",
+      "price_asc": "Price ↑",
+      "price_desc": "Price ↓",
+      "created_at_asc": "Date added ↑",
+      "created_at_desc": "Date added ↓",
+      "price_updated_at_asc": "Price updated ↑",
+      "price_updated_at_desc": "Price updated ↓"
+    },
+    "group": {
+      "label": "Group by",
+      "default": "-",
+      "name": "Name",
+      "faction": "Faction",
+      "main_cost": "Main cost"
+    }
   },
   "about": {
     "title": "About AlterTracker",
