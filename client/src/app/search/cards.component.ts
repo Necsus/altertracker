@@ -97,10 +97,42 @@ export class CardsComponent implements OnInit, OnDestroy {
 
   sortCards(): void {
     if (!this.sortBy) return;
-    if (this.sortBy === 'priceAsc') {
-      this.cards.sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity));
-    } else if (this.sortBy === 'priceDesc') {
-      this.cards.sort((a, b) => (b.price ?? -Infinity) - (a.price ?? -Infinity));
+
+    switch (this.sortBy) {
+      case 'priceAsc':
+        this.cards.sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity));
+        break;
+      case 'priceDesc':
+        this.cards.sort((a, b) => (b.price ?? -Infinity) - (a.price ?? -Infinity));
+        break;
+      case 'createdAtAsc':
+        this.cards.sort((a, b) => {
+          const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+          const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+          return dateA - dateB;
+        });
+        break;
+      case 'createdAtDesc':
+        this.cards.sort((a, b) => {
+          const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+          const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+          return dateB - dateA;
+        });
+        break;
+      case 'priceUpdatedAtAsc':
+        this.cards.sort((a, b) => {
+          const dateA = a.price_updated_at ? new Date(a.price_updated_at).getTime() : 0;
+          const dateB = b.price_updated_at ? new Date(b.price_updated_at).getTime() : 0;
+          return dateA - dateB;
+        });
+        break;
+      case 'priceUpdatedAtDesc':
+        this.cards.sort((a, b) => {
+          const dateA = a.price_updated_at ? new Date(a.price_updated_at).getTime() : 0;
+          const dateB = b.price_updated_at ? new Date(b.price_updated_at).getTime() : 0;
+          return dateB - dateA;
+        });
+        break;
     }
   }
 

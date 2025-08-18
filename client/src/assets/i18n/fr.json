@@ -129,7 +129,24 @@
     "unavailable": "Indisponible",
     "no_result": "Aucun résultat trouvé pour cette recherche.",
     "offer_s": "Offre(s)",
-    "see_original_text": "voir le texte original"
+    "see_original_text": "voir le texte original",
+    "sort": {
+      "label": "Trier par",
+      "default": "-",
+      "price_asc": "Prix ↑",
+      "price_desc": "Prix ↓",
+      "created_at_asc": "Date d'ajout ↑",
+      "created_at_desc": "Date d'ajout ↓",
+      "price_updated_at_asc": "Maj prix ↑",
+      "price_updated_at_desc": "Maj prix ↓"
+    },
+    "group": {
+      "label": "Grouper par",
+      "default": "-",
+      "name": "Nom",
+      "faction": "Faction",
+      "main_cost": "Coût de main"
+    }
   },
   "about": {
     "title": "À propos d'AlterTracker",
