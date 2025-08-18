@@ -267,7 +267,7 @@ def run_script(workers: int):
                         if user and user.discord_id: 
                             socketio.emit('script_output', {'data': f"discord alert send : {card.name_en} {card.reference} {user.username}"})
                             print(f"discord alert send : {card.name_en} {card.reference} {user.username}")
-                            image_url = card.imagePath if is_image_url_accessible(card.imagePath) else "/static/img/cardback.webp"
+                            image_url = card.imagePath if is_image_url_accessible(card.imagePath) else "https://altertracker.com/assets/img/cardback.webp"
                             embed_message = {
                                 "username": user.username,
                                 "name_search": search.name_search,
