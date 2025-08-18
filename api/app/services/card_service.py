@@ -175,7 +175,7 @@ def send_user_alert(card: Card, type_changement: str):
             if user and user.discord_id: 
                 socketio.emit('script_output', {'data': f"discord alert send : {card.name_en} {card.reference} {user.username}"})
                 print(f"discord alert send : {card.name_en} {card.reference} {user.username}")
-                image_url = card.imagePath if is_image_url_accessible(card.imagePath) else "/static/img/cardback.webp"
+                image_url = card.imagePath if is_image_url_accessible(card.imagePath) else "https://altertracker.com/assets/img/cardback.webp"
                 embed_message = {
                     "username": user.username,
                     "name_card": card.name,
@@ -195,7 +195,7 @@ def send_user_alert(card: Card, type_changement: str):
 def send_user_alert_mail(card: Card, type_changement: str, user: User):
     socketio.emit('script_output', {'data': f"mail send : {card.name_en} {card.reference} {user.username}"})
     # Vérification de l'image
-    image_url = card.imagePath if is_image_url_accessible(card.imagePath) else "/static/img/cardback.webp"
+    image_url = card.imagePath if is_image_url_accessible(card.imagePath) else "https://altertracker.com/assets/img/cardback.webp"
     # Envoi de la notif de modif de prix
     template_path = os.path.join(os.path.dirname(__file__), '../templates/user-alert.html')
     send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
