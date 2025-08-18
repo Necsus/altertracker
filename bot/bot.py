@@ -134,8 +134,7 @@ async def handle_send_alert_new_card(request):
     
         embed = discord.Embed(
             title="🔔 Une nouvelle carte est apparue dans une de vos recherche",
-            color=embed_color,
-            timestamp=datetime.strptime(message['date_effective'], "%Y-%m-%d %H:%M:%S")  # adapte le format de date si besoin
+            color=embed_color
         )
     
         embed.set_author(name=f"AlterTracker", icon_url="https://altertracker.com/favicon.ico")  # si tu as un logo en url
