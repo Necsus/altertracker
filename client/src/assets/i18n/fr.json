@@ -24,7 +24,8 @@
     "purchase_offers": "Offres d'achat",
     "logout": "Déconnexion",
     "login": "Login",
-    "register": "Inscription"
+    "register": "Inscription",
+    "articles": "Articles"
   },
   "footer": {
     "copyright": "© 2025 AlterTracker est un contenu non officiel créé par un fan d'Altered.",
@@ -131,7 +132,7 @@
     "offer_s": "Offre(s)",
     "see_original_text": "voir le texte original",
     "sort": {
-      "label": "Trier par",
+      "label": "Trier",
       "default": "-",
       "price_asc": "Prix ↑",
       "price_desc": "Prix ↓",
@@ -141,7 +142,7 @@
       "price_updated_at_desc": "Maj prix ↓"
     },
     "group": {
-      "label": "Grouper par",
+      "label": "Grouper",
       "default": "-",
       "name": "Nom",
       "faction": "Faction",
@@ -300,5 +301,21 @@
     "need_help": "Besoin d'aide ?",
     "discord_help": "Vous pouvez rejoindre notre",
     "discord_server": "serveur discord"
+  },
+  "articles": {
+    "title": "Articles",
+    "subtitle": "Découvrez nos guides, actualités et analyses sur Altered TCG",
+    "search_placeholder": "Rechercher un article...",
+    "all_categories": "Toutes les catégories",
+    "all_tags": "Tous les tags",
+    "search": "Rechercher",
+    "clear_filters": "Effacer les filtres",
+    "loading": "Chargement des articles...",
+    "by": "Par",
+    "no_results": "Aucun article trouvé",
+    "back_to_list": "Retour aux articles",
+    "views": "vues",
+    "share": "Partager",
+    "last_updated": "Dernière mise à jour"
   }
 }

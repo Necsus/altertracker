@@ -3,6 +3,8 @@ import { AdminGuard } from './00_common/guards/admin.guard';
 import { TokenGuard } from './00_common/guards/token.guard';
 import { AboutComponent } from './about/about.component';
 import { AdminComponent } from './admin/admin.component';
+import { ArticlesComponent } from './article/articles.component';
+import { ArticleComponent } from './article/details/article.component';
 import { ForgotPasswordComponent } from './authentication/forgot-password/forgot-password.component';
 import { LoginComponent } from './authentication/login.component';
 import { RegisterComponent } from './authentication/register.component';
@@ -41,7 +43,8 @@ export const routes: Routes = [
   { path: 'validate-email/:token', component: ValidateEmailComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'reset-password/:token', component: ResetPasswordComponent },
-  // { path: 'token', component: AlteredTokenComponent, canActivate: [TokenGuard] },
+  { path: 'articles', component: ArticlesComponent },
+  { path: 'article/:id', component: ArticleComponent },
   { path: 'contact', component: ContactComponent },
   { path: 'join-discord', component: JoinDiscordComponent },
   { path: 'about', component: AboutComponent },

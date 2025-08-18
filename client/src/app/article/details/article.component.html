@@ -1,0 +1,103 @@
+<div class="min-h-screen bg-gray-900 text-white">
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="flex justify-center items-center h-64">
+    <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-amber-400"></div>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error && !isLoading" class="text-center py-12">
+    <i class="fas fa-exclamation-triangle text-4xl text-red-400 mb-4"></i>
+    <p class="text-xl text-gray-400">{{ error }}</p>
+    <button (click)="router.navigate(['/articles'])"
+      class="mt-4 px-6 py-2 bg-amber-600 hover:bg-amber-500 rounded-lg transition-colors">
+      {{ 'articles.back_to_list' | translate }}
+    </button>
+  </div>
+
+  <!-- Article -->
+  <article *ngIf="article && !isLoading" class="max-w-4xl mx-auto">
+    <!-- Navigation -->
+    <nav class="p-4">
+      <button [routerLink]="['/articles']"
+        class="flex items-center text-amber-400 hover:text-amber-300 transition-colors">
+        <i class="fas fa-arrow-left mr-2"></i>
+        {{ 'articles.back_to_list' | translate }}
+      </button>
+    </nav>
+
+    <!-- Image featured -->
+    <div *ngIf="article.featured_image" class="h-64 md:h-96 overflow-hidden">
+      <img [src]="article.featured_image" [alt]="article.title" class="w-full h-full object-cover">
+    </div>
+
+    <!-- Header -->
+    <header class="p-6 md:p-8">
+      <!-- Catégorie -->
+      <div class="mb-4">
+        <span class="bg-amber-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+          {{ article.category }}
+        </span>
+      </div>
+
+      <!-- Titre -->
+      <h1 class="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
+        {{ article.title }}
+      </h1>
+
+      <!-- Métadonnées -->
+      <div class="flex flex-wrap gap-6 text-gray-400 text-sm mb-6">
+        <div class="flex items-center">
+          <i class="fas fa-user mr-2"></i>
+          {{ article.author }}
+        </div>
+        <div class="flex items-center">
+          <i class="fas fa-calendar mr-2"></i>
+          {{ formatDate(article.published_at || article.created_at) }}
+        </div>
+        <div class="flex items-center">
+          <i class="fas fa-clock mr-2"></i>
+          {{ getReadingTimeText(article.reading_time) }}
+        </div>
+        <div class="flex items-center">
+          <i class="fas fa-eye mr-2"></i>
+          {{ article.views }} {{ 'articles.views' | translate }}
+        </div>
+      </div>
+
+      <!-- Tags -->
+      <div *ngIf="article.tags.length > 0" class="flex flex-wrap gap-2 mb-6">
+        <span *ngFor="let tag of article.tags" class="bg-gray-700 text-gray-300 px-3 py-1 rounded-full text-sm">
+          #{{ tag }}
+        </span>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex gap-3">
+        <button (click)="shareArticle()"
+          class="flex items-center px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors">
+          <i class="fas fa-share mr-2"></i>
+          {{ 'articles.share' | translate }}
+        </button>
+      </div>
+    </header>
+
+    <!-- Contenu -->
+    <main class="p-6 md:p-8">
+      <!-- Extrait -->
+      <div class="bg-gray-800 border-l-4 border-amber-500 p-6 mb-8 rounded-r-lg">
+        <p class="text-lg text-gray-300 italic">{{ article.excerpt }}</p>
+      </div>
+
+      <!-- Contenu principal -->
+      <div class="prose prose-invert prose-amber max-w-none" [innerHTML]="article.content">
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="p-6 md:p-8 border-t border-gray-700">
+      <div class="text-center text-gray-400">
+        <p>{{ 'articles.last_updated' | translate }}: {{ formatDate(article.updated_at) }}</p>
+      </div>
+    </footer>
+  </article>
+</div>

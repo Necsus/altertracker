@@ -24,7 +24,8 @@
     "purchase_offers": "Purchase Offers",
     "logout": "Logout",
     "login": "Login",
-    "register": "Register"
+    "register": "Register",
+    "articles": "Articles"
   },
   "footer": {
     "copyright": "© 2025 AlterTracker is unofficial content created by a fan of Altered.",
@@ -131,7 +132,7 @@
     "offer_s": "Offer(s)",
     "see_original_text": "see original text",
     "sort": {
-      "label": "Sort by",
+      "label": "Sort",
       "default": "-",
       "price_asc": "Price ↑",
       "price_desc": "Price ↓",
@@ -141,7 +142,7 @@
       "price_updated_at_desc": "Price updated ↓"
     },
     "group": {
-      "label": "Group by",
+      "label": "Group",
       "default": "-",
       "name": "Name",
       "faction": "Faction",
@@ -300,5 +301,21 @@
     "need_help": "Need help?",
     "discord_help": "You can join our",
     "discord_server": "discord server"
+  },
+  "articles": {
+    "title": "Articles",
+    "subtitle": "Discover our guides, news and analysis on Altered TCG",
+    "search_placeholder": "Search for an article...",
+    "all_categories": "All categories",
+    "all_tags": "All tags",
+    "search": "Search",
+    "clear_filters": "Clear filters",
+    "loading": "Loading articles...",
+    "by": "By",
+    "no_results": "No articles found",
+    "back_to_list": "Back to articles",
+    "views": "views",
+    "share": "Share",
+    "last_updated": "Last updated"
   }
 }

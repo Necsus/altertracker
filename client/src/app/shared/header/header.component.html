@@ -12,152 +12,158 @@
         (click)="isMenuOpen = !isMenuOpen" aria-label="Toggle navigation">
         <!-- Ligne 1 -->
         <span class="w-6 h-0.5 bg-white transition-transform duration-300"
-        [ngClass]="{ 'rotate-45 translate-y-1.5': isMenuOpen }"></span>
+          [ngClass]="{ 'rotate-45 translate-y-1.5': isMenuOpen }"></span>
 
         <!-- Ligne 2 -->
         <span class="w-6 h-0.5 bg-white transition-opacity duration-300" [ngClass]="{ 'opacity-0': isMenuOpen }"></span>
 
         <!-- Ligne 3 -->
         <span class="w-6 h-0.5 bg-white transition-transform duration-300"
-        [ngClass]="{ '-rotate-45 -translate-y-1.5': isMenuOpen }"></span>
+          [ngClass]="{ '-rotate-45 -translate-y-1.5': isMenuOpen }"></span>
       </button>
 
       <!-- Menu links -->
       <ul class="hidden sm:flex space-x-6 items-center">
         <li><a routerLink="/" routerLinkActive="text-amber-400" [routerLinkActiveOptions]="{ exact: true }"
-          style="user-select: none;" class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
-        'header.home' | translate }}</a>
-      </li>
-      <li><a routerLink="/cards" routerLinkActive="text-amber-400" style="user-select: none;"
-        class="hover:text-amber-400 transition duration-300 cursor-pointer" (click)="reloadPage($event)">{{
-      'header.cards' | translate }}</a>
-    </li>
-    <li><a routerLink="/stats" routerLinkActive="text-amber-400" style="user-select: none;"
-      class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
-    'header.stats' | translate }}</a>
-  </li>
-  <li><a routerLink="/about" routerLinkActive="text-amber-400" style="user-select: none;"
-    class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
-  'header.about' | translate }}</a>
-</li>
-<!-- Dropdown for logged-in users -->
-@if (isLoggedIn) {
-  <li class="relative">
-    <button
-      class="flex items-center space-x-2 hover:text-amber-400 transition duration-300 focus:outline-none cursor-pointer"
-      (click)="isDropdownOpen = !isDropdownOpen">
-      <span>{{ username }}</span>
-      <i class="fas fa-chevron-down"></i>
-    </button>
-    @if (isDropdownOpen) {
-      <ul
-        class="absolute right-0 mt-2 w-48 bg-gray-700 text-white rounded-lg shadow-lg z-100"
-        (mouseleave)="isDropdownOpen = false">
-        @if (isAdmin) {
-          <li><a routerLink="/admin" class="block px-4 py-2 hover:bg-gray-600 rounded-t-lg">{{
-          'header.admin' | translate }}</a></li>
-        }
-        <li><a routerLink="/me" class="block px-4 py-2 hover:bg-gray-600 rounded-t-lg">{{
-        'header.profile' | translate }}</a></li>
-        <li><a routerLink="/searches" class="block px-4 py-2 hover:bg-gray-600">{{
-        'header.searches' | translate }}</a></li>
-        <li><a routerLink="/alerts" class="block px-4 py-2 hover:bg-gray-600">{{
-        'header.alerts' | translate }}</a></li>
-        <li><a routerLink="/collection" class="block px-4 py-2 hover:bg-gray-600">{{
-        'header.collection' | translate }}</a></li>
-        <li><a routerLink="/purchase-offers" class="block px-4 py-2 hover:bg-gray-600">{{
-        'header.purchase_offers' | translate }}</a>
-      </li>
-      <li><a routerLink="/chat" class="block px-4 py-2 hover:bg-gray-600">{{
-      'header.chat' | translate }}</a>
-    </li>
-    <li><a (click)="onLogout()"
-      class="block px-4 py-2 text-red-300 hover:bg-gray-600 cursor-pointer rounded-b-lg">{{
-    'header.logout' | translate }}</a>
-  </li>
-</ul>
-}
-</li>
-<!-- <li><a routerLink="/contact" routerLinkActive="text-amber-400" style="user-select: none;"
+            style="user-select: none;" class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
+            'header.home' | translate }}</a>
+        </li>
+        <!-- <li><a routerLink="/articles" routerLinkActive="text-amber-400" [routerLinkActiveOptions]="{ exact: true }"
+            style="user-select: none;" class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
+            'header.articles' | translate }}</a>
+        </li> -->
+        <li><a routerLink="/cards" routerLinkActive="text-amber-400" style="user-select: none;"
+            class="hover:text-amber-400 transition duration-300 cursor-pointer" (click)="reloadPage($event)">{{
+            'header.cards' | translate }}</a>
+        </li>
+        <li><a routerLink="/stats" routerLinkActive="text-amber-400" style="user-select: none;"
+            class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
+            'header.stats' | translate }}</a>
+        </li>
+        <li><a routerLink="/about" routerLinkActive="text-amber-400" style="user-select: none;"
+            class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
+            'header.about' | translate }}</a>
+        </li>
+        <!-- Dropdown for logged-in users -->
+        @if (isLoggedIn) {
+        <li class="relative">
+          <button
+            class="flex items-center space-x-2 hover:text-amber-400 transition duration-300 focus:outline-none cursor-pointer"
+            (click)="isDropdownOpen = !isDropdownOpen">
+            <span>{{ username }}</span>
+            <i class="fas fa-chevron-down"></i>
+          </button>
+          @if (isDropdownOpen) {
+          <ul class="absolute right-0 mt-2 w-48 bg-gray-700 text-white rounded-lg shadow-lg z-100"
+            (mouseleave)="isDropdownOpen = false">
+            @if (isAdmin) {
+            <li><a routerLink="/admin" class="block px-4 py-2 hover:bg-gray-600 rounded-t-lg">{{
+                'header.admin' | translate }}</a></li>
+            }
+            <li><a routerLink="/me" class="block px-4 py-2 hover:bg-gray-600 rounded-t-lg">{{
+                'header.profile' | translate }}</a></li>
+            <li><a routerLink="/searches" class="block px-4 py-2 hover:bg-gray-600">{{
+                'header.searches' | translate }}</a></li>
+            <li><a routerLink="/alerts" class="block px-4 py-2 hover:bg-gray-600">{{
+                'header.alerts' | translate }}</a></li>
+            <li><a routerLink="/collection" class="block px-4 py-2 hover:bg-gray-600">{{
+                'header.collection' | translate }}</a></li>
+            <li><a routerLink="/purchase-offers" class="block px-4 py-2 hover:bg-gray-600">{{
+                'header.purchase_offers' | translate }}</a>
+            </li>
+            <li><a routerLink="/chat" class="block px-4 py-2 hover:bg-gray-600">{{
+                'header.chat' | translate }}</a>
+            </li>
+            <li><a (click)="onLogout()"
+                class="block px-4 py-2 text-red-300 hover:bg-gray-600 cursor-pointer rounded-b-lg">{{
+                'header.logout' | translate }}</a>
+            </li>
+          </ul>
+          }
+        </li>
+        <!-- <li><a routerLink="/contact" routerLinkActive="text-amber-400" style="user-select: none;"
 class="hover:text-amber-400 transition duration-300 cursor-pointer"><i class="fas fa-bug"></i></a></li> -->
-}
-@else {
-<li><a routerLink="/login" routerLinkActive="text-amber-400"
-  class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
-'header.login' | translate }}</a></li>
-<li><a routerLink="/register" routerLinkActive="text-amber-400"
-  class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
-'header.register' | translate }}</a></li>
-}
-<li><a routerLink="/join-discord" routerLinkActive="text-amber-400" style="user-select: none;"
-  class="hover:text-amber-400 transition duration-300 cursor-pointer"><i
-class="fa-brands fa-discord text-lg"></i></a></li>
-<li>
-  <app-language-selector></app-language-selector>
-</li>
-</ul>
+        }
+        @else {
+        <li><a routerLink="/login" routerLinkActive="text-amber-400"
+            class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
+            'header.login' | translate }}</a></li>
+        <li><a routerLink="/register" routerLinkActive="text-amber-400"
+            class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
+            'header.register' | translate }}</a></li>
+        }
+        <li><a routerLink="/join-discord" routerLinkActive="text-amber-400" style="user-select: none;"
+            class="hover:text-amber-400 transition duration-300 cursor-pointer"><i
+              class="fa-brands fa-discord text-lg"></i></a></li>
+        <li>
+          <app-language-selector></app-language-selector>
+        </li>
+      </ul>
 
-</nav>
+    </nav>
 
-<!-- Mobile menu -->
-@if (isMenuOpen) {
-  <div class="sm:hidden mt-4 space-y-4">
-    <a routerLink="/" routerLinkActive="text-amber-400" [routerLinkActiveOptions]="{ exact: true }"
-      (click)="isMenuOpen = false" class="block hover:text-amber-400 transition duration-300">{{
-    'header.home' | translate }}</a>
-    <a routerLink="/cards" routerLinkActive="text-amber-400" [routerLinkActiveOptions]="{ exact: true }"
-      (click)="isMenuOpen = false" class="block hover:text-amber-400 transition duration-300">{{
-    'header.cards' | translate }}</a>
-    <a routerLink="/stats" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
-      class="block hover:text-amber-400 transition duration-300">{{
-    'header.stats' | translate }}</a>
-    <a routerLink="/about" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
-      class="block hover:text-amber-400 transition duration-300">{{
-    'header.about' | translate }}</a>
-    @if (isLoggedIn) {
+    <!-- Mobile menu -->
+    @if (isMenuOpen) {
+    <div class="sm:hidden mt-4 space-y-4">
+      <a routerLink="/" routerLinkActive="text-amber-400" [routerLinkActiveOptions]="{ exact: true }"
+        (click)="isMenuOpen = false" class="block hover:text-amber-400 transition duration-300">{{
+        'header.home' | translate }}</a>
+      <!-- <a routerLink="/articles" routerLinkActive="text-amber-400" [routerLinkActiveOptions]="{ exact: true }"
+        (click)="isMenuOpen = false" class="block hover:text-amber-400 transition duration-300">{{
+        'header.articles' | translate }}</a> -->
+      <a routerLink="/cards" routerLinkActive="text-amber-400" [routerLinkActiveOptions]="{ exact: true }"
+        (click)="isMenuOpen = false" class="block hover:text-amber-400 transition duration-300">{{
+        'header.cards' | translate }}</a>
+      <a routerLink="/stats" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
+        class="block hover:text-amber-400 transition duration-300">{{
+        'header.stats' | translate }}</a>
+      <a routerLink="/about" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
+        class="block hover:text-amber-400 transition duration-300">{{
+        'header.about' | translate }}</a>
+      @if (isLoggedIn) {
       <a routerLink="/me" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
         class="block hover:text-amber-400 transition duration-300">{{
-      username }}</a>
+        username }}</a>
       <a routerLink="/purchase-offers" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
         class="block hover:text-amber-400 transition duration-300">{{
-      'header.purchase_offers' | translate }}</a>
+        'header.purchase_offers' | translate }}</a>
       <a routerLink="/chat" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
         class="block hover:text-amber-400 transition duration-300">{{
-      'header.chat' | translate }}</a>
+        'header.chat' | translate }}</a>
       <a routerLink="/searches" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
         class="block hover:text-amber-400 transition duration-300">{{
-      'header.searches' | translate }}</a>
+        'header.searches' | translate }}</a>
       <a routerLink="/alerts" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
         class="block hover:text-amber-400 transition duration-300">{{
-      'header.alerts' | translate }}</a>
+        'header.alerts' | translate }}</a>
       <a routerLink="/collection" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
         class="block hover:text-amber-400 transition duration-300">{{
-      'header.collection' | translate }}</a>
+        'header.collection' | translate }}</a>
       @if (isAdmin) {
-        <a routerLink="/admin" (click)="isMenuOpen = false" class="block hover:text-amber-400 transition duration-300">{{
+      <a routerLink="/admin" (click)="isMenuOpen = false" class="block hover:text-amber-400 transition duration-300">{{
         'header.admin' | translate }}</a>
       }
       <a (click)="onLogout()" (click)="isMenuOpen = false"
         class="block text-red-300 hover:text-red-200 transition duration-300 cursor-pointer">{{
-      'header.logout' | translate }}</a>
-    }
-    @else {
-    <a routerLink="/login" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
-      class="block hover:text-amber-400 transition duration-300">{{
-    'header.login' | translate }}</a>
-    <div class="flex justify-between items-center">
-      <a routerLink="/register" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
+        'header.logout' | translate }}</a>
+      }
+      @else {
+      <a routerLink="/login" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
         class="block hover:text-amber-400 transition duration-300">{{
-      'header.register' | translate }}</a>
-    </div>
-  }
-  <div class="flex justify-between items-center">
-    <a routerLink="/join-discord" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
-      class="block hover:text-amber-400 transition duration-300"><i class="fa-brands fa-discord text-lg"></i></a>
-      <app-language-selector class="ml-auto"></app-language-selector>
-    </div>
+        'header.login' | translate }}</a>
+      <div class="flex justify-between items-center">
+        <a routerLink="/register" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
+          class="block hover:text-amber-400 transition duration-300">{{
+          'header.register' | translate }}</a>
+      </div>
+      }
+      <div class="flex justify-between items-center">
+        <a routerLink="/join-discord" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
+          class="block hover:text-amber-400 transition duration-300"><i class="fa-brands fa-discord text-lg"></i></a>
+        <app-language-selector class="ml-auto"></app-language-selector>
+      </div>
 
+    </div>
+    }
   </div>
-}
-</div>
 </header>
