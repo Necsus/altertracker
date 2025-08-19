@@ -24,7 +24,7 @@
               "src/favicon.ico",
               "src/assets",
               {
-                "glob": "**/*.html",
+                "glob": "**/*.md",
                 "input": "src/assets/articles",
                 "output": "/assets/articles"
               },
@@ -98,6 +98,11 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
+              {
+                "glob": "**/*.md",
+                "input": "src/assets/articles",
+                "output": "/assets/articles"
+              },
               "src/ads.txt",
               "src/robots.txt",
               "src/sitemap.xml"

@@ -1,160 +1,240 @@
-.prose {
+/* Configuration globale pour le contenu markdown */
+:host ::ng-deep .prose {
   color: #e5e7eb;
   max-width: none;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.7;
 }
 
-.prose h2 {
-  color: #f59e0b;
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid #374151;
+/* Titres avec styles Altered */
+:host ::ng-deep .prose h1 {
+  color: #f59e0b !important;
+  font-size: 2.5rem !important;
+  font-weight: 800 !important;
+  margin: 2rem 0 1.5rem 0 !important;
+  line-height: 1.2 !important;
+  border-bottom: 3px solid #374151 !important;
+  padding-bottom: 0.75rem !important;
 }
 
-.prose h3 {
-  color: #fbbf24;
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-top: 1.5rem;
-  margin-bottom: 0.75rem;
+:host ::ng-deep .prose h2 {
+  color: #f59e0b !important;
+  font-size: 2rem !important;
+  font-weight: 700 !important;
+  margin: 2.5rem 0 1rem 0 !important;
+  padding-bottom: 0.5rem !important;
+  border-bottom: 2px solid #374151 !important;
+  position: relative !important;
 }
 
-.prose p {
-  margin-bottom: 1rem;
-  line-height: 1.6;
+:host ::ng-deep .prose h2::before {
+  content: '' !important;
+  position: absolute !important;
+  bottom: -2px !important;
+  left: 0 !important;
+  width: 60px !important;
+  height: 2px !important;
+  background: linear-gradient(90deg, #f59e0b, #fbbf24) !important;
 }
 
-.prose ul,
-.prose ol {
-  margin-bottom: 1rem;
-  padding-left: 1.5rem;
+:host ::ng-deep .prose h3 {
+  color: #fbbf24 !important;
+  font-size: 1.5rem !important;
+  font-weight: 600 !important;
+  margin: 2rem 0 0.75rem 0 !important;
 }
 
-.prose li {
-  margin-bottom: 0.5rem;
+:host ::ng-deep .prose h4 {
+  color: #fcd34d !important;
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  margin: 1.5rem 0 0.5rem 0 !important;
 }
 
-.prose strong {
-  color: #f59e0b;
-  font-weight: bold;
+/* Paragraphes */
+:host ::ng-deep .prose p {
+  margin-bottom: 1.25rem !important;
+  line-height: 1.8 !important;
+  font-size: 1.1rem !important;
+  color: #e5e7eb !important;
 }
 
-.prose code {
-  background-color: #374151;
-  color: #fbbf24;
-  padding: 0.125rem 0.25rem;
-  border-radius: 0.25rem;
-  font-family: 'Courier New', monospace;
+/* Listes */
+:host ::ng-deep .prose ul,
+:host ::ng-deep .prose ol {
+  margin: 1.5rem 0 !important;
+  padding-left: 2rem !important;
 }
 
-/* Table des matières */
-.prose .toc {
-  background-color: #1f2937;
-  border: 1px solid #374151;
-  border-radius: 0.5rem;
-  padding: 1rem;
-  margin-bottom: 2rem;
+:host ::ng-deep .prose li {
+  margin-bottom: 0.75rem !important;
+  line-height: 1.6 !important;
+  color: #e5e7eb !important;
 }
 
-.prose .toc h2 {
-  margin-top: 0;
-  margin-bottom: 0.75rem;
-  font-size: 1.125rem;
-  border-bottom: none;
+:host ::ng-deep .prose ul li::marker {
+  color: #f59e0b !important;
 }
 
-.prose .toc ol {
-  margin-bottom: 0;
-}
-
-.prose .toc a {
-  color: #9ca3af;
-  text-decoration: none;
-  transition: color 0.2s;
-}
-
-.prose .toc a:hover {
-  color: #f59e0b;
-}
-
-/* Sections spéciales */
-.prose .tip,
-.prose .highlight {
-  background-color: #1f2937;
-  border-left: 4px solid #f59e0b;
-  padding: 1rem;
-  margin: 1.5rem 0;
-  border-radius: 0 0.375rem 0.375rem 0;
-}
-
-.prose .tip h3,
-.prose .highlight h3 {
-  margin-top: 0;
-  color: #f59e0b;
-}
-
-/* Légende des graphiques */
-.prose .chart-legend {
-  background-color: #111827;
-  border: 1px solid #374151;
-  border-radius: 0.375rem;
-  padding: 1rem;
-  margin: 1rem 0;
-}
-
-.prose .chart-legend .color-green {
-  color: #10b981;
-}
-
-.prose .chart-legend .color-red {
-  color: #ef4444;
-}
-
-.prose .chart-legend .color-orange {
-  color: #f59e0b;
-}
-
-/* Conclusion */
-.prose .conclusion {
-  border-top: 2px solid #374151;
-  padding-top: 2rem;
-  margin-top: 3rem;
-}
-
-.prose .conclusion p {
-  font-size: 1.125rem;
-  font-style: italic;
-  color: #d1d5db;
-}
-
-/* Sections */
-.prose section {
-  margin-bottom: 2rem;
+:host ::ng-deep .prose ol li::marker {
+  color: #f59e0b !important;
+  font-weight: bold !important;
 }
 
 /* Liens */
-.prose a {
-  color: #60a5fa;
-  text-decoration: underline;
+:host ::ng-deep .prose a {
+  color: #60a5fa !important;
+  text-decoration: none !important;
+  border-bottom: 1px solid transparent !important;
+  transition: all 0.2s ease !important;
 }
 
-.prose a:hover {
-  color: #93c5fd;
+:host ::ng-deep .prose a:hover {
+  color: #93c5fd !important;
+  border-bottom-color: #60a5fa !important;
+}
+
+/* Code */
+:host ::ng-deep .prose code {
+  background-color: #374151 !important;
+  color: #fbbf24 !important;
+  padding: 0.25rem 0.5rem !important;
+  border-radius: 0.375rem !important;
+  font-family: 'Fira Code', 'Courier New', monospace !important;
+  font-size: 0.9em !important;
+  font-weight: 500 !important;
+}
+
+:host ::ng-deep .prose pre {
+  background-color: #1f2937 !important;
+  border: 1px solid #374151 !important;
+  border-radius: 0.75rem !important;
+  padding: 1.5rem !important;
+  margin: 2rem 0 !important;
+  overflow-x: auto !important;
+  position: relative !important;
+}
+
+:host ::ng-deep .prose pre code {
+  background: none !important;
+  padding: 0 !important;
+  color: #e5e7eb !important;
+  font-size: 0.95rem !important;
+}
+
+/* Blockquotes */
+:host ::ng-deep .prose blockquote {
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%) !important;
+  border-left: 4px solid #f59e0b !important;
+  padding: 1.5rem 2rem !important;
+  margin: 2rem 0 !important;
+  border-radius: 0 0.75rem 0.75rem 0 !important;
+  position: relative !important;
+  font-style: italic !important;
+  color: #d1d5db !important;
+}
+
+/* Tables */
+:host ::ng-deep .prose table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  margin: 2rem 0 !important;
+  background-color: #1f2937 !important;
+  border-radius: 0.75rem !important;
+  overflow: hidden !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+}
+
+:host ::ng-deep .prose thead {
+  background: linear-gradient(135deg, #374151 0%, #1f2937 100%) !important;
+}
+
+:host ::ng-deep .prose th {
+  padding: 1rem !important;
+  text-align: left !important;
+  color: #f59e0b !important;
+  font-weight: 600 !important;
+  border-bottom: 2px solid #4b5563 !important;
+}
+
+:host ::ng-deep .prose td {
+  padding: 1rem !important;
+  border-bottom: 1px solid #374151 !important;
+  color: #e5e7eb !important;
+}
+
+:host ::ng-deep .prose tbody tr:hover {
+  background-color: #374151 !important;
+}
+
+/* Boxes spéciaux */
+:host ::ng-deep .prose .tip,
+:host ::ng-deep .prose .warning,
+:host ::ng-deep .prose .info,
+:host ::ng-deep .prose .success {
+  padding: 1.5rem !important;
+  margin: 2rem 0 !important;
+  border-radius: 0.75rem !important;
+  border-left: 4px solid !important;
+  position: relative !important;
+}
+
+:host ::ng-deep .prose .tip {
+  background: linear-gradient(135deg, rgba(30, 58, 138, 0.2) 0%, rgba(30, 64, 175, 0.1) 100%) !important;
+  border-left-color: #3b82f6 !important;
+  color: #bfdbfe !important;
+}
+
+:host ::ng-deep .prose .warning {
+  background: linear-gradient(135deg, rgba(234, 88, 12, 0.2) 0%, rgba(234, 88, 12, 0.1) 100%) !important;
+  border-left-color: #ea580c !important;
+  color: #fed7aa !important;
+}
+
+:host ::ng-deep .prose .info {
+  background: linear-gradient(135deg, rgba(8, 145, 178, 0.2) 0%, rgba(8, 145, 178, 0.1) 100%) !important;
+  border-left-color: #06b6d4 !important;
+  color: #a7f3d0 !important;
+}
+
+:host ::ng-deep .prose .success {
+  background: linear-gradient(135deg, rgba(22, 163, 74, 0.2) 0%, rgba(22, 163, 74, 0.1) 100%) !important;
+  border-left-color: #16a34a !important;
+  color: #bbf7d0 !important;
+}
+
+/* Images */
+:host ::ng-deep .prose img {
+  border-radius: 0.75rem !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3) !important;
+  margin: 2rem auto !important;
+  max-width: 100% !important;
+  height: auto !important;
+}
+
+/* Séparateurs */
+:host ::ng-deep .prose hr {
+  border: none !important;
+  height: 2px !important;
+  background: linear-gradient(90deg, transparent, #374151, transparent) !important;
+  margin: 3rem 0 !important;
 }
 
 /* Responsive */
 @media (max-width: 768px) {
-  .prose .toc {
-    padding: 0.75rem;
+  :host ::ng-deep .prose {
+    font-size: 1rem !important;
   }
 
-  .prose h2 {
-    font-size: 1.375rem;
+  :host ::ng-deep .prose h1 {
+    font-size: 2rem !important;
   }
 
-  .prose h3 {
-    font-size: 1.125rem;
+  :host ::ng-deep .prose h2 {
+    font-size: 1.75rem !important;
+  }
+
+  :host ::ng-deep .prose h3 {
+    font-size: 1.375rem !important;
   }
 }
