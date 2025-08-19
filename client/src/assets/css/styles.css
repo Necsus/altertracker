@@ -1,3 +1,5 @@
+@import 'highlight.js/styles/github-dark.css';
+
 header {
   /* Couleur de fond sombre */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -189,4 +191,105 @@ button {
 
 .z-100 {
   z-index: 100;
+}
+
+.markdown-content h1 {
+  font-size: 2.5rem !important;
+  font-weight: 800 !important;
+  margin: 2rem 0 1.5rem 0 !important;
+  border-bottom: 3px solid #374151 !important;
+  padding-bottom: 0.75rem !important;
+}
+
+.markdown-content h2 {
+  font-size: 2rem !important;
+  font-weight: 700 !important;
+  margin: 2.5rem 0 1rem 0 !important;
+  border-bottom: 2px solid #374151 !important;
+  padding-bottom: 0.5rem !important;
+}
+
+.markdown-content h3 {
+  font-size: 1.5rem !important;
+  font-weight: 600 !important;
+  margin: 2rem 0 0.75rem 0 !important;
+}
+
+.markdown-content p {
+  color: #e5e7eb !important;
+  line-height: 1.8 !important;
+  margin-bottom: 1.25rem !important;
+}
+
+.markdown-content ul,
+.markdown-content ol {
+  color: #e5e7eb !important;
+  margin: 1.5rem 0 !important;
+  padding-left: 2rem !important;
+}
+
+.markdown-content li {
+  color: #e5e7eb !important;
+  margin-bottom: 0.75rem !important;
+}
+
+.markdown-content blockquote {
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%) !important;
+  border-left: 4px solid #f59e0b !important;
+  padding: 1.5rem 2rem !important;
+  margin: 2rem 0 !important;
+  border-radius: 0 0.75rem 0.75rem 0 !important;
+  color: #d1d5db !important;
+  font-style: italic !important;
+}
+
+.markdown-content table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  margin: 2rem 0 !important;
+  background-color: #1f2937 !important;
+  border-radius: 0.75rem !important;
+  overflow: hidden !important;
+}
+
+.markdown-content th {
+  padding: 1rem !important;
+  color: #f59e0b !important;
+  font-weight: 600 !important;
+  background: linear-gradient(135deg, #374151 0%, #1f2937 100%) !important;
+  border-bottom: 2px solid #4b5563 !important;
+}
+
+.markdown-content td {
+  padding: 1rem !important;
+  color: #e5e7eb !important;
+  border-bottom: 1px solid #374151 !important;
+}
+
+.markdown-content code {
+  background-color: #374151 !important;
+  color: #fbbf24 !important;
+  padding: 0.25rem 0.5rem !important;
+  border-radius: 0.375rem !important;
+  font-family: 'Fira Code', monospace !important;
+}
+
+.markdown-content pre {
+  background-color: #1f2937 !important;
+  border: 1px solid #374151 !important;
+  border-radius: 0.75rem !important;
+  padding: 1.5rem !important;
+  margin: 2rem 0 !important;
+  overflow-x: auto !important;
+}
+
+.markdown-content pre code {
+  background: none !important;
+  padding: 0 !important;
+  color: #e5e7eb !important;
+}
+
+.markdown-content strong {
+  color: #f59e0b !important;
+  font-weight: 700 !important;
 }

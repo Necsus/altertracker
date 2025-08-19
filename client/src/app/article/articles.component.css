@@ -1,0 +1,11 @@
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.hover\:bg-gray-750:hover {
+  background-color: #374151;
+}

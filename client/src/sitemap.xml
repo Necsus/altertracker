@@ -9,6 +9,14 @@
     <priority>1.0</priority>
   </url>
 
+  <!-- Page d'articles -->
+  <url>
+    <loc>https://altertracker.com/articles</loc>
+    <lastmod>2025-08-19</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
   <!-- Exemple de pages importantes -->
   <url>
     <loc>https://altertracker.com/cards</loc>

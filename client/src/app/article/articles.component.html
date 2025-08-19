@@ -1,0 +1,110 @@
+<div class="bg-gray-900 text-white p-4">
+  <div class="max-w-6xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <p class="text-gray-300 text-lg">{{ 'articles.subtitle' | translate }}</p>
+    </div>
+
+    <!-- Filtres et recherche -->
+    <div class="bg-gray-800 rounded-lg p-6 mb-8">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <!-- Recherche -->
+        <div class="md:col-span-2">
+          <input type="text" [(ngModel)]="searchQuery" (keyup.enter)="onSearch()"
+            placeholder="{{ 'articles.search_placeholder' | translate }}"
+            class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:border-amber-500 focus:outline-none">
+        </div>
+
+        <!-- Catégorie -->
+        <div>
+          <select [(ngModel)]="selectedCategory" (change)="onCategoryChange()"
+            class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-amber-500 focus:outline-none">
+            <option value="">{{ 'articles.all_categories' | translate }}</option>
+            <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+          </select>
+        </div>
+
+        <!-- Tags -->
+        <div>
+          <select [(ngModel)]="selectedTag" (change)="onTagChange()"
+            class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-amber-500 focus:outline-none">
+            <option value="">{{ 'articles.all_tags' | translate }}</option>
+            <option *ngFor="let tag of tags" [value]="tag">{{ tag }}</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Boutons d'action -->
+      <div class="flex gap-2 mt-4">
+        <button (click)="onSearch()" class="px-4 py-2 bg-amber-600 hover:bg-amber-500 rounded-lg transition-colors">
+          {{ 'articles.search' | translate }}
+        </button>
+        <button (click)="clearFilters()" class="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-lg transition-colors">
+          {{ 'articles.clear_filters' | translate }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="isLoading" class="text-center py-12">
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-amber-400"></div>
+      <p class="mt-4 text-gray-400">{{ 'articles.loading' | translate }}</p>
+    </div>
+
+    <!-- Liste des articles -->
+    <div *ngIf="!isLoading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <article *ngFor="let article of filteredArticles"
+        class="bg-gray-800 rounded-lg overflow-hidden hover:bg-gray-750 transition-colors cursor-pointer"
+        [routerLink]="['/article', article.slug]">
+
+        <!-- Image featured -->
+        <div *ngIf="article.featured_image" class="h-48 overflow-hidden">
+          <img [src]="article.featured_image" [alt]="article.title"
+            class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+        </div>
+
+        <div class="p-6">
+          <!-- Catégorie et temps de lecture -->
+          <div class="flex justify-between items-center mb-3">
+            <span class="bg-amber-600 text-white px-2 py-1 rounded text-sm">{{ article.category }}</span>
+            <span class="text-gray-400 text-sm">{{ getReadingTimeText(article.reading_time) }}</span>
+          </div>
+
+          <!-- Titre -->
+          <h2 class="text-xl font-bold text-white mb-3 hover:text-amber-400 transition-colors">
+            {{ article.title }}
+          </h2>
+
+          <!-- Extrait -->
+          <p class="text-gray-300 mb-4 line-clamp-3">{{ article.excerpt }}</p>
+
+          <!-- Métadonnées -->
+          <div class="flex justify-between items-center text-sm text-gray-400">
+            <span>{{ 'articles.by' | translate }} {{ article.author }}</span>
+            <span>{{ formatDate(article.published_at) }}</span>
+          </div>
+
+          <!-- Tags -->
+          <div *ngIf="article.tags.length > 0" class="mt-3 flex flex-wrap gap-1">
+            <span *ngFor="let tag of article.tags" class="bg-gray-700 text-gray-300 px-2 py-1 rounded-full text-xs">
+              #{{ tag }}
+            </span>
+          </div>
+
+          <!-- Vues -->
+          <div class="mt-3 text-right">
+            <span class="text-gray-500 text-xs">
+              <i class="fas fa-eye"></i> {{ article.views }}
+            </span>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <!-- Aucun résultat -->
+    <div *ngIf="!isLoading && filteredArticles.length === 0" class="text-center py-12">
+      <i class="fas fa-search text-4xl text-gray-600 mb-4"></i>
+      <p class="text-xl text-gray-400">{{ 'articles.no_results' | translate }}</p>
+    </div>
+  </div>
+</div>
