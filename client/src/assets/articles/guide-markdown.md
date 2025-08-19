@@ -1,7 +1,3 @@
-# Guide de rédaction d'articles avec Markdown
-
-> Apprenez à maîtriser Markdown pour créer des articles professionnels et engageants sur AlterTracker. Ce guide couvre toutes les syntaxes et bonnes pratiques.
-
 ## Introduction
 
 Markdown est un langage de balisage léger qui permet de formater du texte de manière simple et lisible. Ce guide vous explique comment l'utiliser efficacement pour créer des articles captivants sur AlterTracker.

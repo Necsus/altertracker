@@ -31,7 +31,7 @@
     </div>
 
     <!-- Header -->
-    <main class="p-6 md:p-8">
+    <header class="p-6 md:p-8">
       <!-- Catégorie -->
       <div class="mb-4">
         <span class="bg-amber-600 text-white px-3 py-1 rounded-full text-sm font-medium">
@@ -79,10 +79,16 @@
           {{ 'articles.share' | translate }}
         </button>
       </div>
-    </main>
+    </header>
 
     <!-- Contenu -->
     <main class="p-6 md:p-8">
+      <!-- Extrait -->
+      <div class="bg-gray-800 border-l-4 border-amber-500 p-6 mb-8 rounded-r-lg">
+        <p class="text-lg text-gray-300 italic">{{ article.excerpt }}</p>
+      </div>
+
+      <!-- Contenu principal -->
       <div class="prose max-w-none">
         <markdown [data]="article.content" class="markdown-content"></markdown>
       </div>
