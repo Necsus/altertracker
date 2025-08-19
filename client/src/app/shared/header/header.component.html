@@ -28,10 +28,10 @@
             style="user-select: none;" class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
             'header.home' | translate }}</a>
         </li>
-        <!-- <li><a routerLink="/articles" routerLinkActive="text-amber-400" [routerLinkActiveOptions]="{ exact: true }"
+        <li><a routerLink="/articles" routerLinkActive="text-amber-400" [routerLinkActiveOptions]="{ exact: true }"
             style="user-select: none;" class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
             'header.articles' | translate }}</a>
-        </li> -->
+        </li>
         <li><a routerLink="/cards" routerLinkActive="text-amber-400" style="user-select: none;"
             class="hover:text-amber-400 transition duration-300 cursor-pointer" (click)="reloadPage($event)">{{
             'header.cards' | translate }}</a>
@@ -108,9 +108,9 @@ class="hover:text-amber-400 transition duration-300 cursor-pointer"><i class="fa
       <a routerLink="/" routerLinkActive="text-amber-400" [routerLinkActiveOptions]="{ exact: true }"
         (click)="isMenuOpen = false" class="block hover:text-amber-400 transition duration-300">{{
         'header.home' | translate }}</a>
-      <!-- <a routerLink="/articles" routerLinkActive="text-amber-400" [routerLinkActiveOptions]="{ exact: true }"
+      <a routerLink="/articles" routerLinkActive="text-amber-400" [routerLinkActiveOptions]="{ exact: true }"
         (click)="isMenuOpen = false" class="block hover:text-amber-400 transition duration-300">{{
-        'header.articles' | translate }}</a> -->
+        'header.articles' | translate }}</a>
       <a routerLink="/cards" routerLinkActive="text-amber-400" [routerLinkActiveOptions]="{ exact: true }"
         (click)="isMenuOpen = false" class="block hover:text-amber-400 transition duration-300">{{
         'header.cards' | translate }}</a>
