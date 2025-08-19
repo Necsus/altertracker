@@ -1,7 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { marked } from 'marked';
-import { markedHighlight } from 'marked-highlight';
 import { delay, map, Observable, of, throwError } from 'rxjs';
 import { ArticleListModel, ArticleModel } from '../01_models/03_business/article.model';
 
@@ -67,53 +65,8 @@ export class ArticleMockService {
     }
   ];
 
-  constructor(private http: HttpClient) {
-    this.loadHighlightJs().then(() => {
-      this.setupMarked();
-    });
-  }
+  constructor(private http: HttpClient) { }
 
-  private async loadHighlightJs(): Promise<void> {
-    if (!(window as any).hljs) {
-      const hljs = await import('highlight.js/lib/core');
-      const typescript = await import('highlight.js/lib/languages/typescript');
-      const javascript = await import('highlight.js/lib/languages/javascript');
-      const css = await import('highlight.js/lib/languages/css');
-      const json = await import('highlight.js/lib/languages/json');
-
-      hljs.default.registerLanguage('typescript', typescript.default);
-      hljs.default.registerLanguage('javascript', javascript.default);
-      hljs.default.registerLanguage('css', css.default);
-      hljs.default.registerLanguage('json', json.default);
-
-      (window as any).hljs = hljs.default;
-    }
-  }
-
-  private setupMarked() {
-    // Configuration de base de marked
-    marked.setOptions({
-      breaks: true,
-      gfm: true,
-      async: false
-    });
-
-    // Configuration de la coloration syntaxique avec marked-highlight
-    marked.use(markedHighlight({
-      highlight: (code, lang) => {
-        if (lang && (window as any).hljs?.getLanguage(lang)) {
-          try {
-            return (window as any).hljs.highlight(code, { language: lang }).value;
-          } catch (__) {
-            return code;
-          }
-        }
-        return code;
-      }
-    }));
-  }
-
-  // OPTIMISÉ : Délai très court pour la liste (métadonnées seulement)
   getPublishedArticles(): Observable<ArticleListModel[]> {
     const articleList: ArticleListModel[] = this.mockArticlesMetadata
       .filter(article => article.status === 'published')
@@ -142,12 +95,12 @@ export class ArticleMockService {
       return throwError(() => new Error('Article not found'));
     }
 
-    // Charge le contenu Markdown depuis le fichier
+    // Charge le contenu Markdown depuis le fichier (raw)
     return this.http.get(`assets/articles/${slug}.md`, { responseType: 'text' })
       .pipe(
         map(markdown => ({
           ...metadata,
-          content: this.parseMarkdown(markdown)
+          content: markdown // On garde le markdown brut !
         } as ArticleModel)),
         delay(300)
       );
@@ -162,7 +115,6 @@ export class ArticleMockService {
     return this.getArticleBySlug(metadata.slug);
   }
 
-  // OPTIMISÉ : Filtres sur métadonnées avec délai très court
   getArticlesByCategory(category: string): Observable<ArticleListModel[]> {
     const filtered = this.mockArticlesMetadata
       .filter(article =>
@@ -209,7 +161,6 @@ export class ArticleMockService {
     return of(filtered).pipe(delay(100)); // Très rapide pour les filtres
   }
 
-  // OPTIMISÉ : Instantané pour l'incrémentation
   incrementViews(id: number): Observable<void> {
     const article = this.mockArticlesMetadata.find(a => a.id === id);
     if (article) {
@@ -218,7 +169,6 @@ export class ArticleMockService {
     return of(void 0).pipe(delay(50)); // Quasi-instantané
   }
 
-  // OPTIMISÉ : Recherche rapide sur métadonnées
   searchArticles(query: string): Observable<ArticleListModel[]> {
     const lowerQuery = query.toLowerCase();
     const filtered = this.mockArticlesMetadata
@@ -245,9 +195,5 @@ export class ArticleMockService {
       }));
 
     return of(filtered).pipe(delay(150)); // Rapide pour la recherche
-  }
-
-  private parseMarkdown(markdown: string): string {
-    return marked.parse(markdown) as string;
   }
 }

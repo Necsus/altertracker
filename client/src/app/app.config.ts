@@ -6,6 +6,7 @@ import { ApplicationConfig, EnvironmentInjector, importProvidersFrom, Injector, 
 import { provideRouter, withInMemoryScrolling, withRouterConfig, withViewTransitions } from '@angular/router';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { MarkdownModule } from 'ngx-markdown';
 import { SocketIoConfig, SocketIoModule } from 'ngx-socket-io';
 import { environment } from '../environments/environment';
 import { routes } from './app.routes';
@@ -54,6 +55,7 @@ export const appConfig: ApplicationConfig = {
           deps: [HttpClient]
         }
       }),
+      MarkdownModule.forRoot({ loader: HttpClient }),
       SocketIoModule.forRoot(config),
     ),
     {

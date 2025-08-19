@@ -68,9 +68,7 @@ Survivez au début de partie pour déployer vos menaces puissantes en fin de par
 
 Équilibre entre agressivité et contrôle, adaptable selon la situation. La stratégie la plus polyvalente.
 
-## Conseils pour débuter
-
-<div class="tip">
+## 💡 Conseils pour débuter
 
 ### Points clés à retenir
 
@@ -80,11 +78,7 @@ Survivez au début de partie pour déployer vos menaces puissantes en fin de par
 - N'hésitez pas à ajuster selon vos parties
 - Observez les decks qui vous battent pour apprendre
 
-</div>
-
-## Erreurs communes à éviter
-
-<div class="warning">
+## ⚠️ Erreurs communes à éviter
 
 ### Pièges fréquents
 
@@ -94,12 +88,10 @@ Survivez au début de partie pour déployer vos menaces puissantes en fin de par
 - Ignorer la synergie entre les cartes
 - Ne pas avoir de plan de victoire clair
 
-</div>
-
 ## Exemple de deck débutant
 
-```
-// Deck Axiom Contrôle - Débutant
+```plaintext
+Deck Axiom Contrôle - Débutant
 1x Héros Axiom
 8x Créatures coût 1-2
 6x Sorts de contrôle

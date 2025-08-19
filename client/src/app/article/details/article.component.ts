@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { Meta, Title } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
+import { MarkdownComponent } from 'ngx-markdown';
 import { Subject, takeUntil } from 'rxjs';
 import { ArticleModel } from '../../01_models/03_business/article.model';
 import { ArticleService } from '../../03_business/article.service';
@@ -15,7 +16,8 @@ import { ArticleService } from '../../03_business/article.service';
   imports: [
     CommonModule,
     TranslateModule,
-    RouterModule
+    RouterModule,
+    MarkdownComponent
   ]
 })
 export class ArticleComponent implements OnInit, OnDestroy {
@@ -29,7 +31,8 @@ export class ArticleComponent implements OnInit, OnDestroy {
     public router: Router,
     private articleService: ArticleService,
     private titleService: Title,
-    private metaService: Meta
+    private metaService: Meta,
+    private elementRef: ElementRef
   ) { }
 
   ngOnInit(): void {
