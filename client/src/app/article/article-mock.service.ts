@@ -39,9 +39,9 @@ export class ArticleMockService {
       status: 'draft',
       tags: ['tournois', '39cards', 'compétition', 'communauté'],
       category: 'Partenaires',
-      created_at: "2025-08-19T14:30:00Z",
-      updated_at: "2025-08-19T14:30:00Z",
-      published_at: "2025-08-19T14:30:00Z",
+      created_at: "2025-08-20T10:30:00Z",
+      updated_at: "2025-08-20T10:30:00Z",
+      published_at: "2025-08-20T10:30:00Z",
       meta_description: "39cards.com est la référence pour suivre les tournois Altered TCG. Découvrez comment ce site complète parfaitement AlterTracker.",
       meta_keywords: "39cards, tournois, altered tcg, compétition, résultats, altertracker, partenaires"
     }
