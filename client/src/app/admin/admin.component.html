@@ -1,5 +1,5 @@
 <meta name="robots" content="noindex">
-<div class="bg-gray-900 p-6 rounded-2xl shadow-lg max-w-3xl mx-auto text-gray-100 space-y-4">
+<div class="bg-gray-900 p-6 rounded-2xl max-w-3xl mx-auto text-gray-100 space-y-4">
   <div class="flex justify-between items-center">
     <h2 class="text-xl font-semibold">Exécution de Script</h2>
     <span class="text-sm font-medium px-3 py-1 rounded-full" [ngClass]="{
@@ -10,10 +10,10 @@
       }">
       {{ status }}
       @if (socketConnected) {
-        <span>🟢</span>
+      <span>🟢</span>
       }
       @if (!socketConnected) {
-        <span>🔴</span>
+      <span>🔴</span>
       }
     </span>
   </div>
@@ -26,13 +26,13 @@
     script_get_no_unique
   </button> -->
 
-  <select [(ngModel)]="selectedScript" class="w-full bg-gray-700 text-white p-2 rounded-md"
-    [disabled]="status === 'running' || !socketConnected">
-    @for (script of scripts; track script) {
+    <select [(ngModel)]="selectedScript" class="w-full bg-gray-700 text-white p-2 rounded-md"
+      [disabled]="status === 'running' || !socketConnected">
+      @for (script of scripts; track script) {
       <option [value]="script">{{ script }}</option>
-    }
-  </select>
-  @if (selectedScript === 'script_get_unique' || selectedScript === 'script_get_en' || selectedScript ===
+      }
+    </select>
+    @if (selectedScript === 'script_get_unique' || selectedScript === 'script_get_en' || selectedScript ===
     'script_get_offers' || selectedScript === 'script_reload_main_effect' || selectedScript ===
     'script_get_offer_currency' || 'script_user_search_notify') {
     <select [(ngModel)]="selectedWorkers" class="w-full bg-gray-700 text-white p-2 rounded-md"
@@ -50,38 +50,38 @@
       <option>10</option>
     </select>
     @if (selectedScript === 'script_get_unique' || selectedScript === 'script_get_en' || selectedScript ===
-      'script_get_offers' || selectedScript === 'script_reload_main_effect' || selectedScript ===
-      'script_get_offer_currency') {
-      <select [(ngModel)]="selectedFaction" class="w-full bg-gray-700 text-white p-2 rounded-md"
-        [disabled]="status === 'running' || !socketConnected">
-        <option value="">-- Faction --</option>
-        <option value="AX">Axiom</option>
-        <option value="BR">Bravos</option>
-        <option value="LY">Lyra</option>
-        <option value="MU">Muna</option>
-        <option value="OR">Ordis</option>
-        <option value="YZ">Yzmir</option>
-      </select>
+    'script_get_offers' || selectedScript === 'script_reload_main_effect' || selectedScript ===
+    'script_get_offer_currency') {
+    <select [(ngModel)]="selectedFaction" class="w-full bg-gray-700 text-white p-2 rounded-md"
+      [disabled]="status === 'running' || !socketConnected">
+      <option value="">-- Faction --</option>
+      <option value="AX">Axiom</option>
+      <option value="BR">Bravos</option>
+      <option value="LY">Lyra</option>
+      <option value="MU">Muna</option>
+      <option value="OR">Ordis</option>
+      <option value="YZ">Yzmir</option>
+    </select>
     }
-  }
-  <button (click)="runScript()"
-    [ngClass]="{'bg-gray-500 cursor-not-allowed': status === 'running' || !socketConnected, 'bg-blue-600 hover:bg-blue-700': status !== 'running' || !socketConnected}"
+    }
+    <button (click)="runScript()"
+      [ngClass]="{'bg-gray-500 cursor-not-allowed': status === 'running' || !socketConnected, 'bg-blue-600 hover:bg-blue-700': status !== 'running' || !socketConnected}"
+      class="md:col-span-3 w-full text-white py-2 px-4 rounded-md transition duration-300"
+      [disabled]="status === 'running' || !socketConnected">
+      Start
+    </button>
+
+  </div>
+
+  <div #logsContainer
+    class="scroll-container bg-gray-800 p-4 rounded-xl h-96 overflow-auto text-sm font-mono border border-gray-700"
+    (scroll)="onLogsScroll()">
+    <pre [innerHTML]="logs"></pre>
+  </div>
+  <button (click)="clearLogs()"
+    [ngClass]="{'bg-gray-500 cursor-not-allowed': !logs || logs.length <= 0, 'bg-blue-600 hover:bg-blue-700': logs && logs.length >= 0}"
     class="md:col-span-3 w-full text-white py-2 px-4 rounded-md transition duration-300"
-    [disabled]="status === 'running' || !socketConnected">
-    Start
+    [disabled]="!logs || logs.length === 0">
+    clear logs
   </button>
-
-</div>
-
-<div #logsContainer
-  class="scroll-container bg-gray-800 p-4 rounded-xl h-96 overflow-auto text-sm font-mono border border-gray-700"
-  (scroll)="onLogsScroll()">
-  <pre [innerHTML]="logs"></pre>
-</div>
-<button (click)="clearLogs()"
-  [ngClass]="{'bg-gray-500 cursor-not-allowed': !logs || logs.length <= 0, 'bg-blue-600 hover:bg-blue-700': logs && logs.length >= 0}"
-  class="md:col-span-3 w-full text-white py-2 px-4 rounded-md transition duration-300"
-  [disabled]="!logs || logs.length === 0">
-  clear logs
-</button>
 </div>
