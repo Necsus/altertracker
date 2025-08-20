@@ -36,7 +36,7 @@ export class ArticleMockService {
       featured_image: "https://39cards.com/assets/logo-header.png",
       reading_time: 7,
       views: 124,
-      status: 'published',
+      status: 'draft',
       tags: ['tournois', '39cards', 'compétition', 'communauté'],
       category: 'Partenaires',
       created_at: "2025-08-19T14:30:00Z",
@@ -72,7 +72,7 @@ export class ArticleMockService {
   }
 
   getArticleBySlug(slug: string): Observable<ArticleModel> {
-    const metadata = this.mockArticlesMetadata.find(a => a.slug === slug && a.status === 'published');
+    const metadata = this.mockArticlesMetadata.find(a => a.slug === slug);
     if (!metadata) {
       return throwError(() => new Error('Article not found'));
     }
