@@ -35,7 +35,7 @@ export class ArticlesComponent implements OnInit {
 
   loadArticles(): void {
     this.isLoading = true;
-    this.articleService.getPublishedArticles().subscribe({
+    this.articleService.getPublishedArticles$().subscribe({
       next: (articles) => {
         this.articles = articles;
         this.filteredArticles = articles;
@@ -56,7 +56,7 @@ export class ArticlesComponent implements OnInit {
 
   onSearch(): void {
     if (this.searchQuery.trim()) {
-      this.articleService.searchArticles(this.searchQuery).subscribe({
+      this.articleService.searchArticles$(this.searchQuery).subscribe({
         next: (results) => {
           this.filteredArticles = results;
         },

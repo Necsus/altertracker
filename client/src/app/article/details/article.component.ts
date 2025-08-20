@@ -56,8 +56,8 @@ export class ArticleComponent implements OnInit, OnDestroy {
     // Détermine si c'est un ID numérique ou un slug
     const isNumeric = /^\d+$/.test(identifier);
     const request = isNumeric
-      ? this.articleService.getArticleById(parseInt(identifier))
-      : this.articleService.getArticleBySlug(identifier);
+      ? this.articleService.getArticleById$(parseInt(identifier))
+      : this.articleService.getArticleBySlug$(identifier);
 
     request.subscribe({
       next: (article) => {
@@ -111,7 +111,7 @@ export class ArticleComponent implements OnInit, OnDestroy {
 
   private incrementViews(): void {
     if (this.article) {
-      this.articleService.incrementViews(this.article.id).subscribe({
+      this.articleService.incrementViews$(this.article.id).subscribe({
         next: () => {
           if (this.article) {
             this.article.views++;
