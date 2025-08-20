@@ -33,7 +33,7 @@ export class ArticleMockService {
       slug: "promotion-39cards",
       excerpt: "Découvrez 39cards.com, la référence pour suivre les résultats de tournois Altered TCG en temps réel. Un complément idéal à AlterTracker.",
       author: "Équipe AlterTracker",
-      featured_image: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=800&h=400&fit=crop",
+      featured_image: "https://39cards.com/assets/logo-header.png",
       reading_time: 7,
       views: 124,
       status: 'published',

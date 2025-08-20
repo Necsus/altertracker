@@ -91,15 +91,13 @@ Cette richesse d'informations contribue directement à l'amélioration du niveau
 
 ### Innovation continue et nouvelles fonctionnalités
 
-L'équipe derrière [39cards.com](https://39cards.com), menée par Taumxd, continue d'innover pour répondre aux besoins évolutifs de la communauté. Les retours réguliers des utilisateurs alimentent le développement de nouvelles fonctionnalités qui enrichissent constamment l'expérience.
+**Taum**, le créateur de [39cards.com](https://39cards.com), continue d'innover et de faire évoluer sa plateforme pour répondre aux besoins évolutifs de la communauté. Cette approche de développement individuel présente des avantages uniques : **réactivité exceptionnelle**, **vision cohérente** et **passion authentique** pour chaque fonctionnalité développée.
 
-Les projets en cours incluent des **analyses statistiques avancées**, des **outils de prédiction de meta**, et des **fonctionnalités collaboratives** qui permettront à la communauté de contribuer encore plus activement au contenu du site.
+Les retours réguliers des utilisateurs, qu'ils proviennent du Discord ou des interactions directes avec la communauté, alimentent directement le processus de développement. **Taum peut ainsi implémenter rapidement les améliorations demandées** sans les contraintes bureaucratiques d'une équipe plus large.
 
 ### Un rôle central dans l'écosystème Altered TCG
 
 Au-delà de son rôle de simple archive, [39cards.com](https://39cards.com) tend à devenir un acteur central de l'écosystème Altered TCG. Le site influence déjà les décisions des joueurs, des organisateurs et même des développeurs du jeu, qui peuvent s'appuyer sur ses données pour comprendre l'impact de leurs innovations.
-
-Cette position unique fait de [39cards.com](https://39cards.com) un partenaire naturel pour tous les acteurs de l'écosystème Altered TCG, des boutiques locales aux éditeurs internationaux.
 
 ## Conclusion : [39cards.com](https://39cards.com), l'indispensable compagnon du joueur Altered TCG
 
