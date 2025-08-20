@@ -31,7 +31,7 @@
     </div>
 
     <!-- Header -->
-    <main class="p-6 md:p-8">
+    <header class="p-6 md:p-8">
       <!-- Catégorie -->
       <div class="mb-4">
         <span class="bg-amber-600 text-white px-3 py-1 rounded-full text-sm font-medium">
@@ -62,6 +62,13 @@
           <i class="fas fa-eye mr-2"></i>
           {{ article.views }} {{ 'articles.views' | translate }}
         </div>
+        <div class="flex items-center">
+          <button (click)="shareArticle()"
+            class="flex items-center px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors">
+            <i class="fas fa-share mr-2"></i>
+            {{ 'articles.share' | translate }}
+          </button>
+        </div>
       </div>
 
       <!-- Tags -->
@@ -70,19 +77,16 @@
           #{{ tag }}
         </span>
       </div>
-
-      <!-- Actions -->
-      <div class="flex gap-3">
-        <button (click)="shareArticle()"
-          class="flex items-center px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors">
-          <i class="fas fa-share mr-2"></i>
-          {{ 'articles.share' | translate }}
-        </button>
-      </div>
-    </main>
+    </header>
 
     <!-- Contenu -->
     <main class="p-6 md:p-8">
+      <!-- Extrait -->
+      <div class="bg-gray-800 border-l-4 border-amber-500 p-6 mb-8 rounded-r-lg">
+        <p class="text-lg text-gray-300 italic">{{ article.excerpt }}</p>
+      </div>
+
+      <!-- Contenu principal -->
       <div class="prose max-w-none">
         <markdown [data]="article.content" class="markdown-content"></markdown>
       </div>
@@ -90,8 +94,19 @@
 
     <!-- Footer -->
     <footer class="p-6 md:p-8 border-t border-gray-700">
-      <div class="text-center text-gray-400">
-        <p>{{ 'articles.last_updated' | translate }}: {{ formatDate(article.updated_at) }}</p>
+      <div class="flex justify-between items-center flex-wrap gap-4">
+        <div class="text-gray-400">
+          <p>{{ 'articles.last_updated' | translate }}: {{ formatDate(article.updated_at) }}</p>
+        </div>
+
+        <!-- Statut final -->
+        <div class="flex items-center text-sm">
+          <span class="text-gray-500 mr-2">Statut :</span>
+          <span [class]="'px-2 py-1 rounded text-xs font-medium ' + getStatusConfig(article.status).class">
+            <i [class]="getStatusConfig(article.status).icon + ' mr-1'"></i>
+            {{ getStatusConfig(article.status).label }}
+          </span>
+        </div>
       </div>
     </footer>
   </article>

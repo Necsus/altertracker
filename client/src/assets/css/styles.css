@@ -1,11 +1,5 @@
 @import 'highlight.js/styles/github-dark.css';
 
-header {
-  /* Couleur de fond sombre */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  /* Ombre légère */
-}
-
 footer {
   /* Couleur de fond sombre */
   padding: 1.5rem 0;

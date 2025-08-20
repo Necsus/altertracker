@@ -21,11 +21,29 @@ export class ArticleMockService {
       status: 'published',
       tags: ['guide', 'markdown', 'rédaction'],
       category: 'Guide',
-      created_at: "2024-12-19T10:00:00Z",
-      updated_at: "2024-12-19T10:00:00Z",
-      published_at: "2024-12-19T10:00:00Z",
+      created_at: "2025-08-19T10:00:00Z",
+      updated_at: "2025-08-19T10:00:00Z",
+      published_at: "2025-08-19T10:00:00Z",
       meta_description: "Guide complet pour rédiger des articles avec Markdown sur AlterTracker.",
       meta_keywords: "markdown, guide, rédaction, articles, altertracker"
+    },
+    {
+      id: 2,
+      title: "Découvrez 39cards.com : l'outil incontournable pour suivre les tournois Altered TCG",
+      slug: "promotion-39cards",
+      excerpt: "Découvrez 39cards.com, la référence pour suivre les résultats de tournois Altered TCG en temps réel. Un complément idéal à AlterTracker.",
+      author: "Équipe AlterTracker",
+      featured_image: "https://39cards.com/assets/logo-header.png",
+      reading_time: 7,
+      views: 124,
+      status: 'draft',
+      tags: ['tournois', '39cards', 'compétition', 'communauté'],
+      category: 'Partenaires',
+      created_at: "2025-08-20T10:30:00Z",
+      updated_at: "2025-08-20T10:30:00Z",
+      published_at: "2025-08-20T10:30:00Z",
+      meta_description: "39cards.com est la référence pour suivre les tournois Altered TCG. Découvrez comment ce site complète parfaitement AlterTracker.",
+      meta_keywords: "39cards, tournois, altered tcg, compétition, résultats, altertracker, partenaires"
     }
   ];
 
@@ -54,7 +72,7 @@ export class ArticleMockService {
   }
 
   getArticleBySlug(slug: string): Observable<ArticleModel> {
-    const metadata = this.mockArticlesMetadata.find(a => a.slug === slug && a.status === 'published');
+    const metadata = this.mockArticlesMetadata.find(a => a.slug === slug);
     if (!metadata) {
       return throwError(() => new Error('Article not found'));
     }

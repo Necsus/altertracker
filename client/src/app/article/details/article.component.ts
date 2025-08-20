@@ -124,6 +124,35 @@ export class ArticleComponent implements OnInit, OnDestroy {
     }
   }
 
+  getStatusConfig(status: string): { label: string, class: string, icon: string } {
+    switch (status) {
+      case 'published':
+        return {
+          label: 'Publié',
+          class: 'bg-green-600 text-white',
+          icon: 'fas fa-check-circle'
+        };
+      case 'draft':
+        return {
+          label: 'Brouillon',
+          class: 'bg-yellow-600 text-white',
+          icon: 'fas fa-edit'
+        };
+      case 'archived':
+        return {
+          label: 'Archivé',
+          class: 'bg-gray-600 text-white',
+          icon: 'fas fa-archive'
+        };
+      default:
+        return {
+          label: 'Inconnu',
+          class: 'bg-red-600 text-white',
+          icon: 'fas fa-question-circle'
+        };
+    }
+  }
+
   formatDate(dateString: string): string {
     return new Date(dateString).toLocaleDateString('fr-FR', {
       year: 'numeric',
