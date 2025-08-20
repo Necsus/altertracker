@@ -14,8 +14,8 @@ export class CardApiService {
 
   private controller = 'card';
 
-  constructor(private wabApiService: WebApiService) {
-  }
+  constructor(private wabApiService: WebApiService) { }
+
   count_all_cards$(): Observable<any> {
     return this.wabApiService.callGet$(this.controller, 'count');
   }
