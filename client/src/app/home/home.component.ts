@@ -4,10 +4,12 @@ import { Router, RouterModule } from '@angular/router';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ArticleListModel } from '../01_models/03_business/article.model';
 import { CardModel } from '../01_models/03_business/card.model';
+import { TestimonialModel } from '../01_models/03_business/testimonial.model';
 import { OfferViewModel } from '../01_models/home/offer-view.model';
 import { ArticleService } from '../03_business/article.service';
 import { CardService } from '../03_business/card.service';
 import { OfferService } from '../03_business/offer.service';
+import { TestimonialService } from '../03_business/testimonial.service';
 import { UserService } from '../03_business/user.service';
 import { AuthViewService } from '../authentication/auth-view.service';
 import { CardImgComponent } from '../search/card/card-img.component';
@@ -44,6 +46,9 @@ export class HomeComponent implements OnInit {
   latestArticlesLoading: boolean = false;
   latestArticles: ArticleListModel[] = [];
 
+  testimonialsLoading: boolean = false;
+  testimonials: TestimonialModel[] = [];
+
   constructor(
     private cardService: CardService,
     private offerService: OfferService,
@@ -53,7 +58,8 @@ export class HomeComponent implements OnInit {
     private authViewService: AuthViewService,
     private translate: TranslateService,
     private router: Router,
-    private articleService: ArticleService) {
+    private articleService: ArticleService,
+    private testimonialService: TestimonialService) {
     this.currentLanguage = this.translate.currentLang || 'en'; // Définit la langue par défaut
     this.translate.onLangChange.subscribe((event) => {
       this.currentLanguage = event.lang;
@@ -122,6 +128,7 @@ export class HomeComponent implements OnInit {
       error: (err: any) => this.toastService.show(err.message, 'error', 5000)
     });
     this.loadLatestArticles();
+    this.loadTestimonials();
   }
   openModal(card: CardModel): void {
     const currentLanguage = this.translate.currentLang || 'fr';
@@ -146,6 +153,21 @@ export class HomeComponent implements OnInit {
         console.error('Error fetching latest articles:', err);
         this.toastService.show('Erreur lors du chargement des articles', 'error', 5000);
         this.latestArticlesLoading = false;
+      }
+    });
+  }
+
+  private loadTestimonials(): void {
+    this.testimonialsLoading = true;
+    this.testimonialService.getTestimonials$().subscribe({
+      next: (testimonials: TestimonialModel[]) => {
+        this.testimonials = testimonials;
+      },
+      complete: () => this.testimonialsLoading = false,
+      error: (err: any) => {
+        console.error('Error fetching testimonials:', err);
+        this.toastService.show('Erreur lors du chargement des témoignages', 'error', 5000);
+        this.testimonialsLoading = false;
       }
     });
   }

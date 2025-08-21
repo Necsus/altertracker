@@ -75,7 +75,10 @@
     "discover_articles": "Découvrir les articles",
     "latest_articles_title": "📖 Derniers articles",
     "read_more": "Lire la suite",
-    "no_articles_yet": "Aucun article publié pour le moment."
+    "no_articles_yet": "Aucun article publié pour le moment.",
+    "testimonials_title": "💬 Ce que disent nos utilisateurs",
+    "testimonials_subtitle": "Merci pour vos retours et votre soutien !",
+    "support_project": "Soutenir le projet"
   },
   "progress": {
     "progress": "Progression :",

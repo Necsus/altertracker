@@ -74,7 +74,10 @@
     "discover_articles": "Discover articles",
     "latest_articles_title": "📖 Latest articles",
     "read_more": "Read more",
-    "no_articles_yet": "No articles published yet."
+    "no_articles_yet": "No articles published yet.",
+    "testimonials_title": "💬 What our users say",
+    "testimonials_subtitle": "Thank you for your feedback and support!",
+    "support_project": "Support the project"
   },
   "progress": {
     "progress": "Progress:",
