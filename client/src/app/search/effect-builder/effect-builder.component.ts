@@ -106,15 +106,18 @@ export class EffectBuilderComponent implements OnInit {
     }
 
     if (conditionValue) {
-      if (triggerValue && conditionValue !== '[]') {
+      if (triggerValue && triggerValue !== '[]') {
         result += ' ';
       }
       result += conditionValue;
     }
 
     if (effectValue) {
-      if (conditionValue && conditionValue !== '[]') {
+      if (conditionValue && conditionValue !== '[]' && conditionValue !== '%') {
         result += ' ';
+      }
+      if (!conditionValue && triggerValue) {
+        result += '%';
       }
       result += effectValue;
     }
