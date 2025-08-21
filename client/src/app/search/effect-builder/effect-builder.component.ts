@@ -142,6 +142,10 @@ export class EffectBuilderComponent implements OnInit {
     this.selectedTrigger = trigger;
   }
 
+  compareEffects(item1: EffectModel, item2: EffectModel): boolean {
+    return item1 && item2 ? item1.id === item2.id : item1 === item2;
+  }
+
   validate(): void {
     const finalResult = this.previewResult === 'Aucun effet sélectionné' ? '' : this.previewResult;
 

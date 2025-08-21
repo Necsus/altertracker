@@ -35,7 +35,8 @@
         </div>
 
         <ng-select [items]="triggers" bindLabel="value" [(ngModel)]="selectedTrigger" [searchable]="true"
-          dropdownPosition="bottom" [placeholder]="'builder.search_trigger' | translate" class="effect-builder-select">
+          dropdownPosition="bottom" [placeholder]="'builder.search_trigger' | translate" class="effect-builder-select"
+          [compareWith]="compareEffects">
           <ng-template ng-option-tmp let-item="item">
             <div [innerHTML]="item.value | iconParser:{ skipEmptyBrackets: true }"></div>
           </ng-template>
@@ -57,8 +58,8 @@
           </button>
         </div>
         <ng-select [items]="conditions" bindLabel="value" [(ngModel)]="selectedCondition" [searchable]="true"
-          dropdownPosition="bottom" [placeholder]="'builder.search_condition' | translate"
-          class="effect-builder-select">
+          dropdownPosition="bottom" [placeholder]="'builder.search_condition' | translate" class="effect-builder-select"
+          [compareWith]="compareEffects">
           <ng-template ng-option-tmp let-item="item">
             <div [innerHTML]="item.value | iconParser:{ skipEmptyBrackets: true }"></div>
           </ng-template>
@@ -80,7 +81,8 @@
           </button>
         </div>
         <ng-select [items]="effects" bindLabel="value" [(ngModel)]="selectedEffect" [searchable]="true"
-          dropdownPosition="top" [placeholder]="'builder.search_effect' | translate" class="effect-builder-select">
+          dropdownPosition="top" [placeholder]="'builder.search_effect' | translate" class="effect-builder-select"
+          [compareWith]="compareEffects">
           <ng-template ng-option-tmp let-item="item">
             <div [innerHTML]="item.value | iconParser:{ skipEmptyBrackets: true }"></div>
           </ng-template>
