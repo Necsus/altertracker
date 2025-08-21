@@ -22,14 +22,20 @@
             {{ 'home.get_started' | translate }}
           </a>
 
-          <div class="grid grid-cols-2 gap-6 py-4">
-            <div>
-              <div class="text-4xl font-extrabold">{{ nbCards | number:'1.0-0':'fr' }}</div>
-              <div class="text-sm text-gray-600">{{ 'home.nb_cards' | translate }}</div>
+          <div class="grid grid-cols-3 gap-4 sm:gap-6 py-4 mt-6">
+            <div class="text-center p-4 bg-opacity-50 rounded-lg">
+              <div class="text-2xl sm:text-4xl font-extrabold">{{ nbCards | number:'1.0-0':'fr' }}</div>
+              <div class="text-xs sm:text-sm text-gray-300 mt-1">{{ 'home.nb_cards' | translate }}</div>
             </div>
-            <div>
-              <div class="text-4xl font-extrabold">{{ nbCardsInMarket | number:'1.0-0':'fr' }}</div>
-              <div class="text-sm text-gray-600">{{ 'home.nb_offers' | translate }}</div>
+            <div class="text-center p-4 bg-opacity-50 rounded-lg">
+              <div class="text-2xl sm:text-4xl font-extrabold">{{ nbCardsInMarket | number:'1.0-0':'fr'
+                }}</div>
+              <div class="text-xs sm:text-sm text-gray-300 mt-1">{{ 'home.nb_offers' | translate }}</div>
+            </div>
+            <div class="text-center p-4 bg-opacity-50 rounded-lg">
+              <div class="text-2xl sm:text-4xl font-extrabold">{{ usersCount | number:'1.0-0':'fr' }}
+              </div>
+              <div class="text-xs sm:text-sm text-gray-300 mt-1">{{ 'home.registered_users_title' | translate }}</div>
             </div>
           </div>
         </div>
@@ -42,7 +48,7 @@
     </section>
 
 
-    <section class="p-4 text-gray-100">
+    <section class="py-4 text-gray-100 mt-0-important">
       <div class="flex flex-col md:flex-row justify-center items-stretch gap-8 py-8">
         <div class="flex-1 bg-gray-800 rounded-xl p-6 flex flex-col items-center text-center">
           <h3 class="text-xl font-semibold text-white mb-2">
@@ -75,15 +81,71 @@
 
         <div class="flex-1 bg-gray-800 rounded-xl p-6 flex flex-col items-center">
           <h2 class="text-xl font-semibold text-white mb-4 text-center">
-            {{ 'home.coming_soon_title' | translate }}
+            {{ 'home.articles_promo_title' | translate }}
           </h2>
-          <ul class="list-disc list-inside text-gray-300 space-y-1">
-            <li>{{ 'home.coming_soon_items.stats' | translate }}</li>
-            <li>{{ 'home.coming_soon_items.collection_import' | translate }}</li>
-            <li>{{ 'home.coming_soon_items.card_scan' | translate }}</li>
-          </ul>
+          <p class="text-gray-300 text-sm text-center mb-4">
+            {{ 'home.articles_promo_description' | translate }}
+          </p>
         </div>
       </div>
+    </section>
+
+    <section>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-2xl font-semibold">
+          {{ 'home.latest_articles_title' | translate }}
+        </h2>
+        <a routerLink="/articles"
+          class="inline-block bg-amber-500 hover:bg-amber-400 text-black font-semibold py-2 px-4 rounded-xl shadow transition duration-200 text-sm">
+          {{ 'home.see_all' | translate }}
+        </a>
+      </div>
+      @if (!latestArticlesLoading) {
+      @if (latestArticles && latestArticles.length > 0) {
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (article of latestArticles; track article.id) {
+        <div
+          class="bg-gray-800 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer"
+          [routerLink]="['/article', article.slug]">
+          @if (article.featured_image) {
+          <img [src]="article.featured_image" [alt]="article.title" class="w-full h-48 object-cover"
+            onerror="this.style.display='none';" />
+          }
+          <div class="p-4">
+            <h3 class="text-lg font-semibold text-white mb-2 line-clamp-2">
+              {{ article.title }}
+            </h3>
+            <p class="text-gray-300 text-sm mb-3 line-clamp-3">
+              {{ article.excerpt }}
+            </p>
+          </div>
+        </div>
+        }
+      </div>
+      } @else {
+      <div class="text-center text-gray-400 py-8">
+        <p>{{ 'home.no_articles_yet' | translate }}</p>
+      </div>
+      }
+      } @else {
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (skeleton of [1,2,3]; track skeleton) {
+        <div class="bg-gray-800 rounded-xl overflow-hidden shadow-lg animate-pulse">
+          <div class="w-full h-48 bg-gray-700"></div>
+          <div class="p-4">
+            <div class="h-5 bg-gray-700 rounded mb-2"></div>
+            <div class="h-4 bg-gray-700 rounded mb-1"></div>
+            <div class="h-4 bg-gray-700 rounded w-3/4 mb-3"></div>
+            <div class="flex justify-between mb-3">
+              <div class="h-3 bg-gray-700 rounded w-1/4"></div>
+              <div class="h-3 bg-gray-700 rounded w-1/4"></div>
+            </div>
+            <div class="h-8 bg-gray-700 rounded w-24"></div>
+          </div>
+        </div>
+        }
+      </div>
+      }
     </section>
 
     <section>
@@ -94,171 +156,61 @@
             <span class="text-green-400">+{{ newCardsCount }}</span>
           </h2>
           @if (newCardsCount > 0) {
-            <a routerLink="/cards" [queryParams]="{ dataset_type: 'new_cards' }"
-              class="inline-block bg-amber-500 hover:bg-amber-400 text-black font-semibold py-2 px-4 rounded-xl shadow transition duration-200 text-sm">
-              {{ 'home.see_all' | translate }}
-            </a>
+          <a routerLink="/cards" [queryParams]="{ dataset_type: 'new_cards' }"
+            class="inline-block bg-amber-500 hover:bg-amber-400 text-black font-semibold py-2 px-4 rounded-xl shadow transition duration-200 text-sm">
+            {{ 'home.see_all' | translate }}
+          </a>
           }
         </div>
         @if (!newCardsLoading) {
-          <div class="scroll-container flex flex-nowrap space-x-4 overflow-x-auto pb-2">
-            @for (card of newCards; track card) {
-              <div class="flex-shrink-0 w-48 bg-gray-800 rounded-xl shadow">
-                <div class="overflow-hidden rounded-xl bg-black">
-                  <img (click)="openModal(card)" [src]="(card | localizedValue:'image_path_en':'imagePath') | alteredImg"
-                    [alt]="card | localizedValue:'name_en':'name'"
-                    onerror="this.onerror=null; this.src='/assets/img/cardback.webp';" loading="lazy"
-                    class="max-w-full object-contain rounded-md cursor-pointer" />
-                  </div>
-                  <div class="mt-2 text-center text-white p-2 cursor-pointer select-none"
-                    (click)="goToStats(card.reference)">
-                    <p class="font-semibold">{{ card | localizedValue:'name_en':'name' }}</p>
-                  </div>
-                </div>
-              }
+        <div class="scroll-container flex flex-nowrap space-x-4 overflow-x-auto pb-2">
+          @for (card of newCards; track card) {
+          <div class="flex-shrink-0 w-48 bg-gray-800 rounded-xl shadow">
+            <div class="overflow-hidden rounded-xl bg-black">
+              <img (click)="openModal(card)" [src]="(card | localizedValue:'image_path_en':'imagePath') | alteredImg"
+                [alt]="card | localizedValue:'name_en':'name'"
+                onerror="this.onerror=null; this.src='/assets/img/cardback.webp';" loading="lazy"
+                class="max-w-full object-contain rounded-md cursor-pointer" />
             </div>
-          } @else {
-            <div class="scroll-container flex flex-nowrap space-x-4 overflow-x-auto pb-2">
-              @for (skeleton of [1,2,3,4,5,6,7,8,9,10]; track skeleton) {
-                <div
-                  class="flex-shrink-0 w-48 bg-gray-800 rounded-xl shadow animate-pulse">
-                  <div class="overflow-hidden rounded-xl bg-gray-700 h-64"></div>
-                  <div class="mt-2 text-center text-white p-2">
-                    <div class="h-4 bg-gray-700 rounded w-3/4 mx-auto mb-2"></div>
-                    <div class="h-3 bg-gray-700 rounded w-1/2 mx-auto"></div>
-                  </div>
-                </div>
-              }
+            <div class="mt-2 text-center text-white p-2 cursor-pointer select-none" (click)="goToStats(card.reference)">
+              <p class="font-semibold">{{ card | localizedValue:'name_en':'name' }}</p>
             </div>
+          </div>
           }
         </div>
-      </section>
-
-      <section>
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-2xl font-semibold">
-            {{ 'home.new_offers_title' | translate }}&nbsp;<span class="text-green-400">+{{ newOffersCount |
-            number:'1.0-0':'fr'
-          }}</span>
-        </h2>
-        @if (newOffersCount > 0) {
-          <a routerLink="/cards" [queryParams]="{ dataset_type: 'new_offers' }"
-            class="inline-block bg-amber-500 hover:bg-amber-400 text-black font-semibold py-2 px-4 rounded-xl shadow transition duration-200 text-sm">
-            {{ 'home.see_all' | translate }}
-          </a>
-        }
-      </div>
-      @if (!newOffersLoading) {
-        <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
-          @for (offer of newOffers; track offer) {
-            <div class="w-48 bg-gray-800 rounded-xl shadow">
-              <div class="overflow-hidden w-48 rounded-xl bg-black">
-                <img (click)="openModal(offer.card)"
-                  [src]="(offer.card | localizedValue:'image_path_en':'imagePath') | alteredImg"
-                  [alt]="offer.card | localizedValue:'name_en':'name'"
-                  onerror="this.onerror=null; this.src='/assets/img/cardback.webp';" loading="lazy"
-                  class="max-w-full object-contain rounded-md cursor-pointer" />
-                </div>
-                <div class="mt-2 text-center text-white p-2 cursor-pointer select-none"
-                  (click)="goToStats(offer.card.reference)">
-                  <div class="font-medium">{{ offer.card | localizedValue:'name_en':'name' }}</div>
-                  <div class="text-sm text-green-400">{{ 'home.price' | translate }} : {{ offer.offer.price |
-                    currency:(offer.offer.currency ||
-                  ''):'symbol':'1.0-2' }}</div>
-                  <p class="text-xs text-gray-500">{{ 'home.detected_at' | translate }} : {{
-                  offer.offer.created_at | toDate | date:'dd/MM/yyyy HH:mm' }}</p>
-                </div>
-              </div>
-            }
-          </div>
         } @else {
-          <div class="scroll-container flex flex-nowrap space-x-4 overflow-x-auto pb-2">
-            @for (skeleton of [1,2,3,4,5,6,7,8,9,10]; track skeleton) {
-              <div
-                class="flex-shrink-0 w-48 bg-gray-800 rounded-xl shadow animate-pulse">
-                <div class="overflow-hidden rounded-xl bg-gray-700 h-64"></div>
-                <div class="mt-2 text-center text-white p-2">
-                  <div class="h-4 bg-gray-700 rounded w-3/4 mx-auto mb-2"></div>
-                  <div class="h-3 bg-gray-700 rounded w-1/2 mx-auto"></div>
-                </div>
-              </div>
-            }
-          </div>
-        }
-      </section>
-
-      <section>
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-2xl font-semibold">
-            {{ 'home.edited_offers_title' | translate }}&nbsp;<span class="text-green-400">+{{
-          editedOffersCount | number:'1.0-0':'fr' }}</span>
-        </h2>
-        @if (editedOffersCount > 0) {
-          <a routerLink="/cards" [queryParams]="{ dataset_type: 'edit_offers' }"
-            class="inline-block bg-amber-500 hover:bg-amber-400 text-black font-semibold py-2 px-4 rounded-xl shadow transition duration-200 text-sm">
-            {{ 'home.see_all' | translate }}
-          </a>
-        }
-      </div>
-      @if (!editedOffersLoading) {
-        <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
-          @for (offer of editedOffers; track offer) {
-            <div class="w-48 bg-gray-800 rounded-xl shadow">
-              <div class="overflow-hidden w-48 rounded-xl bg-black">
-                <img (click)="openModal(offer.card)"
-                  [src]="(offer.card | localizedValue:'image_path_en':'imagePath') | alteredImg"
-                  [alt]="offer.card | localizedValue:'name_en':'name'"
-                  onerror="this.onerror=null; this.src='/assets/img/cardback.webp';" loading="lazy"
-                  class="max-w-full object-contain rounded-md cursor-pointer" />
-                </div>
-                <div class="mt-2 text-center text-white p-2 cursor-pointer select-none"
-                  (click)="goToStats(offer.card.reference)">
-                  <div class="font-medium">{{ offer.card | localizedValue:'name_en':'name' }}</div>
-                  <div class="text-sm text-gray-400">
-                    {{ 'home.price' | translate }} : <span class="line-through text-red-400">{{
-                    offer.previous_offer?.price |
-                  currency:(offer.previous_offer?.currency || ''):'symbol':'1.0-2' }}</span>
-                  → <span class="text-green-400">{{ offer.offer.price | currency:(offer.offer.currency ||
-                ''):'symbol':'1.0-2' }}</span>
-              </div>
-              <p class="text-xs text-gray-500">{{ 'home.detected_at' | translate }} : {{
-              offer.offer.created_at | toDate | date:'dd/MM/yyyy HH:mm' }}</p>
-            </div>
-          </div>
-        }
-      </div>
-    } @else {
-      <div class="scroll-container flex flex-nowrap space-x-4 overflow-x-auto pb-2">
-        @for (skeleton of [1,2,3,4,5,6,7,8,9,10]; track skeleton) {
-          <div
-            class="flex-shrink-0 w-48 bg-gray-800 rounded-xl shadow animate-pulse">
+        <div class="scroll-container flex flex-nowrap space-x-4 overflow-x-auto pb-2">
+          @for (skeleton of [1,2,3,4,5,6,7,8,9,10]; track skeleton) {
+          <div class="flex-shrink-0 w-48 bg-gray-800 rounded-xl shadow animate-pulse">
             <div class="overflow-hidden rounded-xl bg-gray-700 h-64"></div>
             <div class="mt-2 text-center text-white p-2">
               <div class="h-4 bg-gray-700 rounded w-3/4 mx-auto mb-2"></div>
               <div class="h-3 bg-gray-700 rounded w-1/2 mx-auto"></div>
             </div>
           </div>
+          }
+        </div>
         }
       </div>
-    }
-  </section>
+    </section>
 
-  <section>
-    <div class="flex items-center justify-between mb-4">
-      <h2 class="text-2xl font-semibold">
-        {{ 'home.deleted_offers_title' | translate }}&nbsp;<span class="text-green-400">+{{
-      deletedOffersCount | number:'1.0-0':'fr' }}</span>
-    </h2>
-    @if (deletedOffersCount > 0) {
-      <a routerLink="/cards" [queryParams]="{ dataset_type: 'deleted_offers' }"
-        class="inline-block bg-amber-500 hover:bg-amber-400 text-black font-semibold py-2 px-4 rounded-xl shadow transition duration-200 text-sm">
-        {{ 'home.see_all' | translate }}
-      </a>
-    }
-  </div>
-  @if (!deletedOffersLoading) {
-    <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
-      @for (offer of deletedOffers; track offer) {
+    <section>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-2xl font-semibold">
+          {{ 'home.new_offers_title' | translate }}&nbsp;<span class="text-green-400">+{{ newOffersCount |
+            number:'1.0-0':'fr'
+            }}</span>
+        </h2>
+        @if (newOffersCount > 0) {
+        <a routerLink="/cards" [queryParams]="{ dataset_type: 'new_offers' }"
+          class="inline-block bg-amber-500 hover:bg-amber-400 text-black font-semibold py-2 px-4 rounded-xl shadow transition duration-200 text-sm">
+          {{ 'home.see_all' | translate }}
+        </a>
+        }
+      </div>
+      @if (!newOffersLoading) {
+      <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
+        @for (offer of newOffers; track offer) {
         <div class="w-48 bg-gray-800 rounded-xl shadow">
           <div class="overflow-hidden w-48 rounded-xl bg-black">
             <img (click)="openModal(offer.card)"
@@ -266,60 +218,155 @@
               [alt]="offer.card | localizedValue:'name_en':'name'"
               onerror="this.onerror=null; this.src='/assets/img/cardback.webp';" loading="lazy"
               class="max-w-full object-contain rounded-md cursor-pointer" />
-            </div>
-            <div class="mt-2 text-center text-white p-2 cursor-pointer select-none"
-              (click)="goToStats(offer.card.reference)">
-              <div class="font-medium">{{ offer.card | localizedValue:'name_en':'name' }}</div>
-              <div class="text-sm text-red-400">{{ 'home.old_price' | translate }} : {{ offer.offer.price |
-              currency:(offer.offer.currency || ''):'symbol':'1.0-2' }}</div>
-              <p class="text-xs text-gray-500">{{ 'home.detected_at' | translate }} : {{
-              offer.offer.deleted_at | toDate | date:'dd/MM/yyyy HH:mm' }}</p>
-            </div>
           </div>
+          <div class="mt-2 text-center text-white p-2 cursor-pointer select-none"
+            (click)="goToStats(offer.card.reference)">
+            <div class="font-medium">{{ offer.card | localizedValue:'name_en':'name' }}</div>
+            <div class="text-sm text-green-400">{{ 'home.price' | translate }} : {{ offer.offer.price |
+              currency:(offer.offer.currency ||
+              ''):'symbol':'1.0-2' }}</div>
+            <p class="text-xs text-gray-500">{{ 'home.detected_at' | translate }} : {{
+              offer.offer.created_at | toDate | date:'dd/MM/yyyy HH:mm' }}</p>
+          </div>
+        </div>
         }
       </div>
-    } @else {
+      } @else {
       <div class="scroll-container flex flex-nowrap space-x-4 overflow-x-auto pb-2">
         @for (skeleton of [1,2,3,4,5,6,7,8,9,10]; track skeleton) {
-          <div
-            class="flex-shrink-0 w-48 bg-gray-800 rounded-xl shadow animate-pulse">
-            <div class="overflow-hidden rounded-xl bg-gray-700 h-64"></div>
-            <div class="mt-2 text-center text-white p-2">
-              <div class="h-4 bg-gray-700 rounded w-3/4 mx-auto mb-2"></div>
-              <div class="h-3 bg-gray-700 rounded w-1/2 mx-auto"></div>
-            </div>
+        <div class="flex-shrink-0 w-48 bg-gray-800 rounded-xl shadow animate-pulse">
+          <div class="overflow-hidden rounded-xl bg-gray-700 h-64"></div>
+          <div class="mt-2 text-center text-white p-2">
+            <div class="h-4 bg-gray-700 rounded w-3/4 mx-auto mb-2"></div>
+            <div class="h-3 bg-gray-700 rounded w-1/2 mx-auto"></div>
           </div>
+        </div>
         }
       </div>
+      }
+    </section>
+
+    <section>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-2xl font-semibold">
+          {{ 'home.edited_offers_title' | translate }}&nbsp;<span class="text-green-400">+{{
+            editedOffersCount | number:'1.0-0':'fr' }}</span>
+        </h2>
+        @if (editedOffersCount > 0) {
+        <a routerLink="/cards" [queryParams]="{ dataset_type: 'edit_offers' }"
+          class="inline-block bg-amber-500 hover:bg-amber-400 text-black font-semibold py-2 px-4 rounded-xl shadow transition duration-200 text-sm">
+          {{ 'home.see_all' | translate }}
+        </a>
+        }
+      </div>
+      @if (!editedOffersLoading) {
+      <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
+        @for (offer of editedOffers; track offer) {
+        <div class="w-48 bg-gray-800 rounded-xl shadow">
+          <div class="overflow-hidden w-48 rounded-xl bg-black">
+            <img (click)="openModal(offer.card)"
+              [src]="(offer.card | localizedValue:'image_path_en':'imagePath') | alteredImg"
+              [alt]="offer.card | localizedValue:'name_en':'name'"
+              onerror="this.onerror=null; this.src='/assets/img/cardback.webp';" loading="lazy"
+              class="max-w-full object-contain rounded-md cursor-pointer" />
+          </div>
+          <div class="mt-2 text-center text-white p-2 cursor-pointer select-none"
+            (click)="goToStats(offer.card.reference)">
+            <div class="font-medium">{{ offer.card | localizedValue:'name_en':'name' }}</div>
+            <div class="text-sm text-gray-400">
+              {{ 'home.price' | translate }} : <span class="line-through text-red-400">{{
+                offer.previous_offer?.price |
+                currency:(offer.previous_offer?.currency || ''):'symbol':'1.0-2' }}</span>
+              → <span class="text-green-400">{{ offer.offer.price | currency:(offer.offer.currency ||
+                ''):'symbol':'1.0-2' }}</span>
+            </div>
+            <p class="text-xs text-gray-500">{{ 'home.detected_at' | translate }} : {{
+              offer.offer.created_at | toDate | date:'dd/MM/yyyy HH:mm' }}</p>
+          </div>
+        </div>
+        }
+      </div>
+      } @else {
+      <div class="scroll-container flex flex-nowrap space-x-4 overflow-x-auto pb-2">
+        @for (skeleton of [1,2,3,4,5,6,7,8,9,10]; track skeleton) {
+        <div class="flex-shrink-0 w-48 bg-gray-800 rounded-xl shadow animate-pulse">
+          <div class="overflow-hidden rounded-xl bg-gray-700 h-64"></div>
+          <div class="mt-2 text-center text-white p-2">
+            <div class="h-4 bg-gray-700 rounded w-3/4 mx-auto mb-2"></div>
+            <div class="h-3 bg-gray-700 rounded w-1/2 mx-auto"></div>
+          </div>
+        </div>
+        }
+      </div>
+      }
+    </section>
+
+    <section>
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-2xl font-semibold">
+          {{ 'home.deleted_offers_title' | translate }}&nbsp;<span class="text-green-400">+{{
+            deletedOffersCount | number:'1.0-0':'fr' }}</span>
+        </h2>
+        @if (deletedOffersCount > 0) {
+        <a routerLink="/cards" [queryParams]="{ dataset_type: 'deleted_offers' }"
+          class="inline-block bg-amber-500 hover:bg-amber-400 text-black font-semibold py-2 px-4 rounded-xl shadow transition duration-200 text-sm">
+          {{ 'home.see_all' | translate }}
+        </a>
+        }
+      </div>
+      @if (!deletedOffersLoading) {
+      <div class="scroll-container flex space-x-4 overflow-x-auto pb-2">
+        @for (offer of deletedOffers; track offer) {
+        <div class="w-48 bg-gray-800 rounded-xl shadow">
+          <div class="overflow-hidden w-48 rounded-xl bg-black">
+            <img (click)="openModal(offer.card)"
+              [src]="(offer.card | localizedValue:'image_path_en':'imagePath') | alteredImg"
+              [alt]="offer.card | localizedValue:'name_en':'name'"
+              onerror="this.onerror=null; this.src='/assets/img/cardback.webp';" loading="lazy"
+              class="max-w-full object-contain rounded-md cursor-pointer" />
+          </div>
+          <div class="mt-2 text-center text-white p-2 cursor-pointer select-none"
+            (click)="goToStats(offer.card.reference)">
+            <div class="font-medium">{{ offer.card | localizedValue:'name_en':'name' }}</div>
+            <div class="text-sm text-red-400">{{ 'home.old_price' | translate }} : {{ offer.offer.price |
+              currency:(offer.offer.currency || ''):'symbol':'1.0-2' }}</div>
+            <p class="text-xs text-gray-500">{{ 'home.detected_at' | translate }} : {{
+              offer.offer.deleted_at | toDate | date:'dd/MM/yyyy HH:mm' }}</p>
+          </div>
+        </div>
+        }
+      </div>
+      } @else {
+      <div class="scroll-container flex flex-nowrap space-x-4 overflow-x-auto pb-2">
+        @for (skeleton of [1,2,3,4,5,6,7,8,9,10]; track skeleton) {
+        <div class="flex-shrink-0 w-48 bg-gray-800 rounded-xl shadow animate-pulse">
+          <div class="overflow-hidden rounded-xl bg-gray-700 h-64"></div>
+          <div class="mt-2 text-center text-white p-2">
+            <div class="h-4 bg-gray-700 rounded w-3/4 mx-auto mb-2"></div>
+            <div class="h-3 bg-gray-700 rounded w-1/2 mx-auto"></div>
+          </div>
+        </div>
+        }
+      </div>
+      }
+    </section>
+
+    @if (!isLoggedIn) {
+    <section class="text-gray-100 bg-gray-900 px-6 py-12 md:px-12 lg:px-24">
+      <div class="max-w-4xl mx-auto text-center">
+        <h2 class="text-3xl font-semibold text-white mb-4">
+          {{ 'home.join_community_title' | translate }}
+        </h2>
+        <p class="text-gray-300 mb-6">
+          {{ 'home.join_community_description' | translate }}
+        </p>
+        <a routerLink="/register"
+          class="inline-block bg-amber-600 hover:bg-amber-500 text-white font-medium py-3 px-6 rounded-2xl shadow-lg transition duration-200">
+          {{ 'home.start_now' | translate }}
+        </a>
+      </div>
+    </section>
     }
-  </section>
 
-  <section>
-    <div class="mt-8">
-      <h2 class="text-2xl font-semibold mb-4">
-        {{ 'home.registered_users_title' | translate }}&nbsp;<span class="text-green-400">
-      {{ usersCount | number:'1.0-0':'fr' }}</span>
-    </h2>
   </div>
-</section>
-
-@if (!isLoggedIn) {
-  <section class="text-gray-100 bg-gray-900 px-6 py-12 md:px-12 lg:px-24">
-    <div class="max-w-4xl mx-auto text-center">
-      <h2 class="text-3xl font-semibold text-white mb-4">
-        {{ 'home.join_community_title' | translate }}
-      </h2>
-      <p class="text-gray-300 mb-6">
-        {{ 'home.join_community_description' | translate }}
-      </p>
-      <a routerLink="/register"
-        class="inline-block bg-amber-600 hover:bg-amber-500 text-white font-medium py-3 px-6 rounded-2xl shadow-lg transition duration-200">
-        {{ 'home.start_now' | translate }}
-      </a>
-    </div>
-  </section>
-}
-
 </div>
-</div>
-

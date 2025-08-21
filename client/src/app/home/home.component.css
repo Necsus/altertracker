@@ -10,3 +10,7 @@
 .scroll-container::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+.mt-0-important {
+  margin-top: 0 !important;
+}
