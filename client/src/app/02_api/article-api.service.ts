@@ -16,6 +16,10 @@ export class ArticleApiService {
     return this.wabApiService.callGet$(this.controller, 'published');
   }
 
+  getLastPublishedArticles$(): Observable<ArticleListModel[]> {
+    return this.wabApiService.callGet$(this.controller, 'lastpublished');
+  }
+
   // Récupérer un article par son slug
   getArticleBySlug$(slug: string): Observable<ArticleModel> {
     return this.wabApiService.callGet$(this.controller, `slug/${slug}`);

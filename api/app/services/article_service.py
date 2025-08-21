@@ -1,4 +1,5 @@
 from app.data.article_data import (
+    get_last_published_articles_data,
     get_published_articles_data,
     get_article_by_slug_data,
     get_article_by_id_data,
@@ -17,6 +18,11 @@ from typing import List, Optional
 def get_published_articles_service() -> List[dict]:
     """Service pour récupérer tous les articles publiés"""
     articles = get_published_articles_data()
+    return [article.json_list() for article in articles]
+
+def get_last_published_articles_service() -> List[dict]:
+    """Service pour récupérer tous les articles publiés"""
+    articles = get_last_published_articles_data()
     return [article.json_list() for article in articles]
 
 def get_article_by_slug_service(slug: str) -> Optional[dict]:

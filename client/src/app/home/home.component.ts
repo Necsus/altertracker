@@ -137,12 +137,9 @@ export class HomeComponent implements OnInit {
   }
   private loadLatestArticles(): void {
     this.latestArticlesLoading = true;
-    this.articleService.getPublishedArticles$().subscribe({
+    this.articleService.getLastPublishedArticles$().subscribe({
       next: (articles: ArticleListModel[]) => {
-        // Prendre seulement les 3 derniers articles
-        this.latestArticles = articles
-          .sort((a, b) => new Date(b.published_at).getTime() - new Date(a.published_at).getTime())
-          .slice(0, 3);
+        this.latestArticles = articles;
       },
       complete: () => this.latestArticlesLoading = false,
       error: (err: any) => {

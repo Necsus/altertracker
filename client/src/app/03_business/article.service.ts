@@ -20,6 +20,14 @@ export class ArticleService {
     );
   }
 
+  getLastPublishedArticles$(): Observable<ArticleListModel[]> {
+    return this.articleApiService.getLastPublishedArticles$().pipe(
+      map((dbModel: ArticleListModel[]) => {
+        return dbModel;
+      })
+    );
+  }
+
   // Récupérer un article par son slug
   getArticleBySlug$(slug: string): Observable<ArticleModel> {
     return this.articleApiService.getArticleBySlug$(slug).pipe(
