@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request, make_response
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required
 from app.services.article_service import (
+    get_last_published_articles_service,
     get_published_articles_service,
     get_article_by_slug_service,
     get_article_by_id_service,
@@ -23,6 +24,15 @@ def get_published_articles():
     """Récupère tous les articles publiés"""
     try:
         articles = get_published_articles_service()
+        return jsonify(articles), 200
+    except Exception as e:
+        return make_response(jsonify({'message': f'Erreur : {str(e)}'}), 500)
+
+@article_bp.route('/lastpublished', methods=['GET'])
+def get_last_published_articles():
+    """Récupère tous les articles publiés"""
+    try:
+        articles = get_last_published_articles_service()
         return jsonify(articles), 200
     except Exception as e:
         return make_response(jsonify({'message': f'Erreur : {str(e)}'}), 500)

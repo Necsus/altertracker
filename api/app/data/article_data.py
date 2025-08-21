@@ -12,6 +12,14 @@ def get_published_articles_data() -> List[Article]:
         Article.published_at.desc()
     ).all()
 
+def get_last_published_articles_data() -> List[Article]:
+    """Récupère tous les articles publiés triés par date de publication"""
+    return db.session.query(Article).filter(
+        Article.status == 'published'
+    ).order_by(
+        Article.published_at.desc()
+    ).limit(3).all()
+
 def get_article_by_slug_data(slug: str) -> Optional[Article]:
     """Récupère un article par son slug"""
     return db.session.query(Article).filter(

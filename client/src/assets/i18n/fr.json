@@ -61,14 +61,21 @@
     "new_offers_title": "💰 Nouvelles offres de vente (aujourd'hui)",
     "deleted_offers_title": "❌ Offres disparues (aujourd'hui)",
     "edited_offers_title": "✏️ Offres modifiées (aujourd'hui)",
-    "registered_users_title": "👥 Utilisateurs inscrits :",
+    "registered_users_title": "Utilisateurs inscrits",
     "join_community_title": "🚀 Rejoignez la communauté",
     "join_community_description": "AlterTracker est un projet indépendant construit avec passion. Vos idées, retours et suggestions le font évoluer.",
     "start_now": "Commencer maintenant",
     "old_price": "Ancien prix",
     "detected_at": "détecté le",
     "price": "Prix",
-    "see_all": "Voir tout"
+    "see_all": "Voir tout",
+    "articles": "Articles",
+    "articles_promo_title": "📰 Découvrez nos articles",
+    "articles_promo_description": "Guides stratégiques, analyses de meta, et actualités pour améliorer votre jeu Altered TCG.",
+    "discover_articles": "Découvrir les articles",
+    "latest_articles_title": "📖 Derniers articles",
+    "read_more": "Lire la suite",
+    "no_articles_yet": "Aucun article publié pour le moment."
   },
   "progress": {
     "progress": "Progression :",
