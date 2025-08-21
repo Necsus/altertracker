@@ -15,8 +15,7 @@ def get_published_articles_data() -> List[Article]:
 def get_article_by_slug_data(slug: str) -> Optional[Article]:
     """Récupère un article par son slug"""
     return db.session.query(Article).filter(
-        Article.slug == slug,
-        Article.status == 'published'
+        Article.slug == slug
     ).first()
 
 def get_article_by_id_data(article_id: int) -> Optional[Article]:
