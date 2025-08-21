@@ -363,5 +363,37 @@
     </section>
     }
 
+    <section class="py-8">
+      <div class="text-center mb-8">
+        <h2 class="text-2xl font-semibold text-white mb-2">
+          {{ 'home.testimonials_title' | translate }}
+        </h2>
+        <p class="text-gray-300">
+          {{ 'home.testimonials_subtitle' | translate }}
+        </p>
+      </div>
+
+      <div class="scroll-container flex space-x-6 overflow-x-auto pb-4">
+        @for (testimonial of testimonials; track testimonial.id) {
+        <div class="flex-shrink-0 w-80 bg-gray-800 rounded-xl p-6 shadow-lg border-l-4 border-amber-500">
+          <div class="flex items-center mb-4">
+            <div class="w-10 h-10 bg-amber-500 rounded-full flex items-center justify-center text-black font-bold">
+              {{ testimonial.name.charAt(0) }}
+            </div>
+            <div class="ml-3">
+              <h4 class="text-white font-semibold">{{ testimonial.name }}</h4>
+              <div class="flex items-center text-sm text-gray-400">
+                <span>{{ testimonial.date | date:'dd/MM/yyyy' }}</span>
+              </div>
+            </div>
+          </div>
+          <blockquote class="text-gray-300 italic">
+            "{{ testimonial.message }}"
+          </blockquote>
+        </div>
+        }
+      </div>
+    </section>
+
   </div>
 </div>
