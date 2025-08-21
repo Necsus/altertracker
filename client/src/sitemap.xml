@@ -70,13 +70,6 @@
   </url>
 
   <url>
-    <loc>https://altertracker.com/cards?name=&amp;rarity=RARE&amp;faction=MU&amp;set=&amp;subtype=&amp;main_effect=&amp;main_effect_2=&amp;echo_effect=&amp;exclude_effect=&amp;main_cost_range=&amp;recall_cost_range=&amp;forest_power_range=&amp;mountain_power_range=&amp;ocean_power_range=&amp;zero_power=&amp;no_condition=&amp;in_market=&amp;price_range=&amp;dataset_type=</loc>
-    <lastmod>2025-01-15</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <url>
     <loc>https://altertracker.com/register</loc>
     <lastmod>2025-05-22</lastmod>
     <changefreq>monthly</changefreq>
