@@ -56,7 +56,7 @@ export class EffectBuilderComponent implements OnInit {
           type: 'declencheur',
           value: '[]',
           language: this.currentLanguage
-        });
+        } as EffectModel);
 
         // Ajouter l'option vide pour conditions
         this.conditions.push({
@@ -64,7 +64,7 @@ export class EffectBuilderComponent implements OnInit {
           type: 'condition',
           value: '[]',
           language: this.currentLanguage
-        });
+        } as EffectModel);
 
         // Ajouter l'option "Toute condition" pour conditions
         this.conditions.push({
@@ -72,7 +72,8 @@ export class EffectBuilderComponent implements OnInit {
           type: 'condition',
           value: '%',
           language: this.currentLanguage
-        });
+        } as EffectModel);
+
         response.forEach((effect: EffectModel) => {
           if (effect.type === 'declencheur') {
             this.triggers.push(effect);
