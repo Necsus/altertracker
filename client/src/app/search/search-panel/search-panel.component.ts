@@ -11,7 +11,7 @@ import { withLoader } from '../../shared/services/loader/loader.operator';
 import { LoaderService } from '../../shared/services/loader/loader.service';
 import { ModalService } from '../../shared/services/modal/modal.service';
 import { ToastService } from '../../shared/services/toast/toast.service';
-import { EffectBuilderComponent } from './effect-builder.component';
+import { EffectBuilderComponent } from '../effect-builder/effect-builder.component';
 
 @Component({
   selector: 'app-search-panel',

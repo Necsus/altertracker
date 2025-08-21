@@ -50,7 +50,29 @@ export class EffectBuilderComponent implements OnInit {
         this.triggers = [];
         this.conditions = [];
         this.effects = [];
+        // Ajouter l'option vide pour triggers
+        this.triggers.push({
+          id: 0,
+          type: 'declencheur',
+          value: '[]',
+          language: this.currentLanguage
+        });
 
+        // Ajouter l'option vide pour conditions
+        this.conditions.push({
+          id: -1,
+          type: 'condition',
+          value: '[]',
+          language: this.currentLanguage
+        });
+
+        // Ajouter l'option "Toute condition" pour conditions
+        this.conditions.push({
+          id: -2,
+          type: 'condition',
+          value: '%',
+          language: this.currentLanguage
+        });
         response.forEach((effect: EffectModel) => {
           if (effect.type === 'declencheur') {
             this.triggers.push(effect);
@@ -80,24 +102,17 @@ export class EffectBuilderComponent implements OnInit {
     // Construction du résultat
     if (triggerValue) {
       result += triggerValue;
-    } else {
-      result += '[]';
     }
 
     if (conditionValue) {
-      if (triggerValue) {
+      if (triggerValue && conditionValue !== '[]') {
         result += ' ';
       }
       result += conditionValue;
-    } else {
-      if (triggerValue) {
-        result += ' ';
-      }
-      result += '[]';
     }
 
     if (effectValue) {
-      if (conditionValue) {
+      if (conditionValue && conditionValue !== '[]') {
         result += ' ';
       }
       result += effectValue;
