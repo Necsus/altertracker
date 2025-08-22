@@ -29,8 +29,7 @@ def get_article_by_slug_data(slug: str) -> Optional[Article]:
 def get_article_by_id_data(article_id: int) -> Optional[Article]:
     """Récupère un article par son ID"""
     return db.session.query(Article).filter(
-        Article.id == article_id,
-        Article.status == 'published'
+        Article.id == article_id
     ).first()
 
 def get_articles_by_category_data(category: str) -> List[Article]:
@@ -81,15 +80,12 @@ def increment_article_views_data(article_id: int) -> None:
 
 def get_all_categories_data() -> List[str]:
     """Récupère toutes les catégories d'articles"""
-    result = db.session.query(Article.category).filter(
-        Article.status == 'published'
-    ).distinct().all()
+    result = db.session.query(Article.category).distinct().all()
     return [cat[0] for cat in result]
 
 def get_all_tags_data() -> List[str]:
     """Récupère tous les tags d'articles"""
     articles = db.session.query(Article.tags).filter(
-        Article.status == 'published',
         Article.tags.isnot(None)
     ).all()
     

@@ -89,7 +89,8 @@
 
             <div *ngIf="previewMode" class="bg-gray-700 rounded-lg p-6 min-h-96">
               <div class="prose max-w-none">
-                <markdown [data]="articleForm.get('content')?.value || 'Aucun contenu à prévisualiser'"></markdown>
+                <markdown [data]="articleForm.get('content')?.value || 'Aucun contenu à prévisualiser'"
+                  class="markdown-content"></markdown>
               </div>
             </div>
           </div>

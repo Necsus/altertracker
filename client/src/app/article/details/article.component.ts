@@ -46,9 +46,29 @@ export class ArticleComponent implements OnInit, OnDestroy {
       });
   }
 
+  ngAfterViewInit(): void {
+    // Configuration des liens après le rendu du contenu
+    this.configureExternalLinks();
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
+  }
+
+  private configureExternalLinks(): void {
+    setTimeout(() => {
+      const links = this.elementRef.nativeElement.querySelectorAll('.prose a[href^="http"], .prose a[href^="https"]');
+
+      links.forEach((link: HTMLAnchorElement) => {
+        // Ouvrir dans un nouvel onglet
+        link.setAttribute('target', '_blank');
+        link.setAttribute('rel', 'noopener noreferrer');
+
+        // Ajouter des classes pour le style
+        link.classList.add('external-link');
+      });
+    }, 500);
   }
 
   private loadArticle(identifier: string): void {
