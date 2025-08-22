@@ -189,8 +189,12 @@ def search_cards_data(name, rarity, faction, set, subtype, main_effect, main_eff
 
     if exclude_effect:
         # Si exclude_effect est fourni, on l'utilise pour exclure les cartes
-        exclude_effect = lower_strip(exclude_effect)
-        query = query.filter(~func.lower(main_effect_column).like(f'%{prepare_like_query(exclude_effect)}%', escape='\\'))
+        # Supporter plusieurs termes séparés par des virgules
+        exclude_terms = [term.strip() for term in exclude_effect.split(',') if term.strip()]
+        
+        for term in exclude_terms:
+            term = lower_strip(term)
+            query = query.filter(~func.lower(main_effect_column).like(f'%{prepare_like_query(term)}%', escape='\\'))
 
     if echo_effect:
         echo_effect = lower_strip(echo_effect)

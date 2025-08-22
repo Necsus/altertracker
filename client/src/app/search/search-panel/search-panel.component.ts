@@ -29,6 +29,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
   isLoggedIn = false;
   selectedFactions: string[] = []; // Liste des factions sélectionnées
   selectedRarity: string[] = []; // Liste des factions sélectionnées
+  selectedExcludeEffects: string[] = []; // Liste des effets à exclure
   private routeSubscription: any;
   constructor(
     private fb: FormBuilder,
@@ -121,6 +122,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     // Synchronise les tableaux pour l'affichage
     this.selectedFactions = (queryParams['faction'] || '').split(',').filter(Boolean);
     this.selectedRarity = (queryParams['rarity'] || '').split(',').filter(Boolean);
+    this.selectedExcludeEffects = (queryParams['exclude_effect'] || '').split(',').filter(Boolean);
   }
 
   toggleFilters(): void {
@@ -272,6 +274,31 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
 
   hidePopover() {
     this.popoverIndex = null;
+  }
+
+  addExcludeEffect(event: Event): void {
+    event.preventDefault(); // Empêche le comportement par défaut
+    event.stopPropagation(); // Empêche la propagation vers le formulaire
+
+    const input = event.target as HTMLInputElement;
+    const effect = input.value.trim();
+
+    if (effect && !this.selectedExcludeEffects.includes(effect)) {
+      this.selectedExcludeEffects.push(effect);
+      this.updateExcludeEffectForm();
+      input.value = '';
+    }
+  }
+
+  removeExcludeEffect(effectToRemove: string): void {
+    this.selectedExcludeEffects = this.selectedExcludeEffects.filter(effect => effect !== effectToRemove);
+    this.updateExcludeEffectForm();
+  }
+
+  private updateExcludeEffectForm(): void {
+    this.searchForm.patchValue({
+      exclude_effect: this.selectedExcludeEffects.join(',')
+    });
   }
 
   private handleEffectBuilderResult(

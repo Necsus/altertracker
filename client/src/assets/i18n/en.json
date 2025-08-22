@@ -156,7 +156,9 @@
       "name": "Name",
       "faction": "Faction",
       "main_cost": "Main cost"
-    }
+    },
+    "exclude_effect_placeholder": "Add an effect to exclude (Enter to validate)",
+    "exclude_effect_help": "Enter terms separated by Enter to exclude cards containing these effects"
   },
   "about": {
     "title": "About AlterTracker",
