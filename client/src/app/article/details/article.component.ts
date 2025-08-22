@@ -7,6 +7,7 @@ import { MarkdownComponent } from 'ngx-markdown';
 import { Subject, takeUntil } from 'rxjs';
 import { ArticleModel } from '../../01_models/03_business/article.model';
 import { ArticleService } from '../../03_business/article.service';
+import { AuthViewService } from '../../authentication/auth-view.service';
 
 @Component({
   selector: 'app-article',
@@ -32,7 +33,8 @@ export class ArticleComponent implements OnInit, OnDestroy {
     private articleService: ArticleService,
     private titleService: Title,
     private metaService: Meta,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    public authViewService: AuthViewService
   ) { }
 
   ngOnInit(): void {

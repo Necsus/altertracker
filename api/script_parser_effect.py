@@ -44,7 +44,7 @@ def parse_effect_text(effect_text):
         match = pattern_curly_with_condition.match(effet)
         if match:
             declencheur = f"{{{match.group(1)}}}"
-            reste = match.group(2).strip() + ":" + match.group(3).strip()
+            reste = match.group(2).strip() + " :" + match.group(3).strip()
         else:
             match = pattern_curly_without_condition.match(effet)
             if match:
@@ -63,7 +63,7 @@ def parse_effect_text(effect_text):
             reste_after_empty = match_empty.group(1).strip()
             if ':' in reste_after_empty:
                 parts = reste_after_empty.split(':', 1)
-                condition = parts[0].strip() + ":"
+                condition = parts[0].strip() + " :"
                 effet_value = parts[1].strip()
             else:
                 condition = '[]'
@@ -71,7 +71,7 @@ def parse_effect_text(effect_text):
         else:
             if ':' in reste:
                 parts = reste.split(':', 1)
-                condition = parts[0].strip() + ":"
+                condition = parts[0].strip() + " :"
                 effet_value = parts[1].strip()
             else:
                 effet_value = reste

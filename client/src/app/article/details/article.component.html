@@ -18,11 +18,19 @@
   <article *ngIf="article && !isLoading" class="max-w-4xl mx-auto">
     <!-- Navigation -->
     <nav class="p-4">
-      <button [routerLink]="['/articles']"
-        class="flex items-center text-amber-400 hover:text-amber-300 transition-colors">
-        <i class="fas fa-arrow-left mr-2"></i>
-        {{ 'articles.back_to_list' | translate }}
-      </button>
+      <div class="flex justify-between items-center">
+        <button [routerLink]="['/articles']"
+          class="flex items-center text-amber-400 hover:text-amber-300 transition-colors">
+          <i class="fas fa-arrow-left mr-2"></i>
+          {{ 'articles.back_to_list' | translate }}
+        </button>
+
+        <button *ngIf="authViewService.isPublisher() && article" [routerLink]="['/admin/article/edit', article.id]"
+          class="px-4 py-2 bg-amber-600 hover:bg-amber-500 rounded-lg transition-colors">
+          <i class="fas fa-edit mr-2"></i>
+          Modifier
+        </button>
+      </div>
     </nav>
 
     <!-- Image featured -->

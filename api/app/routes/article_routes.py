@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request, make_response
 from flask_jwt_extended import jwt_required
 from app.services.article_service import (
+    get_all_articles_service,
     get_last_published_articles_service,
     get_published_articles_service,
     get_article_by_slug_service,
@@ -15,7 +16,7 @@ from app.services.article_service import (
     update_article_service,
     delete_article_service
 )
-from app.decorators.auth_decorator import admin_required
+from app.decorators.auth_decorator import admin_required, publisher_required
 
 article_bp = Blueprint('articles', __name__)
 
@@ -120,7 +121,7 @@ def get_tags():
 # Routes d'administration (nécessitent les droits admin)
 @article_bp.route('/', methods=['POST'])
 @jwt_required()
-@admin_required
+@publisher_required
 def create_article():
     """Crée un nouvel article (admin seulement)"""
     try:
@@ -132,9 +133,9 @@ def create_article():
 
 @article_bp.route('/<int:article_id>', methods=['PUT'])
 @jwt_required()
-@admin_required
+@publisher_required
 def update_article(article_id: int):
-    """Met à jour un article (admin seulement)"""
+    """Met à jour un article (publisher et admin seulement)"""
     try:
         data = request.get_json()
         article = update_article_service(article_id, data)
@@ -154,5 +155,16 @@ def delete_article(article_id: int):
         if not success:
             return make_response(jsonify({'message': 'Article non trouvé'}), 404)
         return jsonify({'message': 'Article supprimé'}), 200
+    except Exception as e:
+        return make_response(jsonify({'message': f'Erreur : {str(e)}'}), 500)
+    
+@article_bp.route('/all', methods=['GET'])
+@jwt_required()
+@publisher_required
+def get_all_articles():
+    """Récupère tous les articles publisher et admin seulement"""
+    try:
+        articles = get_all_articles_service()
+        return jsonify(articles), 200
     except Exception as e:
         return make_response(jsonify({'message': f'Erreur : {str(e)}'}), 500)

@@ -1,257 +1,276 @@
 <!-- Sidebar -->
 <form [formGroup]="searchForm" (ngSubmit)="onSubmit()">
   @if (!showFull) {
-    <div class="flex justify-between items-center mb-4 cursor-pointer select-none"
-      (click)="toggleFilters()">
-      <h2 class="text-xl font-bold">{{ 'cards.filters' | translate }}</h2>
-      <span class="p-2 rounded-lg hover:bg-gray-600 transition cursor-pointer">
-        <i class="fas" [ngClass]="areFiltersOpen ? 'fa-minus' : 'fa-plus'"></i>
-      </span>
-    </div>
+  <div class="flex justify-between items-center mb-4 cursor-pointer select-none" (click)="toggleFilters()">
+    <h2 class="text-xl font-bold">{{ 'cards.filters' | translate }}</h2>
+    <span class="p-2 rounded-lg hover:bg-gray-600 transition cursor-pointer">
+      <i class="fas" [ngClass]="areFiltersOpen ? 'fa-minus' : 'fa-plus'"></i>
+    </span>
+  </div>
   }
 
   <div [ngClass]="showFull ? 'flex justify-center' : ''">
 
     @if (areFiltersOpen) {
-      <div [ngClass]="showFull ? 'flex flex-col gap-4 m-3 max-w-64' : ''">
-        <!-- Nom -->
-        <div class="mb-4">
-          <label class="block mb-1 text-center text-sm font-semibold">{{ 'cards.form_name' | translate }}</label>
-          <input type="text" formControlName="name"
-            class="w-full p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400">
-          </div>
-          <!-- Rareté -->
-          <div class="mb-4">
-            <label class="block mb-1 text-center text-sm font-semibold">{{ 'cards.form_rarity' | translate }}</label>
-            <div class="grid grid-cols-3 gap-2">
-              <a class="flex flex-col items-center justify-center p-1 rounded-lg transition cursor-pointer"
-                [class.bg-amber-500]="selectedRarity.includes('COMMON')" (click)="toggleRarity('COMMON')">
-                <i class="icon-common w-10 h-5"></i>
-              </a>
-              <a class="flex flex-col items-center justify-content-center p-2 rounded-lg transition cursor-pointer"
-                [class.bg-amber-500]="selectedRarity.includes('RARE')" (click)="toggleRarity('RARE')">
-                <i class="icon-rare w-10 h-5"></i>
-              </a>
-              <a class="flex flex-col items-center justify-center p-1 rounded-lg transition cursor-pointer"
-                [class.bg-amber-500]="selectedRarity.includes('UNIQUE')" (click)="toggleRarity('UNIQUE')">
-                <i class="icon-unique w-10 h-5"></i>
-              </a>
-            </div>
-          </div>
-          <!-- Faction -->
-          <div class="mb-4">
-            <label class="block mb-1 text-center text-sm font-semibold">{{ 'cards.form_faction' | translate }}</label>
-            <div class="grid grid-cols-3 gap-2">
-              <a class="flex flex-col items-center justify-center p-1 rounded-lg transition cursor-pointer"
-                [class.bg-amber-500]="selectedFactions.includes('AX')" (click)="toggleFaction('AX')">
-                <i class="icon-axiom w-10 h-10"></i>
-              </a>
-              <a class="flex flex-col items-center p-2 rounded-lg transition cursor-pointer"
-                [class.bg-amber-500]="selectedFactions.includes('BR')" (click)="toggleFaction('BR')">
-                <i class="icon-bravos w-10 h-10"></i>
-              </a>
-              <a class="flex flex-col items-center p-1 rounded-lg transition cursor-pointer"
-                [class.bg-amber-500]="selectedFactions.includes('LY')" (click)="toggleFaction('LY')">
-                <i class="icon-lyra w-10 h-10"></i>
-              </a>
-              <a class="flex flex-col items-center p-1 rounded-lg transition cursor-pointer"
-                [class.bg-amber-500]="selectedFactions.includes('MU')" (click)="toggleFaction('MU')">
-                <i class="icon-muna w-10 h-10"></i>
-              </a>
-              <a class="flex flex-col items-center p-1 rounded-lg transition cursor-pointer"
-                [class.bg-amber-500]="selectedFactions.includes('OR')" (click)="toggleFaction('OR')">
-                <i class="icon-ordis w-10 h-10"></i>
-              </a>
-              <a class="flex flex-col items-center p-1 rounded-lg transition cursor-pointer"
-                [class.bg-amber-500]="selectedFactions.includes('YZ')" (click)="toggleFaction('YZ')">
-                <i class="icon-yzmir w-10 h-10"></i>
-              </a>
-            </div>
-          </div>
+    <div [ngClass]="showFull ? 'flex flex-col gap-4 m-3 max-w-64' : ''">
+      <!-- Nom -->
+      <div class="mb-4">
+        <label class="block mb-1 text-center text-sm font-semibold">{{ 'cards.form_name' | translate }}</label>
+        <input type="text" formControlName="name"
+          class="w-full p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400">
+      </div>
+      <!-- Rareté -->
+      <div class="mb-4">
+        <label class="block mb-1 text-center text-sm font-semibold">{{ 'cards.form_rarity' | translate }}</label>
+        <div class="grid grid-cols-3 gap-2">
+          <a class="flex flex-col items-center justify-center p-1 rounded-lg transition cursor-pointer"
+            [class.bg-amber-500]="selectedRarity.includes('COMMON')" (click)="toggleRarity('COMMON')">
+            <i class="icon-common w-10 h-5"></i>
+          </a>
+          <a class="flex flex-col items-center justify-content-center p-2 rounded-lg transition cursor-pointer"
+            [class.bg-amber-500]="selectedRarity.includes('RARE')" (click)="toggleRarity('RARE')">
+            <i class="icon-rare w-10 h-5"></i>
+          </a>
+          <a class="flex flex-col items-center justify-center p-1 rounded-lg transition cursor-pointer"
+            [class.bg-amber-500]="selectedRarity.includes('UNIQUE')" (click)="toggleRarity('UNIQUE')">
+            <i class="icon-unique w-10 h-5"></i>
+          </a>
         </div>
+      </div>
+      <!-- Faction -->
+      <div class="mb-4">
+        <label class="block mb-1 text-center text-sm font-semibold">{{ 'cards.form_faction' | translate }}</label>
+        <div class="grid grid-cols-3 gap-2">
+          <a class="flex flex-col items-center justify-center p-1 rounded-lg transition cursor-pointer"
+            [class.bg-amber-500]="selectedFactions.includes('AX')" (click)="toggleFaction('AX')">
+            <i class="icon-axiom w-10 h-10"></i>
+          </a>
+          <a class="flex flex-col items-center p-2 rounded-lg transition cursor-pointer"
+            [class.bg-amber-500]="selectedFactions.includes('BR')" (click)="toggleFaction('BR')">
+            <i class="icon-bravos w-10 h-10"></i>
+          </a>
+          <a class="flex flex-col items-center p-1 rounded-lg transition cursor-pointer"
+            [class.bg-amber-500]="selectedFactions.includes('LY')" (click)="toggleFaction('LY')">
+            <i class="icon-lyra w-10 h-10"></i>
+          </a>
+          <a class="flex flex-col items-center p-1 rounded-lg transition cursor-pointer"
+            [class.bg-amber-500]="selectedFactions.includes('MU')" (click)="toggleFaction('MU')">
+            <i class="icon-muna w-10 h-10"></i>
+          </a>
+          <a class="flex flex-col items-center p-1 rounded-lg transition cursor-pointer"
+            [class.bg-amber-500]="selectedFactions.includes('OR')" (click)="toggleFaction('OR')">
+            <i class="icon-ordis w-10 h-10"></i>
+          </a>
+          <a class="flex flex-col items-center p-1 rounded-lg transition cursor-pointer"
+            [class.bg-amber-500]="selectedFactions.includes('YZ')" (click)="toggleFaction('YZ')">
+            <i class="icon-yzmir w-10 h-10"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+    }
+
+    @if (areFiltersOpen) {
+    <div [ngClass]="showFull ? 'flex flex-col gap-4 m-3 max-w-48' : ''">
+      <!-- Set -->
+      <div class="mb-4">
+        <label class="block mb-1 text-center text-sm font-semibold">{{ 'cards.form_set' | translate }}</label>
+        <select formControlName="set"
+          class="w-full p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400">
+          <option value="">-- {{ 'cards.form_set' | translate }} --</option>
+          <option value="CYCLONE">{{ 'cards.set.cyclone' | translate }}</option>
+          <option value="BISE">{{ 'cards.set.bise' | translate }}</option>
+          <option value="ALIZE">{{ 'cards.set.alize' | translate }}</option>
+          <option value="CORE">{{ 'cards.set.core' | translate }}</option>
+          <option value="COREKS">{{ 'cards.set.coreks' | translate }}</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label class="block mb-1 text-center text-sm font-semibold">{{ 'cards.form_subtype' | translate }}</label>
+        <select formControlName="subtype"
+          class="w-full p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400">
+          <option value="">-- {{ 'cards.form_subtype' | translate }} --</option>
+          <option value="ADVENTURER">ADVENTURER</option>
+          <option value="ANIMAL">ANIMAL</option>
+          <option value="APPRENTICE">APPRENTICE</option>
+          <option value="ARTIST">ARTIST</option>
+          <option value="BOON">BOON</option>
+          <option value="BUREAUCRAT">BUREAUCRAT</option>
+          <option value="CITIZEN">CITIZEN</option>
+          <option value="CONJURATION">CONJURATION</option>
+          <option value="CONSTRUCTION">CONSTRUCTION</option>
+          <option value="DEITY">DEITY</option>
+          <option value="DISRUPTION">DISRUPTION</option>
+          <option value="DRAGON">DRAGON</option>
+          <option value="DRUID">DRUID</option>
+          <option value="ELEMENTAL">ELEMENTAL</option>
+          <option value="ENGINEER">ENGINEER</option>
+          <option value="FAIRY">FAIRY</option>
+          <option value="GEAR">GEAR</option>
+          <option value="LANDMARK">LANDMARK</option>
+          <option value="LEVIATHAN">LEVIATHAN</option>
+          <option value="MAGE">MAGE</option>
+          <option value="MANEUVER">MANEUVER</option>
+          <option value="MESSENGER">MESSENGER</option>
+          <option value="NOBLE">NOBLE</option>
+          <option value="PLANT">PLANT</option>
+          <option value="ROBOT">ROBOT</option>
+          <option value="SCHOLAR">SCHOLAR</option>
+          <option value="SITE">SITE</option>
+          <option value="SOLDIER">SOLDIER</option>
+          <option value="SONG">SONG</option>
+          <option value="SPIRIT">SPIRIT</option>
+          <option value="TITAN">TITAN</option>
+          <option value="TRAINER">TRAINER</option>
+        </select>
+      </div>
+      <div class="grid grid-cols-2 gap-2 mb-4">
+        <div class="flex flex-col items-center justify-center">
+          <label class="block mb-1 text-sm font-semibold">{{ 'cards.form_main_cost' | translate
+            }}</label>
+          <input formControlName="main_cost_range" type="text" placeholder="1-10"
+            class="w-full text-center p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400" />
+        </div>
+        <div class="flex flex-col items-center justify-center">
+          <label class="block mb-1 text-sm font-semibold">{{ 'cards.form_recall_cost' | translate
+            }}</label>
+          <input formControlName="recall_cost_range" type="text" placeholder="1-10"
+            class="w-full text-center p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400" />
+        </div>
+      </div>
+      <div class="grid grid-cols-3 gap-2 mb-4">
+        <div class="flex flex-col items-center justify-center">
+          <label class="block mb-1 text-sm font-semibold"><i
+              class="altered-icon forest color-forest inline-block"></i></label>
+          <input formControlName="forest_power_range" type="text" placeholder="0-10"
+            class="w-full text-center p-2 bg-gray-700 rounded-lg border border-forest" />
+        </div>
+        <div class="flex flex-col items-center justify-center">
+          <label class="block mb-1 text-sm font-semibold"><i
+              class="altered-icon mountain color-mountain inline-block"></i></label>
+          <input formControlName="mountain_power_range" type="text" placeholder="0-10"
+            class="w-full text-center p-2 bg-gray-700 rounded-lg border border-mountain" />
+        </div>
+        <div class="flex flex-col items-center justify-center">
+          <label class="block mb-1 text-sm font-semibold"><i
+              class="altered-icon ocean color-ocean inline-block"></i></label>
+          <input formControlName="ocean_power_range" type="text" placeholder="0-10"
+            class="w-full text-center p-2 bg-gray-700 rounded-lg border border-ocean" />
+        </div>
+      </div>
+      <div class="mb-2 flex items-center justify-center text-center">
+        <input type="checkbox" id="zero_power" formControlName="zero_power"
+          class="form-checkbox bg-gray-600 text-amber-500 rounded cursor-pointer select-none">
+        <label for="zero_power" class="ml-2 text-sm cursor-pointer select-none">{{ 'cards.form_zero_power' | translate
+          }}</label>
+      </div>
+    </div>
+    }
+
+    @if (!showFull) {
+    <div class="flex justify-between items-center mb-4 cursor-pointer select-none" (click)="toggleEffects()">
+      <h2 class="text-xl font-bold">{{ 'cards.filter_effect' | translate }}</h2>
+      <span class="p-2 rounded-lg hover:bg-gray-600 transition cursor-pointer">
+        <i class="fas" [ngClass]="areEffectsOpen ? 'fa-minus' : 'fa-plus'"></i>
+      </span>
+    </div>
+    }
+
+    @if (areEffectsOpen) {
+    <div [ngClass]="showFull ? 'flex flex-col gap-4 m-3 w-64' : ''">
+      <div class="mb-4">
+        <label class="block mb-1 text-sm font-semibold">{{ 'cards.form_contain_effect' | translate }}</label>
+        <div class="relative">
+          <input type="text" formControlName="main_effect"
+            class="w-full bg-gray-700 text-white placeholder-gray-400 border border-amber-500 rounded-lg py-2 pl-2 pr-8 focus:ring-2 focus:ring-amber-500" />
+          <button type="button" class="absolute right-2 top-1/2 -translate-y-1/2 text-amber-500 hover:text-amber-400"
+            (click)="openEffectBuilder('main_effect')">
+            <i class="fas fa-wand-magic-sparkles"></i>
+          </button>
+        </div>
+      </div>
+      <div class="mb-4">
+        <label class="block mb-1 text-sm font-semibold">{{ 'cards.form_and_contain_effect' | translate }}</label>
+        <div class="relative">
+          <input type="text" formControlName="main_effect_2"
+            class="w-full bg-gray-700 text-white placeholder-gray-400 border border-amber-500 rounded-lg py-2 pl-2 pr-8 focus:ring-2 focus:ring-amber-500" />
+          <button type="button" class="absolute right-2 top-1/2 -translate-y-1/2 text-amber-500 hover:text-amber-400"
+            (click)="openEffectBuilder('main_effect_2')">
+            <i class="fas fa-wand-magic-sparkles"></i>
+          </button>
+        </div>
+      </div>
+      <div class="mb-4">
+        <label class="block mb-1 text-sm font-semibold">{{ 'cards.exclude_effect' | translate }}</label>
+
+        <!-- Affichage des effets exclus -->
+        <div class="flex flex-wrap gap-2 mb-2" *ngIf="selectedExcludeEffects.length > 0">
+          <span *ngFor="let effect of selectedExcludeEffects"
+            class="bg-amber-600 text-white px-2 py-1 rounded text-sm flex items-center">
+            {{ effect }}
+            <button type="button" (click)="removeExcludeEffect(effect)" class="ml-2 text-xs hover:text-amber-200">
+              <i class="fas fa-times"></i>
+            </button>
+          </span>
+        </div>
+
+        <!-- Champ d'entrée pour ajouter des effets à exclure -->
+        <div class="relative">
+          <input type="text" (keyup.enter)="addExcludeEffect($event)" (keydown.enter)="$event.preventDefault()"
+            class="w-full bg-gray-700 text-white placeholder-gray-400 border border-amber-500 rounded-lg py-2 pl-2 pr-8 focus:ring-2 focus:ring-amber-500" />
+        </div>
+
+        <!-- Champ caché pour le formulaire -->
+        <input type="hidden" formControlName="exclude_effect">
+
+        <p class="text-xs text-gray-400 mt-1">
+          Entrez des termes séparés par Entrée pour exclure les cartes contenant ces effets
+        </p>
+      </div>
+      <div class="mb-4">
+        <label class="block mb-1 text-sm font-semibold">{{ 'cards.form_contain_echo_effect' | translate }}</label>
+        <input type="text" formControlName="echo_effect"
+          class="w-full p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400">
+      </div>
+    </div>
+    }
+
+    @if (!showFull) {
+    <div class="flex justify-between items-center mb-4 cursor-pointer select-none" (click)="toggleOffers()">
+      <h2 class="text-xl font-bold">{{ 'cards.filter_offers' | translate }}</h2>
+      <span class="p-2 rounded-lg hover:bg-gray-600 transition cursor-pointer">
+        <i class="fas" [ngClass]="areOffersOpen ? 'fa-minus' : 'fa-plus'"></i>
+      </span>
+    </div>
+    }
+
+    @if (areOffersOpen) {
+    <div [ngClass]="showFull ? 'flex flex-col gap-4 m-3 max-w-48' : ''">
+      <div class="mb-2 flex items-center justify-center">
+        <input type="checkbox" id="in_market" formControlName="in_market"
+          class="form-checkbox bg-gray-600 text-amber-500 rounded cursor-pointer select-none">
+        <label for="in_market" class="ml-2 text-sm cursor-pointer select-none">{{ 'cards.form_db_market' | translate
+          }}</label>
+      </div>
+      @if (searchForm.get('in_market')?.value) {
+      <div class="mb-4">
+        <label class="block mb-1 text-center text-sm font-semibold">{{ 'cards.form_price_range' | translate
+          }}</label>
+        <input type="text" formControlName="price_range" placeholder="1-250"
+          class="w-full text-center p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400">
+      </div>
       }
+    </div>
+    }
+  </div>
 
-      @if (areFiltersOpen) {
-        <div [ngClass]="showFull ? 'flex flex-col gap-4 m-3 max-w-48' : ''">
-          <!-- Set -->
-          <div class="mb-4">
-            <label class="block mb-1 text-center text-sm font-semibold">{{ 'cards.form_set' | translate }}</label>
-            <select formControlName="set"
-              class="w-full p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400">
-              <option value="">-- {{ 'cards.form_set' | translate }} --</option>
-              <option value="CYCLONE">{{ 'cards.set.cyclone' | translate }}</option>
-              <option value="BISE">{{ 'cards.set.bise' | translate }}</option>
-              <option value="ALIZE">{{ 'cards.set.alize' | translate }}</option>
-              <option value="CORE">{{ 'cards.set.core' | translate }}</option>
-              <option value="COREKS">{{ 'cards.set.coreks' | translate }}</option>
-            </select>
-          </div>
-          <div class="mb-4">
-            <label class="block mb-1 text-center text-sm font-semibold">{{ 'cards.form_subtype' | translate }}</label>
-            <select formControlName="subtype"
-              class="w-full p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400">
-              <option value="">-- {{ 'cards.form_subtype' | translate }} --</option>
-              <option value="ADVENTURER">ADVENTURER</option>
-              <option value="ANIMAL">ANIMAL</option>
-              <option value="APPRENTICE">APPRENTICE</option>
-              <option value="ARTIST">ARTIST</option>
-              <option value="BOON">BOON</option>
-              <option value="BUREAUCRAT">BUREAUCRAT</option>
-              <option value="CITIZEN">CITIZEN</option>
-              <option value="CONJURATION">CONJURATION</option>
-              <option value="CONSTRUCTION">CONSTRUCTION</option>
-              <option value="DEITY">DEITY</option>
-              <option value="DISRUPTION">DISRUPTION</option>
-              <option value="DRAGON">DRAGON</option>
-              <option value="DRUID">DRUID</option>
-              <option value="ELEMENTAL">ELEMENTAL</option>
-              <option value="ENGINEER">ENGINEER</option>
-              <option value="FAIRY">FAIRY</option>
-              <option value="GEAR">GEAR</option>
-              <option value="LANDMARK">LANDMARK</option>
-              <option value="LEVIATHAN">LEVIATHAN</option>
-              <option value="MAGE">MAGE</option>
-              <option value="MANEUVER">MANEUVER</option>
-              <option value="MESSENGER">MESSENGER</option>
-              <option value="NOBLE">NOBLE</option>
-              <option value="PLANT">PLANT</option>
-              <option value="ROBOT">ROBOT</option>
-              <option value="SCHOLAR">SCHOLAR</option>
-              <option value="SITE">SITE</option>
-              <option value="SOLDIER">SOLDIER</option>
-              <option value="SONG">SONG</option>
-              <option value="SPIRIT">SPIRIT</option>
-              <option value="TITAN">TITAN</option>
-              <option value="TRAINER">TRAINER</option>
-            </select>
-          </div>
-          <div class="grid grid-cols-2 gap-2 mb-4">
-            <div class="flex flex-col items-center justify-center">
-              <label class="block mb-1 text-sm font-semibold">{{ 'cards.form_main_cost' | translate
-              }}</label>
-              <input formControlName="main_cost_range" type="text" placeholder="1-10"
-                class="w-full text-center p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400" />
-              </div>
-              <div class="flex flex-col items-center justify-center">
-                <label class="block mb-1 text-sm font-semibold">{{ 'cards.form_recall_cost' | translate
-                }}</label>
-                <input formControlName="recall_cost_range" type="text" placeholder="1-10"
-                  class="w-full text-center p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400" />
-                </div>
-              </div>
-              <div class="grid grid-cols-3 gap-2 mb-4">
-                <div class="flex flex-col items-center justify-center">
-                  <label class="block mb-1 text-sm font-semibold"><i
-                  class="altered-icon forest color-forest inline-block"></i></label>
-                  <input formControlName="forest_power_range" type="text" placeholder="0-10"
-                    class="w-full text-center p-2 bg-gray-700 rounded-lg border border-forest" />
-                  </div>
-                  <div class="flex flex-col items-center justify-center">
-                    <label class="block mb-1 text-sm font-semibold"><i
-                    class="altered-icon mountain color-mountain inline-block"></i></label>
-                    <input formControlName="mountain_power_range" type="text" placeholder="0-10"
-                      class="w-full text-center p-2 bg-gray-700 rounded-lg border border-mountain" />
-                    </div>
-                    <div class="flex flex-col items-center justify-center">
-                      <label class="block mb-1 text-sm font-semibold"><i
-                      class="altered-icon ocean color-ocean inline-block"></i></label>
-                      <input formControlName="ocean_power_range" type="text" placeholder="0-10"
-                        class="w-full text-center p-2 bg-gray-700 rounded-lg border border-ocean" />
-                      </div>
-                    </div>
-                    <div class="mb-2 flex items-center justify-center text-center">
-                      <input type="checkbox" id="zero_power" formControlName="zero_power"
-                        class="form-checkbox bg-gray-600 text-amber-500 rounded cursor-pointer select-none">
-                        <label for="zero_power" class="ml-2 text-sm cursor-pointer select-none">{{ 'cards.form_zero_power' | translate
-                        }}</label>
-                      </div>
-                    </div>
-                  }
-
-                  @if (!showFull) {
-                    <div class="flex justify-between items-center mb-4 cursor-pointer select-none" (click)="toggleEffects()"
-                      >
-                      <h2 class="text-xl font-bold">{{ 'cards.filter_effect' | translate }}</h2>
-                      <span class="p-2 rounded-lg hover:bg-gray-600 transition cursor-pointer">
-                        <i class="fas" [ngClass]="areEffectsOpen ? 'fa-minus' : 'fa-plus'"></i>
-                      </span>
-                    </div>
-                  }
-
-                  @if (areEffectsOpen) {
-                    <div [ngClass]="showFull ? 'flex flex-col gap-4 m-3 w-64' : ''">
-                      <div class="mb-4">
-                        <label class="block mb-1 text-sm font-semibold">{{ 'cards.form_contain_effect' | translate }}</label>
-                        <div class="relative">
-                          <input type="text" formControlName="main_effect"
-                            class="w-full bg-gray-700 text-white placeholder-gray-400 border border-amber-500 rounded-lg py-2 pl-2 pr-8 focus:ring-2 focus:ring-amber-500" />
-                            <button type="button" class="absolute right-2 top-1/2 -translate-y-1/2 text-amber-500 hover:text-amber-400"
-                              (click)="openEffectBuilder('main_effect')">
-                              <i class="fas fa-wand-magic-sparkles"></i>
-                            </button>
-                          </div>
-                        </div>
-                        <div class="mb-4">
-                          <label class="block mb-1 text-sm font-semibold">{{ 'cards.form_and_contain_effect' | translate }}</label>
-                          <div class="relative">
-                            <input type="text" formControlName="main_effect_2"
-                              class="w-full bg-gray-700 text-white placeholder-gray-400 border border-amber-500 rounded-lg py-2 pl-2 pr-8 focus:ring-2 focus:ring-amber-500" />
-                              <button type="button" class="absolute right-2 top-1/2 -translate-y-1/2 text-amber-500 hover:text-amber-400"
-                                (click)="openEffectBuilder('main_effect_2')">
-                                <i class="fas fa-wand-magic-sparkles"></i>
-                              </button>
-                            </div>
-                          </div>
-                          <div class="mb-4">
-                            <label class="block mb-1 text-sm font-semibold">{{ 'cards.exclude_effect' | translate }}</label>
-                            <input type="text" formControlName="exclude_effect"
-                              class="w-full p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400">
-                            </div>
-                            <div class="mb-4">
-                              <label class="block mb-1 text-sm font-semibold">{{ 'cards.form_contain_echo_effect' | translate }}</label>
-                              <input type="text" formControlName="echo_effect"
-                                class="w-full p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400">
-                              </div>
-                            </div>
-                          }
-
-                          @if (!showFull) {
-                            <div class="flex justify-between items-center mb-4 cursor-pointer select-none"
-                              (click)="toggleOffers()">
-                              <h2 class="text-xl font-bold">{{ 'cards.filter_offers' | translate }}</h2>
-                              <span class="p-2 rounded-lg hover:bg-gray-600 transition cursor-pointer">
-                                <i class="fas" [ngClass]="areOffersOpen ? 'fa-minus' : 'fa-plus'"></i>
-                              </span>
-                            </div>
-                          }
-
-                          @if (areOffersOpen) {
-                            <div [ngClass]="showFull ? 'flex flex-col gap-4 m-3 max-w-48' : ''">
-                              <div class="mb-2 flex items-center justify-center">
-                                <input type="checkbox" id="in_market" formControlName="in_market"
-                                  class="form-checkbox bg-gray-600 text-amber-500 rounded cursor-pointer select-none">
-                                  <label for="in_market" class="ml-2 text-sm cursor-pointer select-none">{{ 'cards.form_db_market' | translate
-                                  }}</label>
-                                </div>
-                                @if (searchForm.get('in_market')?.value) {
-                                  <div class="mb-4">
-                                    <label class="block mb-1 text-center text-sm font-semibold">{{ 'cards.form_price_range' | translate
-                                    }}</label>
-                                    <input type="text" formControlName="price_range" placeholder="1-250"
-                                      class="w-full text-center p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400">
-                                    </div>
-                                  }
-                                </div>
-                              }
-                            </div>
-
-                            <div class="mt-8 text-center">
+  <div class="mt-8 text-center">
     <button type="submit" [disabled]="!isFormValid()" [ngClass]="{
         'bg-gray-500 cursor-not-allowed': !isFormValid(),
         'bg-gradient-to-r from-amber-600 to-gray-500 hover:from-amber-700 hover:to-gray-600': isFormValid()
       }" class="w-full py-3 text-white font-semibold rounded-lg shadow-lg transition cursor-pointer">
-                                {{ 'cards.form_search' | translate }}
-                              </button>
-                            </div>
+      {{ 'cards.form_search' | translate }}
+    </button>
+  </div>
 
-                          </form>
+</form>

@@ -35,13 +35,22 @@
       </div>
 
       <!-- Boutons d'action -->
-      <div class="flex gap-2 mt-4">
-        <button (click)="onSearch()" class="px-4 py-2 bg-amber-600 hover:bg-amber-500 rounded-lg transition-colors">
-          {{ 'articles.search' | translate }}
-        </button>
-        <button (click)="clearFilters()" class="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-lg transition-colors">
-          {{ 'articles.clear_filters' | translate }}
-        </button>
+      <div class="flex justify-between items-center mt-4">
+        <div class="flex gap-2">
+          <button (click)="onSearch()" class="px-4 py-2 bg-amber-600 hover:bg-amber-500 rounded-lg transition-colors">
+            {{ 'articles.search' | translate }}
+          </button>
+          <button (click)="clearFilters()" class="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-lg transition-colors">
+            {{ 'articles.clear_filters' | translate }}
+          </button>
+        </div>
+        <div *ngIf="authViewService.isPublisher()">
+          <button [routerLink]="['/admin/article/new']"
+            class="px-4 py-2 bg-amber-600 hover:bg-amber-500 rounded-lg transition-colors">
+            <i class="fas fa-plus mr-2"></i>
+            Nouvel article
+          </button>
+        </div>
       </div>
     </div>
 
@@ -54,8 +63,7 @@
     <!-- Liste des articles -->
     <div *ngIf="!isLoading" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <article *ngFor="let article of filteredArticles"
-        class="bg-gray-800 rounded-lg overflow-hidden hover:bg-gray-750 transition-colors cursor-pointer"
-        [routerLink]="['/article', article.slug]">
+        class="bg-gray-800 rounded-lg overflow-hidden hover:bg-gray-750 transition-colors">
 
         <!-- Image featured -->
         <div *ngIf="article.featured_image" class="h-48 overflow-hidden">
@@ -64,15 +72,27 @@
         </div>
 
         <div class="p-6">
+          <!-- Statut pour admin -->
+          <div *ngIf="authViewService.isPublisher()" class="flex justify-between items-center mb-3">
+            <span [class]="'px-2 py-1 rounded text-xs font-medium ' + getStatusConfig(article.status).class">
+              <i [class]="getStatusConfig(article.status).icon + ' mr-1'"></i>
+              {{ getStatusConfig(article.status).label }}
+            </span>
+            <button [routerLink]="['/admin/article/edit', article.id]"
+              class="px-2 py-1 bg-gray-600 hover:bg-gray-500 rounded text-xs transition-colors">
+              <i class="fas fa-edit"></i>
+            </button>
+          </div>
+
           <!-- Catégorie et temps de lecture -->
-          <div class="flex justify-between items-center mb-3">
+          <div class="flex justify-between items-center mb-3" [class.mt-0]="authViewService.isPublisher()">
             <span class="bg-amber-600 text-white px-2 py-1 rounded text-sm">{{ article.category }}</span>
             <span class="text-gray-400 text-sm">{{ getReadingTimeText(article.reading_time) }}</span>
           </div>
 
-          <!-- Titre -->
+          <!-- Titre avec lien conditionnel -->
           <h2 class="text-xl font-bold text-white mb-3 hover:text-amber-400 transition-colors">
-            {{ article.title }}
+            <a [routerLink]="['/article', article.slug]">{{ article.title }}</a>
           </h2>
 
           <!-- Extrait -->

@@ -1,8 +1,10 @@
 import { Routes } from '@angular/router';
 import { AdminGuard } from './00_common/guards/admin.guard';
+import { PublisherGuard } from './00_common/guards/publisher.guard';
 import { TokenGuard } from './00_common/guards/token.guard';
 import { AboutComponent } from './about/about.component';
 import { AdminComponent } from './admin/admin.component';
+import { ArticleEditComponent } from './admin/article/article-edit.component';
 import { ArticlesComponent } from './article/articles.component';
 import { ArticleComponent } from './article/details/article.component';
 import { ForgotPasswordComponent } from './authentication/forgot-password/forgot-password.component';
@@ -53,6 +55,8 @@ export const routes: Routes = [
   { path: 'purchase-offers', component: PurchaseOffersComponent, canActivate: [TokenGuard] },
   { path: 'collection', component: CollectionComponent, canActivate: [TokenGuard] },
   { path: 'admin', component: AdminComponent, canActivate: [AdminGuard] },
+  { path: 'admin/article/new', component: ArticleEditComponent, canActivate: [PublisherGuard] },
+  { path: 'admin/article/edit/:id', component: ArticleEditComponent, canActivate: [PublisherGuard] },
   { path: 'unauthorized', component: UnauthorizedComponent },
   { path: '**', component: NotFoundComponent }
 ];

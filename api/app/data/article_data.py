@@ -164,3 +164,9 @@ def delete_article_data(article_id: int) -> bool:
     except Exception as e:
         db.session.rollback()
         raise Exception(f"Erreur lors de la suppression de l'article : {str(e)}")
+    
+def get_all_articles_data() -> List[Article]:
+    """Récupère tous les articles publiés triés par date de publication"""
+    return db.session.query(Article).order_by(
+        Article.published_at.desc()
+    ).all() 

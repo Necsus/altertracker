@@ -157,7 +157,9 @@
       "name": "Nom",
       "faction": "Faction",
       "main_cost": "Coût de main"
-    }
+    },
+    "exclude_effect_placeholder": "Ajouter un effet à exclure (Entrée pour valider)",
+    "exclude_effect_help": "Entrez des termes séparés par Entrée pour exclure les cartes contenant ces effets"
   },
   "about": {
     "title": "À propos d'AlterTracker",
