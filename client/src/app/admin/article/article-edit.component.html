@@ -1,0 +1,212 @@
+<div class="min-h-screen bg-gray-900 text-white">
+  <div class="max-w-6xl mx-auto p-6">
+    <!-- Header -->
+    <div class="flex justify-between items-center mb-8">
+      <div>
+        <h1 class="text-3xl font-bold text-white">
+          {{ isEditMode ? 'Modifier l\'article' : 'Nouvel article' }}
+        </h1>
+        <p class="text-gray-400 mt-2">
+          {{ isEditMode ? 'Modifiez les informations de votre article' : 'Créez un nouvel article pour votre blog' }}
+        </p>
+      </div>
+
+      <button [routerLink]="['/articles']" class="px-4 py-2 bg-gray-600 hover:bg-gray-500 rounded-lg transition-colors">
+        <i class="fas fa-arrow-left mr-2"></i>
+        Retour
+      </button>
+    </div>
+
+    <!-- Loading -->
+    <div *ngIf="isLoading" class="text-center py-12">
+      <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-amber-400"></div>
+      <p class="mt-4 text-gray-400">Chargement...</p>
+    </div>
+
+    <!-- Formulaire -->
+    <form *ngIf="!isLoading" [formGroup]="articleForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+        <!-- Colonne principale -->
+        <div class="lg:col-span-2 space-y-6">
+
+          <!-- Titre et Slug -->
+          <div class="bg-gray-800 rounded-lg p-6">
+            <h3 class="text-lg font-semibold text-white mb-4">Informations principales</h3>
+
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Titre *</label>
+                <input type="text" formControlName="title"
+                  class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-amber-500 focus:outline-none"
+                  placeholder="Titre de l'article">
+                <div *ngIf="getFieldError('title')" class="text-red-400 text-sm mt-1">
+                  {{ getFieldError('title') }}
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Slug *</label>
+                <input type="text" formControlName="slug"
+                  class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-amber-500 focus:outline-none"
+                  placeholder="slug-de-article">
+                <div *ngIf="getFieldError('slug')" class="text-red-400 text-sm mt-1">
+                  {{ getFieldError('slug') }}
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Extrait *</label>
+                <textarea formControlName="excerpt" rows="3"
+                  class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-amber-500 focus:outline-none"
+                  placeholder="Bref résumé de l'article (max 500 caractères)"></textarea>
+                <div *ngIf="getFieldError('excerpt')" class="text-red-400 text-sm mt-1">
+                  {{ getFieldError('excerpt') }}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Contenu -->
+          <div class="bg-gray-800 rounded-lg p-6">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-lg font-semibold text-white">Contenu</h3>
+              <button type="button" (click)="togglePreview()"
+                class="px-4 py-2 bg-amber-600 hover:bg-amber-500 rounded-lg transition-colors">
+                <i class="fas" [class.fa-eye]="!previewMode" [class.fa-edit]="previewMode"></i>
+                {{ previewMode ? 'Éditer' : 'Aperçu' }}
+              </button>
+            </div>
+
+            <div *ngIf="!previewMode">
+              <textarea formControlName="content" rows="33"
+                class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-amber-500 focus:outline-none font-mono"
+                placeholder="Contenu de l'article en Markdown..."></textarea>
+              <div *ngIf="getFieldError('content')" class="text-red-400 text-sm mt-1">
+                {{ getFieldError('content') }}
+              </div>
+            </div>
+
+            <div *ngIf="previewMode" class="bg-gray-700 rounded-lg p-6 min-h-96">
+              <div class="prose max-w-none">
+                <markdown [data]="articleForm.get('content')?.value || 'Aucun contenu à prévisualiser'"></markdown>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="space-y-6">
+
+          <!-- Actions -->
+          <div class="bg-gray-800 rounded-lg p-6">
+            <h3 class="text-lg font-semibold text-white mb-4">Actions</h3>
+
+            <div class="space-y-3">
+              <button type="submit" [disabled]="isLoading"
+                class="w-full px-4 py-2 bg-amber-600 hover:bg-amber-500 disabled:bg-gray-600 rounded-lg transition-colors">
+                <i class="fas fa-save mr-2"></i>
+                {{ isEditMode ? 'Mettre à jour' : 'Créer' }}
+              </button>
+
+              <button *ngIf="isEditMode" type="button" (click)="onDelete()"
+                class="w-full px-4 py-2 bg-red-600 hover:bg-red-500 rounded-lg transition-colors">
+                <i class="fas fa-trash mr-2"></i>
+                Supprimer
+              </button>
+            </div>
+          </div>
+
+          <!-- Statut et métadonnées -->
+          <div class="bg-gray-800 rounded-lg p-6">
+            <h3 class="text-lg font-semibold text-white mb-4">Publication</h3>
+
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Statut</label>
+                <select formControlName="status"
+                  class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-amber-500 focus:outline-none">
+                  <option value="draft">Brouillon</option>
+                  <option value="published">Publié</option>
+                  <option value="archived">Archivé</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Auteur</label>
+                <input type="text" formControlName="author"
+                  class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-amber-500 focus:outline-none">
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Temps de lecture (min)</label>
+                <input type="number" formControlName="reading_time" min="1"
+                  class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-amber-500 focus:outline-none">
+              </div>
+            </div>
+          </div>
+
+          <!-- Catégorie et Tags -->
+          <div class="bg-gray-800 rounded-lg p-6">
+            <h3 class="text-lg font-semibold text-white mb-4">Classification</h3>
+
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Catégorie *</label>
+                <select formControlName="category"
+                  class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-amber-500 focus:outline-none">
+                  <option value="">Sélectionner une catégorie</option>
+                  <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+                </select>
+                <div *ngIf="getFieldError('category')" class="text-red-400 text-sm mt-1">
+                  {{ getFieldError('category') }}
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Tags</label>
+                <div class="flex flex-wrap gap-2 mb-2">
+                  <span *ngFor="let tag of getCurrentTags()"
+                    class="bg-amber-600 text-white px-2 py-1 rounded text-sm flex items-center">
+                    {{ tag }}
+                    <button type="button" (click)="removeTag(tag)" class="ml-2 text-xs">
+                      <i class="fas fa-times"></i>
+                    </button>
+                  </span>
+                </div>
+                <input type="text" (keyup.enter)="addTag($event)" placeholder="Ajouter un tag (Entrée pour valider)"
+                  class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-amber-500 focus:outline-none">
+              </div>
+            </div>
+          </div>
+
+          <!-- SEO -->
+          <div class="bg-gray-800 rounded-lg p-6">
+            <h3 class="text-lg font-semibold text-white mb-4">SEO</h3>
+
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Image à la une</label>
+                <input type="url" formControlName="featured_image" placeholder="https://example.com/image.jpg"
+                  class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-amber-500 focus:outline-none">
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Meta Description</label>
+                <textarea formControlName="meta_description" rows="3"
+                  placeholder="Description pour les moteurs de recherche"
+                  class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-amber-500 focus:outline-none"></textarea>
+              </div>
+
+              <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2">Mots-clés</label>
+                <input type="text" formControlName="meta_keywords" placeholder="mot1, mot2, mot3"
+                  class="w-full p-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:border-amber-500 focus:outline-none">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

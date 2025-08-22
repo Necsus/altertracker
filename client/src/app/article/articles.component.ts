@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { ArticleListModel } from '../01_models/03_business/article.model';
 import { ArticleService } from '../03_business/article.service';
+import { AuthViewService } from '../authentication/auth-view.service';
 
 @Component({
   selector: 'app-articles',
@@ -27,7 +28,9 @@ export class ArticlesComponent implements OnInit {
   categories: string[] = [];
   tags: string[] = [];
 
-  constructor(private articleService: ArticleService) { }
+  constructor(
+    private articleService: ArticleService,
+    public authViewService: AuthViewService) { }
 
   ngOnInit(): void {
     this.loadArticles();
@@ -35,7 +38,12 @@ export class ArticlesComponent implements OnInit {
 
   loadArticles(): void {
     this.isLoading = true;
-    this.articleService.getPublishedArticles$().subscribe({
+
+    const request = this.authViewService.isAdmin()
+      ? this.articleService.getAllArticles$()
+      : this.articleService.getPublishedArticles$();
+
+    request.subscribe({
       next: (articles) => {
         this.articles = articles;
         this.filteredArticles = articles;
@@ -47,11 +55,6 @@ export class ArticlesComponent implements OnInit {
         this.isLoading = false;
       }
     });
-  }
-
-  private extractCategoriesAndTags(): void {
-    this.categories = [...new Set(this.articles.map(article => article.category))];
-    this.tags = [...new Set(this.articles.flatMap(article => article.tags))];
   }
 
   onSearch(): void {
@@ -77,20 +80,6 @@ export class ArticlesComponent implements OnInit {
     this.applyFilters();
   }
 
-  private applyFilters(): void {
-    let filtered = [...this.articles];
-
-    if (this.selectedCategory) {
-      filtered = filtered.filter(article => article.category === this.selectedCategory);
-    }
-
-    if (this.selectedTag) {
-      filtered = filtered.filter(article => article.tags.includes(this.selectedTag));
-    }
-
-    this.filteredArticles = filtered;
-  }
-
   clearFilters(): void {
     this.searchQuery = '';
     this.selectedCategory = '';
@@ -108,5 +97,37 @@ export class ArticlesComponent implements OnInit {
       month: 'long',
       day: 'numeric'
     });
+  }
+
+  getStatusConfig(status: string): { label: string, class: string, icon: string } {
+    switch (status) {
+      case 'published':
+        return { label: 'Publié', class: 'bg-green-600 text-white', icon: 'fas fa-check-circle' };
+      case 'draft':
+        return { label: 'Brouillon', class: 'bg-yellow-600 text-white', icon: 'fas fa-edit' };
+      case 'archived':
+        return { label: 'Archivé', class: 'bg-gray-600 text-white', icon: 'fas fa-archive' };
+      default:
+        return { label: 'Inconnu', class: 'bg-red-600 text-white', icon: 'fas fa-question-circle' };
+    }
+  }
+
+  private extractCategoriesAndTags(): void {
+    this.categories = [...new Set(this.articles.map(article => article.category))];
+    this.tags = [...new Set(this.articles.flatMap(article => article.tags))];
+  }
+
+  private applyFilters(): void {
+    let filtered = [...this.articles];
+
+    if (this.selectedCategory) {
+      filtered = filtered.filter(article => article.category === this.selectedCategory);
+    }
+
+    if (this.selectedTag) {
+      filtered = filtered.filter(article => article.tags.includes(this.selectedTag));
+    }
+
+    this.filteredArticles = filtered;
   }
 }

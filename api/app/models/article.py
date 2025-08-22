@@ -58,6 +58,7 @@ class Article(db.Model):
             'featured_image': self.featured_image,
             'reading_time': self.reading_time,
             'views': self.views,
+            'status': self.status,
             'category': self.category,
             'tags': self.tags or [],
             'published_at': self.published_at.isoformat() if self.published_at else self.created_at.isoformat()

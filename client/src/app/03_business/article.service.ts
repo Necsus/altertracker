@@ -97,4 +97,48 @@ export class ArticleService {
       })
     );
   }
+
+  createArticle$(article: Partial<ArticleModel>): Observable<ArticleModel> {
+    return this.articleApiService.createArticle$(article).pipe(
+      map((dbModel: ArticleModel) => {
+        return dbModel;
+      })
+    );
+  }
+
+  updateArticle$(id: number, article: Partial<ArticleModel>): Observable<ArticleModel> {
+    return this.articleApiService.updateArticle$(id, article).pipe(
+      map((dbModel: ArticleModel) => {
+        return dbModel;
+      })
+    );
+  }
+
+  deleteArticle$(id: number): Observable<void> {
+    return this.articleApiService.deleteArticle$(id).pipe(
+      map(() => void 0)
+    );
+  }
+
+  // Récupérer tous les articles (y compris drafts) - Admin seulement
+  getAllArticles$(): Observable<ArticleListModel[]> {
+    return this.articleApiService.getAllArticles$().pipe(
+      map((dbModel: ArticleListModel[]) => {
+        return dbModel;
+      })
+    );
+  }
+
+  // Générer un slug à partir du titre
+  generateSlug(title: string): string {
+    return title
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9\s-]/g, '')
+      .trim()
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-');
+  }
+
 }

@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request, make_response
 from flask_jwt_extended import jwt_required
 from app.services.article_service import (
+    get_all_articles_service,
     get_last_published_articles_service,
     get_published_articles_service,
     get_article_by_slug_service,
@@ -154,5 +155,16 @@ def delete_article(article_id: int):
         if not success:
             return make_response(jsonify({'message': 'Article non trouvé'}), 404)
         return jsonify({'message': 'Article supprimé'}), 200
+    except Exception as e:
+        return make_response(jsonify({'message': f'Erreur : {str(e)}'}), 500)
+    
+@article_bp.route('/all', methods=['GET'])
+@jwt_required()
+@admin_required
+def get_all_articles():
+    """Récupère tous les articles"""
+    try:
+        articles = get_all_articles_service()
+        return jsonify(articles), 200
     except Exception as e:
         return make_response(jsonify({'message': f'Erreur : {str(e)}'}), 500)

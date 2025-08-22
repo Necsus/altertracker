@@ -11,6 +11,7 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
     edited_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
     is_admin = db.Column(db.Boolean, default=False)
+    is_publisher = db.Column(db.Boolean, default=False)
     is_email_verified = db.Column(db.Boolean, default=False)
     email_verified_at = db.Column(db.DateTime, nullable=True)
     is_banned = db.Column(db.Boolean, nullable=True)
@@ -30,6 +31,7 @@ class User(db.Model):
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'edited_at': self.edited_at.isoformat() if self.edited_at else None,
             'is_admin': self.is_admin,
+            'is_publisher': self.is_publisher,
             'is_email_verified': self.is_email_verified,
             'email_verified_at': self.email_verified_at.isoformat() if self.email_verified_at else None,
             'is_banned': self.is_banned,

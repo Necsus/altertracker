@@ -27,6 +27,7 @@ export interface ArticleListModel {
   featured_image?: string;
   reading_time: number;
   views: number;
+  status: 'draft' | 'published' | 'archived';
   category: string;
   tags: string[];
   published_at: string;

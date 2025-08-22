@@ -59,4 +59,20 @@ export class ArticleApiService {
   getTags$(): Observable<string[]> {
     return this.wabApiService.callGet$(this.controller, 'tags');
   }
+
+  createArticle$(article: Partial<ArticleModel>): Observable<ArticleModel> {
+    return this.wabApiService.callPost$(this.controller, '', article);
+  }
+
+  updateArticle$(id: number, article: Partial<ArticleModel>): Observable<ArticleModel> {
+    return this.wabApiService.callPut$(this.controller, `${id}`, article);
+  }
+
+  deleteArticle$(id: number): Observable<void> {
+    return this.wabApiService.callDelete$(this.controller, `${id}`);
+  }
+
+  getAllArticles$(): Observable<ArticleListModel[]> {
+    return this.wabApiService.callGet$(this.controller, 'all');
+  }
 }

@@ -1,4 +1,5 @@
 from app.data.article_data import (
+    get_all_articles_data,
     get_last_published_articles_data,
     get_published_articles_data,
     get_article_by_slug_data,
@@ -75,3 +76,8 @@ def update_article_service(article_id: int, article_data: dict) -> Optional[dict
 def delete_article_service(article_id: int) -> bool:
     """Service pour supprimer un article"""
     return delete_article_data(article_id)
+
+def get_all_articles_service() -> List[dict]:
+    """Service pour récupérer tous les articles publiés"""
+    articles = get_all_articles_data()
+    return [article.json_list() for article in articles]

@@ -147,6 +147,7 @@ def login():
         return jsonify({"message": "Email not verified"}), 401
     additional_claims = {
         "is_admin": user.is_admin,
+        "is_publisher": user.is_publisher,
         "username": user.username,
         "did_linked": True if user.discord_id else False
     }
@@ -164,6 +165,7 @@ def refresh_token():
 
     additional_claims = {
         "is_admin": user.is_admin,
+        "is_publisher": user.is_publisher,
         "username": user.username,
         "did_linked": True if user.discord_id else False
     }
