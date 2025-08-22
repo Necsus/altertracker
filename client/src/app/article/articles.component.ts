@@ -39,7 +39,7 @@ export class ArticlesComponent implements OnInit {
   loadArticles(): void {
     this.isLoading = true;
 
-    const request = this.authViewService.isAdmin()
+    const request = this.authViewService.isPublisher()
       ? this.articleService.getAllArticles$()
       : this.articleService.getPublishedArticles$();
 

@@ -28,6 +28,8 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
   previewMode = false;
   categories: string[] = [];
   availableTags: string[] = [];
+  canEditStatus = false;
+  canDeleteArticle = false;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -42,11 +44,12 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     // Vérifier les permissions admin
-    if (!this.authViewService.isAdmin()) {
+    if (!this.authViewService.isAdmin() && !this.authViewService.isPublisher()) {
       this.router.navigate(['/articles']);
       return;
     }
 
+    this.setPermissions();
     this.loadFormData();
 
     this.route.params
@@ -65,74 +68,6 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  private initForm(): void {
-    this.articleForm = this.fb.group({
-      title: ['', [Validators.required, Validators.minLength(3)]],
-      slug: ['', [Validators.required]],
-      content: ['', [Validators.required]],
-      excerpt: ['', [Validators.required, Validators.maxLength(500)]],
-      author: [this.authViewService.getUsername(), [Validators.required]],
-      featured_image: [''],
-      reading_time: [1, [Validators.required, Validators.min(1)]],
-      status: ['draft', [Validators.required]],
-      tags: [[]],
-      category: ['', [Validators.required]],
-      meta_description: [''],
-      meta_keywords: ['']
-    });
-
-    // Auto-générer le slug à partir du titre
-    this.articleForm.get('title')?.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(title => {
-        if (title && !this.isEditMode) {
-          const slug = this.articleService.generateSlug(title);
-          this.articleForm.patchValue({ slug }, { emitEvent: false });
-        }
-      });
-  }
-
-  private loadFormData(): void {
-    // Charger les catégories et tags existants
-    this.articleService.getCategories$().subscribe(categories => {
-      this.categories = categories;
-    });
-
-    this.articleService.getTags$().subscribe(tags => {
-      this.availableTags = tags;
-    });
-  }
-
-  private loadArticle(): void {
-    if (!this.articleId) return;
-
-    this.isLoading = true;
-    this.articleService.getArticleById$(this.articleId).subscribe({
-      next: (article) => {
-        this.articleForm.patchValue({
-          title: article.title,
-          slug: article.slug,
-          content: article.content,
-          excerpt: article.excerpt,
-          author: article.author,
-          featured_image: article.featured_image,
-          reading_time: article.reading_time,
-          status: article.status,
-          tags: article.tags,
-          category: article.category,
-          meta_description: article.meta_description,
-          meta_keywords: article.meta_keywords
-        });
-        this.isLoading = false;
-      },
-      error: (error) => {
-        console.error('Error loading article:', error);
-        this.isLoading = false;
-        this.router.navigate(['/articles']);
-      }
-    });
-  }
-
   onSubmit(): void {
     if (this.articleForm.invalid) {
       this.markFormGroupTouched();
@@ -140,7 +75,17 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
     }
 
     this.isLoading = true;
-    const formData = this.articleForm.value;
+    const formData = { ...this.articleForm.value };
+
+    // Si pas admin, forcer le statut à draft
+    if (!this.canEditStatus) {
+      formData.status = 'draft';
+    }
+
+    // Inclure le statut même si le champ est désactivé
+    if (this.articleForm.get('status')?.disabled) {
+      formData.status = this.articleForm.get('status')?.value || 'draft';
+    }
 
     if (this.isEditMode && this.articleId) {
       this.articleService.updateArticle$(this.articleId, formData).subscribe({
@@ -166,7 +111,7 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
   }
 
   onDelete(): void {
-    if (!this.isEditMode || !this.articleId) return;
+    if (!this.canDeleteArticle || !this.isEditMode || !this.articleId) return;
 
     if (confirm('Êtes-vous sûr de vouloir supprimer cet article ?')) {
       this.articleService.deleteArticle$(this.articleId).subscribe({
@@ -205,13 +150,6 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
     return this.articleForm.get('tags')?.value || [];
   }
 
-  private markFormGroupTouched(): void {
-    Object.keys(this.articleForm.controls).forEach(key => {
-      const control = this.articleForm.get(key);
-      control?.markAsTouched();
-    });
-  }
-
   getFieldError(fieldName: string): string {
     const field = this.articleForm.get(fieldName);
     if (field?.errors && field.touched) {
@@ -221,5 +159,121 @@ export class ArticleEditComponent implements OnInit, OnDestroy {
       if (field.errors['min']) return `${fieldName} doit être supérieur à 0`;
     }
     return '';
+  }
+
+  private setPermissions(): void {
+    const isAdmin = this.authViewService.isAdmin();
+
+    // Seuls les admins peuvent modifier le statut
+    this.canEditStatus = isAdmin;
+
+    // Seuls les admins peuvent supprimer des articles
+    this.canDeleteArticle = isAdmin;
+  }
+
+  private checkEditPermissions(article: any): boolean {
+    const isAdmin = this.authViewService.isAdmin();
+    const currentUsername = this.authViewService.getUsername();
+
+    if (isAdmin) return true;
+
+    // Un publisher peut seulement modifier ses propres articles
+    if (this.authViewService.isPublisher() && article.author === currentUsername) {
+      return true;
+    }
+
+    return false;
+  }
+
+  private initForm(): void {
+    const isAdmin = this.authViewService.isAdmin();
+    const defaultStatus = 'draft'; // Toujours draft par défaut
+
+    this.articleForm = this.fb.group({
+      title: ['', [Validators.required, Validators.minLength(3)]],
+      slug: ['', [Validators.required]],
+      content: ['', [Validators.required]],
+      excerpt: ['', [Validators.required, Validators.maxLength(500)]],
+      author: [this.authViewService.getUsername(), [Validators.required]],
+      featured_image: [''],
+      reading_time: [1, [Validators.required, Validators.min(1)]],
+      status: [{ value: defaultStatus, disabled: !this.canEditStatus }],
+      tags: [[]],
+      category: ['', [Validators.required]],
+      meta_description: [''],
+      meta_keywords: ['']
+    });
+
+    // Auto-générer le slug à partir du titre
+    this.articleForm.get('title')?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(title => {
+        if (title && !this.isEditMode) {
+          const slug = this.articleService.generateSlug(title);
+          this.articleForm.patchValue({ slug }, { emitEvent: false });
+        }
+      });
+  }
+
+  private loadFormData(): void {
+    // Charger les catégories et tags existants
+    this.articleService.getCategories$().subscribe(categories => {
+      this.categories = categories;
+    });
+
+    this.articleService.getTags$().subscribe(tags => {
+      this.availableTags = tags;
+    });
+  }
+
+  private loadArticle(): void {
+    if (!this.articleId) return;
+
+    this.isLoading = true;
+    this.articleService.getArticleById$(this.articleId).subscribe({
+      next: (article) => {
+        // Vérifier les permissions d'édition
+        if (!this.checkEditPermissions(article)) {
+          this.router.navigate(['/articles']);
+          return;
+        }
+
+        this.articleForm.patchValue({
+          title: article.title,
+          slug: article.slug,
+          content: article.content,
+          excerpt: article.excerpt,
+          author: article.author,
+          featured_image: article.featured_image,
+          reading_time: article.reading_time,
+          status: article.status,
+          tags: article.tags,
+          category: article.category,
+          meta_description: article.meta_description,
+          meta_keywords: article.meta_keywords
+        });
+
+        // Gérer le champ statut selon les permissions
+        if (!this.canEditStatus) {
+          this.articleForm.get('status')?.disable();
+        } else {
+          this.articleForm.get('status')?.enable();
+        }
+
+        this.isLoading = false;
+      },
+      error: (error) => {
+        console.error('Error loading article:', error);
+        this.isLoading = false;
+        this.router.navigate(['/articles']);
+      }
+    });
+  }
+
+  private markFormGroupTouched(): void {
+    Object.keys(this.articleForm.controls).forEach(key => {
+      const control = this.articleForm.get(key);
+      control?.markAsTouched();
+    });
   }
 }

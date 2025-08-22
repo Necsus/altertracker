@@ -25,7 +25,7 @@
           {{ 'articles.back_to_list' | translate }}
         </button>
 
-        <button *ngIf="authViewService.isAdmin() && article" [routerLink]="['/admin/article/edit', article.id]"
+        <button *ngIf="authViewService.isPublisher() && article" [routerLink]="['/admin/article/edit', article.id]"
           class="px-4 py-2 bg-amber-600 hover:bg-amber-500 rounded-lg transition-colors">
           <i class="fas fa-edit mr-2"></i>
           Modifier

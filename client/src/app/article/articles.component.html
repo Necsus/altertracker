@@ -44,7 +44,7 @@
             {{ 'articles.clear_filters' | translate }}
           </button>
         </div>
-        <div *ngIf="authViewService.isAdmin()">
+        <div *ngIf="authViewService.isPublisher()">
           <button [routerLink]="['/admin/article/new']"
             class="px-4 py-2 bg-amber-600 hover:bg-amber-500 rounded-lg transition-colors">
             <i class="fas fa-plus mr-2"></i>
@@ -73,7 +73,7 @@
 
         <div class="p-6">
           <!-- Statut pour admin -->
-          <div *ngIf="authViewService.isAdmin()" class="flex justify-between items-center mb-3">
+          <div *ngIf="authViewService.isPublisher()" class="flex justify-between items-center mb-3">
             <span [class]="'px-2 py-1 rounded text-xs font-medium ' + getStatusConfig(article.status).class">
               <i [class]="getStatusConfig(article.status).icon + ' mr-1'"></i>
               {{ getStatusConfig(article.status).label }}
@@ -85,7 +85,7 @@
           </div>
 
           <!-- Catégorie et temps de lecture -->
-          <div class="flex justify-between items-center mb-3" [class.mt-0]="authViewService.isAdmin()">
+          <div class="flex justify-between items-center mb-3" [class.mt-0]="authViewService.isPublisher()">
             <span class="bg-amber-600 text-white px-2 py-1 rounded text-sm">{{ article.category }}</span>
             <span class="text-gray-400 text-sm">{{ getReadingTimeText(article.reading_time) }}</span>
           </div>
