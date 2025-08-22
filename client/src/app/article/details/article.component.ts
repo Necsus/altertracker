@@ -132,7 +132,7 @@ export class ArticleComponent implements OnInit, OnDestroy {
   }
 
   private incrementViews(): void {
-    if (this.article) {
+    if (this.article && this.article.status === 'published') {
       this.articleService.incrementViews$(this.article.id).subscribe({
         next: () => {
           if (this.article) {

@@ -299,15 +299,12 @@ button {
   border: 1px solid rgba(251, 191, 36, 0.3) !important;
   position: relative !important;
   transition: all 0.3s ease !important;
-  box-shadow: 0 2px 4px rgba(251, 191, 36, 0.1) !important;
 }
 
 .markdown-content a:hover {
   color: #f59e0b !important;
   background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(245, 158, 11, 0.2) 100%) !important;
   border-color: rgba(251, 191, 36, 0.6) !important;
-  transform: translateY(-1px) !important;
-  box-shadow: 0 4px 12px rgba(251, 191, 36, 0.25) !important;
 }
 
 /* Icône pour les liens externes */
@@ -323,7 +320,6 @@ button {
 .markdown-content a[href^="http"]:hover:after,
 .markdown-content a[href^="https"]:hover:after {
   color: #fbbf24 !important;
-  transform: translate(2px, -2px) !important;
 }
 
 /* Liens dans les listes */
