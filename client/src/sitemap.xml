@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
-  <!-- Page d'accueil -->
   <url>
     <loc>https://altertracker.com/</loc>
     <lastmod>2025-05-22</lastmod>
@@ -9,7 +8,6 @@
     <priority>1.0</priority>
   </url>
 
-  <!-- Page d'articles -->
   <url>
     <loc>https://altertracker.com/articles</loc>
     <lastmod>2025-08-19</lastmod>
@@ -17,7 +15,6 @@
     <priority>1.0</priority>
   </url>
 
-  <!-- Exemple de pages importantes -->
   <url>
     <loc>https://altertracker.com/cards</loc>
     <lastmod>2025-05-22</lastmod>
@@ -34,37 +31,42 @@
 
   <url>
     <loc>https://altertracker.com/article/guide-markdown</loc>
-    <lastmod>2025-01-10</lastmod>
+    <lastmod>2025-08-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://altertracker.com/article/promotion-39cards</loc>
-    <lastmod>2025-01-08</lastmod>
+    <lastmod>2025-08-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <url>
     <loc>https://altertracker.com/article/alertes-discord-altertracker-guide-configuration</loc>
-    <lastmod>2025-01-08</lastmod>
+    <lastmod>2025-08-21</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
 
-  <!-- References de cartes populaires (à générer dynamiquement) -->
-  <!-- Exemple de références - remplacez par vos vraies références -->
+  <url>
+    <loc>https://altertracker.com/article/createurs-altered</loc>
+    <lastmod>2025-08-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
   <url>
     <loc>https://altertracker.com/stats/ALT_COREKS_B_MU_14_R1</loc>
-    <lastmod>2025-01-15</lastmod>
+    <lastmod>2025-08-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
 
   <url>
     <loc>https://altertracker.com/stats/ALT_COREKS_B_LY_10_R1</loc>
-    <lastmod>2025-01-15</lastmod>
+    <lastmod>2025-08-20</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
@@ -103,7 +105,5 @@
     <changefreq>monthly</changefreq>
     <priority>0.1</priority>
   </url>
-
-  <!-- Ajoute ici toutes les pages indexables (ex: /faq, /contact, /fonctionnalites, etc.) -->
 
 </urlset>
