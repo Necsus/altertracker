@@ -95,7 +95,8 @@ def get_user_alert_with_card_data(id_user: int) -> list[dict]:
         ).join(
             Card, UserAlert.reference_card == Card.reference
         ).filter(
-            UserAlert.id_user == id_user
+            UserAlert.id_user == id_user,
+            UserAlert.id_search == None
         ).order_by(UserAlert.created_at.desc()).all()
 
         # Transformation des résultats en JSON
