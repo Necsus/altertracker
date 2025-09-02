@@ -3,6 +3,7 @@ import time
 from urllib.parse import parse_qs, unquote
 import requests
 from sqlalchemy import func
+from app.services.user_service import save_user_alert_service
 from app.services.card_service import is_image_url_accessible
 from app.config import ConfigEnv
 from app.data.card_data import lower_strip, prepare_like_query
@@ -26,7 +27,7 @@ def run_script(workers: int):
     
     def search_cards_data(name, rarity, faction, set, subtype, main_effect, main_effect_2, echo_effect, exclude_effect,
         main_cost_range, recall_cost_range, forest_power_range, mountain_power_range, ocean_power_range, zero_power,
-        in_market, price_range, no_condition, en, dataset):
+        no_condition, en, dataset):
         # Vérifier si le nom correspond à la regexp ^ALT_
         if name and re.match(r'^ALT_', name):
             # Si oui, on ne fait pas de recherche
@@ -88,8 +89,12 @@ def run_script(workers: int):
 
         if exclude_effect:
             # Si exclude_effect est fourni, on l'utilise pour exclure les cartes
-            exclude_effect = lower_strip(exclude_effect)
-            query = query.filter(~func.lower(main_effect_column).like(f'%{prepare_like_query(exclude_effect)}%', escape='\\'))
+            # Supporter plusieurs termes séparés par des virgules
+            exclude_terms = [term.strip() for term in exclude_effect.split(',') if term.strip()]
+            
+            for term in exclude_terms:
+                term = lower_strip(term)
+                query = query.filter(~func.lower(main_effect_column).like(f'%{prepare_like_query(term)}%', escape='\\'))
 
         if echo_effect:
             echo_effect = lower_strip(echo_effect)
@@ -150,17 +155,6 @@ def run_script(workers: int):
                 (Card.MOUNTAIN_POWER == 0) | 
                 (Card.OCEAN_POWER == 0)
             )
-
-        if in_market:
-            query = query.filter(Card.price.isnot(None))
-            if price_range:
-                if 'min' in price_range and 'max' in price_range and price_range['min'] == price_range['max']:
-                    query = query.filter(Card.price == price_range['min'])
-                else:
-                    if 'min' in price_range:
-                        query = query.filter(Card.price >= price_range['min'])
-                    if 'max' in price_range:
-                        query = query.filter(Card.price <= price_range['max'])
 
         if no_condition:
             if not en:
@@ -255,8 +249,6 @@ def run_script(workers: int):
                     mountain_power_range=params.get('mountain_power_range'),
                     ocean_power_range=params.get('ocean_power_range'),
                     zero_power=params.get('zero_power'),
-                    in_market=params.get('in_market'),
-                    price_range=params.get('price_range'),
                     no_condition=params.get('no_condition'),
                     en=params.get('en'),
                     dataset=new_cards  # ou ce que tu utilises comme dataset
@@ -264,7 +256,12 @@ def run_script(workers: int):
                 if ConfigEnv.FLASK_ENV == 'production':
                     for card in result:
                         user = session.query(User).filter(User.id == search.id_user).first()
-                        if user and user.discord_id: 
+                        if user and user.discord_id:
+                            alert_data = {
+                                "id_user": user.id,
+                                "reference_card": card.reference
+                            }
+                            save_user_alert_service(alert_data)
                             socketio.emit('script_output', {'data': f"discord alert send : {card.name_en} {card.reference} {user.username}"})
                             print(f"discord alert send : {card.name_en} {card.reference} {user.username}")
                             image_url = card.imagePath if is_image_url_accessible(card.imagePath) else "https://altertracker.com/assets/img/cardback.webp"
