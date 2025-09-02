@@ -203,6 +203,8 @@
       "step_2": "Link your Discord account to AlterTracker 👉",
       "step_2_link": "Link to your profile",
       "step_3": "If not already done, allow the AlterTracker server to send private messages to your Discord account.",
+      "detailed_guide": "For a complete guide with screenshots, check our detailed article:",
+      "detailed_guide_link": "Discord Alerts Configuration Guide",
       "alert": "Due to too many emails being sent, email alerts are disabled. We recommend using Discord notifications to receive your alerts."
     },
     "loading": "Loading alerts...",
