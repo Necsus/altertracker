@@ -257,11 +257,12 @@ def run_script(workers: int):
                     for card in result:
                         user = session.query(User).filter(User.id == search.id_user).first()
                         if user and user.discord_id:
-                            alert_data = {
-                                "id_user": user.id,
-                                "reference_card": card.reference
-                            }
-                            save_user_alert_service(alert_data)
+                            if search.active_favorite:
+                                alert_data = {
+                                    "id_user": user.id,
+                                    "reference_card": card.reference
+                                }
+                                save_user_alert_service(alert_data)
                             socketio.emit('script_output', {'data': f"discord alert send : {card.name_en} {card.reference} {user.username}"})
                             print(f"discord alert send : {card.name_en} {card.reference} {user.username}")
                             image_url = card.imagePath if is_image_url_accessible(card.imagePath) else "https://altertracker.com/assets/img/cardback.webp"

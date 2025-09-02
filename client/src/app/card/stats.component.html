@@ -41,6 +41,8 @@
       <div class="bg-gray-800 rounded-xl p-4">
         <div class="flex justify-between items-center mb-3">
           <h2 class="text-xl font-semibold">{{ 'stats.title' | translate }}</h2>
+          <small class="text-gray-500">{{ 'home.detected_at' | translate }}&nbsp;{{ card.created_at | date:'dd/MM/yyyy'
+            }}</small>
           <div class="flex items-center space-x-4">
             <a href="https://altered.gg/{{(currentLanguage === 'fr' ? 'fr-fr/' : '')}}cards/{{card.reference}}"
               target="_blank" class="bg-amber-600 hover:bg-amber-500 text-white px-4 py-2 rounded-lg transition">

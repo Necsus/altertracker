@@ -20,6 +20,18 @@
         {{ 'user_alerts.instructions.step_3' | translate }}
       </li>
     </ol>
+
+    <!-- Nouveau paragraphe pour l'article détaillé -->
+    <div class="mt-4 p-3 bg-gray-700 rounded-lg border-l-4 border-blue-500">
+      <p class="text-sm">
+        <i class="fas fa-info-circle text-blue-400 mr-2"></i>
+        {{ 'user_alerts.instructions.detailed_guide' | translate }}
+        <a href="/article/alertes-discord-altertracker-guide-configuration" target="_blank"
+          class="text-blue-400 hover:underline font-medium">
+          {{ 'user_alerts.instructions.detailed_guide_link' | translate }}
+        </a>
+      </p>
+    </div>
   </div>
   <div class="flex flex-col lg:flex-row lg:items-center gap-4 mb-4">
     <!-- Champ de recherche -->
@@ -27,72 +39,72 @@
       <input type="text"
         class="w-full bg-gray-800 text-white placeholder-gray-400 rounded-lg py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-amber-500"
         placeholder="Rechercher une carte..." [(ngModel)]="searchQuery" (input)="onFiltersChange()" />
-      </div>
-
-      <!-- Filtres et tri - s'adaptent en mobile -->
-      <div class="flex flex-col sm:flex-row gap-4 lg:gap-2">
-        <!-- Menu faction -->
-        <select
-          class="w-full sm:w-auto p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400 outline-none transition text-white"
-          [(ngModel)]="selectedFaction" (change)="onFiltersChange()">
-          <option value="">-- {{ 'cards.form_faction' | translate }} --</option>
-          <option value="AX">Axiom</option>
-          <option value="BR">Bravos</option>
-          <option value="LY">Lyra</option>
-          <option value="MU">Muna</option>
-          <option value="OR">Ordis</option>
-          <option value="YZ">Yzmir</option>
-        </select>
-
-        <!-- Checkbox pour cartes avec prix -->
-        <label class="flex items-center text-white cursor-pointer whitespace-nowrap">
-          <input type="checkbox" class="mr-2 rounded border-gray-600 bg-gray-700 text-amber-500 focus:ring-amber-500"
-            [(ngModel)]="showOnlyWithPrice" (change)="onFiltersChange()">
-            <span class="text-sm">{{ 'user_alerts.filters.with_price_only' | translate }}</span>
-          </label>
-
-          <!-- Menu tri -->
-          <select
-            class="w-full sm:w-auto p-2 bg-gray-700 rounded-lg border border-gray-600 focus:ring-2 focus:ring-amber-400 outline-none transition text-white"
-            [(ngModel)]="sortBy" (change)="onSortChange()">
-            <option value="">{{ 'user_alerts.sort.default' | translate }}</option>
-            <option value="name_asc">{{ 'user_alerts.sort.name_asc' | translate }}</option>
-            <option value="name_desc">{{ 'user_alerts.sort.name_desc' | translate }}</option>
-            <option value="price_asc">{{ 'user_alerts.sort.price_asc' | translate }}</option>
-            <option value="price_desc">{{ 'user_alerts.sort.price_desc' | translate }}</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Gestion du chargement -->
-      @if (isLoading) {
-        <div class="text-center text-gray-400">
-          <i class="fas fa-spinner fa-spin text-2xl"></i>
-          <p>{{ 'user_alerts.loading' | translate }}</p>
-        </div>
-      }
-
-      <div class="space-y-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-          @for (card of filteredAlerts; track card) {
-            <div class="relative">
-              <app-card [card]="card"></app-card>
-            </div>
-          }
-        </div>
-      </div>
-
-      <!-- Message si aucune alerte -->
-      @if (!isLoading && alerts.length === 0) {
-        <div class="text-center text-gray-400">
-          <p>{{ 'user_alerts.no_alerts' | translate }}</p>
-        </div>
-      }
     </div>
 
-    @if (progress$ | async; as progress) {
-      <div class="progress-tooltip">
-        <p>{{ 'progress.progress' | translate }} {{remainingCards.length + 1}} {{ 'progress.remaining_cards' | translate }}
-        </p>
+    <!-- Filtres et tri - s'adaptent en mobile -->
+    <div class="flex flex-col sm:flex-row gap-4 lg:gap-2">
+      <!-- Menu faction -->
+      <select
+        class="w-full sm:w-auto p-2 bg-gray-700 rounded-lg border border-amber-500 focus:ring-2 focus:ring-amber-400 outline-none transition text-white"
+        [(ngModel)]="selectedFaction" (change)="onFiltersChange()">
+        <option value="">-- {{ 'cards.form_faction' | translate }} --</option>
+        <option value="AX">Axiom</option>
+        <option value="BR">Bravos</option>
+        <option value="LY">Lyra</option>
+        <option value="MU">Muna</option>
+        <option value="OR">Ordis</option>
+        <option value="YZ">Yzmir</option>
+      </select>
+
+      <!-- Checkbox pour cartes avec prix -->
+      <label class="flex items-center text-white cursor-pointer whitespace-nowrap">
+        <input type="checkbox" class="mr-2 rounded border-gray-600 bg-gray-700 text-amber-500 focus:ring-amber-500"
+          [(ngModel)]="showOnlyWithPrice" (change)="onFiltersChange()">
+        <span class="text-sm">{{ 'user_alerts.filters.with_price_only' | translate }}</span>
+      </label>
+
+      <!-- Menu tri -->
+      <select
+        class="w-full sm:w-auto p-2 bg-gray-700 rounded-lg border border-gray-600 focus:ring-2 focus:ring-amber-400 outline-none transition text-white"
+        [(ngModel)]="sortBy" (change)="onSortChange()">
+        <option value="">{{ 'user_alerts.sort.default' | translate }}</option>
+        <option value="name_asc">{{ 'user_alerts.sort.name_asc' | translate }}</option>
+        <option value="name_desc">{{ 'user_alerts.sort.name_desc' | translate }}</option>
+        <option value="price_asc">{{ 'user_alerts.sort.price_asc' | translate }}</option>
+        <option value="price_desc">{{ 'user_alerts.sort.price_desc' | translate }}</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Gestion du chargement -->
+  @if (isLoading) {
+  <div class="text-center text-gray-400">
+    <i class="fas fa-spinner fa-spin text-2xl"></i>
+    <p>{{ 'user_alerts.loading' | translate }}</p>
+  </div>
+  }
+
+  <div class="space-y-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      @for (card of filteredAlerts; track card) {
+      <div class="relative">
+        <app-card [card]="card"></app-card>
       </div>
-    }
+      }
+    </div>
+  </div>
+
+  <!-- Message si aucune alerte -->
+  @if (!isLoading && alerts.length === 0) {
+  <div class="text-center text-gray-400">
+    <p>{{ 'user_alerts.no_alerts' | translate }}</p>
+  </div>
+  }
+</div>
+
+@if (progress$ | async; as progress) {
+<div class="progress-tooltip">
+  <p>{{ 'progress.progress' | translate }} {{remainingCards.length + 1}} {{ 'progress.remaining_cards' | translate }}
+  </p>
+</div>
+}

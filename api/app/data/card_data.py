@@ -6,7 +6,7 @@ from app.models.user_alert import UserAlert
 from app.models.card import Card
 from sqlalchemy import func
 from app.extensions import db
-from datetime import datetime
+from datetime import datetime, timedelta
 from pytz import timezone
 
 def get_cards_count_data() -> int:
@@ -377,7 +377,32 @@ def get_count_cards_created_today_data() -> int:
     ).scalar()
 
 def get_last_added_cards_data() -> list[dict]:
-    return db.session.query(Card).order_by(Card.created_at.desc()).limit(10).all()
+    paris_tz = timezone('Europe/Paris')
+    today_paris = datetime.now(paris_tz).date()
+    today_utc_start = datetime.combine(today_paris, datetime.min.time()).astimezone(timezone('UTC'))
+    today_utc_end = datetime.combine(today_paris, datetime.max.time()).astimezone(timezone('UTC'))
+    
+    # Essayer d'abord avec les cartes d'aujourd'hui
+    today_cards = db.session.query(Card).filter(
+        Card.created_at >= today_utc_start,
+        Card.created_at <= today_utc_end
+    ).order_by(func.random()).limit(10).all()
+    
+    # Si on a des cartes aujourd'hui, les retourner
+    if today_cards:
+        return today_cards
+    
+    # Sinon, prendre celles de la veille
+    yesterday_paris = today_paris - timedelta(days=1)
+    yesterday_utc_start = datetime.combine(yesterday_paris, datetime.min.time()).astimezone(timezone('UTC'))
+    yesterday_utc_end = datetime.combine(yesterday_paris, datetime.max.time()).astimezone(timezone('UTC'))
+    
+    yesterday_cards = db.session.query(Card).filter(
+        Card.created_at >= yesterday_utc_start,
+        Card.created_at <= yesterday_utc_end
+    ).order_by(func.random()).limit(10).all()
+    
+    return yesterday_cards
 
 def get_effect_data(lang: str) -> list[dict]:
     return db.session.query(Effect).filter(Effect.language == lang).all()
