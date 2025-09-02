@@ -136,8 +136,8 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                                         if str(card_to_update.name_en) != str(tempCard.name_en) or card_to_update.name_en is None:
                                             card_to_update.name_en = tempCard.name_en
                                             has_updated = True
-                                        if str(card_to_update.isSuspended) != str(tempCard.isSuspended):
-                                            card_to_update.isSuspended = tempCard.isSuspended
+                                        if str(card_to_update.isSuspended).lower() != str(tempCard.isSuspended).lower():
+                                            card_to_update.isSuspended = True if str(tempCard.isSuspended).lower() == 'true' else False
                                             has_updated = True
                                         if str(card_to_update.imagePath) != str(tempCard.imagePath):
                                             card_to_update.imagePath = tempCard.imagePath
@@ -161,8 +161,8 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                                         if str(card_to_update.FOREST_POWER) != str(tempCard.FOREST_POWER):
                                             card_to_update.FOREST_POWER = tempCard.FOREST_POWER
                                             has_updated = True
-                                        if str(card_to_update.errated) != str(tempCard.errated):
-                                            card_to_update.errated = tempCard.errated
+                                        if str(card_to_update.errated).lower() != str(tempCard.errated).lower():
+                                            card_to_update.errated = True if str(tempCard.errated).lower() == 'true' else False
                                             has_updated = True
                                         if tempCard.main_effect_en is not None:
                                             if str(card_to_update.main_effect_en) != str(tempCard.main_effect_en) \
@@ -229,8 +229,8 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                                             if str(card_to_update.name_en) != str(tempCard.name_en) or card_to_update.name_en is None:
                                                 card_to_update.name_en = tempCard.name_en
                                                 has_updated = True
-                                            if str(card_to_update.isSuspended) != str(tempCard.isSuspended):
-                                                card_to_update.isSuspended = tempCard.isSuspended
+                                            if str(card_to_update.isSuspended).lower() != str(tempCard.isSuspended).lower():
+                                                card_to_update.isSuspended = True if str(tempCard.isSuspended).lower() == 'true' else False
                                                 has_updated = True
                                             if str(card_to_update.imagePath) != str(tempCard.imagePath):
                                                 card_to_update.imagePath = tempCard.imagePath
@@ -254,8 +254,8 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                                             if str(card_to_update.FOREST_POWER) != str(tempCard.FOREST_POWER):
                                                 card_to_update.FOREST_POWER = tempCard.FOREST_POWER
                                                 has_updated = True
-                                            if str(card_to_update.errated) != str(tempCard.errated):
-                                                card_to_update.errated = tempCard.errated
+                                            if str(card_to_update.errated).lower() != str(tempCard.errated).lower():
+                                                card_to_update.errated = True if str(tempCard.errated).lower() == 'true' else False
                                                 has_updated = True
                                             if tempCard.main_effect_en is not None:
                                                 if str(card_to_update.main_effect_en) != str(tempCard.main_effect_en) \
