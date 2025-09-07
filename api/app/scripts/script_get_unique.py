@@ -309,8 +309,8 @@ def run_script(faction=None, workers=3, forceUpdate=False):
 
         session = Session()
         try:
-            session.execute(text("TRUNCATE TABLE new_cards;"))
-            session.commit()
+            # session.execute(text("TRUNCATE TABLE new_cards;"))
+            # session.commit()
             query = session.query(Card).filter(Card.rarity == 'RARE', Card.type == 'CHARACTER')
 
             # Appliquer le filtre de faction si fourni
