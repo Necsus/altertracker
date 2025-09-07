@@ -24,7 +24,6 @@ def run_script(workers: int):
             for index, dboffer in enumerate(subset, start=start_index):
                 dboffer_in_session = session.query(Offer).get(dboffer.id)
                 socketio.emit('script_output', {'data': f"Update Offer : {dboffer_in_session.reference_card} ({index}/{len(subset)})"})
-                time.sleep(0.1)
                 offer = card_routine.get_offer_by_reference(session, dboffer_in_session.reference_card)
                 if offer and len(offer) > 0:
                     dboffer_in_session.currency = offer[0]['currency']
