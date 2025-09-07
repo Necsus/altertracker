@@ -85,6 +85,7 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                     for recallCost in filtered_recallCosts:
                         cardToInsert = []
                         goToForestPowerFilter = False
+                        time.sleep(0.2)
                         test_result = card_routine.get_unique_cards_name_faction(
                             dbcard.name_en, dbcard.faction, dbcard.set, mainCost, recallCost, forestPowers, 1
                         )
@@ -94,6 +95,7 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                             socketio.emit('script_output', {'data': f"\033[91mName: {dbcard.name_en} | faction: {dbcard.faction} | set: {dbcard.set} | mainCost: {mainCost} | recallCost: {recallCost} | forestPower: {forestPowers}\033[0m"})
                             goToForestPowerFilter = True
                             forestPowers = [mainCost]
+                            time.sleep(0.2)
                             test_result = card_routine.get_unique_cards_name_faction(
                                 dbcard.name_en, dbcard.faction, dbcard.set, mainCost, recallCost, forestPowers, 1
                             )
@@ -116,6 +118,7 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                             #     socketio.emit('script_output', {'data': f"CHANGES NO SKIPPING"})
                             page = 1
                             while True:
+                                time.sleep(0.2)
                                 cards = card_routine.get_unique_cards_name_faction(
                                     dbcard.name_en, dbcard.faction, dbcard.set, mainCost, recallCost, forestPowers, page
                                 )
@@ -136,8 +139,8 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                                         if str(card_to_update.name_en) != str(tempCard.name_en) or card_to_update.name_en is None:
                                             card_to_update.name_en = tempCard.name_en
                                             has_updated = True
-                                        if str(card_to_update.isSuspended) != str(tempCard.isSuspended):
-                                            card_to_update.isSuspended = tempCard.isSuspended
+                                        if str(card_to_update.isSuspended).lower() != str(tempCard.isSuspended).lower():
+                                            card_to_update.isSuspended = True if str(tempCard.isSuspended).lower() == 'true' else False
                                             has_updated = True
                                         if str(card_to_update.imagePath) != str(tempCard.imagePath):
                                             card_to_update.imagePath = tempCard.imagePath
@@ -161,8 +164,8 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                                         if str(card_to_update.FOREST_POWER) != str(tempCard.FOREST_POWER):
                                             card_to_update.FOREST_POWER = tempCard.FOREST_POWER
                                             has_updated = True
-                                        if str(card_to_update.errated) != str(tempCard.errated):
-                                            card_to_update.errated = tempCard.errated
+                                        if str(card_to_update.errated).lower() != str(tempCard.errated).lower():
+                                            card_to_update.errated = True if str(tempCard.errated).lower() == 'true' else False
                                             has_updated = True
                                         if tempCard.main_effect_en is not None:
                                             if str(card_to_update.main_effect_en) != str(tempCard.main_effect_en) \
@@ -206,6 +209,7 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                                 page = 1
                                 forestPowers = list(range(0, 11))
                                 while True:
+                                    time.sleep(0.2)
                                     cards = card_routine.get_unique_cards_name_faction(
                                         dbcard.name_en, dbcard.faction, dbcard.set, mainCost, recallCost, [fp for fp in forestPowers if fp != mainCost], page
                                     )
@@ -229,8 +233,8 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                                             if str(card_to_update.name_en) != str(tempCard.name_en) or card_to_update.name_en is None:
                                                 card_to_update.name_en = tempCard.name_en
                                                 has_updated = True
-                                            if str(card_to_update.isSuspended) != str(tempCard.isSuspended):
-                                                card_to_update.isSuspended = tempCard.isSuspended
+                                            if str(card_to_update.isSuspended).lower() != str(tempCard.isSuspended).lower():
+                                                card_to_update.isSuspended = True if str(tempCard.isSuspended).lower() == 'true' else False
                                                 has_updated = True
                                             if str(card_to_update.imagePath) != str(tempCard.imagePath):
                                                 card_to_update.imagePath = tempCard.imagePath
@@ -254,8 +258,8 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                                             if str(card_to_update.FOREST_POWER) != str(tempCard.FOREST_POWER):
                                                 card_to_update.FOREST_POWER = tempCard.FOREST_POWER
                                                 has_updated = True
-                                            if str(card_to_update.errated) != str(tempCard.errated):
-                                                card_to_update.errated = tempCard.errated
+                                            if str(card_to_update.errated).lower() != str(tempCard.errated).lower():
+                                                card_to_update.errated = True if str(tempCard.errated).lower() == 'true' else False
                                                 has_updated = True
                                             if tempCard.main_effect_en is not None:
                                                 if str(card_to_update.main_effect_en) != str(tempCard.main_effect_en) \
