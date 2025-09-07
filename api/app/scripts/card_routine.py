@@ -111,7 +111,7 @@ def get_card_by_reference(card_reference: str, en: bool = False):
         return None
 
 def get_offer_by_reference(session, reference: str, retry: bool = True):
-    time.sleep(0.3)
+    time.sleep(0.4)
     base_url = f"https://api.altered.gg/cards/{reference}/offers?itemsPerPage=10&page=1"
     token = getToken(session)
     headers = {
@@ -185,7 +185,7 @@ def getToken(session, clearToken: bool = False) -> str:
         print(f"\033[91mErreur lors de la récupération du token : {e}\033[0m")
 
 def get_unique_offers(session, name: str, faction: str, set: str, page: int, retry: bool = True):
-    time.sleep(0.3)
+    time.sleep(0.4)
     base_url = "https://api.altered.gg/cards/stats"
     params = {
         "page": page,
