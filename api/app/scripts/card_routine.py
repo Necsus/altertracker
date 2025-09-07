@@ -76,7 +76,7 @@ def get_unique_cards_name_faction(name: str, faction: str, set: str, mainCost: i
 
         if data['hydra:totalItems'] <= 0:
             return None
-        print(data['hydra:totalItems'])
+
         # Retourner les données
         return data
     except requests.exceptions.RequestException as e:
