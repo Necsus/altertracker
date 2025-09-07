@@ -47,6 +47,7 @@ def get_cards(page: int, set: str, rarity: str):
         return None
     
 def get_unique_cards_name_faction(name: str, faction: str, set: str, mainCost: int, recallCost: int, forestPower: list[str], page: int):
+    time.sleep(0.3)
     base_url = "https://api.altered.gg/cards"
     params = {
         "page": page,
@@ -85,6 +86,7 @@ def get_unique_cards_name_faction(name: str, faction: str, set: str, mainCost: i
         return None
 
 def get_card_by_reference(card_reference: str, en: bool = False):
+    time.sleep(0.3)
     base_url = f"https://api.altered.gg/cards/{card_reference}"
     params = {
         "locale": "en-us" if en else "fr-fr"
