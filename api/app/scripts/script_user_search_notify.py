@@ -260,6 +260,7 @@ def run_script(workers: int):
                             if search.active_favorite:
                                 alert_data = {
                                     "id_user": user.id,
+                                    "id_search": search.id,
                                     "reference_card": card.reference
                                 }
                                 save_user_alert_service(alert_data)
