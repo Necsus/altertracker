@@ -1,9 +1,12 @@
+from sqlalchemy.exc import SQLAlchemyError
+from datetime import datetime, timezone
 import re
 import time
+from typing import Dict
 from urllib.parse import parse_qs, unquote
 import requests
 from sqlalchemy import func
-from app.services.user_service import save_user_alert_service
+from app.models.user_alert import UserAlert
 from app.services.card_service import is_image_url_accessible
 from app.config import ConfigEnv
 from app.data.card_data import lower_strip, prepare_like_query
@@ -219,6 +222,27 @@ def run_script(workers: int):
                 clean_params[field] = parse_range_param(clean_params[field])
         
         return clean_params
+    
+    def save_user_alert_service(data: Dict, session) -> Dict:
+        mapped_data = {
+            "id_user": data.get("id_user"),
+            "reference_card": data.get("reference_card"),
+            "id_search": data.get("id_search"),
+            "mail_active": True,
+            "created_at": datetime.fromisoformat(data["created_at"]) if "created_at" in data else datetime.now(timezone.utc)
+        }
+        saved_alert = save_user_alert_data(mapped_data, session)
+        return saved_alert.json()
+    
+    def save_user_alert_data(data: dict, session) -> UserAlert:
+        try:
+            user_alert = UserAlert(**data)
+            session.add(user_alert)
+            session.commit()
+            return user_alert
+        except SQLAlchemyError as e:
+            session.rollback()
+            raise Exception(f"Erreur lors de la sauvegarde de l'alerte utilisateur : {str(e)}")
 
     def process_notify(subset, start_index):
         session = Session()
@@ -260,9 +284,10 @@ def run_script(workers: int):
                             if search.active_favorite:
                                 alert_data = {
                                     "id_user": user.id,
+                                    "id_search": search.id,
                                     "reference_card": card.reference
                                 }
-                                save_user_alert_service(alert_data)
+                                save_user_alert_service(alert_data, session)
                             socketio.emit('script_output', {'data': f"discord alert send : {card.name_en} {card.reference} {user.username}"})
                             print(f"discord alert send : {card.name_en} {card.reference} {user.username}")
                             image_url = card.imagePath if is_image_url_accessible(card.imagePath) else "https://altertracker.com/assets/img/cardback.webp"
