@@ -183,7 +183,7 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                                     #     tempCard = map_effect_to_card(tempCard, detailsCard)
                                     cardToInsert.append(tempCard)
                                 session.commit()
-                                if len(cards['hydra:member']) < 36:
+                                if len(cards['hydra:member']) < 30:
                                     break
                                 page += 1
 
@@ -263,7 +263,7 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                                         #     tempCard = map_effect_to_card(tempCard, detailsCard)
                                         cardToInsert.append(tempCard)
                                     session.commit()
-                                    if len(cards['hydra:member']) < 36:
+                                    if len(cards['hydra:member']) < 30:
                                         break
                                     page += 1
 
