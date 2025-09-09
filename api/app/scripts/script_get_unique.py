@@ -21,7 +21,7 @@ def run_script(faction=None, workers=3, forceUpdate=False):
             faction=jsonCard['mainFaction']['reference'],
             rarity=jsonCard['rarity']['reference'],
             type=jsonCard['cardType']['reference'],
-            subtype=None,
+            subtype=','.join([sub['reference'] for sub in jsonCard['cardSubTypes']]) if jsonCard.get('cardSubTypes') else None,
             set=jsonCard['cardSet']['reference'],
             imagePath=jsonCard['imagePath'],
             image_path_en=None,
@@ -31,9 +31,9 @@ def run_script(faction=None, workers=3, forceUpdate=False):
             MOUNTAIN_POWER=None if jsonCard['cardType']['reference'] != "CHARACTER" else jsonCard['elements']['MOUNTAIN_POWER'],
             OCEAN_POWER=None if jsonCard['cardType']['reference'] != "CHARACTER" else jsonCard['elements']['OCEAN_POWER'],
             FOREST_POWER=None if jsonCard['cardType']['reference'] != "CHARACTER" else jsonCard['elements']['FOREST_POWER'],
-            MAIN_EFFECT=None,
+            MAIN_EFFECT=jsonCard['mainEffect'],
             main_effect_en=None,
-            ECHO_EFFECT=None,
+            ECHO_EFFECT=jsonCard['echoEffect'],
             echo_effect_en=None,
             price_updated_at=None,
             errated = jsonCard['isErrated']
@@ -85,7 +85,6 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                     for recallCost in filtered_recallCosts:
                         cardToInsert = []
                         goToForestPowerFilter = False
-                        time.sleep(0.2)
                         test_result = card_routine.get_unique_cards_name_faction(
                             dbcard.name_en, dbcard.faction, dbcard.set, mainCost, recallCost, forestPowers, 1
                         )
@@ -95,7 +94,6 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                             socketio.emit('script_output', {'data': f"\033[91mName: {dbcard.name_en} | faction: {dbcard.faction} | set: {dbcard.set} | mainCost: {mainCost} | recallCost: {recallCost} | forestPower: {forestPowers}\033[0m"})
                             goToForestPowerFilter = True
                             forestPowers = [mainCost]
-                            time.sleep(0.2)
                             test_result = card_routine.get_unique_cards_name_faction(
                                 dbcard.name_en, dbcard.faction, dbcard.set, mainCost, recallCost, forestPowers, 1
                             )
@@ -166,36 +164,23 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                                         if str(card_to_update.errated).lower() != str(tempCard.errated).lower():
                                             card_to_update.errated = True if str(tempCard.errated).lower() == 'true' else False
                                             has_updated = True
-                                        if tempCard.main_effect_en is not None:
-                                            if str(card_to_update.main_effect_en) != str(tempCard.main_effect_en) \
-                                                or card_to_update.main_effect_en is None or tempCard.main_effect_en is None:
-                                                card_to_update.main_effect_en = tempCard.main_effect_en
-                                                has_updated = True
-                                        if tempCard.echo_effect_en is not None:
-                                            if str(card_to_update.echo_effect_en) != str(tempCard.echo_effect_en) \
-                                                or card_to_update.echo_effect_en is None or tempCard.echo_effect_en is None:
-                                                card_to_update.echo_effect_en = tempCard.echo_effect_en
-                                                has_updated = True
+                                        if str(card_to_update.MAIN_EFFECT) != str(tempCard.MAIN_EFFECT):
+                                            card_to_update.MAIN_EFFECT = tempCard.MAIN_EFFECT
+                                            has_updated = True
+                                        if str(card_to_update.ECHO_EFFECT)  != str(tempCard.ECHO_EFFECT):
+                                            card_to_update.ECHO_EFFECT = tempCard.ECHO_EFFECT
+                                            has_updated = True
                                         if card_to_update.created_at is None:
                                             card_to_update.created_at = datetime.now(timezone.utc)
                                             has_updated = True
-
-                                        if card_to_update.MAIN_EFFECT is None and card_to_update.ECHO_EFFECT is None:
-                                            detailsCard = card_routine.get_card_by_reference(tempCard.reference)
-                                            if detailsCard:
-                                                temp_card = map_effect_to_card(tempCard, detailsCard)
-                                                card_to_update.MAIN_EFFECT = temp_card.MAIN_EFFECT
-                                                card_to_update.ECHO_EFFECT = temp_card.ECHO_EFFECT
-                                                card_to_update.subtype = temp_card.subtype
-                                                has_updated = True
 
                                         if has_updated:
                                             socketio.emit('script_output', {'data': f"Mise à jour de la carte : {card_to_update.name_en} ({card_to_update.reference})"})
                                             card_to_update.edited_at = datetime.now(timezone.utc)
                                         continue
-                                    detailsCard = card_routine.get_card_by_reference(tempCard.reference)
-                                    if detailsCard:
-                                        tempCard = map_effect_to_card(tempCard, detailsCard)
+                                    # detailsCard = card_routine.get_card_by_reference(tempCard.reference)
+                                    # if detailsCard:
+                                    #     tempCard = map_effect_to_card(tempCard, detailsCard)
                                     cardToInsert.append(tempCard)
                                 session.commit()
                                 if len(cards['hydra:member']) < 36:
@@ -257,27 +242,15 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                                             if str(card_to_update.errated).lower() != str(tempCard.errated).lower():
                                                 card_to_update.errated = True if str(tempCard.errated).lower() == 'true' else False
                                                 has_updated = True
-                                            if tempCard.main_effect_en is not None:
-                                                if str(card_to_update.main_effect_en) != str(tempCard.main_effect_en) \
-                                                    or card_to_update.main_effect_en is None:
-                                                    card_to_update.main_effect_en = tempCard.main_effect_en
-                                                    has_updated = True
-                                            if tempCard.echo_effect_en is not None:
-                                                if str(card_to_update.echo_effect_en) != str(tempCard.echo_effect_en) \
-                                                    or card_to_update.echo_effect_en is None or tempCard.echo_effect_en is None:
-                                                    card_to_update.echo_effect_en = tempCard.echo_effect_en
-                                                    has_updated = True
+                                            if str(card_to_update.MAIN_EFFECT) != str(tempCard.MAIN_EFFECT):
+                                                card_to_update.MAIN_EFFECT = tempCard.MAIN_EFFECT
+                                                has_updated = True
+                                            if str(card_to_update.ECHO_EFFECT) != str(tempCard.ECHO_EFFECT):
+                                                card_to_update.ECHO_EFFECT = tempCard.ECHO_EFFECT
+                                                has_updated = True
                                             if card_to_update.created_at is None:
                                                 card_to_update.created_at = datetime.now(timezone.utc)
                                                 has_updated = True
-                                            if card_to_update.MAIN_EFFECT is None and card_to_update.ECHO_EFFECT is None:
-                                                detailsCard = card_routine.get_card_by_reference(tempCard.reference)
-                                                if detailsCard:
-                                                    temp_card = map_effect_to_card(tempCard, detailsCard)
-                                                    card_to_update.MAIN_EFFECT = temp_card.MAIN_EFFECT
-                                                    card_to_update.ECHO_EFFECT = temp_card.ECHO_EFFECT
-                                                    card_to_update.subtype = temp_card.subtype
-                                                    has_updated = True
 
                                             # Si une modification a été effectuée, mettre à jour `edited_at`
                                             if has_updated:
@@ -285,9 +258,9 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                                                 card_to_update.edited_at = datetime.now(timezone.utc)
                                                 
                                             continue
-                                        detailsCard = card_routine.get_card_by_reference(tempCard.reference)
-                                        if detailsCard:
-                                            tempCard = map_effect_to_card(tempCard, detailsCard)
+                                        # detailsCard = card_routine.get_card_by_reference(tempCard.reference)
+                                        # if detailsCard:
+                                        #     tempCard = map_effect_to_card(tempCard, detailsCard)
                                         cardToInsert.append(tempCard)
                                     session.commit()
                                     if len(cards['hydra:member']) < 36:

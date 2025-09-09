@@ -8,8 +8,8 @@ _token = None
 _expires = None
 
 def get_cards(page: int, set: str, rarity: str):
-    time.sleep(0.4)
-    base_url = "https://api.altered.gg/cards"
+    time.sleep(0.1)
+    base_url = "https://api.altered.gg/public/cards"
     params = {
         "page": page,
         "cardSet[]": set,
@@ -25,11 +25,17 @@ def get_cards(page: int, set: str, rarity: str):
         "locale": "fr-fr"
     }
 
+    headers = {
+        "accept": "*/*",
+        "user-agent": "AlterTracker/1.0 (necsus.dev@proton.me)",
+        "authorization": "AlterTracker"
+    }
+
     # Construire l'URL avec les paramètres encodés
     url = f"{base_url}?{urlencode(params, doseq=True)}"
     try:
         # Effectuer une requête GET vers l'URL
-        response = requests.get(url)
+        response = requests.get(url, headers=headers)
         
         # Vérifier si la requête a réussi (code 200)
         response.raise_for_status()
@@ -48,8 +54,8 @@ def get_cards(page: int, set: str, rarity: str):
         return None
     
 def get_unique_cards_name_faction(name: str, faction: str, set: str, mainCost: int, recallCost: int, forestPower: list[str], page: int):
-    time.sleep(0.4)
-    base_url = "https://api.altered.gg/cards"
+    time.sleep(0.1)
+    base_url = "https://api.altered.gg/public/cards"
     params = {
         "page": page,
         "cardSet[]": set,
@@ -60,22 +66,28 @@ def get_unique_cards_name_faction(name: str, faction: str, set: str, mainCost: i
         "recallCost[]": recallCost,
         "rarity[]": "UNIQUE",
         "query": f"\"{name}\"",
-        "itemsPerPage": 36,
+        "itemsPerPage": 30,
         "locale": "fr-fr"
+    }
+
+    headers = {
+        "accept": "*/*",
+        "user-agent": "AlterTracker/1.0 (necsus.dev@proton.me)",
+        "authorization": "AlterTracker"
     }
 
     # Construire l'URL avec les paramètres encodés
     url = f"{base_url}?{urlencode(params, doseq=True)}"
     try:
         # Effectuer une requête GET vers l'URL
-        response = requests.get(url)
+        response = requests.get(url, headers=headers)
         
         # Vérifier si la requête a réussi (code 200)
         response.raise_for_status()
-        
+
         # Récupérer les données au format JSON
         data = response.json()
-
+        print(len(data['hydra:member']))
         if data['hydra:totalItems'] <= 0:
             return None
 
@@ -87,20 +99,28 @@ def get_unique_cards_name_faction(name: str, faction: str, set: str, mainCost: i
         return None
 
 def get_card_by_reference(card_reference: str, en: bool = False):
-    time.sleep(0.4)
-    base_url = f"https://api.altered.gg/cards/{card_reference}"
+    time.sleep(0.1)
+    base_url = f"https://api.altered.gg/public/cards/{card_reference}"
     params = {
         "locale": "en-us" if en else "fr-fr"
     }
+
+    headers = {
+        "accept": "*/*",
+        "user-agent": "AlterTracker/1.0 (necsus.dev@proton.me)",
+        "authorization": "AlterTracker"
+    }
+
     url = f"{base_url}?{urlencode(params, doseq=True)}"
     try:
         # Effectuer une requête GET vers l'URL
-        response = requests.get(url)
+        response = requests.get(url, headers=headers)
         
         # Vérifier si la requête a réussi (code 200)
         response.raise_for_status()
         
         # Récupérer les données au format JSON
+        print(url)
         data = response.json()
         
         # Retourner les données
