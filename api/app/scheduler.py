@@ -7,8 +7,8 @@ def start_scheduler(app):
 
     # Script toutes les 24h
     scheduler.add_job(
-        lambda: run_script_with_context(app, 'script_get_unique', 1),
-        trigger=CronTrigger(hour='2', minute=0))
+        lambda: run_script_with_context(app, 'script_get_unique', 2),
+        trigger=CronTrigger(hour='3', minute=0))
 
     # Script toutes les 8h
     # scheduler.add_job(

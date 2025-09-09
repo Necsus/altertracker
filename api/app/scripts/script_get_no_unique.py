@@ -139,7 +139,6 @@ def run_script():
                             card_to_update.edited_at = datetime.now(timezone.utc)
                             db.session.commit()
                         continue
-                    time.sleep(0.2)
                     socketio.emit('script_output', {'data': f"Récupération des stats de la carte {tempCard.reference}..."})
                     # print(f"\rRécupération des stats de la carte {tempCard.reference}...", end="", flush=True)
                     detailsCard = card_routine.get_card_by_reference(tempCard.reference)
