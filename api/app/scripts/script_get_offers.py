@@ -73,7 +73,7 @@ def run_script(faction=None, workers=1):
                         data = dict()
                         data['price'] = card.get('lowerPrice')
                         data['offerId'] = card.get('lowerOfferId')
-                        data['reference'] = card.get('reference').replace('/cards/', '')
+                        data['reference'] = card.get('@id').replace('/cards/', '')
                         data['currency'] = "EUR"
                         data['status'] = "available"
                         offers.append(data)
