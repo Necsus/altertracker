@@ -164,7 +164,6 @@ def get_offer_by_reference(session, reference: str, retry: bool = True):
             return None
 
 def get_unique_offers(name: str, faction: str, set: str, page: int):
-    time.sleep(0.1)
     base_url = "https://api.altered.gg/public/cards"
     params = {
         "page": page,
@@ -174,7 +173,7 @@ def get_unique_offers(name: str, faction: str, set: str, page: int):
         "cardSet[]": set,
         "query": f"\"{name}\"",
         "itemsPerPage": 30,
-        "locale": "en-us",
+        "locale": "fr-fr",
     }
     # token = getToken(session)
     headers = {
