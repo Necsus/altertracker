@@ -174,7 +174,7 @@ def get_unique_offers(name: str, faction: str, set: str, page: int):
         "cardSet[]": set,
         "query": f"\"{name}\"",
         "itemsPerPage": 30,
-        "locale": "en-us",
+        "locale": "fr-fr",
     }
     # token = getToken(session)
     headers = {
