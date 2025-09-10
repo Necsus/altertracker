@@ -48,6 +48,7 @@ def run_script(faction=None, workers=1):
 
     def process_unique_cards(subset, start_index, count):
         """Traite un sous-ensemble de cartes pour la tâche `get_unique`."""
+        session = Session()
         try:
             for index, dbcard in enumerate(subset, start=start_index):
                 count += 1
@@ -57,7 +58,7 @@ def run_script(faction=None, workers=1):
                 cancelUpdate = False
                 while True:
                     cards = card_routine.get_unique_offers(
-                        dbcard.name_en, dbcard.faction, dbcard.set, page
+                        session, dbcard.name_en, dbcard.faction, dbcard.set, page
                     )
                     if not cards or 'hydra:member' not in cards or not cards['hydra:member']:
                         cancelUpdate = True
@@ -72,7 +73,7 @@ def run_script(faction=None, workers=1):
                         data = dict()
                         data['price'] = card.get('lowerPrice')
                         data['offerId'] = card.get('lowerOfferId')
-                        data['reference'] = card.get('reference')
+                        data['reference'] = card.get('reference').replace('/cards/', '')
                         data['currency'] = "EUR"
                         data['status'] = "available"
                         offers.append(data)
@@ -87,6 +88,8 @@ def run_script(faction=None, workers=1):
 
         except Exception as e:
             socketio.emit('script_output', {'data': f"\033[91mError : {e}\033[0m"})
+        finally:
+            session.close()
 
     def addNoOffers(offers: List[dict], name_en: str, faction: str, set: str) -> List[dict]:
         session = Session()

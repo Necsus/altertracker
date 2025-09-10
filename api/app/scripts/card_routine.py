@@ -163,8 +163,9 @@ def get_offer_by_reference(session, reference: str, retry: bool = True):
             print(f"\033[91mErreur lors de la requête : {e}\033[0m")
             return None
 
-def get_unique_offers(name: str, faction: str, set: str, page: int):
-    base_url = "https://api.altered.gg/public/cards"
+def get_unique_offers(session, name: str, faction: str, set: str, page: int, retry: bool = True):
+    time.sleep(0.4)
+    base_url = "https://api.altered.gg/cards/stats"
     params = {
         "page": page,
         "factions[]": faction,
@@ -172,14 +173,13 @@ def get_unique_offers(name: str, faction: str, set: str, page: int):
         "rarity[]": "UNIQUE",
         "cardSet[]": set,
         "query": f"\"{name}\"",
-        "itemsPerPage": 30,
-        "locale": "fr-fr",
+        "itemsPerPage": 36,
+        "locale": "en-us",
     }
-    # token = getToken(session)
+    token = getToken(session)
     headers = {
-        "accept": "*/*",
-        "user-agent": "AlterTracker/1.0 (necsus.dev@proton.me)",
-        "authorization": "AlterTracker"
+        "authorization": f"Bearer {token}",
+        "accept": "*/*"
     }
 
     # Construire l'URL avec les paramètres encodés
@@ -216,14 +216,14 @@ def get_unique_offers(name: str, faction: str, set: str, page: int):
         # Retourner les données
         return data
     except requests.exceptions.RequestException as e:
-        # if retry:
-        #     print(f"\033[93mTentative de récupération du token...\033[0m")
-        #     time.sleep(1)
-        #     getToken(session, True)
-        #     return get_unique_offers(session, name, faction, set, page, retry=False)
-        # else:
-        print(f"\033[91mErreur lors de la requête : {e}\033[0m")
-        return None
+        if retry:
+            print(f"\033[93mTentative de récupération du token...\033[0m")
+            time.sleep(1)
+            getToken(session, True)
+            return get_unique_offers(session, name, faction, set, page, retry=False)
+        else:
+            print(f"\033[91mErreur lors de la requête : {e}\033[0m")
+            return None
     
 def getToken(session, clearToken: bool = False) -> str:
     global _token, _expires
