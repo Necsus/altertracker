@@ -22,6 +22,7 @@ import { AuthViewService } from '../../authentication/auth-view.service';
   ]
 })
 export class ArticleComponent implements OnInit, OnDestroy {
+  showAds = false;
   article: ArticleModel | null = null;
   isLoading = true;
   error: string | null = null;
@@ -38,6 +39,7 @@ export class ArticleComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    this.showAds = localStorage.getItem('cookieConsent') === 'accepted';
     this.route.params
       .pipe(takeUntil(this.destroy$))
       .subscribe(params => {
