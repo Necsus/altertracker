@@ -289,7 +289,6 @@ def run_script(workers: int):
                                 }
                                 save_user_alert_service(alert_data, session)
                             socketio.emit('script_output', {'data': f"discord alert send : {card.name_en} {card.reference} {user.username}"})
-                            print(f"discord alert send : {card.name_en} {card.reference} {user.username}")
                             image_url = card.imagePath if is_image_url_accessible(card.imagePath) else "https://altertracker.com/assets/img/cardback.webp"
                             embed_message = {
                                 "username": user.username,
@@ -300,7 +299,6 @@ def run_script(workers: int):
                                 "lien_vers_alerts": f"https://altertracker.com/stats/{card.reference}"
                             }
                             response = requests.post(f"{ConfigEnv.DISCORD_BOT_URI}/sendalertnewcard", json={"discord_id": user.discord_id, "embed_message": embed_message})
-                            print(response)
                 else:
                     socketio.emit('script_output', {'data': f"Search : {search.name_search} ({search.id})"})
                     for card in result:
