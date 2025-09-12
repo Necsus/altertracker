@@ -17,8 +17,8 @@ def run_script(faction: str, workers: int):
     def map_jsoncard_to_card_en(card: Card, jsonCard) -> Card:
         if 'cardType' in jsonCard:
           card.image_path_en = jsonCard['imagePath'] if 'imagePath' in jsonCard else None
-          card.main_effect_en = jsonCard['elements']['MAIN_EFFECT'] if 'MAIN_EFFECT' in jsonCard['elements'] else None
-          card.echo_effect_en = jsonCard['elements']['ECHO_EFFECT'] if 'ECHO_EFFECT' in jsonCard['elements'] else None
+          card.main_effect_en = jsonCard['mainEffect'] if 'mainEffect' in jsonCard else None
+          card.echo_effect_en = jsonCard['echoEffect'] if 'echoEffect' in jsonCard else None
         return card
 
     def split_list(data, n):
@@ -31,8 +31,9 @@ def run_script(faction: str, workers: int):
         try:
             socketio.emit('script_output', {'data': f"\033[94mNb Cards : {len(subset)}\033[0m"})
             for index, dbcard in enumerate(subset, start=start_index):
-                if dbcard.image_path_en is None:
-                    time.sleep(0.1)
+                if dbcard.image_path_en is None \
+                    or (dbcard.MAIN_EFFECT is not None and dbcard.main_effect_en is None) \
+                    or (dbcard.ECHO_EFFECT is not None and dbcard.echo_effect_en is None):
                     detailsEn = card_routine.get_card_by_reference(dbcard.reference, True)
                     if detailsEn:
                         tempCard = map_jsoncard_to_card_en(dbcard, detailsEn)
@@ -70,7 +71,11 @@ def run_script(faction: str, workers: int):
         socketio.emit('script_output', {'data': "----------- GET EN CARDS -----------"})
         session = Session()
         try:
-            query = session.query(Card).filter(Card.image_path_en == None)
+            query = session.query(Card).filter(
+                (Card.image_path_en == None) |
+                ((Card.MAIN_EFFECT != None) & (Card.main_effect_en == None)) |
+                ((Card.ECHO_EFFECT != None) & (Card.echo_effect_en == None))
+            )
 
             # Appliquer le filtre de faction si fourni
             if faction:
