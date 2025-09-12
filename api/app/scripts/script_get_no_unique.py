@@ -150,10 +150,10 @@ def run_script():
                         continue
                     socketio.emit('script_output', {'data': f"Récupération des stats de la carte {tempCard.reference}..."})
                     # print(f"\rRécupération des stats de la carte {tempCard.reference}...", end="", flush=True)
-                    detailsCard = card_routine.get_card_by_reference(tempCard.reference)
-                    tempCard = map_effect_to_card(tempCard, detailsCard)
-                    name_en = card_routine.get_card_by_reference(tempCard.reference, True)
-                    tempCard = map_name_en(tempCard, name_en)
+                    # detailsCard = card_routine.get_card_by_reference(tempCard.reference)
+                    # tempCard = map_effect_to_card(tempCard, detailsCard)
+                    # name_en = card_routine.get_card_by_reference(tempCard.reference, True)
+                    # tempCard = map_name_en(tempCard, name_en)
                     cardToInsert.append(tempCard)
 
                 page += 1
