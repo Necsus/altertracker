@@ -17,8 +17,8 @@ def run_script(faction: str, workers: int):
     def map_jsoncard_to_card_en(card: Card, jsonCard) -> Card:
         if 'cardType' in jsonCard:
           card.image_path_en = jsonCard['imagePath'] if 'imagePath' in jsonCard else None
-          card.main_effect_en = jsonCard['elements']['MAIN_EFFECT'] if 'MAIN_EFFECT' in jsonCard['elements'] else None
-          card.echo_effect_en = jsonCard['elements']['ECHO_EFFECT'] if 'ECHO_EFFECT' in jsonCard['elements'] else None
+          card.main_effect_en = jsonCard['MAIN_EFFECT'] if 'MAIN_EFFECT' in jsonCard else None
+          card.echo_effect_en = jsonCard['ECHO_EFFECT'] if 'ECHO_EFFECT' in jsonCard else None
         return card
 
     def split_list(data, n):
@@ -70,7 +70,7 @@ def run_script(faction: str, workers: int):
         socketio.emit('script_output', {'data': "----------- GET EN CARDS -----------"})
         session = Session()
         try:
-            query = session.query(Card).filter(Card.image_path_en == None)
+            query = session.query(Card).filter(Card.set == 'CYCLONE')
 
             # Appliquer le filtre de faction si fourni
             if faction:
