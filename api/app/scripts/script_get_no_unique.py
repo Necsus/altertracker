@@ -17,7 +17,7 @@ def run_script():
             faction = jsonCard['mainFaction']['reference'],
             rarity = jsonCard['rarity']['reference'],
             type = jsonCard['cardType']['reference'],
-            subtype=None,
+            subtype=','.join([sub['reference'] for sub in jsonCard['cardSubTypes']]) if jsonCard.get('cardSubTypes') else None,
             set = jsonCard['cardSet']['reference'],
             imagePath = jsonCard['imagePath'],
             image_path_en=None,
@@ -27,9 +27,9 @@ def run_script():
             MOUNTAIN_POWER = None if jsonCard['cardType']['reference'] != "CHARACTER" else jsonCard['elements']['MOUNTAIN_POWER'],
             OCEAN_POWER = None if jsonCard['cardType']['reference'] != "CHARACTER" else jsonCard['elements']['OCEAN_POWER'],
             FOREST_POWER = None if jsonCard['cardType']['reference'] != "CHARACTER" else jsonCard['elements']['FOREST_POWER'],
-            MAIN_EFFECT = None,
+            MAIN_EFFECT=jsonCard['mainEffect'],
             main_effect_en=None,
-            ECHO_EFFECT = None,
+            ECHO_EFFECT=jsonCard['echoEffect'],
             echo_effect_en=None,
             price_updated_at=None,
             errated = jsonCard['isErrated'],
@@ -108,6 +108,9 @@ def run_script():
                         if str(card_to_update.isSuspended) != str(tempCard.isSuspended):
                             card_to_update.isSuspended = tempCard.isSuspended
                             has_updated = True
+                        if str(card_to_update.subtype) != str(tempCard.subtype):
+                            card_to_update.subtype = tempCard.subtype
+                            has_updated = True
                         if str(card_to_update.imagePath) != str(tempCard.imagePath):
                             card_to_update.imagePath = tempCard.imagePath
                             has_updated = True
@@ -126,6 +129,12 @@ def run_script():
                         if str(card_to_update.FOREST_POWER) != str(tempCard.FOREST_POWER):
                             card_to_update.FOREST_POWER = tempCard.FOREST_POWER
                             has_updated = True
+                        if str(card_to_update.MAIN_EFFECT) != str(tempCard.MAIN_EFFECT):
+                            card_to_update.MAIN_EFFECT = tempCard.MAIN_EFFECT
+                            has_updated = True
+                        if str(card_to_update.ECHO_EFFECT)  != str(tempCard.ECHO_EFFECT):
+                            card_to_update.ECHO_EFFECT = tempCard.ECHO_EFFECT
+                            has_updated = True
                         if str(card_to_update.errated) != str(tempCard.errated):
                             card_to_update.errated = tempCard.errated
                             has_updated = True
@@ -141,10 +150,10 @@ def run_script():
                         continue
                     socketio.emit('script_output', {'data': f"Récupération des stats de la carte {tempCard.reference}..."})
                     # print(f"\rRécupération des stats de la carte {tempCard.reference}...", end="", flush=True)
-                    detailsCard = card_routine.get_card_by_reference(tempCard.reference)
-                    tempCard = map_effect_to_card(tempCard, detailsCard)
-                    name_en = card_routine.get_card_by_reference(tempCard.reference, True)
-                    tempCard = map_name_en(tempCard, name_en)
+                    # detailsCard = card_routine.get_card_by_reference(tempCard.reference)
+                    # tempCard = map_effect_to_card(tempCard, detailsCard)
+                    # name_en = card_routine.get_card_by_reference(tempCard.reference, True)
+                    # tempCard = map_name_en(tempCard, name_en)
                     cardToInsert.append(tempCard)
 
                 page += 1
