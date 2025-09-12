@@ -139,6 +139,9 @@ def run_script(faction=None, workers=3, forceUpdate=False):
                                         if str(card_to_update.isSuspended).lower() != str(tempCard.isSuspended).lower():
                                             card_to_update.isSuspended = True if str(tempCard.isSuspended).lower() == 'true' else False
                                             has_updated = True
+                                        if str(card_to_update.subtype) != str(tempCard.subtype):
+                                            card_to_update.subtype = tempCard.subtype
+                                            has_updated = True
                                         if str(card_to_update.imagePath) != str(tempCard.imagePath):
                                             card_to_update.imagePath = tempCard.imagePath
                                             has_updated = True
