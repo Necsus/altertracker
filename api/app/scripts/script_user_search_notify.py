@@ -17,6 +17,7 @@ from app.models.card import Card
 from app.extensions import db, socketio
 from sqlalchemy.orm import scoped_session, sessionmaker
 from concurrent.futures import ThreadPoolExecutor
+from sqlalchemy import text
 
 
 def run_script(workers: int):
@@ -343,6 +344,8 @@ def run_script(workers: int):
 
             for future in futures:
                 future.result()  # Attendre que toutes les tâches soient terminées
+        session.execute(text("TRUNCATE TABLE new_cards;"))
+        session.commit()
 
     notify()
 
