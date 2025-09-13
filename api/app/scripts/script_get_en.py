@@ -71,7 +71,11 @@ def run_script(faction: str, workers: int):
         socketio.emit('script_output', {'data': "----------- GET EN CARDS -----------"})
         session = Session()
         try:
-            query = session.query(Card).filter(Card.image_path_en == None)
+            query = session.query(Card).filter(
+                (Card.image_path_en == None) |
+                ((Card.MAIN_EFFECT != None) & (Card.main_effect_en == None)) |
+                ((Card.ECHO_EFFECT != None) & (Card.echo_effect_en == None))
+            )
 
             # Appliquer le filtre de faction si fourni
             if faction:
