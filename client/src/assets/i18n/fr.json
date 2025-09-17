@@ -220,7 +220,8 @@
       "price_asc": "Prix croissant",
       "price_desc": "Prix décroissant",
       "faction": "Faction"
-    }
+    },
+    "no_results": "Aucun résultat ne correspond à vos critères de recherche."
   },
   "cookies": {
     "title": "Gestion des cookies",
@@ -330,5 +331,13 @@
     "views": "vues",
     "share": "Partager",
     "last_updated": "Dernière mise à jour"
+  },
+  "pagination": {
+    "showing": "Affichage de",
+    "of": "sur",
+    "results": "résultats",
+    "page": "Page",
+    "previous": "Précédent",
+    "next": "Suivant"
   }
 }

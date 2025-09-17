@@ -34,6 +34,13 @@ export class UserAlertsComponent implements OnInit, OnDestroy {
   showOnlyWithPrice: boolean = false;
   sortBy: string = '';
 
+  Math = Math;
+  currentPage: number = 1;
+  itemsPerPage: number = 30;
+  totalItems: number = 0;
+  totalPages: number = 0;
+  paginatedAlerts: CardModel[] = [];
+
   constructor(
     private userService: UserService,
     private toastService: ToastService,
@@ -51,10 +58,12 @@ export class UserAlertsComponent implements OnInit, OnDestroy {
   }
 
   onFiltersChange(): void {
+    this.currentPage = 1;
     this.applyFilters();
   }
 
   onSortChange(): void {
+    this.currentPage = 1;
     this.applyFilters();
   }
 
@@ -72,6 +81,7 @@ export class UserAlertsComponent implements OnInit, OnDestroy {
       next: (response: CardModel[]) => {
         this.alerts = response; // Met à jour la liste des recherches
         this.filteredAlerts = [...this.alerts];
+        this.applyFilters();
       },
       error: (err: any) => {
         this.isLoading = false; // Arrête le chargement
@@ -82,6 +92,48 @@ export class UserAlertsComponent implements OnInit, OnDestroy {
         this.addCardsToQueue(this.alerts); // Ajoute les alertes à la file d'attente
       }
     });
+  }
+
+  // Nouvelle méthode pour changer de page
+  onPageChange(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.updatePaginatedAlerts();
+    }
+  }
+
+  // Méthode pour aller à la page précédente
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.onPageChange(this.currentPage - 1);
+    }
+  }
+
+  // Méthode pour aller à la page suivante
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.onPageChange(this.currentPage + 1);
+    }
+  }
+
+  // Méthode pour obtenir les numéros de pages à afficher
+  getPageNumbers(): number[] {
+    const maxPagesToShow = 5;
+    const pages: number[] = [];
+
+    let startPage = Math.max(1, this.currentPage - Math.floor(maxPagesToShow / 2));
+    let endPage = Math.min(this.totalPages, startPage + maxPagesToShow - 1);
+
+    // Ajuster le début si on est près de la fin
+    if (endPage - startPage + 1 < maxPagesToShow) {
+      startPage = Math.max(1, endPage - maxPagesToShow + 1);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+
+    return pages;
   }
 
   ngOnDestroy(): void {
@@ -180,7 +232,23 @@ export class UserAlertsComponent implements OnInit, OnDestroy {
     }
 
     this.filteredAlerts = filtered;
+    this.totalItems = filtered.length;
+    this.totalPages = Math.ceil(this.totalItems / this.itemsPerPage);
+
+    // S'assurer que la page actuelle est valide
+    if (this.currentPage > this.totalPages && this.totalPages > 0) {
+      this.currentPage = this.totalPages;
+    }
+
+    this.updatePaginatedAlerts();
   }
+
+  private updatePaginatedAlerts(): void {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    this.paginatedAlerts = this.filteredAlerts.slice(startIndex, endIndex);
+  }
+
   private sortCards(cards: any[], sortBy: string): any[] {
     switch (sortBy) {
       case 'name_asc':
