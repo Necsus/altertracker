@@ -219,7 +219,8 @@
       "price_asc": "Price ascending",
       "price_desc": "Price descending",
       "faction": "Faction"
-    }
+    },
+    "no_results": "No results match your search criteria."
   },
   "cookies": {
     "title": "Cookie management",
@@ -329,5 +330,13 @@
     "views": "views",
     "share": "Share",
     "last_updated": "Last updated"
+  },
+  "pagination": {
+    "showing": "Showing",
+    "of": "of",
+    "results": "results",
+    "page": "Page",
+    "previous": "Previous",
+    "next": "Next"
   }
 }
