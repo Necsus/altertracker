@@ -141,7 +141,7 @@ def run_script():
                         if card_to_update.created_at is None:
                             card_to_update.created_at = datetime.now(timezone.utc)
                             has_updated = True
-                        if str(card_to_update.name_en) is None:
+                        if card_to_update.name_en is None:
                             name_en = card_routine.get_card_by_reference(tempCard.reference, True)
                             card_to_update.name_en = name_en['name']
                             has_updated = True
