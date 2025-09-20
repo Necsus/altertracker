@@ -1,6 +1,5 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-from flask_socketio import SocketIO
 from app.extensions import db, migrate
 from app.routes.global_routes import global_bp
 from app.routes.card_routes import card_bp

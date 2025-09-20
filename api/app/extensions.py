@@ -3,7 +3,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
-from sib_api_v3_sdk.rest import ApiException
 from app.config import ConfigEnv
 import sib_api_v3_sdk
 from flask_caching import Cache
