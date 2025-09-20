@@ -141,6 +141,10 @@ def run_script():
                         if card_to_update.created_at is None:
                             card_to_update.created_at = datetime.now(timezone.utc)
                             has_updated = True
+                        if str(card_to_update.name_en) is None:
+                            name_en = card_routine.get_card_by_reference(tempCard.reference, True)
+                            card_to_update.name_en = name_en['name']
+                            has_updated = True
 
                         # Si une modification a été effectuée, mettre à jour `edited_at`
                         if has_updated:
@@ -152,8 +156,8 @@ def run_script():
                     # print(f"\rRécupération des stats de la carte {tempCard.reference}...", end="", flush=True)
                     # detailsCard = card_routine.get_card_by_reference(tempCard.reference)
                     # tempCard = map_effect_to_card(tempCard, detailsCard)
-                    # name_en = card_routine.get_card_by_reference(tempCard.reference, True)
-                    # tempCard = map_name_en(tempCard, name_en)
+                    name_en = card_routine.get_card_by_reference(tempCard.reference, True)
+                    tempCard = map_name_en(tempCard, name_en)
                     cardToInsert.append(tempCard)
 
                 page += 1
