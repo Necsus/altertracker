@@ -17,6 +17,7 @@ from flask_jwt_extended import JWTManager
 from app.extensions import socketio
 from app.extensions import limiter
 from app.extensions import cache
+from flask_socketio import SocketIO
 
 def create_app():
     app = Flask(__name__)
