@@ -250,7 +250,6 @@ def search_cards_data(name, rarity, faction, set, subtype, main_effect, main_eff
                 query = query.filter(Card.OCEAN_POWER <= ocean_power_range['max'])
     
     if zero_power is True:
-        # Si zero_power est True, on filtre les cartes avec au moins un pouvoir égal à 0
         query = query.filter(
             (Card.FOREST_POWER == 0) | 
             (Card.MOUNTAIN_POWER == 0) | 
