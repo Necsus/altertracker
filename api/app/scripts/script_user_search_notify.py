@@ -244,6 +244,16 @@ def run_script(workers: int):
         except SQLAlchemyError as e:
             session.rollback()
             raise Exception(f"Erreur lors de la sauvegarde de l'alerte utilisateur : {str(e)}")
+        
+    def convert_to_boolean(value):
+        """Convertit une valeur en boolean de manière sûre."""
+        if value is None:
+            return None
+        if isinstance(value, bool):
+            return value
+        if isinstance(value, str):
+            return value.lower() == 'true'
+        return bool(value)
 
     def process_notify(subset, start_index):
         session = Session()
@@ -273,9 +283,9 @@ def run_script(workers: int):
                     forest_power_range=params.get('forest_power_range'),
                     mountain_power_range=params.get('mountain_power_range'),
                     ocean_power_range=params.get('ocean_power_range'),
-                    zero_power=params.get('zero_power'),
-                    no_condition=params.get('no_condition'),
-                    en=params.get('en'),
+                    zero_power=convert_to_boolean(params.get('zero_power')),
+                    no_condition=convert_to_boolean(params.get('no_condition')),
+                    en=convert_to_boolean(params.get('en')),
                     dataset=new_cards  # ou ce que tu utilises comme dataset
                 )
                 if ConfigEnv.FLASK_ENV == 'production':

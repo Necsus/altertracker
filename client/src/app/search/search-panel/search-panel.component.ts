@@ -90,7 +90,7 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       this.areEffectsOpen = this.showFull || !!(queryParams['main_effect'] || queryParams['main_effect_2'] || queryParams['echo_effect'] || queryParams['exclude_effect']);
       this.areFiltersOpen = this.showFull || !!(
         queryParams['name'] || queryParams['rarity'] || queryParams['faction'] || queryParams['set'] || queryParams['subtype'] ||
-        queryParams['main_cost_range'] || queryParams['recall_cost_range'] ||
+        queryParams['main_cost_range'] || queryParams['recall_cost_range'] || queryParams['zero_power'] ||
         queryParams['forest_power_range'] || queryParams['mountain_power_range'] || queryParams['ocean_power_range']
       );
     });
@@ -112,10 +112,10 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
       forest_power_range: queryParams['forest_power_range'] || '',
       mountain_power_range: queryParams['mountain_power_range'] || '',
       ocean_power_range: queryParams['ocean_power_range'] || '',
-      zero_power: queryParams['zero_power'] || '',
-      in_market: queryParams['in_market'] || '',
+      zero_power: queryParams['zero_power'] === 'true' || queryParams['zero_power'] === true,
+      no_condition: queryParams['no_condition'] === 'true' || queryParams['no_condition'] === true,
+      in_market: queryParams['in_market'] === 'true' || queryParams['in_market'] === true,
       price_range: queryParams['price_range'] || '',
-      no_condition: queryParams['no_condition'] || '',
       dataset_type: queryParams['dataset_type'] || ''
     }, { emitEvent: false }); // Ne pas déclencher valueChanges ici
 
