@@ -221,6 +221,12 @@ def run_script(workers: int):
         for field in range_fields:
             if field in clean_params:
                 clean_params[field] = parse_range_param(clean_params[field])
+
+        # Convertir les boolean fields
+        boolean_fields = ['zero_power', 'no_condition', 'en']
+        for field in boolean_fields:
+            if field in clean_params:
+                clean_params[field] = convert_to_boolean(clean_params[field])
         
         return clean_params
     
@@ -283,9 +289,9 @@ def run_script(workers: int):
                     forest_power_range=params.get('forest_power_range'),
                     mountain_power_range=params.get('mountain_power_range'),
                     ocean_power_range=params.get('ocean_power_range'),
-                    zero_power=convert_to_boolean(params.get('zero_power')),
-                    no_condition=convert_to_boolean(params.get('no_condition')),
-                    en=convert_to_boolean(params.get('en')),
+                    zero_power=params.get('zero_power'),
+                    no_condition=params.get('no_condition'),
+                    en=params.get('en'),
                     dataset=new_cards  # ou ce que tu utilises comme dataset
                 )
                 if ConfigEnv.FLASK_ENV == 'production':
