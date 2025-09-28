@@ -276,18 +276,22 @@ export class SearchPanelComponent implements OnInit, OnDestroy {
     this.popoverIndex = null;
   }
 
-  addExcludeEffect(event: Event): void {
-    event.preventDefault(); // Empêche le comportement par défaut
-    event.stopPropagation(); // Empêche la propagation vers le formulaire
-
-    const input = event.target as HTMLInputElement;
-    const effect = input.value.trim();
-
+  addExcludeEffectFromInput(inputElement: HTMLInputElement): void {
+    const effect = inputElement.value.trim();
     if (effect && !this.selectedExcludeEffects.includes(effect)) {
       this.selectedExcludeEffects.push(effect);
       this.updateExcludeEffectForm();
-      input.value = '';
+      inputElement.value = '';
     }
+  }
+
+  // Vous pouvez aussi mettre à jour la méthode existante pour éviter la duplication
+  addExcludeEffect(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const input = event.target as HTMLInputElement;
+    this.addExcludeEffectFromInput(input);
   }
 
   removeExcludeEffect(effectToRemove: string): void {
