@@ -32,6 +32,8 @@ def dispatch_script(script: str, workers: int = 3, faction: str = None):
         script_get_en.run_script(faction, 1)
         time.sleep(5)
         script_user_search_notify.run_script(1)
+        time.sleep(5)
+        script_get_offers.run_script(None, 1)
     if script == 'script_get_no_unique':
         script_get_no_unique.run_script()
         # time.sleep(5)
