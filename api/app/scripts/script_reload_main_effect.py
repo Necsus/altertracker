@@ -30,7 +30,6 @@ def run_script(faction: str, workers: int):
             socketio.emit('script_output', {'data': f"\033[94mNb Cards : {len(subset)}\033[0m"})
             for index, dbcard in enumerate(subset, start=start_index):
                   socketio.emit('script_output', {'data': f"Card {dbcard.name_en} ({index}/{len(subset)}) | {dbcard.id}"})
-                  time.sleep(0.2)
                   details = card_routine.get_card_by_reference(dbcard.reference)
                   if details:
                       tempCard = map_jsoncard_to_card_en(dbcard, details)
@@ -46,7 +45,6 @@ def run_script(faction: str, workers: int):
                               has_updated = True
                           # Si une modification a été effectuée, mettre à jour `edited_at`
                           if has_updated:
-                              time.sleep(0.2)
                               detailsEn = card_routine.get_card_by_reference(dbcard.reference, True)
                               card_to_update.main_effect_en = None if 'MAIN_EFFECT' not in detailsEn['elements'] else detailsEn['elements']['MAIN_EFFECT']
                               card_to_update.echo_effect_en = None if 'ECHO_EFFECT' not in detailsEn['elements'] else detailsEn['elements']['ECHO_EFFECT']

@@ -8,7 +8,6 @@ _token = None
 _expires = None
 
 def get_cards(page: int, set: str, rarity: str):
-    time.sleep(0.1)
     base_url = "https://api.altered.gg/public/cards"
     params = {
         "page": page,
@@ -54,7 +53,6 @@ def get_cards(page: int, set: str, rarity: str):
         return None
     
 def get_unique_cards_name_faction(name: str, faction: str, set: str, mainCost: int, recallCost: int, forestPower: list[str], page: int):
-    time.sleep(0.1)
     base_url = "https://api.altered.gg/public/cards"
     params = {
         "page": page,
@@ -99,7 +97,6 @@ def get_unique_cards_name_faction(name: str, faction: str, set: str, mainCost: i
         return None
 
 def get_card_by_reference(card_reference: str, en: bool = False):
-    time.sleep(0.1)
     base_url = f"https://api.altered.gg/public/cards/{card_reference}"
     params = {
         "locale": "en-us" if en else "fr-fr"
@@ -156,7 +153,7 @@ def get_offer_by_reference(session, reference: str, retry: bool = True):
     except requests.exceptions.RequestException as e:
         if retry:
             print(f"\033[93mTentative de récupération du token...\033[0m")
-            time.sleep(1)
+            time.sleep(0.4)
             getToken(session, True)
             return get_offer_by_reference(session, reference, retry=False)
         else:
@@ -173,7 +170,7 @@ def get_unique_offers(session, name: str, faction: str, set: str, page: int, ret
         "rarity[]": "UNIQUE",
         "cardSet[]": set,
         "query": f"\"{name}\"",
-        "itemsPerPage": 36,
+        "itemsPerPage": 108,
         "locale": "en-us",
     }
     token = getToken(session)
@@ -218,7 +215,7 @@ def get_unique_offers(session, name: str, faction: str, set: str, page: int, ret
     except requests.exceptions.RequestException as e:
         if retry:
             print(f"\033[93mTentative de récupération du token...\033[0m")
-            time.sleep(1)
+            time.sleep(0.4)
             getToken(session, True)
             return get_unique_offers(session, name, faction, set, page, retry=False)
         else:
