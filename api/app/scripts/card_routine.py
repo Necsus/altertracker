@@ -153,7 +153,7 @@ def get_offer_by_reference(session, reference: str, retry: bool = True):
     except requests.exceptions.RequestException as e:
         if retry:
             print(f"\033[93mTentative de récupération du token...\033[0m")
-            time.sleep(1)
+            time.sleep(0.4)
             getToken(session, True)
             return get_offer_by_reference(session, reference, retry=False)
         else:
@@ -215,7 +215,7 @@ def get_unique_offers(session, name: str, faction: str, set: str, page: int, ret
     except requests.exceptions.RequestException as e:
         if retry:
             print(f"\033[93mTentative de récupération du token...\033[0m")
-            time.sleep(1)
+            time.sleep(0.4)
             getToken(session, True)
             return get_unique_offers(session, name, faction, set, page, retry=False)
         else:
