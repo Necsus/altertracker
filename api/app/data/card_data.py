@@ -17,7 +17,9 @@ def get_card_by_reference_with_alert_data(reference: str, user_id: int) -> Optio
         Card,
         UserAlert.id.label("alert_id")  # Ajoute l'alert_id si une alerte existe
     ).outerjoin(
-        UserAlert, (UserAlert.reference_card == Card.reference) & (UserAlert.id_user == user_id)
+        UserAlert, (UserAlert.reference_card == Card.reference) &
+        (UserAlert.id_user == user_id) &
+        (UserAlert.id_search.is_(None))
     ).filter(
         Card.reference == reference
     )
@@ -47,7 +49,10 @@ def search_cards_data(name, rarity, faction, set, subtype, main_effect, main_eff
         
         # Jointure conditionnelle avec UserAlert si l'utilisateur est authentifié
         if user_id:
-            query = query.outerjoin(UserAlert, (UserAlert.reference_card == Card.reference) & (UserAlert.id_user == user_id))
+            query = query.outerjoin(UserAlert,
+                                    (UserAlert.reference_card == Card.reference) &
+                                    (UserAlert.id_user == user_id) &
+                                    (UserAlert.id_search.is_(None)))
         
         # Rechercher directement par référence
         query = query.filter(Card.reference == name)
@@ -133,7 +138,10 @@ def search_cards_data(name, rarity, faction, set, subtype, main_effect, main_eff
 
     # Jointure conditionnelle avec UserAlert si l'utilisateur est authentifié
     if user_id:
-        query = query.outerjoin(UserAlert, (UserAlert.reference_card == Card.reference) & (UserAlert.id_user == user_id))
+        query = query.outerjoin(UserAlert,
+                                (UserAlert.reference_card == Card.reference) &
+                                (UserAlert.id_user == user_id) &
+                                (UserAlert.id_search.is_(None)))
 
     # Utiliser les colonnes en anglais si en=True
     name_column = Card.name_en if en else Card.name
