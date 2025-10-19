@@ -1,6 +1,7 @@
 import datetime
 from typing import List, Optional
 from sqlalchemy.exc import SQLAlchemyError
+from app.models.user_alert import UserAlert
 from app.models.card import Card
 from app.models.user import User
 from app.extensions import db
@@ -21,9 +22,14 @@ def get_purchases_by_reference_data(reference: str) -> List[dict]:
 def get_purchases_by_user_data(user_id: int) -> List[dict]:
     purchases = db.session.query(
         OfferPurchase,
-        Card
+        Card,
+        UserAlert.id.label("alert_id")
     ).join(
         Card, OfferPurchase.reference_card == Card.reference
+    ).outerjoin(
+        UserAlert, (UserAlert.reference_card == Card.reference) &
+        (UserAlert.id_user == user_id) &
+        (UserAlert.id_search.is_(None))
     ).filter(
         OfferPurchase.id_user == user_id
     ).order_by(
@@ -32,10 +38,14 @@ def get_purchases_by_user_data(user_id: int) -> List[dict]:
 
     # Grouper les achats par carte
     cards_dict = {}
-    for purchase, card in purchases:
+    for purchase, card, alert_id in purchases:
         ref = card.reference
         if ref not in cards_dict:
-            cards_dict[ref] = {**card.json(), "mine_purchase_offers": []}
+            cards_dict[ref] = {
+                **card.json(), 
+                "alert_id": alert_id,  # Ajouter l'alert_id à la carte
+                "mine_purchase_offers": []
+            }
         cards_dict[ref]["mine_purchase_offers"].append(purchase.json())
 
     return list(cards_dict.values())
