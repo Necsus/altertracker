@@ -77,7 +77,7 @@ def run_script(faction=None, workers=1):
                         data['currency'] = "EUR"
                         data['status'] = "available"
                         offers.append(data)
-                    if len(cards['hydra:member']) < 30:
+                    if len(cards['hydra:member']) < 108:
                         break
                     page += 1
                 socketio.emit('script_output', {'data': f"Nb cards avec offres : {len(offers)}"})

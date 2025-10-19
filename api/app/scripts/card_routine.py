@@ -173,7 +173,7 @@ def get_unique_offers(session, name: str, faction: str, set: str, page: int, ret
         "rarity[]": "UNIQUE",
         "cardSet[]": set,
         "query": f"\"{name}\"",
-        "itemsPerPage": 36,
+        "itemsPerPage": 108,
         "locale": "en-us",
     }
     token = getToken(session)
