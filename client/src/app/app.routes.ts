@@ -14,6 +14,7 @@ import { ResetPasswordComponent } from './authentication/reset-password/reset-pa
 import { StatsComponent } from './card/stats.component';
 import { ChatComponent } from './chat/chat.component';
 import { HomeComponent } from './home/home.component';
+import { PlayerComponent } from './player/player.component';
 import { CookiesPolicyComponent } from './policy/cookies.component';
 import { PolicyComponent } from './policy/policy.component';
 import { CardsComponent } from './search/cards.component';
@@ -34,6 +35,7 @@ export const routes: Routes = [
   { path: 'cards', component: CardsComponent },
   { path: 'stats', component: StatsComponent },
   { path: 'stats/:reference', component: StatsComponent },
+  { path: 'players', component: PlayerComponent, canActivate: [TokenGuard] },
   { path: 'searches', component: UserSearchesComponent, canActivate: [TokenGuard] },
   { path: 'alerts', component: UserAlertsComponent, canActivate: [TokenGuard] },
   { path: 'me', component: MeComponent, canActivate: [TokenGuard] },
