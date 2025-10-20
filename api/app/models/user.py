@@ -17,6 +17,7 @@ class User(db.Model):
     is_banned = db.Column(db.Boolean, nullable=True)
     banned_at = db.Column(db.DateTime, nullable=True)
     discord_id = db.Column(db.String, nullable=True)
+    bga_id = db.Column(db.String, nullable=True)
 
 
     def __repr__(self):
