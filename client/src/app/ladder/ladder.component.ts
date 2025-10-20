@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
@@ -55,7 +55,7 @@ export class LadderComponent implements OnInit {
 
   Math = Math;
 
-  constructor(private router: Router) { }
+  private readonly router = inject(Router);
 
   ngOnInit(): void {
     this.loadPlayers();
@@ -113,8 +113,7 @@ export class LadderComponent implements OnInit {
   }
 
   onSearchChange(): void {
-    this.currentPage = 1;
-    this.applyFilters();
+    console.log(this.searchQuery);
   }
 
   onFilterChange(): void {
