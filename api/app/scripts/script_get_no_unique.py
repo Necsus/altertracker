@@ -15,7 +15,7 @@ def run_script():
             name = jsonCard['name'],
             name_en = name_en,
             faction = jsonCard['mainFaction']['reference'],
-            rarity = jsonCard['rarity']['reference'],
+            rarity = jsonCard['rarity']['reference'] if jsonCard['rarity'] else None,
             type = jsonCard['cardType']['reference'],
             subtype=','.join([sub['reference'] for sub in jsonCard['cardSubTypes']]) if jsonCard.get('cardSubTypes') else None,
             set = jsonCard['cardSet']['reference'],
