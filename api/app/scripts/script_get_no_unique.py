@@ -111,6 +111,9 @@ def run_script():
                         if str(card_to_update.subtype) != str(tempCard.subtype):
                             card_to_update.subtype = tempCard.subtype
                             has_updated = True
+                        if str(card_to_update.rarity) != str(tempCard.rarity):
+                            card_to_update.rarity = tempCard.rarity
+                            has_updated = True
                         if str(card_to_update.imagePath) != str(tempCard.imagePath):
                             card_to_update.imagePath = tempCard.imagePath
                             has_updated = True
