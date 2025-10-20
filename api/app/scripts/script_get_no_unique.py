@@ -84,7 +84,7 @@ def run_script():
         socketio.emit('script_output', {'data': f"----------- GET {rarity} -----------"})
         print(f"----------- GET {rarity} -----------")
         cardToInsert = []
-        sets = ['COREKS', 'CORE', 'ALIZE', 'BISE', 'CYCLONE']
+        sets = ['COREKS', 'CORE', 'ALIZE', 'BISE', 'CYCLONE', 'DUSTER']
         for set in sets:
             page = 1
             while True:
