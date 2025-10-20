@@ -1,17 +1,18 @@
 import datetime
+import uuid
+from sqlalchemy import UUID
 from app.extensions import db
+from sqlalchemy.orm import relationship
 
 class Player(db.Model):
     __tablename__ = 'players'
 
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)  # Optionnel si lié à un compte
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name = db.Column(db.String(100), nullable=False)
-    country = db.Column(db.String(3), nullable=True)  # Code pays ISO 3166-1 alpha-2
-    team_id = db.Column(db.Integer, db.ForeignKey('teams.id'), nullable=True)
+    country = db.Column(db.String(3), nullable=True)
+    team_id = db.Column(UUID(as_uuid=True), db.ForeignKey('teams.id'), nullable=True)  # ✅ UUID au lieu de Integer
     avatar_url = db.Column(db.String(255), nullable=True)
     bio = db.Column(db.Text, nullable=True)
-    discord_username = db.Column(db.String(100), nullable=True)
     
     # Stats globales
     total_points = db.Column(db.Integer, default=0)
@@ -25,28 +26,39 @@ class Player(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc), onupdate=datetime.datetime.now(datetime.timezone.utc))
     is_active = db.Column(db.Boolean, default=True)
     last_game_at = db.Column(db.DateTime, nullable=True)
+
+    # ✅ Relation inverse vers User (back_populates au lieu de backref)
+    user = relationship("User", back_populates="player", uselist=False)
     
     # Relations
-    user = db.relationship('User', backref='player_profile', foreign_keys=[user_id])
-    team = db.relationship('Team', backref='members', foreign_keys=[team_id])
-    decks = db.relationship('PlayerDeck', back_populates='player', cascade='all, delete-orphan')
-    games = db.relationship('Game', foreign_keys='Game.player1_id', backref='player1_games', lazy='dynamic')
-    season_stats = db.relationship('PlayerSeasonStats', back_populates='player', cascade='all, delete-orphan')
+    team = relationship('Team', backref='members', foreign_keys=[team_id])
+    decks = relationship('PlayerDeck', back_populates='player', cascade='all, delete-orphan')
+    games = relationship('Game', foreign_keys='Game.player1_id', backref='player1_games', lazy='dynamic')
+    season_stats = relationship('PlayerSeasonStats', back_populates='player', cascade='all, delete-orphan')
 
     def __repr__(self):
         return f"<Player {self.name}>"
     
     def json(self):
+        # ✅ Accès sécurisé à la relation user
+        user_data = {}
+        try:
+            if self.user:
+                user_data = {
+                    'user_id': self.user.id,
+                    'username': self.user.username,
+                }
+        except Exception:
+            pass
+        
         return {
-            'id': self.id,
-            'user_id': self.user_id,
+            'id': str(self.id),  # ✅ Convertir UUID en string pour JSON
             'name': self.name,
             'country': self.country,
-            'team_id': self.team_id,
+            'team_id': str(self.team_id) if self.team_id else None,  # ✅ UUID en string
             'team_name': self.team.name if self.team else None,
             'avatar_url': self.avatar_url,
             'bio': self.bio,
-            'discord_username': self.discord_username,
             'total_points': self.total_points,
             'total_wins': self.total_wins,
             'total_losses': self.total_losses,
@@ -57,6 +69,7 @@ class Player(db.Model):
             'updated_at': self.updated_at.isoformat() if self.updated_at else None,
             'is_active': self.is_active,
             'last_game_at': self.last_game_at.isoformat() if self.last_game_at else None,
+            **user_data  # ✅ Ajouter les données utilisateur si disponibles
         }
     
     def calculate_win_rate(self):
@@ -70,9 +83,9 @@ class Player(db.Model):
 class Team(db.Model):
     __tablename__ = 'teams'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)  # ✅ UUID
     name = db.Column(db.String(100), unique=True, nullable=False)
-    tag = db.Column(db.String(10), unique=True, nullable=False)  # Abréviation
+    tag = db.Column(db.String(10), unique=True, nullable=False)
     logo_url = db.Column(db.String(255), nullable=True)
     description = db.Column(db.Text, nullable=True)
     country = db.Column(db.String(3), nullable=True)
@@ -94,7 +107,7 @@ class Team(db.Model):
     def json(self):
         member_count = len(self.members) if self.members else 0
         return {
-            'id': self.id,
+            'id': str(self.id),  # ✅ UUID en string
             'name': self.name,
             'tag': self.tag,
             'logo_url': self.logo_url,
@@ -116,14 +129,13 @@ class Team(db.Model):
 class PlayerDeck(db.Model):
     __tablename__ = 'player_decks'
 
-    id = db.Column(db.Integer, primary_key=True)
-    player_id = db.Column(db.Integer, db.ForeignKey('players.id'), nullable=False)
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)  # ✅ UUID
+    player_id = db.Column(UUID(as_uuid=True), db.ForeignKey('players.id'), nullable=False)  # ✅ UUID
     name = db.Column(db.String(100), nullable=False)
     faction = db.Column(db.String(50), nullable=False)
-    hero_reference = db.Column(db.String(50), nullable=False)  # Référence de la carte héros
+    hero_reference = db.Column(db.String(50), nullable=False)
     
-    # Composition du deck (peut être JSON ou relation vers une table de cartes)
-    deck_list = db.Column(db.JSON, nullable=False)  # Liste des références de cartes
+    deck_list = db.Column(db.JSON, nullable=False)
     
     # Stats du deck
     games_played = db.Column(db.Integer, default=0)
@@ -131,12 +143,11 @@ class PlayerDeck(db.Model):
     losses = db.Column(db.Integer, default=0)
     win_rate = db.Column(db.Float, default=0.0)
     
-    # Métadonnées
     created_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
     updated_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc), onupdate=datetime.datetime.now(datetime.timezone.utc))
     last_used_at = db.Column(db.DateTime, nullable=True)
     is_active = db.Column(db.Boolean, default=True)
-    is_public = db.Column(db.Boolean, default=False)  # Visible par les autres joueurs
+    is_public = db.Column(db.Boolean, default=False)
     
     # Relations
     player = db.relationship('Player', back_populates='decks')
@@ -147,8 +158,8 @@ class PlayerDeck(db.Model):
     
     def json(self):
         return {
-            'id': self.id,
-            'player_id': self.player_id,
+            'id': str(self.id),  # ✅ UUID en string
+            'player_id': str(self.player_id),  # ✅ UUID en string
             'name': self.name,
             'faction': self.faction,
             'hero_reference': self.hero_reference,
@@ -174,29 +185,28 @@ class PlayerDeck(db.Model):
 class Game(db.Model):
     __tablename__ = 'games'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)  # ✅ UUID
     
     # Joueurs
-    player1_id = db.Column(db.Integer, db.ForeignKey('players.id'), nullable=False)
-    player2_id = db.Column(db.Integer, db.ForeignKey('players.id'), nullable=False)
+    player1_id = db.Column(UUID(as_uuid=True), db.ForeignKey('players.id'), nullable=False)  # ✅ UUID
+    player2_id = db.Column(UUID(as_uuid=True), db.ForeignKey('players.id'), nullable=False)  # ✅ UUID
     
     # Decks utilisés
-    player1_deck_id = db.Column(db.Integer, db.ForeignKey('player_decks.id'), nullable=True)
-    player2_deck_id = db.Column(db.Integer, db.ForeignKey('player_decks.id'), nullable=True)
+    player1_deck_id = db.Column(UUID(as_uuid=True), db.ForeignKey('player_decks.id'), nullable=True)  # ✅ UUID
+    player2_deck_id = db.Column(UUID(as_uuid=True), db.ForeignKey('player_decks.id'), nullable=True)  # ✅ UUID
     
     # Résultat
-    winner_id = db.Column(db.Integer, db.ForeignKey('players.id'), nullable=True)  # NULL pour match nul
+    winner_id = db.Column(UUID(as_uuid=True), db.ForeignKey('players.id'), nullable=True)  # ✅ UUID
     player1_score = db.Column(db.Integer, nullable=True)
     player2_score = db.Column(db.Integer, nullable=True)
     is_draw = db.Column(db.Boolean, default=False)
     
     # Contexte
-    tournament_id = db.Column(db.Integer, db.ForeignKey('tournaments.id'), nullable=True)
-    season = db.Column(db.String(20), nullable=True)  # Ex: "2025-1"
-    round = db.Column(db.Integer, nullable=True)  # Tour du tournoi
-    game_format = db.Column(db.String(50), nullable=True)  # "Standard", "Draft", etc.
+    tournament_id = db.Column(UUID(as_uuid=True), db.ForeignKey('tournaments.id'), nullable=True)  # ✅ UUID
+    season = db.Column(db.String(20), nullable=True)
+    round = db.Column(db.Integer, nullable=True)
+    game_format = db.Column(db.String(50), nullable=True)
     
-    # Métadonnées
     played_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
     duration_minutes = db.Column(db.Integer, nullable=True)
     replay_url = db.Column(db.String(255), nullable=True)
@@ -214,22 +224,22 @@ class Game(db.Model):
     tournament = db.relationship('Tournament', backref='games')
 
     def __repr__(self):
-        return f"<Game {self.id}: Player{self.player1_id} vs Player{self.player2_id}>"
+        return f"<Game {self.id}: {self.player1_id} vs {self.player2_id}>"
     
     def json(self):
         return {
-            'id': self.id,
-            'player1_id': self.player1_id,
-            'player1_name': self.player1_games.name if self.player1_games else None,
-            'player2_id': self.player2_id,
+            'id': str(self.id),  # ✅ UUID en string
+            'player1_id': str(self.player1_id),  # ✅ UUID en string
+            'player1_name': self.player1_games.first().name if self.player1_games.first() else None,
+            'player2_id': str(self.player2_id),  # ✅ UUID en string
             'player2_name': self.player2.name if self.player2 else None,
-            'player1_deck_id': self.player1_deck_id,
-            'player2_deck_id': self.player2_deck_id,
-            'winner_id': self.winner_id,
+            'player1_deck_id': str(self.player1_deck_id) if self.player1_deck_id else None,
+            'player2_deck_id': str(self.player2_deck_id) if self.player2_deck_id else None,
+            'winner_id': str(self.winner_id) if self.winner_id else None,
             'player1_score': self.player1_score,
             'player2_score': self.player2_score,
             'is_draw': self.is_draw,
-            'tournament_id': self.tournament_id,
+            'tournament_id': str(self.tournament_id) if self.tournament_id else None,
             'season': self.season,
             'round': self.round,
             'game_format': self.game_format,
@@ -244,38 +254,33 @@ class Game(db.Model):
 class Tournament(db.Model):
     __tablename__ = 'tournaments'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)  # ✅ UUID
     name = db.Column(db.String(200), nullable=False)
     description = db.Column(db.Text, nullable=True)
-    tournament_type = db.Column(db.String(50), nullable=False)  # "Online", "In-Person", "Nationals", etc.
-    format = db.Column(db.String(50), nullable=False)  # "Standard", "Draft", etc.
+    tournament_type = db.Column(db.String(50), nullable=False)
+    format = db.Column(db.String(50), nullable=False)
     season = db.Column(db.String(20), nullable=True)
     
-    # Dates
     start_date = db.Column(db.DateTime, nullable=False)
     end_date = db.Column(db.DateTime, nullable=True)
     registration_deadline = db.Column(db.DateTime, nullable=True)
     
-    # Localisation
     country = db.Column(db.String(3), nullable=True)
     city = db.Column(db.String(100), nullable=True)
     venue = db.Column(db.String(200), nullable=True)
     is_online = db.Column(db.Boolean, default=False)
     
-    # Infos
     max_players = db.Column(db.Integer, nullable=True)
     prize_pool = db.Column(db.String(100), nullable=True)
     organizer = db.Column(db.String(100), nullable=True)
     website = db.Column(db.String(255), nullable=True)
     stream_url = db.Column(db.String(255), nullable=True)
     
-    # Statut
-    status = db.Column(db.String(20), default='upcoming')  # upcoming, ongoing, completed, cancelled
+    status = db.Column(db.String(20), default='upcoming')
     
     created_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
     updated_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc), onupdate=datetime.datetime.now(datetime.timezone.utc))
     
-    # Relations
     participants = db.relationship('TournamentParticipant', back_populates='tournament', cascade='all, delete-orphan')
 
     def __repr__(self):
@@ -283,7 +288,7 @@ class Tournament(db.Model):
     
     def json(self):
         return {
-            'id': self.id,
+            'id': str(self.id),  # ✅ UUID en string
             'name': self.name,
             'description': self.description,
             'tournament_type': self.tournament_type,
@@ -309,25 +314,22 @@ class Tournament(db.Model):
 class TournamentParticipant(db.Model):
     __tablename__ = 'tournament_participants'
 
-    id = db.Column(db.Integer, primary_key=True)
-    tournament_id = db.Column(db.Integer, db.ForeignKey('tournaments.id'), nullable=False)
-    player_id = db.Column(db.Integer, db.ForeignKey('players.id'), nullable=False)
-    deck_id = db.Column(db.Integer, db.ForeignKey('player_decks.id'), nullable=True)
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)  # ✅ UUID
+    tournament_id = db.Column(UUID(as_uuid=True), db.ForeignKey('tournaments.id'), nullable=False)  # ✅ UUID
+    player_id = db.Column(UUID(as_uuid=True), db.ForeignKey('players.id'), nullable=False)  # ✅ UUID
+    deck_id = db.Column(UUID(as_uuid=True), db.ForeignKey('player_decks.id'), nullable=True)  # ✅ UUID
     
-    # Résultats
     final_rank = db.Column(db.Integer, nullable=True)
     points = db.Column(db.Integer, default=0)
     wins = db.Column(db.Integer, default=0)
     losses = db.Column(db.Integer, default=0)
     draws = db.Column(db.Integer, default=0)
     
-    # Statut
     is_checked_in = db.Column(db.Boolean, default=False)
     dropped_at_round = db.Column(db.Integer, nullable=True)
     
     registered_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
     
-    # Relations
     tournament = db.relationship('Tournament', back_populates='participants')
     player = db.relationship('Player', backref='tournament_participations')
     deck = db.relationship('PlayerDeck', backref='tournament_uses')
@@ -337,11 +339,11 @@ class TournamentParticipant(db.Model):
     
     def json(self):
         return {
-            'id': self.id,
-            'tournament_id': self.tournament_id,
-            'player_id': self.player_id,
+            'id': str(self.id),  # ✅ UUID en string
+            'tournament_id': str(self.tournament_id),  # ✅ UUID en string
+            'player_id': str(self.player_id),  # ✅ UUID en string
             'player_name': self.player.name if self.player else None,
-            'deck_id': self.deck_id,
+            'deck_id': str(self.deck_id) if self.deck_id else None,
             'final_rank': self.final_rank,
             'points': self.points,
             'wins': self.wins,
@@ -356,32 +358,27 @@ class TournamentParticipant(db.Model):
 class PlayerSeasonStats(db.Model):
     __tablename__ = 'player_season_stats'
 
-    id = db.Column(db.Integer, primary_key=True)
-    player_id = db.Column(db.Integer, db.ForeignKey('players.id'), nullable=False)
-    season = db.Column(db.String(20), nullable=False)  # Ex: "2025-1"
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)  # ✅ UUID
+    player_id = db.Column(UUID(as_uuid=True), db.ForeignKey('players.id'), nullable=False)  # ✅ UUID
+    season = db.Column(db.String(20), nullable=False)
     
-    # Stats de la saison
     points = db.Column(db.Integer, default=0)
     wins = db.Column(db.Integer, default=0)
     losses = db.Column(db.Integer, default=0)
     draws = db.Column(db.Integer, default=0)
     win_rate = db.Column(db.Float, default=0.0)
     
-    # Classement
     rank = db.Column(db.Integer, nullable=True)
     highest_rank = db.Column(db.Integer, nullable=True)
     
-    # Tournois
     tournaments_played = db.Column(db.Integer, default=0)
     tournaments_won = db.Column(db.Integer, default=0)
     
     created_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
     updated_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc), onupdate=datetime.datetime.now(datetime.timezone.utc))
     
-    # Relations
     player = db.relationship('Player', back_populates='season_stats')
     
-    # Contrainte unique pour éviter les doublons
     __table_args__ = (db.UniqueConstraint('player_id', 'season', name='unique_player_season'),)
 
     def __repr__(self):
@@ -389,8 +386,8 @@ class PlayerSeasonStats(db.Model):
     
     def json(self):
         return {
-            'id': self.id,
-            'player_id': self.player_id,
+            'id': str(self.id),  # ✅ UUID en string
+            'player_id': str(self.player_id),  # ✅ UUID en string
             'season': self.season,
             'points': self.points,
             'wins': self.wins,
