@@ -167,6 +167,7 @@ def run_script():
 
     get_no_unique('COMMON')
     get_no_unique('RARE')
+    get_no_unique('EXALTED')
 
     socketio.emit('script_output', {'data': f"Fin de l'insertion des cartes."})
     socketio.emit('script_output', {'data': f"Cartes scannées : {nb_cards}"})

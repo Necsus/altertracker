@@ -131,6 +131,7 @@ footer img {
 
 .icon-common,
 .icon-rare,
+.icon-exalted,
 .icon-unique,
 .icon-axiom,
 .icon-bravos,
@@ -168,15 +169,19 @@ footer img {
 }
 
 .icon-common {
-  background-image: url('/assets/img/rarity/COMMON.webp');
+  background-image: url('/assets/img/rarity/COMMON.png');
 }
 
 .icon-rare {
-  background-image: url('/assets/img/rarity/RARE.webp');
+  background-image: url('/assets/img/rarity/RARE.png');
+}
+
+.icon-exalted {
+  background-image: url('/assets/img/rarity/EXALTED.png');
 }
 
 .icon-unique {
-  background-image: url('/assets/img/rarity/UNIQUE.webp');
+  background-image: url('/assets/img/rarity/UNIQUE.png');
 }
 
 button {

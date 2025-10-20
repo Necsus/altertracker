@@ -22,7 +22,7 @@
       <!-- Rareté -->
       <div class="mb-4">
         <label class="block mb-1 text-center text-sm font-semibold">{{ 'cards.form_rarity' | translate }}</label>
-        <div class="grid grid-cols-3 gap-2">
+        <div class="grid grid-cols-4 gap-2">
           <a class="flex flex-col items-center justify-center p-1 rounded-lg transition cursor-pointer"
             [class.bg-amber-500]="selectedRarity.includes('COMMON')" (click)="toggleRarity('COMMON')">
             <i class="icon-common w-10 h-5"></i>
@@ -30,6 +30,10 @@
           <a class="flex flex-col items-center justify-content-center p-2 rounded-lg transition cursor-pointer"
             [class.bg-amber-500]="selectedRarity.includes('RARE')" (click)="toggleRarity('RARE')">
             <i class="icon-rare w-10 h-5"></i>
+          </a>
+          <a class="flex flex-col items-center justify-content-center p-2 rounded-lg transition cursor-pointer"
+            [class.bg-amber-500]="selectedRarity.includes('EXALTED')" (click)="toggleRarity('EXALTED')">
+            <i class="icon-exalted w-10 h-5"></i>
           </a>
           <a class="flex flex-col items-center justify-center p-1 rounded-lg transition cursor-pointer"
             [class.bg-amber-500]="selectedRarity.includes('UNIQUE')" (click)="toggleRarity('UNIQUE')">
