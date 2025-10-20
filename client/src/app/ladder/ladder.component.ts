@@ -26,11 +26,11 @@ interface Team {
 }
 
 @Component({
-  selector: 'app-player',
-  templateUrl: './player.component.html',
+  selector: 'app-ladder',
+  templateUrl: './ladder.component.html',
   imports: [CommonModule, FormsModule, TranslateModule]
 })
-export class PlayerComponent implements OnInit {
+export class LadderComponent implements OnInit {
   activeTab: 'players' | 'teams' = 'players';
   searchQuery: string = '';
   selectedCountry: string = '';
