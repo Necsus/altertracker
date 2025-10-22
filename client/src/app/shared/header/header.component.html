@@ -3,7 +3,7 @@
     <nav class="flex justify-between items-center">
       <!-- Logo -->
       <div class="flex items-center cursor-pointer" (click)="navigateToHome()">
-        <img src="assets/img/test_logo_2.png" alt="Logo" class="h-10 mr-2">
+        <img src="assets/img/logo-2.png" alt="Logo" class="h-12 mr-2">
         <div class="text-2xl font-bold" style="user-select: none;">AlterTracker</div>
       </div>
 
@@ -40,6 +40,10 @@
             class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
             'header.stats' | translate }}</a>
         </li>
+        <!-- <li><a routerLink="/players" routerLinkActive="text-amber-400" style="user-select: none;"
+            class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
+            'header.players' | translate }}</a>
+        </li> -->
         <li><a routerLink="/about" routerLinkActive="text-amber-400" style="user-select: none;"
             class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
             'header.about' | translate }}</a>
@@ -117,6 +121,9 @@ class="hover:text-amber-400 transition duration-300 cursor-pointer"><i class="fa
       <a routerLink="/stats" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
         class="block hover:text-amber-400 transition duration-300">{{
         'header.stats' | translate }}</a>
+      <!-- <a routerLink="/players" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
+        class="block hover:text-amber-400 transition duration-300">{{
+        'header.players' | translate }}</a> -->
       <a routerLink="/about" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
         class="block hover:text-amber-400 transition duration-300">{{
         'header.about' | translate }}</a>
