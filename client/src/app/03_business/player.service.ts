@@ -1,0 +1,20 @@
+import { inject, Injectable } from '@angular/core';
+import { map, Observable } from 'rxjs';
+import { PlayerModel } from '../01_models/03_business/player.model';
+import { PlayerApiService } from '../02_api/player-api.service';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class PlayerService {
+
+  private readonly playerApiService = inject(PlayerApiService);
+
+  search_players$(query: string): Observable<PlayerModel[]> {
+    return this.playerApiService.search_players$(query).pipe(map((dbModel: any) => {
+      return dbModel.map((player: PlayerModel) => {
+        return player;
+      });
+    }));
+  }
+}

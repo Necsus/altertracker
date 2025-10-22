@@ -340,5 +340,40 @@
     "page": "Page",
     "previous": "Previous",
     "next": "Next"
+  },
+  "players": {
+    "title": "Leaderboard",
+    "subtitle": "Ranking of the best players and teams",
+    "search_placeholder": "Search for a player or team...",
+    "tab_players": "Players",
+    "tab_teams": "Teams",
+    "total_players": "Total Players",
+    "active_today": "Active Today",
+    "total_teams": "Total Teams",
+    "rank": "Rank",
+    "player": "Player",
+    "team": "Team",
+    "points": "Points",
+    "wins": "Wins",
+    "games": "Games",
+    "no_results": "No results found",
+    "filter_country": "Country",
+    "filter_season": "Season",
+    "all_countries": "All countries",
+    "all_seasons": "All seasons",
+    "season": "Season",
+    "reset_filters": "Reset",
+    "search_results": "Results",
+    "no_local_results": "No player found in our database",
+    "search_on_bga": "Search on Board Game Arena",
+    "min_chars_hint": "Type at least 2 characters to search"
+  },
+  "teams": {
+    "rank": "Rank",
+    "name": "Name",
+    "members": "Members",
+    "points": "Points",
+    "avg_points": "Avg. Points",
+    "no_results": "No team found"
   }
 }

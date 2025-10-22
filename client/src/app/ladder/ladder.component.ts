@@ -3,17 +3,9 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
-
-interface Player {
-  id: number;
-  name: string;
-  country: string;
-  team?: string;
-  points: number;
-  wins: number;
-  totalGames: number;
-  season: string;
-}
+import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
+import { PlayerModel } from '../01_models/03_business/player.model';
+import { PlayerService } from '../03_business/player.service';
 
 interface Team {
   id: number;
@@ -36,11 +28,18 @@ export class LadderComponent implements OnInit {
   selectedCountry: string = '';
   selectedSeason: string = '';
 
-  players: Player[] = [];
+  players: PlayerModel[] = [];
   teams: Team[] = [];
 
-  filteredPlayers: Player[] = [];
+  filteredPlayers: PlayerModel[] = [];
   filteredTeams: Team[] = [];
+
+  // Pour la recherche avec dropdown
+  searchResults: PlayerModel[] = [];
+  showSearchDropdown: boolean = false;
+  isSearching: boolean = false;
+  private searchSubject = new Subject<string>();
+
 
   countries: string[] = [];
   seasons: string[] = [];
@@ -56,11 +55,72 @@ export class LadderComponent implements OnInit {
   Math = Math;
 
   private readonly router = inject(Router);
+  private readonly playerService = inject(PlayerService);
 
   ngOnInit(): void {
     this.loadPlayers();
     this.loadTeams();
     this.loadFilters();
+    this.setupSearchAutocomplete();
+  }
+
+  setupSearchAutocomplete(): void {
+    this.searchSubject.pipe(
+      debounceTime(300),
+      distinctUntilChanged()
+    ).subscribe(query => {
+      if (query.length >= 2) {
+        this.performSearch(query);
+      } else {
+        this.searchResults = [];
+      }
+    });
+  }
+
+  onSearchInput(): void {
+    this.searchSubject.next(this.searchQuery);
+    this.showSearchDropdown = true;
+  }
+
+
+  performSearch(query: string): void {
+    this.isSearching = true;
+    this.playerService.search_players$(query).subscribe({
+      next: (results: PlayerModel[]) => {
+        this.searchResults = results.slice(0, 5); // Limiter à 5 résultats
+        this.isSearching = false;
+      },
+      error: (error) => {
+        console.error('Error searching players:', error);
+        this.searchResults = [];
+        this.isSearching = false;
+      }
+    });
+  }
+
+  selectPlayer(player: PlayerModel): void {
+    this.searchQuery = '';
+    this.showSearchDropdown = false;
+    this.searchResults = [];
+    this.router.navigate(['/player', player.id]);
+  }
+
+  searchOnBGA(): void {
+    if (!this.searchQuery.trim()) return;
+
+    // Ouvrir la recherche BGA dans un nouvel onglet
+    const bgaSearchUrl = `https://boardgamearena.com/playerstat?p=${encodeURIComponent(this.searchQuery)}`;
+    window.open(bgaSearchUrl, '_blank');
+
+    // Optionnel : Fermer la dropdown
+    this.showSearchDropdown = false;
+  }
+
+  closeSearchDropdown(): void {
+    // Délai pour permettre au clic sur un élément de se déclencher
+    setTimeout(() => {
+      this.showSearchDropdown = false;
+    }, 200);
   }
 
   loadPlayers(): void {
@@ -69,15 +129,37 @@ export class LadderComponent implements OnInit {
     const availableSeasons = ['2024-1', '2024-2', '2025-1'];
 
     this.players = Array.from({ length: 100 }, (_, i) => ({
-      id: i + 1,
+      id: `${i + 1}`,
+      bga_id: 1000 + i,
       name: `Player ${i + 1}`,
       country: availableCountries[Math.floor(Math.random() * availableCountries.length)],
-      team: i % 3 === 0 ? `Team ${Math.floor(i / 3) + 1}` : undefined,
-      points: 10000 - i * 50,
-      wins: Math.floor(Math.random() * 100),
-      totalGames: Math.floor(Math.random() * 200) + 50,
+      team_id: i % 3 === 0 ? `team-${Math.floor(i / 3) + 1}` : null,
+      team_name: i % 3 === 0 ? `Team ${Math.floor(i / 3) + 1}` : null,
+      avatar_url: null,
+      bio: `Bio of player ${i + 1}`,
+      total_points: 10000 - i * 50,
+      total_wins: Math.floor(Math.random() * 100),
+      total_losses: Math.floor(Math.random() * 50),
+      total_draws: Math.floor(Math.random() * 10),
+      win_rate: 0,
+      total_games: 0,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      is_active: true,
+      last_game_at: new Date().toISOString(),
+      // Ajouter une propriété temporaire pour la saison (ou l'obtenir via un service)
       season: availableSeasons[Math.floor(Math.random() * availableSeasons.length)]
-    }));
+    } as PlayerModel & { season: string }));
+
+    // Calculer les stats dérivées
+    this.players.forEach(player => {
+      const wins = player.total_wins || 0;
+      const losses = player.total_losses || 0;
+      const draws = player.total_draws || 0;
+
+      player.total_games = wins + losses + draws;
+      player.win_rate = player.total_games > 0 ? (wins / player.total_games) * 100 : 0;
+    });
 
     this.totalPlayers = this.players.length;
     this.activePlayers = Math.floor(this.totalPlayers * 0.7);
@@ -103,17 +185,46 @@ export class LadderComponent implements OnInit {
   }
 
   loadFilters(): void {
-    // Extraire les pays uniques
-    this.countries = [...new Set(this.players.map(p => p.country))].sort();
+    // Extraire les pays uniques (filtrer les null)
+    const playerCountries = this.players
+      .map(p => p.country)
+      .filter((c): c is string => c !== null);
+    this.countries = [...new Set(playerCountries)].sort();
 
     // Extraire les saisons uniques
-    const playerSeasons = this.players.map(p => p.season);
-    const teamSeasons = this.teams.map(t => t.season);
+    const playerSeasons = this.players.map((p: any) => p.season).filter(Boolean);
+    const teamSeasons = this.teams.map((t: any) => t.season).filter(Boolean);
     this.seasons = [...new Set([...playerSeasons, ...teamSeasons])].sort().reverse();
   }
 
   onSearchChange(): void {
-    console.log(this.searchQuery);
+    // Recherche complète en appuyant sur Entrée
+    if (this.searchQuery.length >= 2) {
+      this.isSearching = true;
+      this.playerService.search_players$(this.searchQuery).subscribe({
+        next: (results: PlayerModel[]) => {
+          this.filteredPlayers = results;
+          this.totalPlayers = results.length;
+          this.updatePagination();
+          this.isSearching = false;
+          this.showSearchDropdown = false;
+        },
+        error: (error) => {
+          console.error('Error loading players:', error);
+          this.isSearching = false;
+        }
+      });
+    }
+  }
+
+  // Helper pour obtenir les initiales du joueur
+  getPlayerInitials(name: string): string {
+    return name
+      .split(' ')
+      .map(n => n.charAt(0))
+      .join('')
+      .toUpperCase()
+      .substring(0, 2);
   }
 
   onFilterChange(): void {
@@ -122,37 +233,24 @@ export class LadderComponent implements OnInit {
   }
 
   applyFilters(): void {
-    const query = this.searchQuery.toLowerCase().trim();
-
     if (this.activeTab === 'players') {
       this.filteredPlayers = this.players.filter(p => {
-        // Filtre de recherche
-        const matchesSearch = !query ||
-          p.name.toLowerCase().includes(query) ||
-          p.country.toLowerCase().includes(query) ||
-          (p.team && p.team.toLowerCase().includes(query));
-
         // Filtre de pays
         const matchesCountry = !this.selectedCountry || p.country === this.selectedCountry;
 
         // Filtre de saison
-        const matchesSeason = !this.selectedSeason || p.season === this.selectedSeason;
+        const matchesSeason = !this.selectedSeason || (p as any).season === this.selectedSeason;
 
-        return matchesSearch && matchesCountry && matchesSeason;
+        return matchesCountry && matchesSeason;
       });
 
       this.totalPlayers = this.filteredPlayers.length;
     } else {
       this.filteredTeams = this.teams.filter(t => {
-        // Filtre de recherche
-        const matchesSearch = !query ||
-          t.name.toLowerCase().includes(query) ||
-          t.tag.toLowerCase().includes(query);
-
         // Filtre de saison
-        const matchesSeason = !this.selectedSeason || t.season === this.selectedSeason;
+        const matchesSeason = !this.selectedSeason || (t as any).season === this.selectedSeason;
 
-        return matchesSearch && matchesSeason;
+        return matchesSeason;
       });
 
       this.totalTeams = this.filteredTeams.length;
@@ -166,6 +264,8 @@ export class LadderComponent implements OnInit {
     this.selectedCountry = '';
     this.selectedSeason = '';
     this.currentPage = 1;
+    this.searchResults = [];
+    this.showSearchDropdown = false;
     this.applyFilters();
   }
 
@@ -217,7 +317,7 @@ export class LadderComponent implements OnInit {
     this.currentPage = page;
   }
 
-  viewPlayerProfile(playerId: number): void {
+  viewPlayerProfile(playerId: string): void {
     this.router.navigate(['/player', playerId]);
   }
 

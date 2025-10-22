@@ -363,7 +363,11 @@
     "all_countries": "Tous les pays",
     "all_seasons": "Toutes les saisons",
     "season": "Saison",
-    "reset_filters": "Réinitialiser"
+    "reset_filters": "Réinitialiser",
+    "search_results": "Résultats",
+    "no_local_results": "Aucun joueur trouvé dans notre base",
+    "search_on_bga": "Rechercher sur Board Game Arena",
+    "min_chars_hint": "Tapez au moins 2 caractères pour rechercher"
   },
   "teams": {
     "rank": "Rang",
