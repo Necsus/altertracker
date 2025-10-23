@@ -108,12 +108,18 @@ export class LadderComponent implements OnInit {
   searchOnBGA(): void {
     if (!this.searchQuery.trim()) return;
 
-    // Ouvrir la recherche BGA dans un nouvel onglet
-    const bgaSearchUrl = `https://boardgamearena.com/playerstat?p=${encodeURIComponent(this.searchQuery)}`;
-    window.open(bgaSearchUrl, '_blank');
-
-    // Optionnel : Fermer la dropdown
-    this.showSearchDropdown = false;
+    this.isSearching = true;
+    this.playerService.search_players_bga$(this.searchQuery).subscribe({
+      next: (results: PlayerModel[]) => {
+        this.searchResults = results.slice(0, 5); // Limiter à 5 résultats
+        this.isSearching = false;
+      },
+      error: (error) => {
+        console.error('Error searching players:', error);
+        this.searchResults = [];
+        this.isSearching = false;
+      }
+    });
   }
 
   closeSearchDropdown(): void {

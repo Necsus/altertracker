@@ -25,3 +25,6 @@ class ConfigEnv:
     DISCORD_TOKEN_URL = "https://discord.com/api/oauth2/token"
     DISCORD_API_URL = "https://discord.com/api/users/@me"
     DISCORD_BOT_URI = os.getenv("DISCORD_BOT_URI")
+
+    BGA_USERNAME = os.getenv("BGA_USERNAME")
+    BGA_PASSWORD = os.getenv("BGA_PASSWORD")
