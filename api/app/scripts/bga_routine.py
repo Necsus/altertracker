@@ -23,7 +23,7 @@ def postLoginUserWithPassword() -> bool:
     headers = {
         "Cookie": f"PHPSESSID={PHPSESSID.value}",
         "accept": "*/*",
-        "content-type": "multipart/form-data",
+        "content-type": "application/x-www-form-urlencoded",
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:144.0) Gecko/20100101 Firefox/144.0",
     }
     
@@ -125,7 +125,7 @@ def postGetRequestToken() -> str:
     }
     headers = {
         "accept": "*/*",
-        "content-type": "multipart/form-data",
+        "content-type": "application/x-www-form-urlencoded",
         "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:144.0) Gecko/20100101 Firefox/144.0",
     }
     
@@ -229,7 +229,7 @@ def getSearch(query: str, retry: bool = True) -> dict:
             "cookie": f"TournoiEnLigne_sso_user={TournoiEnLigne_sso_user.value};TournoiEnLigne_sso_id={TournoiEnLigne_sso_id.value};TournoiEnLignetkt={TournoiEnLignetkt.value};TournoiEnLigneidt={TournoiEnLigneidt.value};TournoiEnLignetk={TournoiEnLignetk.value};TournoiEnLigneid={TournoiEnLigneid.value}",
             "x-request-token": TournoiEnLigneidt.value,
             "accept": "*/*",
-            "content-type": "multipart/form-data",
+            "content-type": "application/x-www-form-urlencoded",
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:144.0) Gecko/20100101 Firefox/144.0"
         }
         
@@ -340,3 +340,206 @@ def getSearch(query: str, retry: bool = True) -> dict:
         import traceback
         traceback.print_exc()
         return {'status': 0, 'error': str(e), 'players': []}
+
+def getGames(bga_id: int, page: int = 0, retry: bool = True) -> dict:
+    try:
+        url = "https://boardgamearena.com/gamestats/gamestats/getGames.html"
+        params = {
+            "player": bga_id,
+            "game_id": 1909,  # ID du jeu Altered
+            "finished": 1,
+            "updateStats": 1,
+            "page": page
+        }
+
+        TournoiEnLigne_sso_user = db.session.query(CookieManager).filter_by(name="TournoiEnLigne_sso_user").first()
+        TournoiEnLigne_sso_id = db.session.query(CookieManager).filter_by(name="TournoiEnLigne_sso_id").first()
+        TournoiEnLigneidt = db.session.query(CookieManager).filter_by(name="TournoiEnLigneidt").first()
+        TournoiEnLignetkt = db.session.query(CookieManager).filter_by(name="TournoiEnLignetkt").first()
+        TournoiEnLigneid = db.session.query(CookieManager).filter_by(name="TournoiEnLigneid").first()
+        TournoiEnLignetk = db.session.query(CookieManager).filter_by(name="TournoiEnLignetk").first()
+        
+        # Récupérer les cookies avec la fonction helper
+        headers = {
+            "cookie": f"TournoiEnLigne_sso_user={TournoiEnLigne_sso_user.value};TournoiEnLigne_sso_id={TournoiEnLigne_sso_id.value};TournoiEnLignetkt={TournoiEnLignetkt.value};TournoiEnLigneidt={TournoiEnLigneidt.value};TournoiEnLignetk={TournoiEnLignetk.value};TournoiEnLigneid={TournoiEnLigneid.value}",
+            "x-request-token": TournoiEnLigneidt.value,
+            "accept": "*/*",
+            "content-type": "application/x-www-form-urlencoded",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:144.0) Gecko/20100101 Firefox/144.0"
+        }
+        
+        
+        # Print détails de la requête
+        print("\n" + "="*80)
+        print("📤 GET GAMES REQUEST")
+        print("="*80)
+        print(f"URL: {url}")
+        print(f"Player BGA ID: {bga_id}")
+        print(f"Page: {page}")
+        print(f"Params: {params}")
+        print("="*80 + "\n")
+        
+        response = requests.get(url, headers=headers, params=params)
+        
+        # Print status de la réponse
+        print(f"Status Code: {response.status_code}")
+        
+        response.raise_for_status()
+        data = response.json()
+        
+        # Vérifier le status
+        status = data.get('status', 0)
+        if status != 1:
+            print(f"\033[91m❌ Erreur BGA API : status={status}\033[0m")
+            if retry:
+                print(f"\033[93m🔄 Reconnexion...\033[0m")
+                postLoginUserWithPassword()
+                time.sleep(1)
+                return getGames(bga_id, page, retry=False)
+            return {
+                'status': 0,
+                'error': 'BGA API error',
+                'data': {'tables': [], 'stats': {}}
+            }
+        
+        # Extraire les données
+        games_data = data.get('data', {})
+        tables = games_data.get('tables', [])
+        stats = games_data.get('stats', {})
+        
+        # Transformer les tables
+        transformed_tables = []
+        for table in tables:
+            # Parser les données CSV
+            player_ids = table.get('players', '').split(',')
+            player_names = table.get('player_names', '').split(',')
+            scores = table.get('scores', '').split(',')
+            ranks = table.get('ranks', '').split(',')
+            
+            # Trouver l'index du joueur recherché
+            player_index = -1
+            player_score = 0
+            player_rank = 0
+            
+            try:
+                player_index = player_ids.index(str(bga_id))
+                player_score = int(scores[player_index]) if player_index < len(scores) else 0
+                player_rank = int(ranks[player_index]) if player_index < len(ranks) else 0
+            except (ValueError, IndexError):
+                pass
+            
+            # Créer la liste des joueurs
+            players_list = []
+            for i, pid in enumerate(player_ids):
+                if pid:  # Ignorer les IDs vides
+                    players_list.append({
+                        'id': int(pid),
+                        'name': player_names[i] if i < len(player_names) else 'Unknown',
+                        'score': int(scores[i]) if i < len(scores) and scores[i] else 0,
+                        'rank': int(ranks[i]) if i < len(ranks) and ranks[i] else 0,
+                        'is_main_player': pid == str(bga_id)
+                    })
+            
+            # Construire l'objet table transformé
+            transformed_table = {
+                'table_id': int(table.get('table_id', 0)),
+                'game_name': table.get('game_name', 'altered'),
+                'game_id': int(table.get('game_id', 1909)),
+                'start_timestamp': int(table.get('start', 0)),
+                'end_timestamp': int(table.get('end', 0)),
+                'duration_seconds': int(table.get('end', 0)) - int(table.get('start', 0)),
+                'concede': table.get('concede') == '1',
+                'unranked': table.get('unranked') == '1',
+                'normalend': table.get('normalend') == '1',
+                'ranking_disabled': table.get('ranking_disabled') == '1',
+                'players': players_list,
+                'player_score': player_score,
+                'player_rank': player_rank,
+                'is_winner': player_rank == 1,
+                'elo_win': float(table.get('elo_win', 0)) if table.get('elo_win') else 0,
+                'elo_penalty': float(table.get('elo_penalty', 0)) if table.get('elo_penalty') else 0,
+                'elo_after': int(table.get('elo_after', 0)) if table.get('elo_after') else 0,
+                'arena_win': float(table.get('arena_win', 0)) if table.get('arena_win') else 0,
+                'arena_after': float(table.get('arena_after', 0)) if table.get('arena_after') else 0,
+            }
+            
+            transformed_tables.append(transformed_table)
+        
+        # Transformer les stats
+        transformed_stats = {}
+        
+        if isinstance(stats, dict):
+            # Stats générales
+            general = stats.get('general', {})
+            transformed_stats['general'] = {
+                'total_games': int(general.get('played', 0)),
+                'total_victories': int(general.get('victory', 0)),
+                'win_rate': float(general.get('score', 0)),  # Taux de victoire (0-1)
+                'total_elo_win': float(general.get('elo_win', 0)),
+                'avg_elo_per_game': float(general.get('elo_win', 0)) / int(general.get('played', 1)) if int(general.get('played', 0)) > 0 else 0
+            }
+            
+            # Stats par jeu (normalement un seul jeu : Altered)
+            games = stats.get('games', [])
+            transformed_stats['games'] = []
+            if isinstance(games, list):
+                for game in games:
+                    transformed_stats['games'].append({
+                        'game_id': int(game.get('game_id', 1909)),
+                        'game_name': game.get('game_name', 'altered'),
+                        'total_games': int(game.get('cnt', 0))
+                    })
+            
+            # Stats des adversaires
+            opponents = stats.get('opponents', [])
+            transformed_stats['opponents'] = []
+            if isinstance(opponents, list):
+                for opp in opponents[:10]:  # Limiter aux 10 premiers adversaires
+                    total_games = int(opp.get('nbr', 0))
+                    wins = int(opp.get('hits', 0))
+                    transformed_stats['opponents'].append({
+                        'id': int(opp.get('id', 0)),
+                        'name': opp.get('name', 'Unknown'),
+                        'total_games': total_games,
+                        'wins': wins,
+                        'losses': total_games - wins,
+                        'win_rate': wins / total_games if total_games > 0 else 0
+                    })
+        
+        result = {
+            'status': 1,
+            'data': {
+                'tables': transformed_tables,
+                'stats': transformed_stats,
+                'pagination': {
+                    'current_page': page,
+                    'games_in_page': len(transformed_tables),
+                    'has_more': len(transformed_tables) > 0  # S'il y a des résultats, il peut y avoir une page suivante
+                }
+            }
+        }
+        
+        print(f"✅ {len(transformed_tables)} partie(s) récupérée(s) pour le joueur {bga_id}")
+        return result
+        
+    except requests.exceptions.RequestException as e:
+        print(f"\033[91m❌ Erreur HTTP : {e}\033[0m")
+        if retry:
+            print(f"\033[93m🔄 Reconnexion...\033[0m")
+            postLoginUserWithPassword()
+            time.sleep(1)
+            return getGames(bga_id, page, retry=False)
+        return {
+            'status': 0,
+            'error': f'Request failed: {str(e)}',
+            'data': {'tables': [], 'stats': {}}
+        }
+    except Exception as e:
+        print(f"\033[91m❌ Erreur inattendue : {e}\033[0m")
+        import traceback
+        traceback.print_exc()
+        return {
+            'status': 0,
+            'error': f'Unexpected error: {str(e)}',
+            'data': {'tables': [], 'stats': {}}
+        }

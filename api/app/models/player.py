@@ -187,7 +187,9 @@ class Game(db.Model):
     __tablename__ = 'games'
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)  # ✅ UUID
-    
+    table_id = db.Column(db.Integer, nullable=False)
+    ranked = db.Column(db.Boolean, default=False)
+
     # Joueurs
     player1_id = db.Column(UUID(as_uuid=True), db.ForeignKey('players.id'), nullable=False)  # ✅ UUID
     player2_id = db.Column(UUID(as_uuid=True), db.ForeignKey('players.id'), nullable=False)  # ✅ UUID
@@ -198,8 +200,6 @@ class Game(db.Model):
     
     # Résultat
     winner_id = db.Column(UUID(as_uuid=True), db.ForeignKey('players.id'), nullable=True)  # ✅ UUID
-    player1_score = db.Column(db.Integer, nullable=True)
-    player2_score = db.Column(db.Integer, nullable=True)
     is_draw = db.Column(db.Boolean, default=False)
     
     # Contexte
@@ -218,6 +218,9 @@ class Game(db.Model):
     verified_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
     verified_at = db.Column(db.DateTime, nullable=True)
     
+    start = db.Column(db.DateTime, nullable=True)
+    end = db.Column(db.DateTime, nullable=True)
+
     # Relations
     player2 = db.relationship('Player', foreign_keys=[player2_id], backref='player2_games')
     player2_deck = db.relationship('PlayerDeck', foreign_keys=[player2_deck_id], backref='deck2_games')

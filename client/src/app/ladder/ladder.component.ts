@@ -102,7 +102,11 @@ export class LadderComponent implements OnInit {
     this.searchQuery = '';
     this.showSearchDropdown = false;
     this.searchResults = [];
-    this.router.navigate(['/player', player.id]);
+    if (!player.id && player.bga_id) {
+      this.router.navigate(['/player/bga', player.bga_id]);
+    } else {
+      this.router.navigate(['/player', player.id]);
+    }
   }
 
   searchOnBGA(): void {
