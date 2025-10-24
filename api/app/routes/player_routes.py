@@ -20,11 +20,14 @@ def search_players_route():
 def search_players_bga_route():
     try:
         query = request.args.get('query', '', type=str)
-        
         if not query or len(query) < 2:
             return jsonify({'message': 'Query must be at least 2 characters'}), 400
-        
         bga_players = search_players_bga_service(query)
-        return jsonify(bga_players), 200
+        if bga_players.get('status') != 1:
+            return jsonify({
+                'message': bga_players.get('error', 'BGA search failed'),
+                'players': []
+            }), 500
+        return jsonify(bga_players['players']), 200
     except Exception as e:
         return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)

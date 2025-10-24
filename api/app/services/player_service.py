@@ -7,4 +7,11 @@ def search_players_service(query: str) -> list:
 
 def search_players_bga_service(query: str) -> list:
     data = getSearch(query)
-    return [player for player in data.players]
+    
+    if not data or data.get('status') != 1:
+        return {
+            'status': 0,
+            'error': data.get('error', 'Unknown error') if data else 'No response',
+            'players': []
+        }
+    return data
