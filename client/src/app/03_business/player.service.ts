@@ -32,4 +32,10 @@ export class PlayerService {
       });
     }));
   }
+
+  import_player_bga$(bga_id: number): Observable<string> {
+    return this.playerApiService.import_player_bga$(bga_id).pipe(map((dbModel: string) => {
+      return dbModel;
+    }));
+  }
 }

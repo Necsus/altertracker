@@ -19,4 +19,8 @@ export class PlayerApiService {
   search_players_bga$(query: string): Observable<PlayerBgaModel[]> {
     return this.wabApiService.callGet$(this.controller, `searchbga?query=${query}`);
   }
+
+  import_player_bga$(bga_id: number): Observable<string> {
+    return this.wabApiService.callGet$(this.controller, `importbga/${bga_id}`);
+  }
 }

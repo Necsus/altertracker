@@ -103,7 +103,14 @@ export class LadderComponent implements OnInit {
     this.showSearchDropdown = false;
     this.searchResults = [];
     if (!player.id && player.bga_id) {
-      this.router.navigate(['/player/bga', player.bga_id]);
+      this.playerService.import_player_bga$(player.bga_id).subscribe({
+        next: (importedPlayer: string) => {
+          this.router.navigate(['/player', importedPlayer]);
+        },
+        error: (error) => {
+          console.error('Error importing player from BGA:', error);
+        }
+      });
     } else {
       this.router.navigate(['/player', player.id]);
     }

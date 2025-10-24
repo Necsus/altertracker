@@ -1,3 +1,4 @@
+from app.models.player import Player
 from app.scripts.bga_routine import getGames, getSearch
 from app.data.player_data import search_players_data
 
@@ -25,5 +26,9 @@ def import_player_bga_service(bga_id: int) -> str:
             'error': data.get('error', 'Unknown error') if data else 'No response',
             'player': None
         }
-    
+    print(data)
+    new_player = Player(
+        name=name,
+        bga_id=bga_id,
+        )
     return 'dbplayerid'

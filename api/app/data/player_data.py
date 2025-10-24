@@ -4,11 +4,6 @@ from app.extensions import db
 from sqlalchemy import func, case
 
 def search_players_data(query: str, limit: int = 10) -> List[Player]:
-    """
-    Recherche des joueurs par nom avec priorité :
-    1. Ceux dont le nom commence par la query
-    2. Ceux qui contiennent la query dans leur nom
-    """
     query_lower = query.lower()
     
     # Créer un ordre de priorité
@@ -26,3 +21,8 @@ def search_players_data(query: str, limit: int = 10) -> List[Player]:
     ).limit(limit).all()
     
     return players
+
+def create_player(new_player: Player) -> Player:
+    db.session.add(new_player)
+    db.session.commit()
+    return new_player
