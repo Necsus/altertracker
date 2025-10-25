@@ -29,12 +29,11 @@ class Player(db.Model):
     last_game_at = db.Column(db.DateTime, nullable=True)
 
     # ✅ Relation inverse vers User (back_populates au lieu de backref)
-    user = relationship("User", back_populates="player", uselist=False)
+    user = relationship("User", back_populates="player", uselist=False, passive_deletes=True)
     
     # Relations
     team = relationship('Team', backref='members', foreign_keys=[team_id])
     decks = relationship('PlayerDeck', back_populates='player', cascade='all, delete-orphan')
-    games = relationship('Game', foreign_keys='Game.player1_id', backref='player1_games', lazy='dynamic')
     season_stats = relationship('PlayerSeasonStats', back_populates='player', cascade='all, delete-orphan')
 
     def __repr__(self):
