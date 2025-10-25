@@ -378,23 +378,7 @@ def getGames(bga_id: int, page: int = 0, retry: bool = True) -> dict:
                         'game_name': game.get('game_name', 'altered'),
                         'total_games': int(game.get('cnt', 0))
                     })
-            
-            # # Stats des adversaires
-            # opponents = stats.get('opponents', [])
-            # transformed_stats['opponents'] = []
-            # if isinstance(opponents, list):
-            #     for opp in opponents[:10]:  # Limiter aux 10 premiers adversaires
-            #         total_games = int(opp.get('nbr', 0))
-            #         wins = int(opp.get('hits', 0))
-            #         transformed_stats['opponents'].append({
-            #             'id': int(opp.get('id', 0)),
-            #             'name': opp.get('name', 'Unknown'),
-            #             'total_games': total_games,
-            #             'wins': wins,
-            #             'losses': total_games - wins,
-            #             'win_rate': wins / total_games if total_games > 0 else 0
-            #         })
-        
+
         result = {
             'status': 1,
             'data': {
@@ -537,4 +521,103 @@ def getPlayer(bga_id: int, retry: bool = True) -> dict:
             'status': 0,
             'error': f'Unexpected error: {str(e)}',
             'data': None
+        }
+    
+def import_ladder_from_bga(season: int, page: int = 0, retry: bool = True) -> dict:
+    """
+    Importe le classement BGA Arena pour une saison donnée avec pagination
+    
+    Args:
+        season: Numéro de saison (ex: 202410)
+        page: Numéro de page (commence à 0)
+        retry: Autoriser une tentative de reconnexion
+        
+    Returns:
+        Dict avec status, data (ranks) et pagination info
+    """
+    try:
+        url = "https://boardgamearena.com/halloffame/halloffame/getRanking.html"
+        params = {
+            "game": 1909,  # ID du jeu Altered
+            "start": page * 10,  # BGA retourne 10 résultats par page
+            "mode": "arena",
+            "season": season
+        }
+
+        TournoiEnLigne_sso_user = db.session.query(CookieManager).filter_by(name="TournoiEnLigne_sso_user").first()
+        TournoiEnLigne_sso_id = db.session.query(CookieManager).filter_by(name="TournoiEnLigne_sso_id").first()
+        TournoiEnLigneidt = db.session.query(CookieManager).filter_by(name="TournoiEnLigneidt").first()
+        TournoiEnLignetkt = db.session.query(CookieManager).filter_by(name="TournoiEnLignetkt").first()
+        TournoiEnLigneid = db.session.query(CookieManager).filter_by(name="TournoiEnLigneid").first()
+        TournoiEnLignetk = db.session.query(CookieManager).filter_by(name="TournoiEnLignetk").first()
+        
+        headers = {
+            "cookie": f"TournoiEnLigne_sso_user={TournoiEnLigne_sso_user.value};TournoiEnLigne_sso_id={TournoiEnLigne_sso_id.value};TournoiEnLignetkt={TournoiEnLignetkt.value};TournoiEnLigneidt={TournoiEnLigneidt.value};TournoiEnLignetk={TournoiEnLignetk.value};TournoiEnLigneid={TournoiEnLigneid.value}",
+            "x-request-token": TournoiEnLigneidt.value,
+            "accept": "*/*",
+            "content-type": "application/x-www-form-urlencoded",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:144.0) Gecko/20100101 Firefox/144.0"
+        }
+
+        response = requests.get(url, headers=headers, params=params)
+        response.raise_for_status()
+
+        data = response.json()
+        
+        # Vérifier le status
+        status = data.get('status', 0)
+        if status != 1:
+            if retry:
+                print(f"\033[93m🔄 Reconnexion...\033[0m")
+                postLoginUserWithPassword()
+                time.sleep(1)
+                return import_ladder_from_bga(season, page, retry=False)
+            return {
+                'status': 0,
+                'error': 'BGA API error',
+                'data': None,
+                'pagination': None
+            }
+        
+        ranks = data.get('data', {}).get('ranks', [])
+        
+        # ✅ Affichage formaté du JSON
+        print("\n" + "="*80)
+        print(f"📊 LADDER SEASON {season} - PAGE {page}")
+        print("="*80)
+        print(f"Ranks trouvés: {len(ranks)}")
+        print("="*80 + "\n")
+        
+        return {
+            'status': 1,
+            'data': data.get('data', {}),
+            'pagination': {
+                'current_page': page,
+                'results_in_page': len(ranks),
+                'has_more': len(ranks) == 10  # Si 10 résultats, il peut y avoir une page suivante
+            }
+        }
+        
+    except requests.exceptions.RequestException as e:
+        print(f"\033[91m❌ Erreur HTTP : {e}\033[0m")
+        if retry:
+            print(f"\033[93m🔄 Reconnexion...\033[0m")
+            postLoginUserWithPassword()
+            time.sleep(1)
+            return import_ladder_from_bga(season, page, retry=False)
+        return {
+            'status': 0,
+            'error': f'Request failed: {str(e)}',
+            'data': None,
+            'pagination': None
+        }
+    except Exception as e:
+        print(f"\033[91m❌ Erreur inattendue : {e}\033[0m")
+        import traceback
+        traceback.print_exc()
+        return {
+            'status': 0,
+            'error': f'Unexpected error: {str(e)}',
+            'data': None,
+            'pagination': None
         }

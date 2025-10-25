@@ -3,12 +3,13 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PlayerModel } from '../../01_models/03_business/player.model';
 import { PlayerService } from '../../03_business/player.service';
+import { HistoryComponent } from './history/history.component';
 
 @Component({
   selector: 'app-player',
   standalone: true,
   templateUrl: './player.component.html',
-  imports: [CommonModule]
+  imports: [CommonModule, HistoryComponent]
 })
 export class PlayerComponent implements OnInit {
   player: PlayerModel | null = null;

@@ -122,7 +122,7 @@ export class LadderComponent implements OnInit {
     this.isSearching = true;
     this.playerService.search_players_bga$(this.searchQuery).subscribe({
       next: (results: PlayerModel[]) => {
-        this.searchResults = results.slice(0, 5); // Limiter à 5 résultats
+        this.searchResults = results; // Limiter à 5 résultats
         this.isSearching = false;
       },
       error: (error) => {

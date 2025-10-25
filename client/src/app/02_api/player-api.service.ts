@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { GameModel } from '../01_models/03_business/game.model';
 import { PlayerBgaModel } from '../01_models/03_business/player-bga.model';
 import { PlayerModel } from '../01_models/03_business/player.model';
 import { WebApiService } from './web-api.service';
@@ -26,5 +27,13 @@ export class PlayerApiService {
 
   get_player_by_id$(player_id: string): Observable<PlayerModel> {
     return this.wabApiService.callGet$(this.controller, player_id);
+  }
+
+  get_player_history$(player_id: string): Observable<GameModel[]> {
+    return this.wabApiService.callGet$(this.controller, `history/${player_id}`);
+  }
+
+  get_season_stats$(season: number): Observable<any> {
+    return this.wabApiService.callGet$(this.controller, `importladder/${season}`);
   }
 }

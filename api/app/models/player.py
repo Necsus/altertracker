@@ -185,24 +185,24 @@ class PlayerDeck(db.Model):
 class Game(db.Model):
     __tablename__ = 'games'
 
-    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)  # ✅ UUID
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     table_id = db.Column(db.Integer, nullable=False)
     ranked = db.Column(db.Boolean, default=False)
 
     # Joueurs
-    player1_id = db.Column(UUID(as_uuid=True), db.ForeignKey('players.id'), nullable=False)  # ✅ UUID
-    player2_id = db.Column(UUID(as_uuid=True), db.ForeignKey('players.id'), nullable=False)  # ✅ UUID
+    player1_id = db.Column(UUID(as_uuid=True), db.ForeignKey('players.id'), nullable=False)
+    player2_id = db.Column(UUID(as_uuid=True), db.ForeignKey('players.id'), nullable=False)
     
     # Decks utilisés
-    player1_deck_id = db.Column(UUID(as_uuid=True), db.ForeignKey('player_decks.id'), nullable=True)  # ✅ UUID
-    player2_deck_id = db.Column(UUID(as_uuid=True), db.ForeignKey('player_decks.id'), nullable=True)  # ✅ UUID
+    player1_deck_id = db.Column(UUID(as_uuid=True), db.ForeignKey('player_decks.id'), nullable=True)
+    player2_deck_id = db.Column(UUID(as_uuid=True), db.ForeignKey('player_decks.id'), nullable=True)
     
     # Résultat
-    winner_id = db.Column(UUID(as_uuid=True), db.ForeignKey('players.id'), nullable=True)  # ✅ UUID
+    winner_id = db.Column(UUID(as_uuid=True), db.ForeignKey('players.id'), nullable=True)
     is_draw = db.Column(db.Boolean, default=False)
     
     # Contexte
-    tournament_id = db.Column(UUID(as_uuid=True), db.ForeignKey('tournaments.id'), nullable=True)  # ✅ UUID
+    tournament_id = db.Column(UUID(as_uuid=True), db.ForeignKey('tournaments.id'), nullable=True)
     season = db.Column(db.String(20), nullable=True)
     round = db.Column(db.Integer, nullable=True)
     game_format = db.Column(db.String(50), nullable=True)
@@ -220,8 +220,10 @@ class Game(db.Model):
     start = db.Column(db.DateTime, nullable=True)
     end = db.Column(db.DateTime, nullable=True)
 
-    # Relations
-    player2 = db.relationship('Player', foreign_keys=[player2_id], backref='player2_games')
+    # ✅ Relations corrigées
+    player1 = db.relationship('Player', foreign_keys=[player1_id], backref='games_as_player1')
+    player2 = db.relationship('Player', foreign_keys=[player2_id], backref='games_as_player2')
+    player1_deck = db.relationship('PlayerDeck', foreign_keys=[player1_deck_id], backref='deck1_games')
     player2_deck = db.relationship('PlayerDeck', foreign_keys=[player2_deck_id], backref='deck2_games')
     winner = db.relationship('Player', foreign_keys=[winner_id], backref='won_games')
     tournament = db.relationship('Tournament', backref='games')
@@ -231,28 +233,33 @@ class Game(db.Model):
     
     def json(self):
         return {
-            'id': str(self.id),  # ✅ UUID en string
-            'player1_id': str(self.player1_id),  # ✅ UUID en string
-            'player1_name': self.player1_games.first().name if self.player1_games.first() else None,
-            'player2_id': str(self.player2_id),  # ✅ UUID en string
+            'id': str(self.id),
+            'table_id': self.table_id,
+            'ranked': self.ranked,
+            'player1_id': str(self.player1_id),
+            'player1_name': self.player1.name if self.player1 else None,  # ✅ Corrigé
+            'player1_country': self.player1.country if self.player1 else None,  # ✅ Ajouté
+            'player2_id': str(self.player2_id),
             'player2_name': self.player2.name if self.player2 else None,
+            'player2_country': self.player2.country if self.player2 else None,  # ✅ Ajouté
             'player1_deck_id': str(self.player1_deck_id) if self.player1_deck_id else None,
             'player2_deck_id': str(self.player2_deck_id) if self.player2_deck_id else None,
             'winner_id': str(self.winner_id) if self.winner_id else None,
-            'player1_score': self.player1_score,
-            'player2_score': self.player2_score,
             'is_draw': self.is_draw,
             'tournament_id': str(self.tournament_id) if self.tournament_id else None,
             'season': self.season,
             'round': self.round,
             'game_format': self.game_format,
             'played_at': self.played_at.isoformat() if self.played_at else None,
+            'start': self.start.isoformat() if self.start else None,
+            'end': self.end.isoformat() if self.end else None,
             'duration_minutes': self.duration_minutes,
             'replay_url': self.replay_url,
             'notes': self.notes,
             'is_verified': self.is_verified,
+            'verified_by': self.verified_by,
+            'verified_at': self.verified_at.isoformat() if self.verified_at else None,
         }
-
 
 class Tournament(db.Model):
     __tablename__ = 'tournaments'

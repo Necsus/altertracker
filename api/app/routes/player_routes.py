@@ -1,5 +1,7 @@
 from flask import Blueprint, jsonify, make_response, request
-from app.services.player_service import get_player_by_id_service, import_player_bga_service, search_players_bga_service, search_players_service
+from app.services.player_service import get_player_by_id_service, get_player_history_service, import_player_bga_service, search_players_bga_service, search_players_service, import_ladder_service
+from flask_jwt_extended import jwt_required
+from app.decorators.auth_decorator import admin_required
 
 player_bp = Blueprint('player', __name__)
 
@@ -35,16 +37,16 @@ def search_players_bga_route():
 @player_bp.route('/importbga/<int:bga_id>', methods=['GET'])
 def get_player_route(bga_id: int):
     try:
-        player_id = import_player_bga_service(bga_id)
+        response = import_player_bga_service(bga_id)
+        if response.get('status') != 1:
+            return jsonify({'message': response.get('error', 'Import failed')}), 500
+        player_id = response.get('player_id')
         return jsonify(player_id), 200
     except Exception as e:
         return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
 
 @player_bp.route('/<string:player_id>', methods=['GET'])
 def get_player_by_id_route(player_id: str):
-    """
-    Récupérer un joueur par son ID (UUID)
-    """
     try:
         player = get_player_by_id_service(player_id)
         
@@ -57,3 +59,41 @@ def get_player_by_id_route(player_id: str):
         return jsonify({'message': str(e)}), 400
     except Exception as e:
         return make_response(jsonify({'message': f'An error occurred: {str(e)}'}), 500)
+    
+
+@player_bp.route('/history/<string:player_id>', methods=['GET'])
+def get_player_history_by_id_route(player_id: str):
+    try:
+        history = get_player_history_service(player_id)
+
+        if not history:
+            return jsonify({'message': 'Player history not found'}), 404
+
+        return jsonify(history), 200
+        
+    except ValueError as e:
+        return jsonify({'message': str(e)}), 400
+    except Exception as e:
+        return make_response(jsonify({'message': f'An error occurred: {str(e)}'}), 500)
+    
+@player_bp.route('/importladder/<int:season>', methods=['GET'])
+@jwt_required()
+@admin_required
+def import_ladder_route(season: int):
+    try:
+        result = import_ladder_service(season)
+        
+        if result.get('status') != 1:
+            return jsonify({
+                'message': result.get('error', 'Ladder import failed')
+            }), 400
+        
+        return jsonify({
+            'message': f"Ladder season {result.get('season')} imported successfully",
+            'stats': result.get('stats')
+        }), 201
+        
+    except Exception as e:
+        return jsonify({
+            'message': f'An error occurred: {str(e)}'
+        }), 500
