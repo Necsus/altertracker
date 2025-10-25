@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, make_response, request
-from app.services.player_service import import_player_bga_service, search_players_bga_service, search_players_service
+from app.services.player_service import get_player_by_id_service, import_player_bga_service, search_players_bga_service, search_players_service
 
 player_bp = Blueprint('player', __name__)
 
@@ -39,3 +39,21 @@ def get_player_route(bga_id: int):
         return jsonify(player_id), 200
     except Exception as e:
         return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
+
+@player_bp.route('/<string:player_id>', methods=['GET'])
+def get_player_by_id_route(player_id: str):
+    """
+    Récupérer un joueur par son ID (UUID)
+    """
+    try:
+        player = get_player_by_id_service(player_id)
+        
+        if not player:
+            return jsonify({'message': 'Player not found'}), 404
+        
+        return jsonify(player), 200
+        
+    except ValueError as e:
+        return jsonify({'message': str(e)}), 400
+    except Exception as e:
+        return make_response(jsonify({'message': f'An error occurred: {str(e)}'}), 500)

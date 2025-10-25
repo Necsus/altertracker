@@ -1,4 +1,5 @@
 import time
+from bs4 import BeautifulSoup
 import requests
 from app.models.cookie_manager import CookieManager
 from app.config import ConfigEnv
@@ -243,7 +244,8 @@ def getGames(bga_id: int, page: int = 0, retry: bool = True) -> dict:
             "game_id": 1909,  # ID du jeu Altered
             "finished": 1,
             "updateStats": 1,
-            "page": page
+            "page": page,
+            "per_page": 100
         }
 
         TournoiEnLigne_sso_user = db.session.query(CookieManager).filter_by(name="TournoiEnLigne_sso_user").first()
@@ -281,6 +283,13 @@ def getGames(bga_id: int, page: int = 0, retry: bool = True) -> dict:
                 'error': 'BGA API error',
                 'data': {'tables': [], 'stats': {}}
             }
+        
+        # ✅ Affichage formaté du JSON
+        print("\n" + "="*80)
+        print("📊 GET GAMES BGA - DATA RECEIVED")
+        print("="*80)
+        print(json.dumps(data, indent=2, ensure_ascii=False))
+        print("="*80 + "\n")
         
         # Extraire les données
         games_data = data.get('data', {})
@@ -370,21 +379,21 @@ def getGames(bga_id: int, page: int = 0, retry: bool = True) -> dict:
                         'total_games': int(game.get('cnt', 0))
                     })
             
-            # Stats des adversaires
-            opponents = stats.get('opponents', [])
-            transformed_stats['opponents'] = []
-            if isinstance(opponents, list):
-                for opp in opponents[:10]:  # Limiter aux 10 premiers adversaires
-                    total_games = int(opp.get('nbr', 0))
-                    wins = int(opp.get('hits', 0))
-                    transformed_stats['opponents'].append({
-                        'id': int(opp.get('id', 0)),
-                        'name': opp.get('name', 'Unknown'),
-                        'total_games': total_games,
-                        'wins': wins,
-                        'losses': total_games - wins,
-                        'win_rate': wins / total_games if total_games > 0 else 0
-                    })
+            # # Stats des adversaires
+            # opponents = stats.get('opponents', [])
+            # transformed_stats['opponents'] = []
+            # if isinstance(opponents, list):
+            #     for opp in opponents[:10]:  # Limiter aux 10 premiers adversaires
+            #         total_games = int(opp.get('nbr', 0))
+            #         wins = int(opp.get('hits', 0))
+            #         transformed_stats['opponents'].append({
+            #             'id': int(opp.get('id', 0)),
+            #             'name': opp.get('name', 'Unknown'),
+            #             'total_games': total_games,
+            #             'wins': wins,
+            #             'losses': total_games - wins,
+            #             'win_rate': wins / total_games if total_games > 0 else 0
+            #         })
         
         result = {
             'status': 1,
@@ -420,4 +429,112 @@ def getGames(bga_id: int, page: int = 0, retry: bool = True) -> dict:
             'status': 0,
             'error': f'Unexpected error: {str(e)}',
             'data': {'tables': [], 'stats': {}}
+        }
+
+def getPlayer(bga_id: int, retry: bool = True) -> dict:
+    try:
+        url = "https://boardgamearena.com/player"
+        params = {
+            "id": bga_id,
+        }
+
+        TournoiEnLigne_sso_user = db.session.query(CookieManager).filter_by(name="TournoiEnLigne_sso_user").first()
+        TournoiEnLigne_sso_id = db.session.query(CookieManager).filter_by(name="TournoiEnLigne_sso_id").first()
+        TournoiEnLigneidt = db.session.query(CookieManager).filter_by(name="TournoiEnLigneidt").first()
+        TournoiEnLignetkt = db.session.query(CookieManager).filter_by(name="TournoiEnLignetkt").first()
+        TournoiEnLigneid = db.session.query(CookieManager).filter_by(name="TournoiEnLigneid").first()
+        TournoiEnLignetk = db.session.query(CookieManager).filter_by(name="TournoiEnLignetk").first()
+        
+        # Récupérer les cookies avec la fonction helper
+        headers = {
+            "cookie": f"TournoiEnLigne_sso_user={TournoiEnLigne_sso_user.value};TournoiEnLigne_sso_id={TournoiEnLigne_sso_id.value};TournoiEnLignetkt={TournoiEnLignetkt.value};TournoiEnLigneidt={TournoiEnLigneidt.value};TournoiEnLignetk={TournoiEnLignetk.value};TournoiEnLigneid={TournoiEnLigneid.value}",
+            "x-request-token": TournoiEnLigneidt.value,
+            "accept": "*/*",
+            "content-type": "application/x-www-form-urlencoded",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:144.0) Gecko/20100101 Firefox/144.0"
+        }
+
+        
+        response = requests.get(url, headers=headers, params=params)
+        
+        response.raise_for_status()
+        # ✅ Parser le HTML avec BeautifulSoup
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        player_data = {
+            'bga_id': bga_id,
+            'name': None,
+            'country': None,
+            'country_name': None,
+            'bio': None
+        }
+
+        # 1. ✅ Nom du joueur - SPAN avec id="real_player_name"
+        name_elem = soup.find('span', id='real_player_name')
+        if name_elem:
+            player_data['name'] = name_elem.get_text(strip=True)
+            print(f"✅ Nom trouvé: {player_data['name']}")
+        else:
+            print("⚠️  Span #real_player_name non trouvé")
+
+        # 2. ✅ Avatar du joueur - IMG avec id="real_player_avatar"
+        bio_elem = soup.find('div', id='textdescription')
+        if bio_elem:
+            player_data['bio'] = bio_elem.get_text(strip=True)
+            print(f"✅ Bio trouvée: {player_data['bio']}")
+        else:
+            print("⚠️  Div #textdescription non trouvée")
+
+                # 3. ✅ Pays du joueur - Chercher la div.bga-flag avec data-country
+        # Structure: <div class="row-value"><div class="bga-flag" data-country="FR"></div> France</div>
+        country_flag = soup.find('div', class_='bga-flag')
+        if country_flag:
+            # Extraire le code pays depuis l'attribut data-country
+            player_data['country'] = country_flag.get('data-country')
+            
+            # Extraire le nom du pays depuis le texte parent
+            row_value = country_flag.find_parent('div', class_='row-value')
+            if row_value:
+                # Récupérer le texte complet et nettoyer
+                full_text = row_value.get_text(strip=True)
+                # Retirer les espaces et caractères spéciaux
+                country_name = full_text.replace('\xa0', ' ').strip()
+                player_data['country_name'] = country_name
+                
+            print(f"✅ Pays trouvé: {player_data['country']} ({player_data['country_name']})")
+        else:
+            print("⚠️  Div .bga-flag non trouvée")
+
+        # ✅ Affichage formaté des données extraites
+        print("\n" + "="*80)
+        print("📊 PLAYER DATA EXTRACTED")
+        print("="*80)
+        print(json.dumps(player_data, indent=2, ensure_ascii=False))
+        print("="*80 + "\n")
+
+        return {
+            'status': 1,
+            'data': player_data
+        }
+
+    except requests.exceptions.RequestException as e:
+        print(f"\033[91m❌ Erreur HTTP : {e}\033[0m")
+        if retry:
+            print(f"\033[93m🔄 Reconnexion...\033[0m")
+            postLoginUserWithPassword()
+            time.sleep(1)
+            return getPlayer(bga_id, retry=False)
+        return {
+            'status': 0,
+            'error': f'Request failed: {str(e)}',
+            'data': None
+        }
+    except Exception as e:
+        print(f"\033[91m❌ Erreur inattendue : {e}\033[0m")
+        import traceback
+        traceback.print_exc()
+        return {
+            'status': 0,
+            'error': f'Unexpected error: {str(e)}',
+            'data': None
         }

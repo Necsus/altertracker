@@ -38,4 +38,12 @@ export class PlayerService {
       return dbModel;
     }));
   }
+
+  get_player_by_id$(player_id: string): Observable<PlayerModel> {
+    return this.playerApiService.get_player_by_id$(player_id).pipe(
+      map((player: PlayerModel) => {
+        return player;
+      })
+    );
+  }
 }
