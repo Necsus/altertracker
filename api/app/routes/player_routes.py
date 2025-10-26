@@ -1,7 +1,8 @@
 from flask import Blueprint, jsonify, make_response, request
-from app.services.player_service import get_ladder_by_season_service, get_player_by_id_service, get_player_history_service, import_player_bga_service, search_players_bga_service, search_players_service, import_ladder_service
+from app.services.player_service import get_all_seasons_service, get_ladder_by_season_service, get_player_by_id_service, get_player_history_service, get_total_players_service, import_player_bga_service, search_players_bga_service, search_players_service, import_ladder_service
 from flask_jwt_extended import jwt_required
 from app.decorators.auth_decorator import admin_required
+from app.extensions import cache
 
 player_bp = Blueprint('player', __name__)
 
@@ -64,7 +65,8 @@ def get_player_by_id_route(player_id: str):
 @player_bp.route('/history/<string:player_id>', methods=['GET'])
 def get_player_history_by_id_route(player_id: str):
     try:
-        history = get_player_history_service(player_id)
+        season = request.args.get('season', 0, type=int)
+        history = get_player_history_service(player_id, season)
 
         if not history:
             return jsonify({'message': 'Player history not found'}), 404
@@ -99,6 +101,7 @@ def import_ladder_route(season: int):
         }), 500
     
 @player_bp.route('/ladder/<int:season>', methods=['GET'])
+@cache.cached(timeout=3600, query_string=True)
 def get_ladder_by_season_route(season: int):
     try:
         # ✅ Paramètres de pagination
@@ -125,5 +128,15 @@ def get_ladder_by_season_route(season: int):
 
     except ValueError as e:
         return jsonify({'message': str(e)}), 400
+    except Exception as e:
+        return make_response(jsonify({'message': f'An error occurred: {str(e)}'}), 500)
+
+@player_bp.route('/infos', methods=['GET'])
+def get_seasons_infos():
+    try:
+        return jsonify({
+            'seasons': get_all_seasons_service(),
+            'total_players': get_total_players_service()
+        }), 200
     except Exception as e:
         return make_response(jsonify({'message': f'An error occurred: {str(e)}'}), 500)

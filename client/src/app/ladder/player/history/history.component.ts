@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, Input, OnInit } from '@angular/core';
+import { Component, effect, inject, input } from '@angular/core';
 import { GameHelper, GameModel } from '../../../01_models/03_business/game.model';
 import { PlayerService } from '../../../03_business/player.service';
 
@@ -10,13 +10,15 @@ interface GameStats {
 }
 
 @Component({
-  selector: 'app-history',
+  selector: 'app-player-history',
   standalone: true,
   templateUrl: './history.component.html',
   imports: [CommonModule]
 })
-export class HistoryComponent implements OnInit {
-  @Input() player_id: string | null = null;
+export class HistoryComponent {
+  player_id = input.required<string>();
+  selectedSeason = input<number | null>(null);
+
   games: GameModel[] = [];
   isLoading = false;
   expandedGame: string | null = null;
@@ -34,32 +36,35 @@ export class HistoryComponent implements OnInit {
   };
   currentStreak = 0;
 
+
   private readonly playerService = inject(PlayerService);
 
-  ngOnInit(): void {
-    if (this.player_id) {
+  constructor() {
+    effect(() => {
       this.loadGames();
-    }
+    });
   }
 
   private loadGames(): void {
-    if (!this.player_id) return;
+    if (!this.player_id()) return;
 
     this.isLoading = true;
 
     // TODO: Appeler votre service pour récupérer les parties
-    this.playerService.get_player_history$(this.player_id)
+    this.playerService.get_player_history$(this.player_id(), this.selectedSeason() || 0)
       .subscribe({
         next: (response: GameModel[]) => {
           this.games = response;
           this.totalGames = response.length;
-          this.totalPages = Math.ceil(this.totalGames / 10); // Assuming 10 games per page
+          // this.totalPages = Math.ceil(this.totalGames / 10); // Assuming 10 games per page
           this.calculateStats();
           this.calculateStreak();
           this.isLoading = false;
         },
         error: (error) => {
           console.error('Error loading games:', error);
+          this.games = [];
+          this.totalGames = 0;
           this.isLoading = false;
         }
       });
@@ -86,8 +91,8 @@ export class HistoryComponent implements OnInit {
   }
 
   isWin(game: GameModel): boolean {
-    if (!this.player_id) return false;
-    return GameHelper.isPlayerWinner(game, this.player_id);
+    if (!this.player_id()) return false;
+    return GameHelper.isPlayerWinner(game, this.player_id());
   }
 
   isLoss(game: GameModel): boolean {
@@ -95,8 +100,8 @@ export class HistoryComponent implements OnInit {
   }
 
   getOpponentName(game: GameModel): string {
-    if (!this.player_id) return 'Unknown';
-    return GameHelper.getOpponentName(game, this.player_id) || 'Unknown';
+    if (!this.player_id()) return 'Unknown';
+    return GameHelper.getOpponentName(game, this.player_id()) || 'Unknown';
   }
 
   getOpponentCountry(game: GameModel): string | undefined {

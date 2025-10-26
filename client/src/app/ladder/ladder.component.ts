@@ -6,6 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { debounceTime, distinctUntilChanged, Subject } from 'rxjs';
 import { PlayerSeasonStatsModel } from '../01_models/03_business/player-season-stats.model';
 import { PlayerModel } from '../01_models/03_business/player.model';
+import { SeasonModel } from '../01_models/03_business/season.model';
 import { PlayerService } from '../03_business/player.service';
 import { AuthViewService } from '../authentication/auth-view.service';
 import { withLoader } from '../shared/services/loader/loader.operator';
@@ -50,7 +51,7 @@ export class LadderComponent implements OnInit {
 
 
   countries: string[] = [];
-  seasons: number[] = [19, 20, 21, 22, 23];
+  seasons: SeasonModel[] = [];
 
   currentPage: number = 1;
   pageSize: number = 100; // ✅ 100 par défaut
@@ -84,9 +85,25 @@ export class LadderComponent implements OnInit {
       }
       this.cdr.detectChanges();
     });
-    this.loadPlayers();
+    this.loadSeasons();
     this.loadTeams();
     this.setupSearchAutocomplete();
+  }
+
+  loadSeasons(): void {
+    this.playerService.get_season_info$()
+      .pipe(withLoader(this.loaderService))
+      .subscribe({
+        next: (response: { seasons: SeasonModel[], total_players: number }) => {
+          this.seasons = response.seasons;
+          this.totalPlayers = response.total_players;
+          this.selectedSeason = this.seasons.find((s: SeasonModel) => s.current === true)?.season ?? 0;
+          this.loadPlayers();
+        },
+        error: (error) => {
+          console.error('Error loading seasons info:', error);
+        }
+      });
   }
 
   setupSearchAutocomplete(): void {

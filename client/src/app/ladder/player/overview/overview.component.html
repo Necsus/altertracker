@@ -1,0 +1,174 @@
+@if (player) {
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+  <!-- Statistiques générales -->
+  <div class="bg-gray-800 rounded-xl p-6 shadow-lg lg:col-span-1">
+    <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
+      <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+        </path>
+      </svg>
+      Statistiques
+    </h2>
+
+    <div class="space-y-4">
+      <div class="flex items-center justify-between p-4 bg-gray-900 rounded-lg border-l-4 border-green-500">
+        <span class="text-gray-300">Victoires</span>
+        <span class="text-2xl font-bold text-green-400">{{ player.total_wins || 0 }}</span>
+      </div>
+
+      <div class="flex items-center justify-between p-4 bg-gray-900 rounded-lg border-l-4 border-red-500">
+        <span class="text-gray-300">Défaites</span>
+        <span class="text-2xl font-bold text-red-400">{{ player.total_losses || 0 }}</span>
+      </div>
+
+      <div class="flex items-center justify-between p-4 bg-gray-900 rounded-lg border-l-4 border-yellow-500">
+        <span class="text-gray-300">Égalités</span>
+        <span class="text-2xl font-bold text-yellow-400">{{ player.total_draws || 0 }}</span>
+      </div>
+
+      <div
+        class="flex items-center justify-between p-4 bg-gradient-to-r from-amber-900 to-amber-800 rounded-lg border border-amber-500">
+        <span class="text-amber-100 font-semibold">Ratio V/D</span>
+        <span class="text-2xl font-bold text-white">{{ calculateWinLossRatio() }}</span>
+      </div>
+    </div>
+
+    <!-- Win Rate Progress -->
+    <div class="mt-6">
+      <div class="flex justify-between mb-2">
+        <span class="text-gray-300 text-sm font-medium">Taux de victoire</span>
+        <span class="text-amber-400 font-bold">{{ player.win_rate || 0 | number: '1.1-1' }}%</span>
+      </div>
+      <div class="w-full bg-gray-700 rounded-full h-3 overflow-hidden">
+        <div class="h-full rounded-full transition-all duration-500 ease-out" [style.width.%]="player.win_rate || 0"
+          [class.bg-gradient-to-r]="true" [class.from-green-500]="(player.win_rate || 0) >= 70"
+          [class.to-green-400]="(player.win_rate || 0) >= 70"
+          [class.from-blue-500]="(player.win_rate || 0) >= 50 && (player.win_rate || 0) < 70"
+          [class.to-blue-400]="(player.win_rate || 0) >= 50 && (player.win_rate || 0) < 70"
+          [class.from-orange-500]="(player.win_rate || 0) < 50" [class.to-orange-400]="(player.win_rate || 0) < 50">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Performance Chart Skeleton -->
+  <div class="bg-gray-800 rounded-xl p-6 shadow-lg lg:col-span-2">
+    <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
+      <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path>
+      </svg>
+      Performance récente
+    </h2>
+    <div class="h-64 flex items-center justify-center bg-gray-900 rounded-lg border-2 border-dashed border-gray-700">
+      <div class="text-center">
+        <svg class="w-16 h-16 text-gray-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+          </path>
+        </svg>
+        <p class="text-gray-500 font-medium">Graphique de performance</p>
+        <p class="text-gray-600 text-sm">À venir</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Activity Info -->
+  <div class="bg-gray-800 rounded-xl p-6 shadow-lg">
+    <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
+      <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 012 2z"></path>
+      </svg>
+      Activité
+    </h2>
+
+    <div class="space-y-4">
+      <div class="flex justify-between items-center p-4 bg-gray-900 rounded-lg">
+        <span class="text-gray-400 text-sm">Membre depuis</span>
+        <span class="text-white font-semibold">{{ player.created_at | date: 'dd MMM yyyy' }}</span>
+      </div>
+
+      <div class="flex justify-between items-center p-4 bg-gray-900 rounded-lg">
+        <span class="text-gray-400 text-sm">Dernière MAJ</span>
+        <span class="text-white font-semibold">{{ player.updated_at | date: 'dd/MM/yyyy HH:mm' }}</span>
+      </div>
+
+      @if (player.is_active) {
+      <div
+        class="flex justify-between items-center p-4 bg-gradient-to-r from-green-900/50 to-green-800/50 rounded-lg border border-green-500/30">
+        <span class="text-gray-300 text-sm">Statut</span>
+        <span class="flex items-center gap-2">
+          <span class="relative flex h-3 w-3">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+          </span>
+          <span class="text-green-400 font-semibold">Actif</span>
+        </span>
+      </div>
+      }
+    </div>
+  </div>
+
+  <!-- Results Distribution -->
+  <div class="bg-gray-800 rounded-xl p-6 shadow-lg lg:col-span-2">
+    <h2 class="text-xl font-bold text-white mb-6 flex items-center gap-2">
+      <svg class="w-6 h-6 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path>
+      </svg>
+      Répartition des résultats
+    </h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="p-4 bg-gradient-to-br from-green-900/50 to-green-800/50 rounded-lg border border-green-500/30">
+        <div class="flex items-center gap-3">
+          <div class="w-4 h-4 bg-green-500 rounded"></div>
+          <div class="flex-1">
+            <div class="text-green-400 text-sm font-medium">Victoires</div>
+            <div class="text-2xl font-bold text-white">{{ player.total_wins || 0 }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-4 bg-gradient-to-br from-red-900/50 to-red-800/50 rounded-lg border border-red-500/30">
+        <div class="flex items-center gap-3">
+          <div class="w-4 h-4 bg-red-500 rounded"></div>
+          <div class="flex-1">
+            <div class="text-red-400 text-sm font-medium">Défaites</div>
+            <div class="text-2xl font-bold text-white">{{ player.total_losses || 0 }}</div>
+          </div>
+        </div>
+      </div>
+
+      @if ((player.total_draws || 0) > 0) {
+      <div class="p-4 bg-gradient-to-br from-yellow-900/50 to-yellow-800/50 rounded-lg border border-yellow-500/30">
+        <div class="flex items-center gap-3">
+          <div class="w-4 h-4 bg-yellow-500 rounded"></div>
+          <div class="flex-1">
+            <div class="text-yellow-400 text-sm font-medium">Égalités</div>
+            <div class="text-2xl font-bold text-white">{{ player.total_draws || 0 }}</div>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+
+    <!-- Placeholder for pie chart -->
+    <div
+      class="mt-6 h-48 flex items-center justify-center bg-gray-900 rounded-lg border-2 border-dashed border-gray-700">
+      <div class="text-center">
+        <svg class="w-12 h-12 text-gray-600 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path>
+        </svg>
+        <p class="text-gray-500 text-sm">Graphique circulaire à venir</p>
+      </div>
+    </div>
+  </div>
+</div>
+}

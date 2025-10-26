@@ -236,7 +236,7 @@ def getSearch(query: str, retry: bool = True) -> dict:
         traceback.print_exc()
         return {'status': 0, 'error': str(e), 'players': []}
 
-def getGames(bga_id: int, page: int = 0, retry: bool = True) -> dict:
+def getGames(bga_id: int, start_date: int = None, end_date: int = None, page: int = 0, retry: bool = True) -> dict:
     try:
         url = "https://boardgamearena.com/gamestats/gamestats/getGames.html"
         params = {
@@ -244,9 +244,12 @@ def getGames(bga_id: int, page: int = 0, retry: bool = True) -> dict:
             "game_id": 1909,  # ID du jeu Altered
             "finished": 1,
             "updateStats": 1,
-            "page": page,
-            "per_page": 100
+            "page": page
         }
+        if start_date:
+            params["start_date"] = start_date
+        if end_date:
+            params["end_date"] = end_date
 
         TournoiEnLigne_sso_user = db.session.query(CookieManager).filter_by(name="TournoiEnLigne_sso_user").first()
         TournoiEnLigne_sso_id = db.session.query(CookieManager).filter_by(name="TournoiEnLigne_sso_id").first()

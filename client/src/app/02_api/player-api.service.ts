@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { GameModel } from '../01_models/03_business/game.model';
 import { PlayerBgaModel } from '../01_models/03_business/player-bga.model';
 import { PlayerModel } from '../01_models/03_business/player.model';
+import { SeasonModel } from '../01_models/03_business/season.model';
 import { WebApiService } from './web-api.service';
 
 @Injectable({
@@ -29,8 +30,8 @@ export class PlayerApiService {
     return this.wabApiService.callGet$(this.controller, player_id);
   }
 
-  get_player_history$(player_id: string): Observable<GameModel[]> {
-    return this.wabApiService.callGet$(this.controller, `history/${player_id}`);
+  get_player_history$(player_id: string, season: number): Observable<GameModel[]> {
+    return this.wabApiService.callGet$(this.controller, `history/${player_id}?season=${season}`);
   }
 
   get_import_ladder$(season: number): Observable<any> {
@@ -53,5 +54,9 @@ export class PlayerApiService {
       this.controller,
       `ladder/${season}?${params.toString()}`
     );
+  }
+
+  get_season_info$(): Observable<{ seasons: SeasonModel[], total_players: number }> {
+    return this.wabApiService.callGet$(this.controller, '/infos');
   }
 }

@@ -5,6 +5,7 @@ from app.models.player import Player, Game, PlayerSeasonStats
 from app.extensions import db
 from sqlalchemy import func, case
 from sqlalchemy.orm import joinedload
+from app.models.season import Season
 
 def _ensure_timezone_aware(dt: Optional[datetime]) -> Optional[datetime]:
     if dt is None:
@@ -28,8 +29,7 @@ def search_players_data(query: str, limit: int = 10) -> List[Player]:
     
     # Recherche avec tri par priorité puis par nom
     players = db.session.query(Player).filter(
-        func.lower(Player.name).like(f'%{query_lower}%'),
-        Player.is_active == True
+        func.lower(Player.name).like(f'%{query_lower}%')
     ).order_by(
         priority,
         Player.name
@@ -136,13 +136,14 @@ def batch_update_players_stats_data(players_stats: dict) -> None:
         print(f"\033[91m❌ Erreur lors de la mise à jour batch des stats: {e}\033[0m")
         raise e
 
-def get_player_history_data(player_id: str) -> List[Game]:
+def get_player_history_data(player_id: str, season: int) -> List[Game]:
     player = get_player_by_id_data(player_id)
     if not player:
         raise ValueError(f"Player not found: {player_id}")
 
     return db.session.query(Game).filter(
-        (Game.player1_id == player.id) | (Game.player2_id == player.id)
+        (Game.player1_id == player.id) | (Game.player2_id == player.id),
+        Game.season == season
     ).order_by(Game.played_at.desc()).all()
 
 def get_or_create_season_stats_data(player_id: uuid.UUID, season: str) -> PlayerSeasonStats:
@@ -231,3 +232,12 @@ def get_season_stats_data(
     stats = query.limit(limit).offset((page - 1) * limit).all()
     
     return stats, total
+
+def get_all_seasons_data() -> List[Season]:
+    return db.session.query(Season).order_by(Season.season.desc()).all()
+
+def count_total_players_data() -> int:
+    return db.session.query(func.count(Player.id)).scalar()
+
+def get_current_season_data() -> Optional[Season]:
+    return db.session.query(Season).filter_by(current=True).first()

@@ -3,6 +3,7 @@ import { map, Observable } from 'rxjs';
 import { GameModel } from '../01_models/03_business/game.model';
 import { PlayerBgaModel } from '../01_models/03_business/player-bga.model';
 import { PlayerModel } from '../01_models/03_business/player.model';
+import { SeasonModel } from '../01_models/03_business/season.model';
 import { PlayerApiService } from '../02_api/player-api.service';
 
 @Injectable({
@@ -48,8 +49,8 @@ export class PlayerService {
     );
   }
 
-  get_player_history$(player_id: string): Observable<GameModel[]> {
-    return this.playerApiService.get_player_history$(player_id).pipe(
+  get_player_history$(player_id: string, season: number): Observable<GameModel[]> {
+    return this.playerApiService.get_player_history$(player_id, season).pipe(
       map((games: GameModel[]) => {
         return games;
       })
@@ -71,6 +72,14 @@ export class PlayerService {
   ): Observable<any> {
     return this.playerApiService.get_season_stats$(season, page, limit).pipe(
       map((response: any) => {
+        return response;
+      })
+    );
+  }
+
+  get_season_info$(): Observable<{ seasons: SeasonModel[], total_players: number }> {
+    return this.playerApiService.get_season_info$().pipe(
+      map((response: { seasons: SeasonModel[], total_players: number }) => {
         return response;
       })
     );

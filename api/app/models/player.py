@@ -203,7 +203,7 @@ class Game(db.Model):
     
     # Contexte
     tournament_id = db.Column(UUID(as_uuid=True), db.ForeignKey('tournaments.id'), nullable=True)
-    season = db.Column(db.String(20), nullable=True)
+    season = db.Column(db.Integer, nullable=True)
     round = db.Column(db.Integer, nullable=True)
     game_format = db.Column(db.String(50), nullable=True)
     

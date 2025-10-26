@@ -7,7 +7,9 @@ from app.models.player import Player, Game
 from app.scripts.bga_routine import getGames, getPlayer, getSearch, import_ladder_from_bga
 from app.data.player_data import (
     bulk_upsert_season_stats_data,
+    count_total_players_data,
     create_player_data,
+    get_current_season_data,
     get_player_by_id_data,
     get_player_history_data,
     get_season_stats_data,
@@ -15,7 +17,8 @@ from app.data.player_data import (
     get_player_by_bga_id_data,
     get_game_by_table_id_data,
     bulk_insert_games_data,
-    batch_update_players_stats_data
+    batch_update_players_stats_data,
+    get_all_seasons_data
 )
 
 def search_players_service(query: str) -> list:
@@ -76,7 +79,7 @@ def _get_or_create_player_from_bga_data(player_data: dict) -> Player:
     
     return create_player_data(new_player)
 
-def _transform_bga_game_to_model(game_data: dict, main_player: Player, opponent: Player) -> Game:
+def _transform_bga_game_to_model(game_data: dict, main_player: Player, opponent: Player, season: int) -> Game:
     players = game_data.get('players', [])
     
     # Identifier les données des joueurs
@@ -111,6 +114,7 @@ def _transform_bga_game_to_model(game_data: dict, main_player: Player, opponent:
         player2_id=opponent.id,
         winner_id=winner_id,
         is_draw=is_draw,
+        season=season,
         start=datetime.fromtimestamp(game_data['start_timestamp'], tz=timezone.utc),
         end=datetime.fromtimestamp(game_data['end_timestamp'], tz=timezone.utc),
         duration_minutes=game_data['duration_seconds'] // 60,
@@ -145,7 +149,7 @@ def _calculate_player_stats_from_games(games: List[Game], player_id: uuid.UUID) 
     
     return stats
 
-def import_games_bulk_service(main_player_id: str, games_data_from_bga: list) -> dict:
+def import_games_bulk_service(main_player_id: str, games_data_from_bga: list, season: int) -> dict:
     try:
         # 1. Validation du joueur principal
         main_player_uuid = uuid.UUID(main_player_id)
@@ -214,7 +218,7 @@ def import_games_bulk_service(main_player_id: str, games_data_from_bga: list) ->
                     }
                 
                 # Transformer en modèle Game
-                game = _transform_bga_game_to_model(game_data, main_player, opponent)
+                game = _transform_bga_game_to_model(game_data, main_player, opponent, season)
                 games_to_insert.append(game)
                 
                 # Calculer les stats pour chaque joueur
@@ -274,90 +278,226 @@ def import_games_bulk_service(main_player_id: str, games_data_from_bga: list) ->
         raise e
 
 def import_player_bga_service(bga_id: int) -> dict:
-    player_response = getPlayer(bga_id)
-    if not player_response or player_response.get('status') != 1:
-        return {
-            'status': 0,
-            'error': player_response.get('error', 'Unknown error') if player_response else 'No response',
-            'player_id': None
-        }
-
-    # 2. Récupérer les parties AVANT de créer le joueur
-    games_response = getGames(bga_id, page=1)
-
-    if not games_response or games_response.get('status') != 1:
-        return {
-            'status': 0,
-            'error': games_response.get('error', 'Unable to fetch games') if games_response else 'No games response',
-            'player_id': None
-        }
-    
-    # 3. Extraire les données des parties
-    games_data = games_response.get('data', {}).get('tables', [])
-    
-    # ✅ Annuler si aucune partie trouvée
-    if not games_data or len(games_data) == 0:
-        print("❌ Aucune partie trouvée, import annulé")
-        return {
-            'status': 0,
-            'error': 'No games found for this player',
-            'player_id': None
-        }
-    
-    print(f"✅ {len(games_data)} parties trouvées, création du joueur...")
-
-    # 4. Créer le joueur en base SEULEMENT si des parties existent
     try:
-        new_player = Player(
-            bga_id=player_response['data'].get('bga_id', 0),
-            name=player_response['data'].get('name', None),
-            country=player_response['data'].get('country', None),
-            bio=player_response['data'].get('bio', None),
-            is_active=True
-        )
+        # 1. Récupérer les infos du joueur
+        player_response = getPlayer(bga_id)
+        if not player_response or player_response.get('status') != 1:
+            return {
+                'status': 0,
+                'error': player_response.get('error', 'Unknown error') if player_response else 'No response',
+                'player_id': None
+            }
 
-        new_player = create_player_data(new_player)
-        print(f"✅ Joueur créé: {new_player.name} (ID: {new_player.id})")
-    except Exception as e:
-        print(f"❌ Erreur lors de la création du joueur: {e}")
-        return {
-            'status': 0,
-            'error': f'Failed to create player: {str(e)}',
-            'player_id': None
-        }
-
-    # 5. Importer les parties en bulk
-    try:
-        games_stats = import_games_bulk_service(str(new_player.id), games_data)
+        # 2. ✅ Récupérer TOUTES les saisons (triées par saison décroissante)
+        seasons = get_all_seasons_data()
         
-        # ✅ Vérifier si au moins une partie a été créée
-        if games_stats['created'] == 0:
-            print("⚠️  Aucune partie n'a été importée (toutes existantes ou non-ranked)")
-            # On garde quand même le joueur car les parties existent (peuvent être déjà importées)
+        if not seasons or len(seasons) == 0:
+            print("⚠️  Aucune saison trouvée en base de données")
+            return {
+                'status': 0,
+                'error': 'No seasons found in database',
+                'player_id': None
+            }
+        
+        print(f"\n📅 {len(seasons)} saison(s) trouvée(s) : {[s.season for s in seasons]}")
+        
+        # 3. ✅ Variables pour accumuler les résultats de toutes les saisons
+        new_player = None
+        all_seasons_stats = {
+            'total_games': 0,
+            'total_pages': 0,
+            'seasons_processed': 0,
+            'seasons_with_games': 0,      # ✅ Nouvelles stats
+            'seasons_without_games': 0,   # ✅ Nouvelles stats
+            'games_by_season': {}
+        }
+        
+        # 4. ✅ Boucler sur TOUTES les saisons
+        for currentSeason in seasons:
+            print(f"\n{'='*80}")
+            print(f"🎯 Traitement de la saison {currentSeason.season}")
+            print(f"📅 Période: {datetime.fromtimestamp(currentSeason.start, tz=timezone.utc)} → {datetime.fromtimestamp(currentSeason.end, tz=timezone.utc)}")
+            print(f"{'='*80}")
+            
+            # Récupérer les parties de cette saison avec pagination
+            all_games_data = []
+            page = 1
+            has_more = True
+            season_pages = 0
+            
+            while has_more:
+                print(f"📄 Saison {currentSeason.season} - Page {page}...")
+                
+                try:
+                    games_response = getGames(
+                        bga_id,
+                        start_date=currentSeason.start,
+                        end_date=currentSeason.end,
+                        page=page
+                    )
+                    
+                    if not games_response or games_response.get('status') != 1:
+                        print(f"⚠️  Aucune réponse pour la page {page}")
+                        # ✅ Si c'est la première page, pas de parties pour cette saison
+                        if page == 1:
+                            print(f"ℹ️  Pas de parties pour la saison {currentSeason.season}")
+                            all_seasons_stats['seasons_without_games'] += 1
+                            all_seasons_stats['games_by_season'][currentSeason.season] = 0
+                        break
+                    
+                    # Extraire les parties de cette page
+                    games_data = games_response.get('data', {}).get('tables', [])
+                    pagination_info = games_response.get('data', {}).get('pagination', {})
+                    
+                    if not games_data or len(games_data) == 0:
+                        # ✅ Si c'est la première page et qu'elle est vide
+                        if page == 1:
+                            print(f"ℹ️  Aucune partie pour la saison {currentSeason.season}")
+                            all_seasons_stats['seasons_without_games'] += 1
+                            all_seasons_stats['games_by_season'][currentSeason.season] = 0
+                        else:
+                            print(f"ℹ️  Fin des parties à la page {page}")
+                        break
+                    
+                    # Ajouter les parties de cette page
+                    all_games_data.extend(games_data)
+                    season_pages += 1
+                    
+                    print(f"✅ Page {page} : {len(games_data)} parties récupérées")
+                    
+                    # Vérifier s'il y a d'autres pages
+                    has_more = pagination_info.get('has_more', False)
+                    
+                    if has_more:
+                        page += 1
+                        time.sleep(0.3)
+                    else:
+                        print(f"✅ Dernière page atteinte")
+                        break
+                        
+                except Exception as e:
+                    print(f"❌ Erreur lors de la récupération de la page {page}: {e}")
+                    # ✅ Si c'est la première page, considérer qu'il n'y a pas de parties
+                    if page == 1:
+                        print(f"⚠️  Impossible de récupérer les parties de la saison {currentSeason.season}")
+                        all_seasons_stats['seasons_without_games'] += 1
+                        all_seasons_stats['games_by_season'][currentSeason.season] = 0
+                    break
+            
+            # Afficher le résumé de cette saison
+            print(f"\n📊 Saison {currentSeason.season} : {len(all_games_data)} parties sur {season_pages} page(s)")
+            
+            # ✅ Stocker les stats de cette saison
+            all_seasons_stats['games_by_season'][currentSeason.season] = len(all_games_data)
+            all_seasons_stats['total_games'] += len(all_games_data)
+            all_seasons_stats['total_pages'] += season_pages
+            
+            # ✅ Si aucune partie pour cette saison, passer à la suivante SANS erreur
+            if not all_games_data or len(all_games_data) == 0:
+                print(f"⏭️  Passage à la saison suivante...")
+                continue
+            
+            # ✅ On a trouvé des parties pour cette saison
+            all_seasons_stats['seasons_with_games'] += 1
+            
+            # 5. ✅ Créer le joueur lors de la première saison avec des parties
+            if new_player is None:
+                try:
+                    new_player = Player(
+                        bga_id=player_response['data'].get('bga_id', 0),
+                        name=player_response['data'].get('name', None),
+                        country=player_response['data'].get('country', None),
+                        bio=player_response['data'].get('bio', None),
+                        is_active=True
+                    )
+                    new_player = create_player_data(new_player)
+                    print(f"\n✅ Joueur créé: {new_player.name} (ID: {new_player.id})")
+                except Exception as e:
+                    print(f"❌ Erreur lors de la création du joueur: {e}")
+                    return {
+                        'status': 0,
+                        'error': f'Failed to create player: {str(e)}',
+                        'player_id': None
+                    }
+            
+            # 6. ✅ Importer les parties de cette saison
+            try:
+                print(f"\n💾 Import des parties de la saison {currentSeason.season}...")
+                games_stats = import_games_bulk_service(
+                    str(new_player.id), 
+                    all_games_data, 
+                    currentSeason.season
+                )
+                
+                all_seasons_stats['seasons_processed'] += 1
+                
+                # Affichage des stats de cette saison
+                print(f"\n📊 Saison {currentSeason.season} - Résultats:")
+                print(f"  ✅ Nouvelles parties: {games_stats['created']}")
+                print(f"  ℹ️  Déjà existantes: {games_stats['existing']}")
+                print(f"  ⏭️  Non-ranked: {games_stats['skipped_ranked']}")
+                print(f"  ❌ Erreurs: {games_stats['errors']}")
+                
+            except Exception as e:
+                print(f"❌ Erreur lors de l'import des parties de la saison {currentSeason.season}: {e}")
+                import traceback
+                traceback.print_exc()
+                # ✅ Continuer avec la saison suivante même en cas d'erreur
+                continue
+        
+        # 7. ✅ Affichage récapitulatif GLOBAL
+        if new_player is None:
+            print("\n⚠️  Aucune partie trouvée pour ce joueur sur aucune saison")
+            return {
+                'status': 0,
+                'error': 'No games found for this player in any season',
+                'player_id': None,
+                'seasons_checked': len(seasons),
+                'seasons_without_games': all_seasons_stats['seasons_without_games']
+            }
+        
+        print("\n" + "="*80)
+        print(f"🏆 RÉSUMÉ GLOBAL - {new_player.name}")
+        print("="*80)
+        print(f"📅 Saisons vérifiées: {len(seasons)}")
+        print(f"✅ Saisons avec parties: {all_seasons_stats['seasons_with_games']}")
+        print(f"⭕ Saisons sans parties: {all_seasons_stats['seasons_without_games']}")
+        print(f"💾 Saisons importées: {all_seasons_stats['seasons_processed']}")
+        print(f"🎮 Total de parties: {all_seasons_stats['total_games']}")
+        print(f"📄 Total de pages: {all_seasons_stats['total_pages']}")
+        print(f"\n📊 Détail par saison:")
+        for season_num in sorted(all_seasons_stats['games_by_season'].keys(), reverse=True):
+            games_count = all_seasons_stats['games_by_season'][season_num]
+            if games_count > 0:
+                print(f"  ✅ Saison {season_num}: {games_count} parties")
+            else:
+                print(f"  ⭕ Saison {season_num}: Aucune partie")
+        print("="*80 + "\n")
         
         return {
             'status': 1,
             'player_id': str(new_player.id),
-            'games_stats': games_stats
+            'seasons_stats': all_seasons_stats,
+            'games_by_season': all_seasons_stats['games_by_season']
         }
+            
     except Exception as e:
-        print(f"❌ Erreur lors de l'import des parties: {e}")
-        # ✅ Si l'import échoue, on pourrait supprimer le joueur créé
-        # db.session.delete(new_player)
-        # db.session.commit()
+        print(f"\033[91m❌ Erreur critique lors de l'import du joueur: {e}\033[0m")
+        import traceback
+        traceback.print_exc()
         return {
             'status': 0,
-            'error': f'Failed to import games: {str(e)}',
-            'player_id': str(new_player.id)  # On retourne quand même l'ID si le joueur a été créé
+            'error': str(e),
+            'player_id': None
         }
 
-def get_player_history_service(player_id: str) -> list[Game]:
+def get_player_history_service(player_id: str, season: int) -> list[Game]:
     player = get_player_by_id_data(player_id)
     if not player:
         raise ValueError(f"Player not found: {player_id}")
     
     # Récupérer les parties du joueur
-    games = get_player_history_data(player_id)
+    games = get_player_history_data(player_id, season)
     
     return [game.json() for game in games]
 
@@ -560,3 +700,10 @@ def get_ladder_by_season_service(
         import traceback
         traceback.print_exc()
         raise e
+    
+def get_all_seasons_service() -> list:
+    seasons = get_all_seasons_data()
+    return [season.json() for season in seasons]
+
+def get_total_players_service() -> int:
+    return count_total_players_data()

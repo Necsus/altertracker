@@ -85,19 +85,6 @@
 
       <!-- Filters Row -->
       <div class="flex flex-col sm:flex-row gap-4">
-        <!-- Country Filter -->
-        <div class="flex-1">
-          <label class="block text-sm font-semibold text-gray-400 mb-2">
-            <i class="fas fa-flag mr-2"></i>{{ 'players.filter_country' | translate }}
-          </label>
-          <select [(ngModel)]="selectedCountry" (change)="onFilterChange()"
-            class="w-full bg-gray-800 text-white border border-gray-700 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-amber-500">
-            <option value="">{{ 'players.all_countries' | translate }}</option>
-            @for (country of countries; track country) {
-            <option [value]="country">{{ country }}</option>
-            }
-          </select>
-        </div>
 
         <!-- Season Filter -->
         <div class="flex-1">
@@ -107,7 +94,7 @@
           <select [(ngModel)]="selectedSeason" (change)="onFilterChange()"
             class="w-full bg-gray-800 text-white border border-gray-700 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-amber-500">
             @for (season of seasons; track season) {
-            <option [value]="season">{{ 'players.season' | translate }} {{ season }}</option>
+            <option [value]="season.season">{{ 'players.season' | translate }} {{ season.season }}</option>
             }
           </select>
         </div>
