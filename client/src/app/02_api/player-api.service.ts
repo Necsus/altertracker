@@ -63,4 +63,8 @@ export class PlayerApiService {
   get_player_overview$(player_id: string, season: number): Observable<any> {
     return this.wabApiService.callGet$(this.controller, `overview/${player_id}?season=${season}`);
   }
+
+  get_player_reload$(player_id: string): Observable<any> {
+    return this.wabApiService.callGet$(this.controller, `reload/${player_id}`, undefined, 1800000); // 30 minutes
+  }
 }

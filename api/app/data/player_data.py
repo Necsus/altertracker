@@ -140,11 +140,15 @@ def get_player_history_data(player_id: str, season: int) -> List[Game]:
     player = get_player_by_id_data(player_id)
     if not player:
         raise ValueError(f"Player not found: {player_id}")
+    
+    query = db.session.query(Game).filter(
+        (Game.player1_id == player.id) | (Game.player2_id == player.id)
+    )
+    
+    if season is not None:
+        query = query.filter(Game.season == season)
 
-    return db.session.query(Game).filter(
-        (Game.player1_id == player.id) | (Game.player2_id == player.id),
-        Game.season == season
-    ).order_by(Game.played_at.desc()).all()
+    return query.order_by(Game.played_at.desc()).all()
 
 def get_or_create_season_stats_data(player_id: uuid.UUID, season: str) -> PlayerSeasonStats:
     stats = db.session.query(PlayerSeasonStats).filter_by(
@@ -180,31 +184,58 @@ def update_season_stats_data(season_stats: PlayerSeasonStats, **kwargs) -> Playe
         print(f"\033[91m❌ Erreur lors de la mise à jour des stats de saison: {e}\033[0m")
         raise e
 
-def bulk_upsert_season_stats_data(season_stats_list: List[dict]) -> int:
+def bulk_upsert_season_stats_data(season_stats_updates: list[dict]) -> int:
+    """
+    Crée ou met à jour en bulk les statistiques de saison.
+    Supporte tous les champs: wins, losses, draws, total_games, win_rate, points, rank, highest_rank
+    """
+    from app.models.player import PlayerSeasonStats
+    
     try:
-        count = 0
+        updated_count = 0
         
-        for stats_data in season_stats_list:
-            player_id = stats_data.get('player_id')
-            season = stats_data.get('season')
+        for stats in season_stats_updates:
+            print(stats)
+            # Chercher les stats existantes
+            season_stat = PlayerSeasonStats.query.filter_by(
+                player_id=stats['player_id'],
+                season=stats['season']
+            ).first()
             
-            if not player_id or not season:
-                continue
-            
-            # Récupérer ou créer
-            stats = get_or_create_season_stats_data(player_id, season)
-            
-            # Mettre à jour
-            update_data = {k: v for k, v in stats_data.items() if k not in ['player_id', 'season']}
-            if update_data:
-                update_season_stats_data(stats, **update_data)
-                count += 1
+            if season_stat:
+                # ✅ Mise à jour COMPLÈTE
+                season_stat.wins = stats.get('wins', season_stat.wins)
+                season_stat.losses = stats.get('losses', season_stat.losses)
+                season_stat.draws = stats.get('draws', season_stat.draws)
+                season_stat.total_games = stats.get('total_games', season_stat.total_games)
+                season_stat.win_rate = stats.get('win_rate', season_stat.win_rate)
+                season_stat.points = stats.get('points', season_stat.points)
+                season_stat.rank = stats.get('rank', season_stat.rank)
+                season_stat.highest_rank = stats.get('highest_rank', season_stat.highest_rank)
+                updated_count += 1
+            else:
+                # ✅ Création avec valeurs par défaut
+                season_stat = PlayerSeasonStats(
+                    player_id=stats['player_id'],
+                    season=stats['season'],
+                    wins=stats.get('wins', 0),
+                    losses=stats.get('losses', 0),
+                    draws=stats.get('draws', 0),
+                    total_games=stats.get('total_games', 0),
+                    win_rate=stats.get('win_rate', 0.0),
+                    points=stats.get('points', 0),
+                    rank=stats.get('rank'),
+                    highest_rank=stats.get('highest_rank')
+                )
+                db.session.add(season_stat)
+                updated_count += 1
         
-        return count
+        db.session.commit()
+        return updated_count
         
     except Exception as e:
         db.session.rollback()
-        print(f"\033[91m❌ Erreur lors de l'upsert bulk des stats de saison: {e}\033[0m")
+        print(f"❌ Erreur bulk_upsert_season_stats_data: {e}")
         raise e
 
 def get_season_stats_data(
@@ -247,3 +278,15 @@ def get_season_stats_by_playerdata(player_id: str, season: int) -> Optional[Play
         player_id=player_id,
         season=str(season)
     ).first()
+
+def update_player_data(player: Player) -> Player:
+    """
+    Met à jour un joueur existant en base de données.
+    """
+    try:
+        db.session.commit()
+        return player
+    except Exception as e:
+        db.session.rollback()
+        print(f"❌ Erreur update_player_data: {e}")
+        raise e

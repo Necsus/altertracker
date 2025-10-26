@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, make_response, request
-from app.services.player_service import get_all_seasons_service, get_ladder_by_season_service, get_player_by_id_service, get_player_history_service, get_player_overview_service, get_total_players_service, import_player_bga_service, search_players_bga_service, search_players_service, import_ladder_service
+from app.services.player_service import get_all_seasons_service, get_ladder_by_season_service, get_player_by_id_service, get_player_history_service, get_player_overview_service, get_total_players_service, import_player_bga_service, reload_player_service, search_players_bga_service, search_players_service, import_ladder_service
 from flask_jwt_extended import jwt_required
 from app.decorators.auth_decorator import admin_required
 from app.extensions import cache
@@ -156,3 +156,15 @@ def get_player_overview_by_id_route(player_id: str):
         return jsonify({'message': str(e)}), 400
     except Exception as e:
         return make_response(jsonify({'message': f'An error occurred: {str(e)}'}), 500)
+
+@player_bp.route('/reload/<string:player_id>', methods=['GET'])
+def reload_player_route(player_id: str):
+    try:
+        result = reload_player_service(player_id)
+        
+        if result['status'] == 1:
+            return jsonify(result), 200
+        else:
+            return jsonify(result), 400
+    except Exception as e:
+        return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)

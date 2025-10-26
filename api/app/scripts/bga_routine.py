@@ -258,7 +258,6 @@ def getGames(bga_id: int, start_date: int = None, end_date: int = None, page: in
         TournoiEnLigneid = db.session.query(CookieManager).filter_by(name="TournoiEnLigneid").first()
         TournoiEnLignetk = db.session.query(CookieManager).filter_by(name="TournoiEnLignetk").first()
         
-        # Récupérer les cookies avec la fonction helper
         headers = {
             "cookie": f"TournoiEnLigne_sso_user={TournoiEnLigne_sso_user.value};TournoiEnLigne_sso_id={TournoiEnLigne_sso_id.value};TournoiEnLignetkt={TournoiEnLignetkt.value};TournoiEnLigneidt={TournoiEnLigneidt.value};TournoiEnLignetk={TournoiEnLignetk.value};TournoiEnLigneid={TournoiEnLigneid.value}",
             "x-request-token": TournoiEnLigneidt.value,
@@ -267,7 +266,6 @@ def getGames(bga_id: int, start_date: int = None, end_date: int = None, page: in
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:144.0) Gecko/20100101 Firefox/144.0"
         }
 
-        
         response = requests.get(url, headers=headers, params=params)
         
         response.raise_for_status()
@@ -280,7 +278,7 @@ def getGames(bga_id: int, start_date: int = None, end_date: int = None, page: in
                 print(f"\033[93m🔄 Reconnexion...\033[0m")
                 postLoginUserWithPassword()
                 time.sleep(1)
-                return getGames(bga_id, page, retry=False)
+                return getGames(bga_id, start_date, end_date, page, retry=False)
             return {
                 'status': 0,
                 'error': 'BGA API error',
@@ -350,18 +348,45 @@ def getGames(bga_id: int, start_date: int = None, end_date: int = None, page: in
             
             transformed_tables.append(transformed_table)
         
-        # Transformer les stats
+        # ✅ Transformer les stats avec gestion des None
         transformed_stats = {}
         
         if isinstance(stats, dict):
             # Stats générales
             general = stats.get('general', {})
+            
+            # ✅ Helper function pour convertir en int de manière sécurisée
+            def safe_int(value, default=0):
+                """Convertit une valeur en int, retourne default si None ou invalide"""
+                if value is None or value == '':
+                    return default
+                try:
+                    return int(value)
+                except (ValueError, TypeError):
+                    return default
+            
+            # ✅ Helper function pour convertir en float de manière sécurisée
+            def safe_float(value, default=0.0):
+                """Convertit une valeur en float, retourne default si None ou invalide"""
+                if value is None or value == '':
+                    return default
+                try:
+                    return float(value)
+                except (ValueError, TypeError):
+                    return default
+            
+            # ✅ Utiliser les helpers pour toutes les conversions
+            total_played = safe_int(general.get('played'), 0)
+            total_victories = safe_int(general.get('victory'), 0)
+            total_elo_win = safe_float(general.get('elo_win'), 0.0)
+            win_rate = safe_float(general.get('score'), 0.0)
+            
             transformed_stats['general'] = {
-                'total_games': int(general.get('played', 0)),
-                'total_victories': int(general.get('victory', 0)),
-                'win_rate': float(general.get('score', 0)),  # Taux de victoire (0-1)
-                'total_elo_win': float(general.get('elo_win', 0)),
-                'avg_elo_per_game': float(general.get('elo_win', 0)) / int(general.get('played', 1)) if int(general.get('played', 0)) > 0 else 0
+                'total_games': total_played,
+                'total_victories': total_victories,
+                'win_rate': win_rate,
+                'total_elo_win': total_elo_win,
+                'avg_elo_per_game': total_elo_win / total_played if total_played > 0 else 0.0
             }
             
             # Stats par jeu (normalement un seul jeu : Altered)
@@ -370,9 +395,9 @@ def getGames(bga_id: int, start_date: int = None, end_date: int = None, page: in
             if isinstance(games, list):
                 for game in games:
                     transformed_stats['games'].append({
-                        'game_id': int(game.get('game_id', 1909)),
+                        'game_id': safe_int(game.get('game_id'), 1909),
                         'game_name': game.get('game_name', 'altered'),
-                        'total_games': int(game.get('cnt', 0))
+                        'total_games': safe_int(game.get('cnt'), 0)
                     })
 
         result = {
@@ -383,7 +408,7 @@ def getGames(bga_id: int, start_date: int = None, end_date: int = None, page: in
                 'pagination': {
                     'current_page': page,
                     'games_in_page': len(transformed_tables),
-                    'has_more': len(transformed_tables) > 0  # S'il y a des résultats, il peut y avoir une page suivante
+                    'has_more': len(transformed_tables) > 0
                 }
             }
         }
@@ -395,7 +420,7 @@ def getGames(bga_id: int, start_date: int = None, end_date: int = None, page: in
             print(f"\033[93m🔄 Reconnexion...\033[0m")
             postLoginUserWithPassword()
             time.sleep(1)
-            return getGames(bga_id, page, retry=False)
+            return getGames(bga_id, start_date, end_date, page, retry=False)
         return {
             'status': 0,
             'error': f'Request failed: {str(e)}',

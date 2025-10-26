@@ -92,4 +92,12 @@ export class PlayerService {
       })
     );
   }
+
+  get_player_reload$(player_id: string): Observable<any> {
+    return this.playerApiService.get_player_reload$(player_id).pipe(
+      map((result: any) => {
+        return result;
+      })
+    );
+  }
 }

@@ -107,12 +107,9 @@ export class PlayerComponent implements OnInit {
     console.log('🔄 Rechargement des données du joueur...');
     this.isReloading.set(true);
 
-    this.playerService.get_player_by_id$(playerId).subscribe({
-      next: (player: PlayerModel) => {
-        this.player.set(player);
-        this.lastReloadDate.set(new Date());
-        this.isReloading.set(false);
-        console.log('✅ Données rechargées avec succès');
+    this.playerService.get_player_reload$(playerId).subscribe({
+      next: (result: any) => {
+        window.location.reload();
       },
       error: (error) => {
         console.error('❌ Erreur lors du rechargement:', error);

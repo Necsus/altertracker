@@ -709,3 +709,314 @@ def get_total_players_service() -> int:
 def get_player_overview_service(player_id: str, season: int) -> dict:
     playerSeasonStats = get_season_stats_by_playerdata(player_id=player_id, season=season)
     return playerSeasonStats.json() if playerSeasonStats else {}
+
+def reload_player_service(player_id: str) -> dict:
+    try:
+        # 1. Validation du joueur
+        player = get_player_by_id_data(player_id)
+        if not player:
+            return {
+                'status': 0,
+                'error': f'Player not found: {player_id}'
+            }
+        
+        print(f"\n🔄 Rechargement des données pour {player.name} (BGA ID: {player.bga_id})")
+        
+        # 2. Déterminer le timestamp de départ
+        if player.last_game_at:
+            start_timestamp = int(player.last_game_at.timestamp())
+            print(f"📅 Dernière partie: {player.last_game_at}")
+            print(f"🕐 Timestamp: {start_timestamp}")
+        else:
+            # Aucune partie, on part de la première saison
+            print("⚠️  Aucune partie enregistrée, rechargement complet...")
+            seasons = get_all_seasons_data()
+            if not seasons:
+                return {'status': 0, 'error': 'No seasons found'}
+            start_timestamp = min(s.start for s in seasons)
+        
+        # 3. Récupérer toutes les saisons
+        all_seasons = get_all_seasons_data()
+        if not all_seasons:
+            return {'status': 0, 'error': 'No seasons found in database'}
+        
+        print(f"📅 {len(all_seasons)} saisons disponibles")
+        
+        # 4. Statistiques du rechargement
+        reload_stats = {
+            'new_games': 0,
+            'existing_games': 0,
+            'skipped_ranked': 0,
+            'errors': 0,
+            'total_pages': 0,
+            'seasons_affected': set()
+        }
+        
+        # 5. Récupération de TOUTES les nouvelles parties (pagination automatique)
+        print(f"\n📥 Récupération des nouvelles parties depuis le {player.last_game_at}...")
+        
+        all_new_games = []
+        page = 1
+        has_more = True
+        
+        while has_more:
+            print(f"📄 Page {page}...")
+            
+            try:
+                games_response = getGames(
+                    player.bga_id,
+                    start_date=start_timestamp,
+                    page=page
+                )
+                
+                if not games_response or games_response.get('status') != 1:
+                    if page == 1:
+                        print("ℹ️  Aucune nouvelle partie")
+                    break
+                
+                games_data = games_response.get('data', {}).get('tables', [])
+                pagination_info = games_response.get('data', {}).get('pagination', {})
+                
+                if not games_data:
+                    break
+                
+                all_new_games.extend(games_data)
+                reload_stats['total_pages'] += 1
+                
+                print(f"✅ Page {page}: {len(games_data)} parties récupérées")
+                
+                has_more = pagination_info.get('has_more', False)
+                if has_more:
+                    page += 1
+                    time.sleep(0.3)
+                else:
+                    break
+                    
+            except Exception as e:
+                print(f"❌ Erreur page {page}: {e}")
+                reload_stats['errors'] += 1
+                break
+        
+        print(f"\n📊 Total récupéré: {len(all_new_games)} parties")
+        
+        # 6. Si aucune nouvelle partie, rien à faire
+        if not all_new_games:
+            print("ℹ️  Aucune nouvelle partie à importer")
+            return {
+                'status': 1,
+                'player_id': player_id,
+                'message': 'No new games found'
+            }
+        
+        # 7. ✅ Grouper les parties PAR SAISON (basé sur end_timestamp)
+        games_by_season = {}
+        
+        for game_data in all_new_games:
+            # Déterminer la saison de cette partie
+            game_end_timestamp = game_data.get('end_timestamp')
+            
+            if not game_end_timestamp:
+                print(f"⚠️  Partie sans end_timestamp: {game_data.get('table_id')}")
+                reload_stats['errors'] += 1
+                continue
+            
+            # Trouver dans quelle saison cette partie se situe
+            game_season = None
+            for season in all_seasons:
+                if season.start <= game_end_timestamp <= season.end:
+                    game_season = season.season
+                    break
+            
+            if game_season is None:
+                print(f"⚠️  Partie hors saison (timestamp: {game_end_timestamp}): {game_data.get('table_id')}")
+                reload_stats['errors'] += 1
+                continue
+            
+            # Grouper par saison
+            if game_season not in games_by_season:
+                games_by_season[game_season] = []
+            
+            games_by_season[game_season].append(game_data)
+            reload_stats['seasons_affected'].add(game_season)
+        
+        print(f"\n📅 Saisons concernées: {sorted(reload_stats['seasons_affected'])}")
+        
+        # 8. ✅ Importer les parties par saison
+        for season_num in sorted(games_by_season.keys()):
+            season_games = games_by_season[season_num]
+            
+            print(f"\n{'='*80}")
+            print(f"💾 Import saison {season_num}: {len(season_games)} parties")
+            print(f"{'='*80}")
+            
+            try:
+                games_stats = import_games_bulk_service(
+                    player_id,
+                    season_games,
+                    season_num
+                )
+                
+                reload_stats['new_games'] += games_stats['created']
+                reload_stats['existing_games'] += games_stats['existing']
+                reload_stats['skipped_ranked'] += games_stats['skipped_ranked']
+                reload_stats['errors'] += games_stats['errors']
+                
+                print(f"📊 Saison {season_num}:")
+                print(f"  ✅ Nouvelles: {games_stats['created']}")
+                print(f"  ℹ️  Existantes: {games_stats['existing']}")
+                print(f"  ⏭️  Non-ranked: {games_stats['skipped_ranked']}")
+                
+            except Exception as e:
+                print(f"❌ Erreur import saison {season_num}: {e}")
+                import traceback
+                traceback.print_exc()
+                reload_stats['errors'] += 1
+                continue
+        
+        # 9. ✅ RECALCUL COMPLET DES STATISTIQUES
+        print(f"\n{'='*80}")
+        print("📊 RECALCUL DES STATISTIQUES")
+        print(f"{'='*80}")
+        
+        try:
+            # 9.1. Récupérer TOUTES les parties du joueur (toutes saisons)
+            all_player_games = get_player_history_data(player_id, season=None)
+            print(f"🎮 Total de parties en base: {len(all_player_games)}")
+            
+            # 9.2. Recalculer les statistiques GLOBALES
+            player_uuid = uuid.UUID(player_id)
+            global_stats = _calculate_player_stats_from_games(all_player_games, player_uuid)
+            
+            total_games = len(all_player_games)
+            total_wins = global_stats['wins']
+            total_losses = global_stats['losses']
+            total_draws = global_stats['draws']
+            win_rate = (total_wins / total_games * 100) if total_games > 0 else 0.0
+            
+            # Mettre à jour le joueur
+            player.total_games = total_games
+            player.total_wins = total_wins
+            player.total_losses = total_losses
+            player.total_draws = total_draws
+            player.win_rate = round(win_rate, 2)
+            player.last_game_at = global_stats['last_game_at']
+            player.updated_at = datetime.now(timezone.utc)
+            player.is_active = True
+            
+            # Sauvegarder
+            from app.data.player_data import update_player_data
+            update_player_data(player)
+            
+            print(f"\n✅ Stats globales recalculées:")
+            print(f"  🎮 Parties: {total_games}")
+            print(f"  ✅ Victoires: {total_wins}")
+            print(f"  ❌ Défaites: {total_losses}")
+            print(f"  ⚖️  Nuls: {total_draws}")
+            print(f"  📊 Win rate: {win_rate:.2f}%")
+            print(f"  📅 Dernière partie: {player.last_game_at}")
+            
+        except Exception as e:
+            print(f"❌ Erreur recalcul stats globales: {e}")
+            import traceback
+            traceback.print_exc()
+            reload_stats['errors'] += 1
+        
+        # 9.3. ✅ Recalculer les statistiques PAR SAISON (uniquement les saisons affectées)
+        print(f"\n📅 Recalcul des stats par saison...")
+        
+        try:
+            season_stats_updates = []
+            
+            # Pour chaque saison affectée (y compris celles qui existaient déjà)
+            affected_seasons = reload_stats['seasons_affected']
+            
+            for season_num in sorted(affected_seasons):
+                # Récupérer TOUTES les parties de cette saison
+                season_games = [g for g in all_player_games if g.season == season_num]
+                
+                if not season_games:
+                    print(f"  ⚠️  Saison {season_num}: Aucune partie (ignorée)")
+                    continue
+                
+                # Calculer les stats
+                season_stats = _calculate_player_stats_from_games(season_games, player_uuid)
+                
+                season_total = len(season_games)
+                season_wins = season_stats['wins']
+                season_losses = season_stats['losses']
+                season_draws = season_stats['draws']
+                season_win_rate = (season_wins / season_total * 100) if season_total > 0 else 0.0
+                
+                # Récupérer les stats existantes pour conserver rank et highest_rank
+                existing_stats = get_season_stats_by_playerdata(player_id, season_num)
+                
+                season_stats_updates.append({
+                    'player_id': player_uuid,
+                    'season': str(season_num),
+                    'wins': season_wins,
+                    'losses': season_losses,
+                    'draws': season_draws,
+                    'total_games': season_total,
+                    'win_rate': round(season_win_rate, 2),
+                    'points': existing_stats.points if existing_stats else 0,
+                    'rank': existing_stats.rank if existing_stats else None,
+                    'highest_rank': existing_stats.highest_rank if existing_stats else None
+                })
+                
+                print(f"  📅 Saison {season_num}:")
+                print(f"    🎮 Parties: {season_total}")
+                print(f"    ✅ Victoires: {season_wins}")
+                print(f"    ❌ Défaites: {season_losses}")
+                print(f"    ⚖️  Nuls: {season_draws}")
+                print(f"    📊 Win rate: {season_win_rate:.2f}%")
+            
+            # Bulk update
+            if season_stats_updates:
+                from app.data.player_data import bulk_upsert_season_stats_data
+                updated_count = bulk_upsert_season_stats_data(season_stats_updates)
+                print(f"\n✅ {updated_count} saisons mises à jour")
+            
+        except Exception as e:
+            print(f"❌ Erreur recalcul stats par saison: {e}")
+            import traceback
+            traceback.print_exc()
+            reload_stats['errors'] += 1
+        
+        # 10. Résumé final
+        reload_stats['seasons_affected'] = sorted(reload_stats['seasons_affected'])
+        
+        print("\n" + "="*80)
+        print(f"🏆 RECHARGEMENT TERMINÉ - {player.name}")
+        print("="*80)
+        print(f"✅ Nouvelles parties importées: {reload_stats['new_games']}")
+        print(f"ℹ️  Parties déjà existantes: {reload_stats['existing_games']}")
+        print(f"⏭️  Parties non-ranked ignorées: {reload_stats['skipped_ranked']}")
+        print(f"📄 Pages traitées: {reload_stats['total_pages']}")
+        print(f"📅 Saisons mises à jour: {', '.join(map(str, reload_stats['seasons_affected']))}")
+        print(f"❌ Erreurs: {reload_stats['errors']}")
+        print("="*80 + "\n")
+        
+        return {
+            'status': 1,
+            'player_id': player_id,
+            'player_name': player.name,
+            'stats': reload_stats,
+            'updated_stats': {
+                'total_games': player.total_games,
+                'total_wins': player.total_wins,
+                'total_losses': player.total_losses,
+                'total_draws': player.total_draws,
+                'win_rate': player.win_rate,
+                'last_game_at': player.last_game_at.isoformat() if player.last_game_at else None
+            }
+        }
+        
+    except Exception as e:
+        print(f"\033[91m❌ Erreur critique lors du rechargement: {e}\033[0m")
+        import traceback
+        traceback.print_exc()
+        return {
+            'status': 0,
+            'error': str(e),
+            'player_id': player_id
+        }
