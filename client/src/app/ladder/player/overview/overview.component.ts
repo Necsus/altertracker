@@ -1,20 +1,35 @@
 import { CommonModule } from '@angular/common';
-import { Component, input, OnInit } from '@angular/core';
-import { PlayerModel } from '../../../01_models/03_business/player.model';
+import { Component, effect, inject, input } from '@angular/core';
+import { PlayerSeasonStatsModel } from '../../../01_models/03_business/player-season-stats.model';
+import { PlayerService } from '../../../03_business/player.service';
 
 @Component({
   selector: 'app-player-overview',
   templateUrl: './overview.component.html',
   imports: [CommonModule]
 })
-export class OverviewComponent implements OnInit {
+export class OverviewComponent {
   player_id = input.required<string>();
   selectedSeason = input<number | null>(null);
 
-  player: PlayerModel | null = null;
+  playerStats: PlayerSeasonStatsModel | null = null;
 
-  ngOnInit(): void {
-    // Initialisation si nécessaire
+  private readonly playerService = inject(PlayerService);
+
+  constructor() {
+    effect(() => {
+      this.loadPlayerBySeason();
+    });
+  }
+
+  loadPlayerBySeason(): void {
+    if (!this.player_id()) return;
+
+    this.playerService.get_player_overview$(this.player_id(), this.selectedSeason() ?? 0).subscribe({
+      next: (response: any) => {
+        this.playerStats = response || null;
+      }
+    });
   }
 
   calculateRank(): string {
@@ -23,10 +38,10 @@ export class OverviewComponent implements OnInit {
   }
 
   calculateWinLossRatio(): string {
-    if (!this.player || this.player.total_losses === 0) {
-      return this.player?.total_wins?.toString() || '0';
+    if (!this.playerStats || this.playerStats.losses === 0) {
+      return this.playerStats?.wins?.toString() || '0';
     }
-    const ratio = (this.player.total_wins ?? 0) / (this.player.total_losses ?? 0);
+    const ratio = (this.playerStats.wins ?? 0) / (this.playerStats.losses ?? 0);
     return ratio.toFixed(2);
   }
 }

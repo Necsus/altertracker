@@ -19,15 +19,17 @@ export class PlayerComponent implements OnInit {
   private readonly playerService = inject(PlayerService);
 
   player_id = signal<string>('');
+  player = signal<PlayerModel | null>(null);
+  isLoading = signal(true);
+  error = signal<string | null>(null);
+  activeTab = signal('overview');
 
-  player: PlayerModel | null = null;
-  isLoading = true;
-  error: string | null = null;
-  activeTab: string = 'overview';
-
-  // ✅ Saisons
-  seasons: SeasonModel[] = [];
   selectedSeason = signal<number | null>(null);
+  seasons = signal<SeasonModel[]>([]);
+
+  // ✅ Ajout des signaux pour le reload
+  lastReloadDate = signal<Date | null>(null);
+  isReloading = signal(false);
 
   tabs = [
     { id: 'overview', label: 'Vue d\'ensemble', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z' },
@@ -42,22 +44,22 @@ export class PlayerComponent implements OnInit {
       this.loadPlayer(playerId);
       this.loadSeasons();
     } else {
-      this.error = 'ID du joueur manquant';
-      this.isLoading = false;
+      this.error.set('ID du joueur manquant');
+      this.isLoading.set(false);
     }
   }
 
   loadSeasons(): void {
     this.playerService.get_season_info$().subscribe({
       next: (response: any) => {
-        this.seasons = response.seasons || [];
+        this.seasons.set(response.seasons || []);
 
-        const currentSeason = this.seasons.find(s => s.current);
+        const currentSeason = response.seasons.find((s: SeasonModel) => s.current);
         if (currentSeason) {
           this.selectedSeason.set(currentSeason.season);
         } else if (this.seasons.length > 0) {
           // Sinon, prendre la plus récente
-          this.selectedSeason.set(this.seasons[0].season);
+          this.selectedSeason.set(response.seasons[0].season);
         }
       },
       error: (error) => {
@@ -67,25 +69,56 @@ export class PlayerComponent implements OnInit {
   }
 
   loadPlayer(playerId: string): void {
-    this.isLoading = true;
-    this.error = null;
+    this.isLoading.set(true);
+    this.error.set(null);
 
     this.playerService.get_player_by_id$(playerId).subscribe({
       next: (player: PlayerModel) => {
         this.player_id.set(playerId);
-        this.player = player;
-        this.isLoading = false;
+        this.player.set(player);
+        this.isLoading.set(false);
+        // ✅ Mettre à jour la date de dernier chargement
+        this.lastReloadDate.set(new Date(player.updated_at ?? ''));
       },
       error: (error) => {
-        console.error('Erreur lors du chargement du joueur:', error);
-        this.error = error.error?.message || 'Impossible de charger les données du joueur';
-        this.isLoading = false;
+        this.error.set(error.error?.message || 'Erreur de chargement');
+        this.isLoading.set(false);
       }
     });
   }
 
   onSeasonChange(newSeason: number): void {
     this.selectedSeason.set(newSeason);
+  }
+
+  // ✅ Méthode pour recharger les données du joueur
+  reloadPlayerData(): void {
+    if (this.isReloading()) {
+      console.log('⚠️  Rechargement déjà en cours');
+      return;
+    }
+
+    const playerId = this.player_id();
+    if (!playerId) {
+      console.error('❌ Aucun player_id disponible');
+      return;
+    }
+
+    console.log('🔄 Rechargement des données du joueur...');
+    this.isReloading.set(true);
+
+    this.playerService.get_player_by_id$(playerId).subscribe({
+      next: (player: PlayerModel) => {
+        this.player.set(player);
+        this.lastReloadDate.set(new Date());
+        this.isReloading.set(false);
+        console.log('✅ Données rechargées avec succès');
+      },
+      error: (error) => {
+        console.error('❌ Erreur lors du rechargement:', error);
+        this.isReloading.set(false);
+      }
+    });
   }
 
   retry(): void {

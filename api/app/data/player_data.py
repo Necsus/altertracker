@@ -241,3 +241,9 @@ def count_total_players_data() -> int:
 
 def get_current_season_data() -> Optional[Season]:
     return db.session.query(Season).filter_by(current=True).first()
+
+def get_season_stats_by_playerdata(player_id: str, season: int) -> Optional[PlayerSeasonStats]:
+    return db.session.query(PlayerSeasonStats).filter_by(
+        player_id=player_id,
+        season=str(season)
+    ).first()

@@ -1,6 +1,6 @@
 <div class="min-h-screen bg-gray-900 text-gray-100">
   <!-- Loading State -->
-  @if (isLoading) {
+  @if (isLoading()) {
   <div class="container mx-auto px-4 py-8">
     <div class="animate-pulse">
       <!-- Header Skeleton -->
@@ -19,7 +19,7 @@
   }
 
   <!-- Error State -->
-  @if (error && !isLoading) {
+  @if (error() && !isLoading()) {
   <div class="container mx-auto px-4 py-16">
     <div class="bg-gray-800 rounded-2xl p-12 text-center max-w-md mx-auto">
       <svg class="w-16 h-16 text-red-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -28,7 +28,7 @@
         </path>
       </svg>
       <h3 class="text-xl font-bold text-gray-100 mb-2">Erreur</h3>
-      <p class="text-gray-400 mb-6">{{ error }}</p>
+      <p class="text-gray-400 mb-6">{{ error() }}</p>
       <button (click)="retry()"
         class="px-6 py-3 bg-amber-600 hover:bg-amber-700 rounded-lg font-semibold transition-colors">
         <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -43,80 +43,122 @@
   }
 
   <!-- Player Content -->
-  @if (player && !isLoading) {
+  @if (player() && !isLoading()) {
   <div class="container mx-auto px-4 py-8">
 
     <!-- Header Section avec Sélecteur de Saison -->
     <div class="bg-gradient-to-br from-amber-900 via-amber-800 to-orange-900 rounded-2xl p-8 mb-6 shadow-2xl">
       <div class="flex flex-col md:flex-row items-start md:items-center gap-6">
         <div class="relative flex-shrink-0">
-          @if (player.avatar_url) {
-          <img [src]="player.avatar_url" [alt]="player.name"
+          @if (player()!.avatar_url) {
+          <img [src]="player()!.avatar_url" [alt]="player()!.name"
             class="w-32 h-32 rounded-full border-4 border-amber-400 shadow-xl object-cover" />
           }
-          @if (player.country) {
+          @if (player()!.country) {
           <div
             class="absolute -bottom-2 -right-2 w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center border-2 border-amber-400 shadow-lg">
-            <span class="text-2xl fi fi-{{ player.country.toLowerCase() }}"></span>
+            <span class="text-2xl fi fi-{{ player()!.country?.toLowerCase() }}"></span>
           </div>
           }
         </div>
 
         <!-- Player Info -->
         <div class="flex-1">
-          <h1 class="text-4xl font-bold text-white mb-2">{{ player.name }}</h1>
+          <h1 class="text-4xl font-bold text-white mb-2">{{ player()!.name }}</h1>
 
           <div class="flex flex-wrap items-center gap-4 text-amber-200 mb-3">
-            @if (player.team_name) {
+            @if (player()!.team_name) {
             <span class="flex items-center gap-2">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
                 </path>
               </svg>
-              {{ player.team_name }}
+              {{ player()!.team_name }}
             </span>
             }
 
-            @if (player.bga_id) {
+            @if (player()!.bga_id) {
             <span class="flex items-center gap-2">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2">
                 </path>
               </svg>
-              BGA #{{ player.bga_id }}
+              BGA #{{ player()!.bga_id }}
             </span>
             }
 
-            @if (player.last_game_at) {
+            @if (player()!.last_game_at) {
             <span class="flex items-center gap-2">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
               </svg>
-              {{ player.last_game_at | date: 'dd/MM/yyyy' }}
+              {{ player()!.last_game_at | date: 'dd/MM/yyyy' }}
             </span>
             }
           </div>
 
-          @if (player.bio) {
+          @if (player()!.bio) {
           <p class="text-amber-100 text-lg leading-relaxed max-w-2xl">
-            {{ player.bio }}
+            {{ player()!.bio }}
           </p>
           }
         </div>
 
         <!-- Quick Stats -->
-        <div class="grid grid-cols-2 md:grid-cols-2 gap-4 w-full md:w-auto">
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 w-full md:w-auto">
           <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center border border-amber-400/30">
-            <div class="text-3xl font-bold text-white">{{ player.total_games || 0 }}</div>
+            <div class="text-3xl font-bold text-white">{{ player()!.total_games || 0 }}</div>
             <div class="text-amber-200 text-sm uppercase tracking-wide">Parties</div>
           </div>
 
           <div class="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center border border-amber-400/30">
-            <div class="text-3xl font-bold text-white">{{ player.win_rate || 0 | number: '1.0-0' }}%</div>
+            <div class="text-3xl font-bold text-white">{{ player()!.win_rate || 0 | number: '1.0-0' }}%</div>
             <div class="text-amber-200 text-sm uppercase tracking-wide">Victoires</div>
+          </div>
+
+          <!-- ✅ Bouton de reload + Date -->
+          <div
+            class="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-amber-400/30 flex flex-col items-center justify-center gap-2">
+            <!-- Bouton Reload -->
+            <button (click)="reloadPlayerData()" [disabled]="isReloading()"
+              class="flex items-center gap-2 px-4 py-2 bg-amber-600 hover:bg-amber-700 disabled:bg-gray-600 disabled:cursor-not-allowed rounded-lg font-semibold transition-all text-white text-sm"
+              [class.animate-pulse]="isReloading()">
+              @if (isReloading()) {
+              <svg class="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                </path>
+              </svg>
+              <span>Chargement...</span>
+              } @else {
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                </path>
+              </svg>
+              <span class="hidden md:inline">Actualiser</span>
+              }
+            </button>
+
+            <!-- Date du dernier reload -->
+            @if (lastReloadDate()) {
+            <div class="text-amber-200 text-xs text-center">
+              <div class="flex items-center gap-1 justify-center">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z">
+                  </path>
+                </svg>
+                <span>Mis à jour</span>
+              </div>
+              <div class="font-semibold">
+                {{ lastReloadDate() | date: 'dd/MM/yyyy HH:mm' }}
+              </div>
+            </div>
+            }
           </div>
         </div>
       </div>
@@ -129,7 +171,7 @@
           <select [(ngModel)]="selectedSeason" (ngModelChange)="onSeasonChange($event)"
             class="w-full bg-gray-900 text-white border border-gray-700 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-amber-500 transition-all hover:border-amber-500/50">
             <option [value]="null" disabled>Sélectionner une saison</option>
-            @for (season of seasons; track season.id) {
+            @for (season of seasons(); track season.id) {
             <option [value]="season.season">
               {{ 'Saison ' + season.season }}
               @if (season.current) { • En cours }
@@ -144,9 +186,9 @@
         <!-- Tabs -->
         <div class="flex flex-1 flex-wrap gap-2">
           @for (tab of tabs; track tab.id) {
-          <button (click)="activeTab = tab.id" [class.bg-amber-600]="activeTab === tab.id"
-            [class.text-white]="activeTab === tab.id" [class.text-gray-400]="activeTab !== tab.id"
-            [class.hover:bg-gray-700]="activeTab !== tab.id"
+          <button (click)="activeTab.set(tab.id)" [class.bg-amber-600]="activeTab() === tab.id"
+            [class.text-white]="activeTab() === tab.id" [class.text-gray-400]="activeTab() !== tab.id"
+            [class.hover:bg-gray-700]="activeTab() !== tab.id"
             class="flex-1 md:flex-none px-6 py-3 rounded-lg font-semibold transition-all duration-200 flex items-center justify-center gap-2">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="tab.icon"></path>
@@ -162,17 +204,17 @@
     <div class="space-y-6">
 
       <!-- History Tab (Priority) -->
-      @if (activeTab === 'history') {
+      @if (activeTab() === 'history') {
       <app-player-history [player_id]="player_id()" [selectedSeason]="selectedSeason()"></app-player-history>
       }
 
       <!-- Overview Tab -->
-      @if (activeTab === 'overview') {
+      @if (activeTab() === 'overview') {
       <app-player-overview [player_id]="player_id()" [selectedSeason]="selectedSeason()"></app-player-overview>
       }
 
       <!-- Matchups Tab Skeleton -->
-      @if (activeTab === 'matchups') {
+      @if (activeTab() === 'matchups') {
       <div class="bg-gray-800 rounded-xl p-12 shadow-lg">
         <div class="text-center">
           <svg class="w-20 h-20 text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -187,7 +229,7 @@
       }
 
       <!-- Decks Tab Skeleton -->
-      @if (activeTab === 'decks') {
+      @if (activeTab() === 'decks') {
       <div class="bg-gray-800 rounded-xl p-12 shadow-lg">
         <div class="text-center">
           <svg class="w-20 h-20 text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

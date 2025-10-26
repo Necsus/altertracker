@@ -38,7 +38,7 @@ export class HeaderComponent implements OnInit {
 
   reloadPage(event: Event) {
     event.preventDefault();
-    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+    this.router.navigateByUrl('/cards', { skipLocationChange: true }).then(() => {
       this.router.navigate(['/cards']);
     });
   }

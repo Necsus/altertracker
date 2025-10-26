@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, make_response, request
-from app.services.player_service import get_all_seasons_service, get_ladder_by_season_service, get_player_by_id_service, get_player_history_service, get_total_players_service, import_player_bga_service, search_players_bga_service, search_players_service, import_ladder_service
+from app.services.player_service import get_all_seasons_service, get_ladder_by_season_service, get_player_by_id_service, get_player_history_service, get_player_overview_service, get_total_players_service, import_player_bga_service, search_players_bga_service, search_players_service, import_ladder_service
 from flask_jwt_extended import jwt_required
 from app.decorators.auth_decorator import admin_required
 from app.extensions import cache
@@ -138,5 +138,21 @@ def get_seasons_infos():
             'seasons': get_all_seasons_service(),
             'total_players': get_total_players_service()
         }), 200
+    except Exception as e:
+        return make_response(jsonify({'message': f'An error occurred: {str(e)}'}), 500)
+
+@player_bp.route('/overview/<string:player_id>', methods=['GET'])
+def get_player_overview_by_id_route(player_id: str):
+    try:
+        season = request.args.get('season', 0, type=int)
+        overview = get_player_overview_service(player_id, season)
+
+        if not overview:
+            return jsonify({'message': 'Player overview not found'}), 404
+
+        return jsonify(overview), 200
+
+    except ValueError as e:
+        return jsonify({'message': str(e)}), 400
     except Exception as e:
         return make_response(jsonify({'message': f'An error occurred: {str(e)}'}), 500)

@@ -12,6 +12,7 @@ from app.data.player_data import (
     get_current_season_data,
     get_player_by_id_data,
     get_player_history_data,
+    get_season_stats_by_playerdata,
     get_season_stats_data,
     search_players_data,
     get_player_by_bga_id_data,
@@ -122,9 +123,6 @@ def _transform_bga_game_to_model(game_data: dict, main_player: Player, opponent:
     )
 
 def _calculate_player_stats_from_games(games: List[Game], player_id: uuid.UUID) -> Dict:
-    """
-    Calcule les statistiques d'un joueur à partir d'une liste de parties
-    """
     stats = {
         'wins': 0,
         'losses': 0,
@@ -707,3 +705,7 @@ def get_all_seasons_service() -> list:
 
 def get_total_players_service() -> int:
     return count_total_players_data()
+
+def get_player_overview_service(player_id: str, season: int) -> dict:
+    playerSeasonStats = get_season_stats_by_playerdata(player_id=player_id, season=season)
+    return playerSeasonStats.json() if playerSeasonStats else {}

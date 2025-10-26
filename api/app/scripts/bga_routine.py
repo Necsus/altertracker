@@ -286,14 +286,7 @@ def getGames(bga_id: int, start_date: int = None, end_date: int = None, page: in
                 'error': 'BGA API error',
                 'data': {'tables': [], 'stats': {}}
             }
-        
-        # ✅ Affichage formaté du JSON
-        print("\n" + "="*80)
-        print("📊 GET GAMES BGA - DATA RECEIVED")
-        print("="*80)
-        print(json.dumps(data, indent=2, ensure_ascii=False))
-        print("="*80 + "\n")
-        
+
         # Extraire les données
         games_data = data.get('data', {})
         tables = games_data.get('tables', [])
@@ -491,14 +484,6 @@ def getPlayer(bga_id: int, retry: bool = True) -> dict:
             print(f"✅ Pays trouvé: {player_data['country']} ({player_data['country_name']})")
         else:
             print("⚠️  Div .bga-flag non trouvée")
-
-        # ✅ Affichage formaté des données extraites
-        print("\n" + "="*80)
-        print("📊 PLAYER DATA EXTRACTED")
-        print("="*80)
-        print(json.dumps(player_data, indent=2, ensure_ascii=False))
-        print("="*80 + "\n")
-
         return {
             'status': 1,
             'data': player_data
@@ -527,17 +512,6 @@ def getPlayer(bga_id: int, retry: bool = True) -> dict:
         }
     
 def import_ladder_from_bga(season: int, page: int = 0, retry: bool = True) -> dict:
-    """
-    Importe le classement BGA Arena pour une saison donnée avec pagination
-    
-    Args:
-        season: Numéro de saison (ex: 202410)
-        page: Numéro de page (commence à 0)
-        retry: Autoriser une tentative de reconnexion
-        
-    Returns:
-        Dict avec status, data (ranks) et pagination info
-    """
     try:
         url = "https://boardgamearena.com/halloffame/halloffame/getRanking.html"
         params = {
@@ -583,13 +557,6 @@ def import_ladder_from_bga(season: int, page: int = 0, retry: bool = True) -> di
             }
         
         ranks = data.get('data', {}).get('ranks', [])
-        
-        # ✅ Affichage formaté du JSON
-        print("\n" + "="*80)
-        print(f"📊 LADDER SEASON {season} - PAGE {page}")
-        print("="*80)
-        print(f"Ranks trouvés: {len(ranks)}")
-        print("="*80 + "\n")
         
         return {
             'status': 1,

@@ -27,7 +27,7 @@ export class PlayerApiService {
   }
 
   get_player_by_id$(player_id: string): Observable<PlayerModel> {
-    return this.wabApiService.callGet$(this.controller, player_id);
+    return this.wabApiService.callGet$(this.controller, player_id, undefined, 1800000);
   }
 
   get_player_history$(player_id: string, season: number): Observable<GameModel[]> {
@@ -57,6 +57,10 @@ export class PlayerApiService {
   }
 
   get_season_info$(): Observable<{ seasons: SeasonModel[], total_players: number }> {
-    return this.wabApiService.callGet$(this.controller, '/infos');
+    return this.wabApiService.callGet$(this.controller, 'infos');
+  }
+
+  get_player_overview$(player_id: string, season: number): Observable<any> {
+    return this.wabApiService.callGet$(this.controller, `overview/${player_id}?season=${season}`);
   }
 }

@@ -84,4 +84,12 @@ export class PlayerService {
       })
     );
   }
+
+  get_player_overview$(player_id: string, season: number): Observable<any> {
+    return this.playerApiService.get_player_overview$(player_id, season).pipe(
+      map((response: any) => {
+        return response;
+      })
+    );
+  }
 }
