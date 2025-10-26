@@ -10,6 +10,7 @@ from app.data.player_data import (
     create_player_data,
     get_player_by_id_data,
     get_player_history_data,
+    get_season_stats_data,
     search_players_data,
     get_player_by_bga_id_data,
     get_game_by_table_id_data,
@@ -33,22 +34,16 @@ def search_players_bga_service(query: str) -> list:
 
 def get_player_by_id_service(player_id: str) -> dict:
     player = get_player_by_id_data(player_id)
-    
     if not player:
         return None
     
+    if not player.is_active:
+        import_player_bga_service(player.bga_id)
+        player = get_player_by_id_data(player_id)
+
     return player.json()
 
 def _ensure_timezone_aware(dt: Optional[datetime]) -> Optional[datetime]:
-    """
-    S'assure qu'un datetime est timezone-aware (UTC)
-    
-    Args:
-        dt: datetime à vérifier
-        
-    Returns:
-        datetime avec timezone UTC ou None
-    """
     if dt is None:
         return None
     
@@ -279,11 +274,6 @@ def import_games_bulk_service(main_player_id: str, games_data_from_bga: list) ->
         raise e
 
 def import_player_bga_service(bga_id: int) -> dict:
-    """
-    Importe un joueur depuis BGA avec toutes ses parties.
-    Annule tout si aucune partie n'est trouvée.
-    """
-    # 1. Récupérer les infos du joueur
     player_response = getPlayer(bga_id)
     if not player_response or player_response.get('status') != 1:
         return {
@@ -385,8 +375,7 @@ def import_ladder_service(season: int, max_pages: int = None) -> dict:
             'pages_processed': 0
         }
         
-        # Transformer la saison en string (ex: 202410 -> "2024-10")
-        season_str = f"{str(season)[:4]}-{str(season)[4:]}"
+        season_str = str(season)
         
         # Liste pour accumuler toutes les données de saison
         all_season_stats = []
@@ -427,7 +416,11 @@ def import_ladder_service(season: int, max_pages: int = None) -> dict:
                     bga_id = int(rank_data.get('id'))
                     name = rank_data.get('name')
                     country_code = rank_data.get('country', {}).get('code', 'XX')
-                    arena_points = float(rank_data.get('arena', 0))
+                    arena_points_str = rank_data.get('arena', '0.0')
+                    if '.' in str(arena_points_str):
+                        arena_points = int(str(arena_points_str).split('.')[1])  # "501.1900" -> 1900
+                    else:
+                        arena_points = 0
                     rank_no = int(rank_data.get('rank_no', 0))
                     
                     # Récupérer ou créer le joueur
@@ -507,3 +500,63 @@ def import_ladder_service(season: int, max_pages: int = None) -> dict:
             'status': 0,
             'error': str(e)
         }
+    
+def get_ladder_by_season_service(
+    season: int, 
+    include_player: bool = True,
+    page: int = 1,
+    limit: int = 100
+) -> dict:
+    try:
+        season_str = str(season)
+        
+        # ✅ Récupérer les stats avec pagination
+        stats, total = get_season_stats_data(
+            season=season, 
+            include_player=include_player,
+            page=page,
+            limit=limit
+        )
+        
+        if not stats:
+            return {
+                'season': season_str,
+                'total_players': 0,
+                'total_points': 0,
+                'avg_points': 0,
+                'ladder': [],
+                'pagination': {
+                    'current_page': page,
+                    'total_pages': 0,
+                    'total_players': 0,
+                    'limit': limit
+                }
+            }
+        
+        # ✅ Sérialiser avec les données du player
+        ladder = [stat.json(include_player=include_player) for stat in stats]
+        
+        # Calculer quelques métadonnées utiles (sur la page actuelle)
+        page_players = len(stats)
+        page_points = sum(stat.points for stat in stats)
+        page_avg_points = page_points / page_players if page_players > 0 else 0
+        
+        return {
+            'season': season_str,
+            'total_players': total,
+            'total_points': page_points,  # Points de la page actuelle
+            'avg_points': round(page_avg_points, 2),  # Moyenne de la page actuelle
+            'ladder': ladder,
+            'pagination': {
+                'current_page': page,
+                'total_pages': (total + limit - 1) // limit,  # Arrondi supérieur
+                'total_players': total,
+                'limit': limit
+            }
+        }
+        
+    except Exception as e:
+        print(f"\033[91m❌ Erreur lors de la récupération du ladder: {e}\033[0m")
+        import traceback
+        traceback.print_exc()
+        raise e

@@ -55,4 +55,24 @@ export class PlayerService {
       })
     );
   }
+
+  get_import_ladder$(season: number): Observable<any> {
+    return this.playerApiService.get_import_ladder$(season).pipe(
+      map((stats: any) => {
+        return stats;
+      })
+    );
+  }
+
+  get_season_stats$(
+    season: number,
+    page: number = 1,
+    limit: number = 100
+  ): Observable<any> {
+    return this.playerApiService.get_season_stats$(season, page, limit).pipe(
+      map((response: any) => {
+        return response;
+      })
+    );
+  }
 }

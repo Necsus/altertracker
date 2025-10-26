@@ -394,22 +394,30 @@ class PlayerSeasonStats(db.Model):
     def __repr__(self):
         return f"<PlayerSeasonStats P{self.player_id} {self.season}>"
     
-    def json(self):
-        return {
-            'id': str(self.id),  # ✅ UUID en string
-            'player_id': str(self.player_id),  # ✅ UUID en string
+    def json(self, include_player: bool = True):
+        data = {
+            'id': str(self.id),
+            'player_id': str(self.player_id),
             'season': self.season,
             'points': self.points,
             'wins': self.wins,
             'losses': self.losses,
             'draws': self.draws,
-            'win_rate': self.win_rate,
+            'win_rate': round(self.win_rate, 2),
             'total_games': self.wins + self.losses + self.draws,
             'rank': self.rank,
             'highest_rank': self.highest_rank,
             'tournaments_played': self.tournaments_played,
             'tournaments_won': self.tournaments_won,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None,
         }
+        
+        # ✅ Inclure les données du joueur si demandé
+        if include_player and self.player:
+            data['player'] = self.player.json()
+        
+        return data
     
     def calculate_win_rate(self):
         total_games = self.wins + self.losses + self.draws

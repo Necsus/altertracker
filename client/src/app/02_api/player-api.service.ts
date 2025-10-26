@@ -33,7 +33,25 @@ export class PlayerApiService {
     return this.wabApiService.callGet$(this.controller, `history/${player_id}`);
   }
 
-  get_season_stats$(season: number): Observable<any> {
-    return this.wabApiService.callGet$(this.controller, `importladder/${season}`);
+  get_import_ladder$(season: number): Observable<any> {
+    return this.wabApiService.callGet$(this.controller, `importladder/${season}`, undefined, 1800000); // 30 minutes
+  }
+
+  get_season_stats$(
+    season: number,
+    page: number = 1,
+    limit: number = 100,
+    includePlayer: boolean = true
+  ): Observable<any> {
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: limit.toString(),
+      include_player: includePlayer.toString()
+    });
+
+    return this.wabApiService.callGet$(
+      this.controller,
+      `ladder/${season}?${params.toString()}`
+    );
   }
 }

@@ -4,17 +4,9 @@ from datetime import datetime, timezone
 from app.models.player import Player, Game, PlayerSeasonStats
 from app.extensions import db
 from sqlalchemy import func, case
+from sqlalchemy.orm import joinedload
 
 def _ensure_timezone_aware(dt: Optional[datetime]) -> Optional[datetime]:
-    """
-    S'assure qu'un datetime est timezone-aware (UTC)
-    
-    Args:
-        dt: datetime à vérifier
-        
-    Returns:
-        datetime avec timezone UTC ou None
-    """
     if dt is None:
         return None
     
@@ -67,11 +59,9 @@ def get_player_by_id_data(player_id: str) -> Optional[Player]:
         raise e
 
 def get_player_by_bga_id_data(bga_id: int) -> Optional[Player]:
-    """Récupère un joueur par son BGA ID"""
     return db.session.query(Player).filter_by(bga_id=bga_id).first()
 
 def get_game_by_table_id_data(table_id: int) -> Optional[Game]:
-    """Vérifie si une partie existe déjà par son table_id"""
     return db.session.query(Game).filter_by(table_id=table_id).first()
 
 def bulk_insert_games_data(games: List[Game]) -> int:
@@ -215,3 +205,29 @@ def bulk_upsert_season_stats_data(season_stats_list: List[dict]) -> int:
         db.session.rollback()
         print(f"\033[91m❌ Erreur lors de l'upsert bulk des stats de saison: {e}\033[0m")
         raise e
+
+def get_season_stats_data(
+    season: int, 
+    include_player: bool = True,
+    page: int = 1,
+    limit: int = 100
+) -> tuple[List[PlayerSeasonStats], int]:
+    query = db.session.query(PlayerSeasonStats).filter_by(season=str(season))
+    
+    # ✅ Eager loading du player pour éviter les N+1 queries
+    if include_player:
+        query = query.options(joinedload(PlayerSeasonStats.player))
+    
+    # ✅ Trier par rang (ou points si pas de rang)
+    query = query.order_by(
+        PlayerSeasonStats.rank.nullslast(),
+        PlayerSeasonStats.points.desc()
+    )
+    
+    # ✅ Compter le total
+    total = query.count()
+    
+    # ✅ Appliquer la pagination
+    stats = query.limit(limit).offset((page - 1) * limit).all()
+    
+    return stats, total

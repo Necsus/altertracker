@@ -106,46 +106,27 @@
           </label>
           <select [(ngModel)]="selectedSeason" (change)="onFilterChange()"
             class="w-full bg-gray-800 text-white border border-gray-700 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-amber-500">
-            <option value="">{{ 'players.all_seasons' | translate }}</option>
             @for (season of seasons; track season) {
             <option [value]="season">{{ 'players.season' | translate }} {{ season }}</option>
             }
           </select>
         </div>
 
-        <!-- Reset Filters Button -->
-        @if (selectedCountry || selectedSeason) {
+        @if (isAdmin) {
         <div class="flex items-end">
-          <button (click)="resetFilters()"
-            class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors whitespace-nowrap">
-            <i class="fas fa-times mr-2"></i>{{ 'players.reset_filters' | translate }}
+          <button (click)="importSeasonData()" [disabled]="!selectedSeason || isImporting"
+            class="bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg transition-colors whitespace-nowrap flex items-center gap-2 font-semibold">
+            @if (isImporting) {
+            <i class="fas fa-spinner fa-spin"></i>
+            <span>{{ 'ladder.importing' | translate }}</span>
+            } @else {
+            <i class="fas fa-download"></i>
+            <span>{{ 'ladder.import_season' | translate }}</span>
+            }
           </button>
         </div>
         }
       </div>
-
-
-      <!-- Active Filters Display -->
-      @if (selectedCountry || selectedSeason) {
-      <div class="flex flex-wrap gap-2 mt-4">
-        @if (selectedCountry) {
-        <span class="inline-flex items-center bg-amber-600 text-white px-3 py-1 rounded-full text-sm">
-          <i class="fas fa-flag mr-2"></i>{{ selectedCountry }}
-          <button (click)="clearCountryFilter()" class="ml-2 hover:text-amber-200">
-            <i class="fas fa-times text-xs"></i>
-          </button>
-        </span>
-        }
-        @if (selectedSeason) {
-        <span class="inline-flex items-center bg-blue-600 text-white px-3 py-1 rounded-full text-sm">
-          <i class="fas fa-calendar-alt mr-2"></i>{{ 'players.season' | translate }} {{ selectedSeason }}
-          <button (click)="clearSeasonFilter()" class="ml-2 hover:text-blue-200">
-            <i class="fas fa-times text-xs"></i>
-          </button>
-        </span>
-        }
-      </div>
-      }
     </div>
   </div>
 
@@ -230,15 +211,17 @@
           </thead>
           <tbody class="divide-y divide-gray-700">
             @for (player of filteredPlayers; track player.id; let i = $index) {
-            <tr class="hover:bg-gray-750 transition-colors cursor-pointer" (click)="viewPlayerProfile(player.id)">
+            <tr class="hover:bg-gray-750 transition-colors cursor-pointer"
+              (click)="viewPlayerProfile(player.player.id)">
               <td class="px-6 py-4 whitespace-nowrap">
                 <div class="flex items-center">
-                  @if (i < 3) { <span class="inline-flex items-center justify-center w-8 h-8 rounded-full font-bold"
-                    [class]="i === 0 ? 'bg-yellow-500 text-black' : i === 1 ? 'bg-gray-400 text-black' : 'bg-amber-700 text-white'">
-                    {{ i + 1 }}
+                  @if (player.rank && player.rank <= 3) { <span
+                    class="inline-flex items-center justify-center w-8 h-8 rounded-full font-bold"
+                    [class]="player.rank === 1 ? 'bg-yellow-500 text-black' : player.rank === 2 ? 'bg-gray-400 text-black' : 'bg-amber-700 text-white'">
+                    {{ player.rank }}
                     </span>
                     } @else {
-                    <span class="text-gray-400 font-semibold">{{ i + 1 }}</span>
+                    <span class="text-gray-400 font-semibold">{{ player.rank }}</span>
                     }
                 </div>
               </td>
@@ -246,29 +229,29 @@
                 <div class="flex items-center">
                   <div
                     class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center mr-3">
-                    <span class="text-white font-bold">{{ player.name.charAt(0).toUpperCase() }}</span>
+                    <span class="text-white font-bold">{{ player.player.name.charAt(0).toUpperCase() }}</span>
                   </div>
                   <div>
-                    <div class="font-semibold text-white">{{ player.name }}</div>
-                    <div class="text-sm text-gray-400">{{ player.country }}</div>
+                    <div class="font-semibold text-white">{{ player.player.name }}</div>
+                    <div class="text-sm text-gray-400">{{ player.player.country }}</div>
                   </div>
                 </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap hidden md:table-cell">
-                @if (player.team_id) {
+                @if (player.player.team_id) {
                 <span
                   class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-900 text-blue-300">
-                  <i class="fas fa-flag mr-1"></i>{{ player.team_name }}
+                  <i class="fas fa-flag mr-1"></i>{{ player.player.team_name }}
                 </span>
                 } @else {
                 <span class="text-gray-500">-</span>
                 }
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right">
-                <span class="text-lg font-bold text-amber-500">{{ player.total_points | number }}</span>
+                <span class="text-lg font-bold text-amber-500">{{ player.points | number }}</span>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right hidden lg:table-cell">
-                <span class="text-green-400 font-semibold">{{ player.total_wins }}</span>
+                <span class="text-green-400 font-semibold">{{ player.wins }}</span>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right hidden lg:table-cell">
                 <span class="text-gray-400">{{ player.total_games }}</span>
@@ -286,29 +269,47 @@
         </table>
       </div>
 
-      <!-- Pagination -->
+      <!-- Pagination existante -->
       @if (totalPages > 1) {
       <div class="bg-gray-900 px-6 py-4 border-t border-gray-700">
-        <div class="flex justify-between items-center">
-          <div class="text-sm text-gray-400">
-            {{ 'pagination.showing' | translate }} {{ (currentPage - 1) * pageSize + 1 }} - {{ Math.min(currentPage *
-            pageSize, totalPlayers) }} {{ 'pagination.of' | translate }} {{ totalPlayers }}
-          </div>
-          <div class="flex space-x-2">
+        <div class="flex justify-between items-center flex-wrap gap-4">
+          <!-- Contrôles de pagination -->
+          <div class="flex space-x-2 items-center">
+            <!-- Bouton première page -->
+            <button (click)="goToPage(1)" [disabled]="currentPage === 1"
+              class="px-3 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+              <i class="fas fa-angle-double-left"></i>
+            </button>
+
+            <!-- Bouton page précédente -->
             <button (click)="previousPage()" [disabled]="currentPage === 1"
               class="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
               <i class="fas fa-chevron-left"></i>
             </button>
-            @for (page of getPageNumbers(); track page) {
-            <button (click)="goToPage(page)"
+
+            <!-- ✅ Affichage intelligent des numéros de page -->
+            @for (page of getVisiblePages(); track page) {
+            @if (page === '...') {
+            <span class="px-4 py-2 text-gray-500">...</span>
+            } @else {
+            <button (click)="goToPage(+page)"
               [class]="page === currentPage ? 'bg-amber-500 text-black' : 'bg-gray-700 hover:bg-gray-600 text-white'"
-              class="px-4 py-2 rounded-lg font-semibold transition-colors">
+              class="px-4 py-2 rounded-lg font-semibold transition-colors min-w-[40px]">
               {{ page }}
             </button>
             }
+            }
+
+            <!-- Bouton page suivante -->
             <button (click)="nextPage()" [disabled]="currentPage === totalPages"
               class="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
               <i class="fas fa-chevron-right"></i>
+            </button>
+
+            <!-- Bouton dernière page -->
+            <button (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages"
+              class="px-3 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+              <i class="fas fa-angle-double-right"></i>
             </button>
           </div>
         </div>

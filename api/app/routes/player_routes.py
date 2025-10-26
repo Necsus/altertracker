@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, make_response, request
-from app.services.player_service import get_player_by_id_service, get_player_history_service, import_player_bga_service, search_players_bga_service, search_players_service, import_ladder_service
+from app.services.player_service import get_ladder_by_season_service, get_player_by_id_service, get_player_history_service, import_player_bga_service, search_players_bga_service, search_players_service, import_ladder_service
 from flask_jwt_extended import jwt_required
 from app.decorators.auth_decorator import admin_required
 
@@ -97,3 +97,33 @@ def import_ladder_route(season: int):
         return jsonify({
             'message': f'An error occurred: {str(e)}'
         }), 500
+    
+@player_bp.route('/ladder/<int:season>', methods=['GET'])
+def get_ladder_by_season_route(season: int):
+    try:
+        # ✅ Paramètres de pagination
+        include_player = request.args.get('include_player', 'true').lower() == 'true'
+        page = request.args.get('page', 1, type=int)
+        limit = request.args.get('limit', 100, type=int)
+        
+        # ✅ Validation
+        if page < 1:
+            return jsonify({'message': 'Page must be >= 1'}), 400
+        
+        if limit < 1 or limit > 500:
+            return jsonify({'message': 'Limit must be between 1 and 500'}), 400
+        
+        # ✅ Récupérer le ladder avec pagination
+        ladder = get_ladder_by_season_service(
+            season=season, 
+            include_player=include_player,
+            page=page,
+            limit=limit
+        )
+        
+        return jsonify(ladder), 200
+
+    except ValueError as e:
+        return jsonify({'message': str(e)}), 400
+    except Exception as e:
+        return make_response(jsonify({'message': f'An error occurred: {str(e)}'}), 500)

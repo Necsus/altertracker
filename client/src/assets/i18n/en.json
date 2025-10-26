@@ -341,6 +341,13 @@
     "previous": "Previous",
     "next": "Next"
   },
+  "laddder": {
+    "import_season": "Import Season",
+    "importing": "Importing...",
+    "import_success": "Import Successful",
+    "import_error": "Import Error",
+    "confirm_import": "Do you really want to import season {{season}}?"
+  },
   "players": {
     "title": "Leaderboard",
     "subtitle": "Ranking of the best players and teams",
