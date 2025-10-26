@@ -23,7 +23,7 @@ export class PlayerApiService {
   }
 
   import_player_bga$(bga_id: number): Observable<string> {
-    return this.wabApiService.callGet$(this.controller, `importbga/${bga_id}`);
+    return this.wabApiService.callGet$(this.controller, `importbga/${bga_id}`, undefined, 1800000); // 30 minutes
   }
 
   get_player_by_id$(player_id: string): Observable<PlayerModel> {
