@@ -52,7 +52,7 @@ def _get_or_create_player_from_bga_data(player_data: dict) -> Player:
     
     # Chercher le joueur existant
     existing_player = get_player_by_bga_id_data(bga_id)
-    if existing_player:
+    if (existing_player):
         return existing_player
     
     # Créer un nouveau joueur minimal
@@ -310,6 +310,7 @@ def import_player_bga_service(bga_id: int) -> dict:
             all_games_data = []
             page = 1
             has_more = True
+            season_pages = 0  # ✅ Initialiser AVANT la boucle while
             
             while has_more:
                 print(f"📄 Saison {currentSeason.season} - Page {page}...")
@@ -345,7 +346,7 @@ def import_player_bga_service(bga_id: int) -> dict:
                     
                     # Ajouter les parties de cette page
                     all_games_data.extend(games_data)
-                    season_pages += 1
+                    season_pages += 1  # ✅ Incrémenter le compteur
                     
                     print(f"✅ Page {page} : {len(games_data)} parties récupérées")
                     
@@ -907,22 +908,6 @@ def reload_player_service(player_id: str) -> dict:
             
             # Sauvegarder
             update_player_data(player)
-            
-            # Affichage
-            if player.last_game_at:
-                last_game_dt = player.last_game_at,
-                last_game_str = last_game_dt.strftime('%Y-%m-%d %H:%M:%S %Z')
-            else:
-                last_game_str = 'N/A'
-            
-            print(f"\n✅ Stats globales recalculées:")
-            print(f"  🎮 Parties: {total_games}")
-            print(f"  ✅ Victoires: {total_wins}")
-            print(f"  ❌ Défaites: {total_losses}")
-            print(f"  ⚖️  Nuls: {total_draws}")
-            print(f"  📊 Win rate: {win_rate:.2f}%")
-            print(f"  📅 Dernière partie: {last_game_str}")
-            
         except Exception as e:
             print(f"❌ Erreur recalcul stats globales: {e}")
             import traceback
