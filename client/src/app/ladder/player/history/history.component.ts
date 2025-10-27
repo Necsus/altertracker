@@ -132,6 +132,7 @@ export class HistoryComponent {
   }
 
   loadTable(table_id: number): void {
+    this.loadingTableId = table_id;
     this.playerService.get_import_table$(table_id)
       .subscribe({
         next: (response: any) => {
@@ -139,6 +140,9 @@ export class HistoryComponent {
         },
         error: (error: any) => {
           console.error('Error loading table data:', error);
+        },
+        complete: () => {
+          this.loadingTableId = null;
         }
       });
   }

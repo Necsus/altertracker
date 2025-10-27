@@ -644,20 +644,19 @@ def getTable(table_id: int, retry: bool = True) -> dict:
         response.raise_for_status()
 
         data = response.json()
-        print(data)
         # Vérifier le status
         status = data.get('status', 0)
         if status != 1:
-            if retry:
+            code = data.get('code', 0)
+            if retry and code == 806:
                 print(f"\033[93m🔄 Reconnexion...\033[0m")
                 postLoginUserWithPassword()
                 time.sleep(1)
                 return getTable(table_id, retry=False)
             return {
                 'status': 0,
-                'error': 'BGA API error',
-                'data': None,
-                'pagination': None
+                'error': data.get('error', "BGA API error"),
+                'data': None
             }
 
         return {
