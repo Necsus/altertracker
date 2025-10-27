@@ -9,6 +9,7 @@ class Player(db.Model):
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     bga_id = db.Column(db.Integer, unique=True, nullable=False)
+    bga_banned = db.Column(db.Boolean, default=False)
     name = db.Column(db.String(100), nullable=False)
     country = db.Column(db.String(3), nullable=True)
     team_id = db.Column(UUID(as_uuid=True), db.ForeignKey('teams.id'), nullable=True)  # ✅ UUID au lieu de Integer
