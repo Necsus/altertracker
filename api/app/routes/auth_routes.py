@@ -75,7 +75,7 @@ def register():
 @limiter.limit("5 per minute")
 def validate_email(token):
     try:
-        email = serializer.loads(token, salt=Config.SECRET_KEY, max_age=3600)  # 1 heure
+        email = serializer.loads(token, salt=Config.SECRET_KEY, max_age=86400)  # 24 heure
     except itsdangerous.SignatureExpired:
         return jsonify({"message": "The token has expired"}), 400
     except itsdangerous.BadSignature:
@@ -96,7 +96,7 @@ def validate_email(token):
 @limiter.limit("5 per minute")
 def resend_validation_email(token):
     try:
-        email = serializer.loads(token, salt=Config.SECRET_KEY, max_age=3600)  # 1 heure
+        email = serializer.loads(token, salt=Config.SECRET_KEY, max_age=86400)  # 1 heure
         if not email:
             return jsonify({"message": "Email is required"}), 400
 
