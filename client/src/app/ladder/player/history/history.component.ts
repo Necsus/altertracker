@@ -35,7 +35,7 @@ export class HistoryComponent {
     draws: 0
   };
   currentStreak = 0;
-
+  loadingTableId: number | null = null;
 
   private readonly playerService = inject(PlayerService);
 
@@ -129,5 +129,17 @@ export class HistoryComponent {
       this.currentPage++;
       this.loadGames();
     }
+  }
+
+  loadTable(table_id: number): void {
+    this.playerService.get_import_table$(table_id)
+      .subscribe({
+        next: (response: any) => {
+          console.log('Table data:', response);
+        },
+        error: (error: any) => {
+          console.error('Error loading table data:', error);
+        }
+      });
   }
 }

@@ -616,3 +616,75 @@ def import_ladder_from_bga(season: int, page: int = 0, retry: bool = True) -> di
             'data': None,
             'pagination': None
         }
+    
+def getTable(table_id: int, retry: bool = True) -> dict:
+    try:
+        url = "https://boardgamearena.com/archive/archive/logs.html"
+        params = {
+            "table": table_id,  # ID du jeu Altered
+            "translated": "true"
+        }
+
+        TournoiEnLigne_sso_user = db.session.query(CookieManager).filter_by(name="TournoiEnLigne_sso_user").first()
+        TournoiEnLigne_sso_id = db.session.query(CookieManager).filter_by(name="TournoiEnLigne_sso_id").first()
+        TournoiEnLigneidt = db.session.query(CookieManager).filter_by(name="TournoiEnLigneidt").first()
+        TournoiEnLignetkt = db.session.query(CookieManager).filter_by(name="TournoiEnLignetkt").first()
+        TournoiEnLigneid = db.session.query(CookieManager).filter_by(name="TournoiEnLigneid").first()
+        TournoiEnLignetk = db.session.query(CookieManager).filter_by(name="TournoiEnLignetk").first()
+        
+        headers = {
+            "cookie": f"TournoiEnLigne_sso_user={TournoiEnLigne_sso_user.value};TournoiEnLigne_sso_id={TournoiEnLigne_sso_id.value};TournoiEnLignetkt={TournoiEnLignetkt.value};TournoiEnLigneidt={TournoiEnLigneidt.value};TournoiEnLignetk={TournoiEnLignetk.value};TournoiEnLigneid={TournoiEnLigneid.value}",
+            "x-request-token": TournoiEnLigneidt.value,
+            "accept": "*/*",
+            "content-type": "application/x-www-form-urlencoded",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:144.0) Gecko/20100101 Firefox/144.0"
+        }
+
+        response = requests.get(url, headers=headers, params=params)
+        response.raise_for_status()
+
+        data = response.json()
+        print(data)
+        # Vérifier le status
+        status = data.get('status', 0)
+        if status != 1:
+            if retry:
+                print(f"\033[93m🔄 Reconnexion...\033[0m")
+                postLoginUserWithPassword()
+                time.sleep(1)
+                return getTable(table_id, retry=False)
+            return {
+                'status': 0,
+                'error': 'BGA API error',
+                'data': None,
+                'pagination': None
+            }
+
+        return {
+            'status': 1,
+            'data': data.get('data', {}),
+        }
+        
+    except requests.exceptions.RequestException as e:
+        print(f"\033[91m❌ Erreur HTTP : {e}\033[0m")
+        if retry:
+            print(f"\033[93m🔄 Reconnexion...\033[0m")
+            postLoginUserWithPassword()
+            time.sleep(1)
+            return getTable(table_id, retry=False)
+        return {
+            'status': 0,
+            'error': f'Request failed: {str(e)}',
+            'data': None,
+            'pagination': None
+        }
+    except Exception as e:
+        print(f"\033[91m❌ Erreur inattendue : {e}\033[0m")
+        import traceback
+        traceback.print_exc()
+        return {
+            'status': 0,
+            'error': f'Unexpected error: {str(e)}',
+            'data': None,
+            'pagination': None
+        }

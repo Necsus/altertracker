@@ -3,7 +3,7 @@ import time
 import uuid
 from typing import List, Dict, Optional
 from app.models.player import Player, Game
-from app.scripts.bga_routine import getGames, getPlayer, getSearch, import_ladder_from_bga
+from app.scripts.bga_routine import getGames, getPlayer, getSearch, getTable, import_ladder_from_bga
 from app.data.player_data import (
     bulk_upsert_season_stats_data,
     count_total_players_data,
@@ -1018,4 +1018,27 @@ def reload_player_service(player_id: str) -> dict:
             'status': 0,
             'error': str(e),
             'player_id': player_id
+        }
+    
+def import_table_service(table_id: int) -> dict:
+    try:
+        print(f"\n🔄 Import de la table ID: {table_id}...")
+        
+        # 1. Récupérer les données de la table depuis l'API BGA
+        table_response = getTable(table_id)
+
+        
+        return {
+            'status': 1,
+            'table': table_response
+        }
+        
+    except Exception as e:
+        print(f"\033[91m❌ Erreur critique lors de l'import de la table: {e}\033[0m")
+        import traceback
+        traceback.print_exc()
+        return {
+            'status': 0,
+            'error': str(e),
+            'table_id': table_id
         }

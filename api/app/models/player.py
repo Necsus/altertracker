@@ -186,7 +186,7 @@ class Game(db.Model):
     __tablename__ = 'games'
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    table_id = db.Column(db.Integer, nullable=False)
+    table_id = db.Column(db.Integer, unique=True, nullable=False)
     ranked = db.Column(db.Boolean, default=False)
 
     # Joueurs

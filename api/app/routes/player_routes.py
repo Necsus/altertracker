@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, make_response, request
-from app.services.player_service import get_all_seasons_service, get_ladder_by_season_service, get_player_by_id_service, get_player_history_service, get_player_overview_service, get_total_players_service, import_player_bga_service, reload_player_service, search_players_bga_service, search_players_service, import_ladder_service
+from app.services.player_service import get_all_seasons_service, get_ladder_by_season_service, get_player_by_id_service, get_player_history_service, get_player_overview_service, get_total_players_service, import_player_bga_service, import_table_service, reload_player_service, search_players_bga_service, search_players_service, import_ladder_service
 from flask_jwt_extended import jwt_required
 from app.decorators.auth_decorator import admin_required
 from app.extensions import cache
@@ -175,5 +175,16 @@ def reload_player_route(player_id: str):
             return jsonify(result), 200
         else:
             return jsonify(result), 400
+    except Exception as e:
+        return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
+    
+@player_bp.route('/importtable/<int:table_id>', methods=['GET'])
+@jwt_required()
+def import_table_route(table_id: int):
+    try:
+        result = import_table_service(table_id)
+        if result.get('status') != 1:
+            return jsonify({'message': result.get('error', 'Import failed')}), 500
+        return jsonify(result), 200
     except Exception as e:
         return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
