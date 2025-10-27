@@ -60,6 +60,8 @@ jobs:
             --from-literal=DISCORD_CLIENT_SECRET="${{ secrets.DISCORD_CLIENT_SECRET }}" \
             --from-literal=DISCORD_REDIRECT_URI="${{ vars.DISCORD_REDIRECT_URI }}" \
             --from-literal=DISCORD_BOT_URI="${{ vars.DISCORD_BOT_URI }}" \
+            --from-literal=BGA_USERNAME="${{ vars.BGA_USERNAME }}" \
+            --from-literal=BGA_PASSWORD="${{ secrets.BGA_PASSWORD }}" \
             --dry-run=client -o yaml | kubectl apply -f -
 
       - name: Set up Docker Buildx
