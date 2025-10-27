@@ -28,6 +28,10 @@ export class OverviewComponent {
     this.playerService.get_player_overview$(this.player_id(), this.selectedSeason() ?? 0).subscribe({
       next: (response: any) => {
         this.playerStats = response || null;
+      },
+      error: (err: any) => {
+        console.error('Erreur lors du chargement des statistiques du joueur :', err);
+        this.playerStats = null;
       }
     });
   }

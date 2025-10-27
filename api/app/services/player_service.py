@@ -43,6 +43,7 @@ def get_player_by_id_service(player_id: str) -> dict:
     
     if not player.is_active:
         import_player_bga_service(player.bga_id)
+        reload_player_service(player_id)
         player = get_player_by_id_data(player_id)
 
     return player.json()
