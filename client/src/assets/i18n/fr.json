@@ -342,6 +342,14 @@
     "previous": "Précédent",
     "next": "Suivant"
   },
+  "ladder": {
+    "no_results": "Aucune équipe trouvée",
+    "import_season": "Importer Saison",
+    "importing": "Import en cours...",
+    "import_success": "Import réussi",
+    "import_error": "Erreur d'import",
+    "confirm_import": "Voulez-vous vraiment importer la saison {{season}} ?"
+  },
   "players": {
     "title": "Leaderboard",
     "subtitle": "Classement des meilleurs joueurs et équipes",
@@ -349,7 +357,7 @@
     "tab_players": "Joueurs",
     "tab_teams": "Équipes",
     "total_players": "Total Joueurs",
-    "active_today": "Actifs Aujourd'hui",
+    "active_today": "Actifs cette saison",
     "total_teams": "Total Équipes",
     "rank": "Rang",
     "player": "Joueur",
@@ -363,14 +371,17 @@
     "all_countries": "Tous les pays",
     "all_seasons": "Toutes les saisons",
     "season": "Saison",
-    "reset_filters": "Réinitialiser"
+    "reset_filters": "Réinitialiser",
+    "search_results": "Résultats",
+    "no_local_results": "Aucun joueur trouvé dans notre base",
+    "search_on_bga": "Rechercher sur Board Game Arena",
+    "min_chars_hint": "Tapez au moins 2 caractères pour rechercher"
   },
   "teams": {
     "rank": "Rang",
     "name": "Nom",
     "members": "Membres",
     "points": "Points",
-    "avg_points": "Moy. Points",
-    "no_results": "Aucune équipe trouvée"
+    "avg_points": "Moy. Points"
   }
 }

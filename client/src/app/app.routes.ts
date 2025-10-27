@@ -14,6 +14,9 @@ import { ResetPasswordComponent } from './authentication/reset-password/reset-pa
 import { StatsComponent } from './card/stats.component';
 import { ChatComponent } from './chat/chat.component';
 import { HomeComponent } from './home/home.component';
+import { LadderComponent } from './ladder/ladder.component';
+import { PlayerComponent } from './ladder/player/player.component';
+import { TeamComponent } from './ladder/team/team.component';
 import { CookiesPolicyComponent } from './policy/cookies.component';
 import { PolicyComponent } from './policy/policy.component';
 import { CardsComponent } from './search/cards.component';
@@ -34,9 +37,9 @@ export const routes: Routes = [
   { path: 'cards', component: CardsComponent },
   { path: 'stats', component: StatsComponent },
   { path: 'stats/:reference', component: StatsComponent },
-  // { path: 'players', component: LadderComponent, canActivate: [TokenGuard] },
-  // { path: 'player/:player_id', component: PlayerComponent, canActivate: [TokenGuard] },
-  // { path: 'team/:team_id', component: TeamComponent, canActivate: [TokenGuard] },
+  { path: 'players', component: LadderComponent, canActivate: [PublisherGuard] },
+  { path: 'player/:player_id', component: PlayerComponent, canActivate: [PublisherGuard] },
+  { path: 'team/:team_id', component: TeamComponent, canActivate: [PublisherGuard] },
   { path: 'searches', component: UserSearchesComponent, canActivate: [TokenGuard] },
   { path: 'alerts', component: UserAlertsComponent, canActivate: [TokenGuard] },
   { path: 'me', component: MeComponent, canActivate: [TokenGuard] },

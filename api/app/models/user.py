@@ -32,7 +32,8 @@ class User(db.Model):
     player = relationship(
         "Player", 
         back_populates="user",
-        foreign_keys=[player_id]  # ✅ Spécifier explicitement la FK
+        foreign_keys=[player_id],
+        passive_deletes=True
     )
 
     def __repr__(self):

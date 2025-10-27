@@ -15,322 +15,371 @@
     <div class="mb-8">
       <div class="max-w-4xl mx-auto">
         <div class="relative mb-4">
-          <input type="text" [(ngModel)]="searchQuery" (input)="onSearchChange()"
-            placeholder="{{ 'players.search_placeholder' | translate }}"
+          <input type="text" [(ngModel)]="searchQuery" (input)="onSearchInput()" (focus)="showSearchDropdown = true"
+            (keyup.enter)="onSearchChange()" placeholder="{{ 'players.search_placeholder' | translate }}"
             class="w-full bg-gray-800 text-white border border-gray-700 rounded-lg py-3 pl-12 pr-4 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent">
           <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+
+          <!-- Loading spinner -->
+          @if (isSearching) {
+          <i class="fas fa-spinner fa-spin absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
+          }
+
+          <!-- Search Results Dropdown -->
+          @if (showSearchDropdown && searchQuery.length >= 2) {
+          <div
+            class="absolute z-50 w-full mt-2 bg-gray-800 border border-gray-700 rounded-lg shadow-xl max-h-96 overflow-y-auto">
+            <!-- Players Results -->
+            @if (searchResults.length > 0) {
+            <div class="p-2">
+              <div class="text-xs font-semibold text-gray-400 uppercase px-3 py-2">
+                <i class="fas fa-user mr-2"></i>{{ 'players.search_results' | translate }}
+              </div>
+              @for (player of searchResults; track player.id) {
+              <button (mousedown)="selectPlayer(player)"
+                class="w-full text-left px-3 py-2 hover:bg-gray-700 rounded-lg transition-colors flex items-center">
+                <div
+                  class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center mr-3">
+                  <span class="text-white text-sm font-bold">{{ getPlayerInitials(player.name) }}</span>
+                </div>
+                <div class="flex-1">
+                  <div class="font-semibold text-white text-sm">{{ player.name }}</div>
+                  <div class="text-xs text-gray-400">
+                    {{ player.country || 'N/A' }}
+                    @if (player.total_points !== null) {
+                    <span class="text-amber-500">• {{ player.total_points | number }} pts</span>
+                    }
+                  </div>
+                </div>
+                <i class="fas fa-chevron-right text-gray-500"></i>
+              </button>
+              }
+            </div>
+            }
+
+            <!-- No Results - Bouton recherche BGA -->
+            @if (searchResults.length === 0 && !isSearching) {
+            <div class="p-6 text-center">
+              <i class="fas fa-search text-3xl text-gray-600 mb-3"></i>
+              <p class="text-gray-400 mb-4">{{ 'players.no_local_results' | translate }}</p>
+              <button (mousedown)="searchOnBGA()"
+                class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors font-semibold">
+                {{ 'players.search_on_bga' | translate }}
+              </button>
+            </div>
+            }
+          </div>
+          }
+
+          <!-- Info hint -->
+          @if (searchQuery.length > 0 && searchQuery.length < 2) { <div
+            class="absolute z-50 w-full mt-2 bg-gray-800 border border-gray-700 rounded-lg shadow-xl p-3">
+            <p class="text-sm text-gray-400 text-center">
+              <i class="fas fa-info-circle mr-2"></i>
+              {{ 'players.min_chars_hint' | translate }}
+            </p>
+        </div>
+        }
+      </div>
+
+
+      <!-- Filters Row -->
+      <div class="flex flex-col sm:flex-row gap-4">
+
+        <!-- Season Filter -->
+        <div class="flex-1">
+          <label class="block text-sm font-semibold text-gray-400 mb-2">
+            <i class="fas fa-calendar-alt mr-2"></i>{{ 'players.filter_season' | translate }}
+          </label>
+          <select [(ngModel)]="selectedSeason" (change)="onFilterChange()"
+            class="w-full bg-gray-800 text-white border border-gray-700 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-amber-500">
+            @for (season of seasons; track season) {
+            <option [value]="season.season">{{ 'players.season' | translate }} {{ season.season }}</option>
+            }
+          </select>
         </div>
 
-
-        <!-- Filters Row -->
-        <div class="flex flex-col sm:flex-row gap-4">
-          <!-- Country Filter -->
-          <div class="flex-1">
-            <label class="block text-sm font-semibold text-gray-400 mb-2">
-              <i class="fas fa-flag mr-2"></i>{{ 'players.filter_country' | translate }}
-            </label>
-            <select [(ngModel)]="selectedCountry" (change)="onFilterChange()"
-              class="w-full bg-gray-800 text-white border border-gray-700 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-amber-500">
-              <option value="">{{ 'players.all_countries' | translate }}</option>
-              @for (country of countries; track country) {
-              <option [value]="country">{{ country }}</option>
-              }
-            </select>
-          </div>
-
-          <!-- Season Filter -->
-          <div class="flex-1">
-            <label class="block text-sm font-semibold text-gray-400 mb-2">
-              <i class="fas fa-calendar-alt mr-2"></i>{{ 'players.filter_season' | translate }}
-            </label>
-            <select [(ngModel)]="selectedSeason" (change)="onFilterChange()"
-              class="w-full bg-gray-800 text-white border border-gray-700 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-amber-500">
-              <option value="">{{ 'players.all_seasons' | translate }}</option>
-              @for (season of seasons; track season) {
-              <option [value]="season">{{ 'players.season' | translate }} {{ season }}</option>
-              }
-            </select>
-          </div>
-
-          <!-- Reset Filters Button -->
-          @if (selectedCountry || selectedSeason) {
-          <div class="flex items-end">
-            <button (click)="resetFilters()"
-              class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors whitespace-nowrap">
-              <i class="fas fa-times mr-2"></i>{{ 'players.reset_filters' | translate }}
-            </button>
-          </div>
-          }
-        </div>
-
-
-        <!-- Active Filters Display -->
-        @if (selectedCountry || selectedSeason) {
-        <div class="flex flex-wrap gap-2 mt-4">
-          @if (selectedCountry) {
-          <span class="inline-flex items-center bg-amber-600 text-white px-3 py-1 rounded-full text-sm">
-            <i class="fas fa-flag mr-2"></i>{{ selectedCountry }}
-            <button (click)="clearCountryFilter()" class="ml-2 hover:text-amber-200">
-              <i class="fas fa-times text-xs"></i>
-            </button>
-          </span>
-          }
-          @if (selectedSeason) {
-          <span class="inline-flex items-center bg-blue-600 text-white px-3 py-1 rounded-full text-sm">
-            <i class="fas fa-calendar-alt mr-2"></i>{{ 'players.season' | translate }} {{ selectedSeason }}
-            <button (click)="clearSeasonFilter()" class="ml-2 hover:text-blue-200">
-              <i class="fas fa-times text-xs"></i>
-            </button>
-          </span>
-          }
+        @if (isAdmin) {
+        <div class="flex items-end">
+          <button (click)="importSeasonData()" [disabled]="!selectedSeason || isImporting"
+            class="bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 disabled:cursor-not-allowed text-white px-4 py-2 rounded-lg transition-colors whitespace-nowrap flex items-center gap-2 font-semibold">
+            @if (isImporting) {
+            <i class="fas fa-spinner fa-spin"></i>
+            <span>{{ 'ladder.importing' | translate }}</span>
+            } @else {
+            <i class="fas fa-download"></i>
+            <span>{{ 'ladder.import_season' | translate }}</span>
+            }
+          </button>
         </div>
         }
       </div>
     </div>
+  </div>
 
-    <!-- Tabs -->
-    <div class="flex justify-center mb-8">
-      <div class="inline-flex bg-gray-800 rounded-lg p-1 border border-gray-700">
-        <button (click)="activeTab = 'players'"
-          [class]="activeTab === 'players' ? 'bg-amber-500 text-black' : 'text-gray-400 hover:text-white'"
-          class="px-6 py-2 rounded-md font-semibold transition-all duration-200">
-          <i class="fas fa-user mr-2"></i>{{ 'players.tab_players' | translate }}
-        </button>
-        <button (click)="activeTab = 'teams'"
-          [class]="activeTab === 'teams' ? 'bg-amber-500 text-black' : 'text-gray-400 hover:text-white'"
-          class="px-6 py-2 rounded-md font-semibold transition-all duration-200">
-          <i class="fas fa-users mr-2"></i>{{ 'players.tab_teams' | translate }}
-        </button>
+  <!-- Tabs -->
+  <div class="flex justify-center mb-8">
+    <div class="inline-flex bg-gray-800 rounded-lg p-1 border border-gray-700">
+      <button (click)="activeTab = 'players'"
+        [class]="activeTab === 'players' ? 'bg-amber-500 text-black' : 'text-gray-400 hover:text-white'"
+        class="px-6 py-2 rounded-md font-semibold transition-all duration-200">
+        <i class="fas fa-user mr-2"></i>{{ 'players.tab_players' | translate }}
+      </button>
+      <button (click)="activeTab = 'teams'"
+        [class]="activeTab === 'teams' ? 'bg-amber-500 text-black' : 'text-gray-400 hover:text-white'"
+        class="px-6 py-2 rounded-md font-semibold transition-all duration-200">
+        <i class="fas fa-users mr-2"></i>{{ 'players.tab_teams' | translate }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Players Leaderboard -->
+  @if (activeTab === 'players') {
+  <div class="max-w-5xl mx-auto">
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-400 text-sm">{{ 'players.total_players' | translate }}</p>
+            <p class="text-3xl font-bold text-amber-500">{{ totalPlayers }}</p>
+          </div>
+          <i class="fas fa-users text-4xl text-gray-700"></i>
+        </div>
+      </div>
+      <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-400 text-sm">{{ 'players.active_today' | translate }}</p>
+            <p class="text-3xl font-bold text-green-500">{{ activePlayers }}</p>
+          </div>
+          <i class="fas fa-chart-line text-4xl text-gray-700"></i>
+        </div>
+      </div>
+      <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-gray-400 text-sm">{{ 'players.total_teams' | translate }}</p>
+            <p class="text-3xl font-bold text-blue-500">{{ totalTeams }}</p>
+          </div>
+          <i class="fas fa-flag text-4xl text-gray-700"></i>
+        </div>
       </div>
     </div>
 
-    <!-- Players Leaderboard -->
-    @if (activeTab === 'players') {
-    <div class="max-w-5xl mx-auto">
-      <!-- Stats Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-gray-400 text-sm">{{ 'players.total_players' | translate }}</p>
-              <p class="text-3xl font-bold text-amber-500">{{ totalPlayers }}</p>
-            </div>
-            <i class="fas fa-users text-4xl text-gray-700"></i>
-          </div>
-        </div>
-        <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-gray-400 text-sm">{{ 'players.active_today' | translate }}</p>
-              <p class="text-3xl font-bold text-green-500">{{ activePlayers }}</p>
-            </div>
-            <i class="fas fa-chart-line text-4xl text-gray-700"></i>
-          </div>
-        </div>
-        <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-gray-400 text-sm">{{ 'players.total_teams' | translate }}</p>
-              <p class="text-3xl font-bold text-blue-500">{{ totalTeams }}</p>
-            </div>
-            <i class="fas fa-flag text-4xl text-gray-700"></i>
-          </div>
-        </div>
-      </div>
-
-      <!-- Leaderboard Table -->
-      <div class="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
-        <div class="overflow-x-auto">
-          <table class="w-full">
-            <thead class="bg-gray-900 border-b border-gray-700">
-              <tr>
-                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  {{ 'players.rank' | translate }}
-                </th>
-                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  {{ 'players.player' | translate }}
-                </th>
-                <th
-                  class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider hidden md:table-cell">
-                  {{ 'players.team' | translate }}
-                </th>
-                <th class="px-6 py-4 text-right text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  {{ 'players.points' | translate }}
-                </th>
-                <th
-                  class="px-6 py-4 text-right text-xs font-semibold text-gray-400 uppercase tracking-wider hidden lg:table-cell">
-                  {{ 'players.wins' | translate }}
-                </th>
-                <th
-                  class="px-6 py-4 text-right text-xs font-semibold text-gray-400 uppercase tracking-wider hidden lg:table-cell">
-                  {{ 'players.games' | translate }}
-                </th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-700">
-              @for (player of filteredPlayers; track player.id; let i = $index) {
-              <tr class="hover:bg-gray-750 transition-colors cursor-pointer" (click)="viewPlayerProfile(player.id)">
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="flex items-center">
-                    @if (i < 3) { <span class="inline-flex items-center justify-center w-8 h-8 rounded-full font-bold"
-                      [class]="i === 0 ? 'bg-yellow-500 text-black' : i === 1 ? 'bg-gray-400 text-black' : 'bg-amber-700 text-white'">
-                      {{ i + 1 }}
-                      </span>
-                      } @else {
-                      <span class="text-gray-400 font-semibold">{{ i + 1 }}</span>
-                      }
-                  </div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="flex items-center">
-                    <div
-                      class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center mr-3">
-                      <span class="text-white font-bold">{{ player.name.charAt(0).toUpperCase() }}</span>
-                    </div>
-                    <div>
-                      <div class="font-semibold text-white">{{ player.name }}</div>
-                      <div class="text-sm text-gray-400">{{ player.country }}</div>
-                    </div>
-                  </div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap hidden md:table-cell">
-                  @if (player.team) {
-                  <span
-                    class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-900 text-blue-300">
-                    <i class="fas fa-flag mr-1"></i>{{ player.team }}
-                  </span>
-                  } @else {
-                  <span class="text-gray-500">-</span>
-                  }
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-right">
-                  <span class="text-lg font-bold text-amber-500">{{ player.points | number }}</span>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-right hidden lg:table-cell">
-                  <span class="text-green-400 font-semibold">{{ player.wins }}</span>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-right hidden lg:table-cell">
-                  <span class="text-gray-400">{{ player.totalGames }}</span>
-                </td>
-              </tr>
-              } @empty {
-              <tr>
-                <td colspan="6" class="px-6 py-12 text-center text-gray-400">
-                  <i class="fas fa-search text-4xl mb-4"></i>
-                  <p>{{ 'players.no_results' | translate }}</p>
-                </td>
-              </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Pagination -->
-        @if (totalPages > 1) {
-        <div class="bg-gray-900 px-6 py-4 border-t border-gray-700">
-          <div class="flex justify-between items-center">
-            <div class="text-sm text-gray-400">
-              {{ 'pagination.showing' | translate }} {{ (currentPage - 1) * pageSize + 1 }} - {{ Math.min(currentPage *
-              pageSize, totalPlayers) }} {{ 'pagination.of' | translate }} {{ totalPlayers }}
-            </div>
-            <div class="flex space-x-2">
-              <button (click)="previousPage()" [disabled]="currentPage === 1"
-                class="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-                <i class="fas fa-chevron-left"></i>
-              </button>
-              @for (page of getPageNumbers(); track page) {
-              <button (click)="goToPage(page)"
-                [class]="page === currentPage ? 'bg-amber-500 text-black' : 'bg-gray-700 hover:bg-gray-600 text-white'"
-                class="px-4 py-2 rounded-lg font-semibold transition-colors">
-                {{ page }}
-              </button>
-              }
-              <button (click)="nextPage()" [disabled]="currentPage === totalPages"
-                class="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
-                <i class="fas fa-chevron-right"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-        }
-      </div>
-    </div>
-    }
-
-    <!-- Teams Leaderboard -->
-    @if (activeTab === 'teams') {
-    <div class="max-w-5xl mx-auto">
-      <div class="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
-        <div class="overflow-x-auto">
-          <table class="w-full">
-            <thead class="bg-gray-900 border-b border-gray-700">
-              <tr>
-                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  {{ 'teams.rank' | translate }}
-                </th>
-                <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  {{ 'teams.name' | translate }}
-                </th>
-                <th
-                  class="px-6 py-4 text-right text-xs font-semibold text-gray-400 uppercase tracking-wider hidden md:table-cell">
-                  {{ 'teams.members' | translate }}
-                </th>
-                <th class="px-6 py-4 text-right text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  {{ 'teams.points' | translate }}
-                </th>
-                <th
-                  class="px-6 py-4 text-right text-xs font-semibold text-gray-400 uppercase tracking-wider hidden lg:table-cell">
-                  {{ 'teams.avg_points' | translate }}
-                </th>
-              </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-700">
-              @for (team of filteredTeams; track team.id; let i = $index) {
-              <tr class="hover:bg-gray-750 transition-colors cursor-pointer" (click)="viewTeamProfile(team.id)">
-                <td class="px-6 py-4 whitespace-nowrap">
-                  @if (i < 3) { <span class="inline-flex items-center justify-center w-8 h-8 rounded-full font-bold"
-                    [class]="i === 0 ? 'bg-yellow-500 text-black' : i === 1 ? 'bg-gray-400 text-black' : 'bg-amber-700 text-white'">
-                    {{ i + 1 }}
+    <!-- Leaderboard Table -->
+    <div class="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="bg-gray-900 border-b border-gray-700">
+            <tr>
+              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                {{ 'players.rank' | translate }}
+              </th>
+              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                {{ 'players.player' | translate }}
+              </th>
+              <th
+                class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider hidden md:table-cell">
+                {{ 'players.team' | translate }}
+              </th>
+              <th class="px-6 py-4 text-right text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                {{ 'players.points' | translate }}
+              </th>
+              <th
+                class="px-6 py-4 text-right text-xs font-semibold text-gray-400 uppercase tracking-wider hidden lg:table-cell">
+                {{ 'players.wins' | translate }}
+              </th>
+              <th
+                class="px-6 py-4 text-right text-xs font-semibold text-gray-400 uppercase tracking-wider hidden lg:table-cell">
+                {{ 'players.games' | translate }}
+              </th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-700">
+            @for (player of filteredPlayers; track player.id; let i = $index) {
+            <tr class="hover:bg-gray-750 transition-colors cursor-pointer"
+              (click)="viewPlayerProfile(player.player.id)">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  @if (player.rank && player.rank <= 3) { <span
+                    class="inline-flex items-center justify-center w-8 h-8 rounded-full font-bold"
+                    [class]="player.rank === 1 ? 'bg-yellow-500 text-black' : player.rank === 2 ? 'bg-gray-400 text-black' : 'bg-amber-700 text-white'">
+                    {{ player.rank }}
                     </span>
                     } @else {
-                    <span class="text-gray-400 font-semibold">{{ i + 1 }}</span>
+                    <span class="text-gray-400 font-semibold">{{ player.rank }}</span>
                     }
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="flex items-center">
-                    <div
-                      class="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center mr-3">
-                      <i class="fas fa-flag text-white text-xl"></i>
-                    </div>
-                    <div>
-                      <div class="font-semibold text-white">{{ team.name }}</div>
-                      <div class="text-sm text-gray-400">{{ team.tag }}</div>
-                    </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div
+                    class="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center mr-3">
+                    <span class="text-white font-bold">{{ player.player.name.charAt(0).toUpperCase() }}</span>
                   </div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-right hidden md:table-cell">
-                  <span class="text-blue-400 font-semibold">{{ team.memberCount }}</span>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-right">
-                  <span class="text-lg font-bold text-amber-500">{{ team.totalPoints | number }}</span>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-right hidden lg:table-cell">
-                  <span class="text-gray-300">{{ team.avgPoints | number:'1.0-0' }}</span>
-                </td>
-              </tr>
-              } @empty {
-              <tr>
-                <td colspan="5" class="px-6 py-12 text-center text-gray-400">
-                  <i class="fas fa-search text-4xl mb-4"></i>
-                  <p>{{ 'teams.no_results' | translate }}</p>
-                </td>
-              </tr>
-              }
-            </tbody>
-          </table>
+                  <div>
+                    <div class="font-semibold text-white">{{ player.player.name }}</div>
+                    <div class="text-sm text-gray-400">{{ player.player.country }}</div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap hidden md:table-cell">
+                @if (player.player.team_id) {
+                <span
+                  class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-900 text-blue-300">
+                  <i class="fas fa-flag mr-1"></i>{{ player.player.team_name }}
+                </span>
+                } @else {
+                <span class="text-gray-500">-</span>
+                }
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right">
+                <span class="text-lg font-bold text-amber-500">{{ player.points | number }}</span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right hidden lg:table-cell">
+                <span class="text-green-400 font-semibold">{{ player.wins }}</span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right hidden lg:table-cell">
+                <span class="text-gray-400">{{ player.total_games }}</span>
+              </td>
+            </tr>
+            } @empty {
+            <tr>
+              <td colspan="6" class="px-6 py-12 text-center text-gray-400">
+                <i class="fas fa-search text-4xl mb-4"></i>
+                <p>{{ 'players.no_results' | translate }}</p>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination existante -->
+      @if (totalPages > 1) {
+      <div class="bg-gray-900 px-6 py-4 border-t border-gray-700">
+        <div class="flex justify-between items-center flex-wrap gap-4">
+          <!-- Contrôles de pagination -->
+          <div class="flex space-x-2 items-center">
+            <!-- Bouton première page -->
+            <button (click)="goToPage(1)" [disabled]="currentPage === 1"
+              class="px-3 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+              <i class="fas fa-angle-double-left"></i>
+            </button>
+
+            <!-- Bouton page précédente -->
+            <button (click)="previousPage()" [disabled]="currentPage === 1"
+              class="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+              <i class="fas fa-chevron-left"></i>
+            </button>
+
+            <!-- ✅ Affichage intelligent des numéros de page -->
+            @for (page of getVisiblePages(); track page) {
+            @if (page === '...') {
+            <span class="px-4 py-2 text-gray-500">...</span>
+            } @else {
+            <button (click)="goToPage(+page)"
+              [class]="page === currentPage ? 'bg-amber-500 text-black' : 'bg-gray-700 hover:bg-gray-600 text-white'"
+              class="px-4 py-2 rounded-lg font-semibold transition-colors min-w-[40px]">
+              {{ page }}
+            </button>
+            }
+            }
+
+            <!-- Bouton page suivante -->
+            <button (click)="nextPage()" [disabled]="currentPage === totalPages"
+              class="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+              <i class="fas fa-chevron-right"></i>
+            </button>
+
+            <!-- Bouton dernière page -->
+            <button (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages"
+              class="px-3 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+              <i class="fas fa-angle-double-right"></i>
+            </button>
+          </div>
         </div>
       </div>
+      }
     </div>
-    }
   </div>
+  }
+
+  <!-- Teams Leaderboard -->
+  @if (activeTab === 'teams') {
+  <div class="max-w-5xl mx-auto">
+    <div class="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="bg-gray-900 border-b border-gray-700">
+            <tr>
+              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                {{ 'teams.rank' | translate }}
+              </th>
+              <th class="px-6 py-4 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                {{ 'teams.name' | translate }}
+              </th>
+              <th
+                class="px-6 py-4 text-right text-xs font-semibold text-gray-400 uppercase tracking-wider hidden md:table-cell">
+                {{ 'teams.members' | translate }}
+              </th>
+              <th class="px-6 py-4 text-right text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                {{ 'teams.points' | translate }}
+              </th>
+              <th
+                class="px-6 py-4 text-right text-xs font-semibold text-gray-400 uppercase tracking-wider hidden lg:table-cell">
+                {{ 'teams.avg_points' | translate }}
+              </th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-700">
+            @for (team of filteredTeams; track team.id; let i = $index) {
+            <tr class="hover:bg-gray-750 transition-colors cursor-pointer" (click)="viewTeamProfile(team.id)">
+              <td class="px-6 py-4 whitespace-nowrap">
+                @if (i < 3) { <span class="inline-flex items-center justify-center w-8 h-8 rounded-full font-bold"
+                  [class]="i === 0 ? 'bg-yellow-500 text-black' : i === 1 ? 'bg-gray-400 text-black' : 'bg-amber-700 text-white'">
+                  {{ i + 1 }}
+                  </span>
+                  } @else {
+                  <span class="text-gray-400 font-semibold">{{ i + 1 }}</span>
+                  }
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="flex items-center">
+                  <div
+                    class="w-12 h-12 rounded-lg bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center mr-3">
+                    <i class="fas fa-flag text-white text-xl"></i>
+                  </div>
+                  <div>
+                    <div class="font-semibold text-white">{{ team.name }}</div>
+                    <div class="text-sm text-gray-400">{{ team.tag }}</div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right hidden md:table-cell">
+                <span class="text-blue-400 font-semibold">{{ team.memberCount }}</span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right">
+                <span class="text-lg font-bold text-amber-500">{{ team.totalPoints | number }}</span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-right hidden lg:table-cell">
+                <span class="text-gray-300">{{ team.avgPoints | number:'1.0-0' }}</span>
+              </td>
+            </tr>
+            } @empty {
+            <tr>
+              <td colspan="5" class="px-6 py-12 text-center text-gray-400">
+                <i class="fas fa-search text-4xl mb-4"></i>
+                <p>{{ 'teams.no_results' | translate }}</p>
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  }
+</div>
 </div>

@@ -8,7 +8,7 @@ class Config:
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY') or 'jwt-secret'
-    JWT_ACCESS_TOKEN_EXPIRES = 28800  # 8h
+    JWT_ACCESS_TOKEN_EXPIRES = 86400  # 24h
     JWT_TOKEN_LOCATION = ['headers']  # Assurez-vous que les tokens sont envoyés dans les en-têtes
     JWT_HEADER_NAME = 'Authorization'
     JWT_HEADER_TYPE = 'Bearer'
@@ -25,3 +25,6 @@ class ConfigEnv:
     DISCORD_TOKEN_URL = "https://discord.com/api/oauth2/token"
     DISCORD_API_URL = "https://discord.com/api/users/@me"
     DISCORD_BOT_URI = os.getenv("DISCORD_BOT_URI")
+
+    BGA_USERNAME = os.getenv("BGA_USERNAME")
+    BGA_PASSWORD = os.getenv("BGA_PASSWORD")
