@@ -204,17 +204,17 @@
     <div class="space-y-6">
 
       <!-- History Tab (Priority) -->
-      @if (activeTab() === 'history') {
+      @if (player_id() && selectedSeason() && activeTab() === 'history') {
       <app-player-history [player_id]="player_id()" [selectedSeason]="selectedSeason()"></app-player-history>
       }
 
       <!-- Overview Tab -->
-      @if (activeTab() === 'overview') {
+      @if (player_id() && selectedSeason() && activeTab() === 'overview') {
       <app-player-overview [player_id]="player_id()" [selectedSeason]="selectedSeason()"></app-player-overview>
       }
 
       <!-- Matchups Tab Skeleton -->
-      @if (activeTab() === 'matchups') {
+      @if (player_id() && selectedSeason() && activeTab() === 'matchups') {
       <div class="bg-gray-800 rounded-xl p-12 shadow-lg">
         <div class="text-center">
           <svg class="w-20 h-20 text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -229,7 +229,7 @@
       }
 
       <!-- Decks Tab Skeleton -->
-      @if (activeTab() === 'decks') {
+      @if (player_id() && selectedSeason() && activeTab() === 'decks') {
       <div class="bg-gray-800 rounded-xl p-12 shadow-lg">
         <div class="text-center">
           <svg class="w-20 h-20 text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
