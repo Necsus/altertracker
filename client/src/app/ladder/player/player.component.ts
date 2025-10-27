@@ -53,7 +53,6 @@ export class PlayerComponent implements OnInit {
     this.playerService.get_season_info$().subscribe({
       next: (response: any) => {
         this.seasons.set(response.seasons || []);
-
         const currentSeason = response.seasons.find((s: SeasonModel) => s.current);
         if (currentSeason) {
           this.selectedSeason.set(currentSeason.season);
