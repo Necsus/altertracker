@@ -909,16 +909,23 @@ def reload_player_service(player_id: str) -> dict:
             traceback.print_exc()
             reload_stats['errors'] += 1
         
-        # 9.3. ✅ Recalculer les statistiques PAR SAISON (uniquement les saisons affectées)
+        # 9.3. ✅ Recalculer les statistiques PAR SAISON (TOUTES les saisons avec parties)
         print(f"\n📅 Recalcul des stats par saison...")
-        
+
         try:
             season_stats_updates = []
             
-            # Pour chaque saison affectée (y compris celles qui existaient déjà)
-            affected_seasons = reload_stats['seasons_affected']
+            # ✅ Récupérer TOUTES les saisons où le joueur a des parties
+            all_seasons_with_games = set()
+            for game in all_player_games:
+                all_seasons_with_games.add(game.season)
             
-            for season_num in sorted(affected_seasons):
+            all_seasons_with_games = sorted(all_seasons_with_games)
+            
+            print(f"🎯 Recalcul de {len(all_seasons_with_games)} saison(s): {all_seasons_with_games}")
+            
+            # Pour chaque saison où le joueur a des parties
+            for season_num in all_seasons_with_games:
                 # Récupérer TOUTES les parties de cette saison
                 season_games = [g for g in all_player_games if g.season == season_num]
                 
@@ -944,7 +951,6 @@ def reload_player_service(player_id: str) -> dict:
                     'wins': season_wins,
                     'losses': season_losses,
                     'draws': season_draws,
-                    'total_games': season_total,
                     'win_rate': round(season_win_rate, 2),
                     'points': existing_stats.points if existing_stats else 0,
                     'rank': existing_stats.rank if existing_stats else None,
@@ -957,11 +963,16 @@ def reload_player_service(player_id: str) -> dict:
                 print(f"    ❌ Défaites: {season_losses}")
                 print(f"    ⚖️  Nuls: {season_draws}")
                 print(f"    📊 Win rate: {season_win_rate:.2f}%")
+                if existing_stats:
+                    print(f"    🏆 Points (ladder): {existing_stats.points}")
+                    print(f"    📍 Rank: {existing_stats.rank or 'N/A'}")
             
             # Bulk update
             if season_stats_updates:
                 updated_count = bulk_upsert_season_stats_data(season_stats_updates)
-                print(f"\n✅ {updated_count} saisons mises à jour")
+                print(f"\n✅ {updated_count} saison(s) mise(s) à jour")
+            else:
+                print(f"\n⚠️  Aucune saison à mettre à jour")
             
         except Exception as e:
             print(f"❌ Erreur recalcul stats par saison: {e}")
