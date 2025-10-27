@@ -185,12 +185,6 @@ def update_season_stats_data(season_stats: PlayerSeasonStats, **kwargs) -> Playe
         raise e
 
 def bulk_upsert_season_stats_data(season_stats_updates: list[dict]) -> int:
-    """
-    Crée ou met à jour en bulk les statistiques de saison.
-    Supporte tous les champs: wins, losses, draws, total_games, win_rate, points, rank, highest_rank
-    """
-    from app.models.player import PlayerSeasonStats
-    
     try:
         updated_count = 0
         
@@ -207,7 +201,6 @@ def bulk_upsert_season_stats_data(season_stats_updates: list[dict]) -> int:
                 season_stat.wins = stats.get('wins', season_stat.wins)
                 season_stat.losses = stats.get('losses', season_stat.losses)
                 season_stat.draws = stats.get('draws', season_stat.draws)
-                season_stat.total_games = stats.get('total_games', season_stat.total_games)
                 season_stat.win_rate = stats.get('win_rate', season_stat.win_rate)
                 season_stat.points = stats.get('points', season_stat.points)
                 season_stat.rank = stats.get('rank', season_stat.rank)
@@ -221,7 +214,6 @@ def bulk_upsert_season_stats_data(season_stats_updates: list[dict]) -> int:
                     wins=stats.get('wins', 0),
                     losses=stats.get('losses', 0),
                     draws=stats.get('draws', 0),
-                    total_games=stats.get('total_games', 0),
                     win_rate=stats.get('win_rate', 0.0),
                     points=stats.get('points', 0),
                     rank=stats.get('rank'),
@@ -273,16 +265,13 @@ def count_total_players_data() -> int:
 def get_current_season_data() -> Optional[Season]:
     return db.session.query(Season).filter_by(current=True).first()
 
-def get_season_stats_by_playerdata(player_id: str, season: int) -> Optional[PlayerSeasonStats]:
+def get_season_stats_by_player_data(player_id: str, season: int) -> Optional[PlayerSeasonStats]:
     return db.session.query(PlayerSeasonStats).filter_by(
         player_id=player_id,
         season=str(season)
     ).first()
 
 def update_player_data(player: Player) -> Player:
-    """
-    Met à jour un joueur existant en base de données.
-    """
     try:
         db.session.commit()
         return player

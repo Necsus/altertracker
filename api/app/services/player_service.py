@@ -1,5 +1,4 @@
 from datetime import datetime, timezone
-import json
 import time
 import uuid
 from typing import List, Dict, Optional
@@ -9,17 +8,18 @@ from app.data.player_data import (
     bulk_upsert_season_stats_data,
     count_total_players_data,
     create_player_data,
-    get_current_season_data,
     get_player_by_id_data,
     get_player_history_data,
-    get_season_stats_by_playerdata,
+    get_season_stats_by_player_data,
     get_season_stats_data,
     search_players_data,
     get_player_by_bga_id_data,
     get_game_by_table_id_data,
     bulk_insert_games_data,
     batch_update_players_stats_data,
-    get_all_seasons_data
+    get_all_seasons_data,
+    bulk_upsert_season_stats_data,
+    update_player_data
 )
 
 def search_players_service(query: str) -> list:
@@ -46,17 +46,6 @@ def get_player_by_id_service(player_id: str) -> dict:
         player = get_player_by_id_data(player_id)
 
     return player.json()
-
-def _ensure_timezone_aware(dt: Optional[datetime]) -> Optional[datetime]:
-    if dt is None:
-        return None
-    
-    # Si déjà timezone-aware, retourner tel quel
-    if dt.tzinfo is not None and dt.tzinfo.utcoffset(dt) is not None:
-        return dt
-    
-    # Sinon, ajouter UTC
-    return dt.replace(tzinfo=timezone.utc)
 
 def _get_or_create_player_from_bga_data(player_data: dict) -> Player:
     bga_id = player_data.get('id')
@@ -139,8 +128,8 @@ def _calculate_player_stats_from_games(games: List[Game], player_id: uuid.UUID) 
             stats['losses'] += 1
         
         # ✅ S'assurer que les deux datetimes sont timezone-aware
-        game_played_at = _ensure_timezone_aware(game.played_at)
-        last_game_at = _ensure_timezone_aware(stats['last_game_at'])
+        game_played_at = game.played_at
+        last_game_at = stats['last_game_at']
         
         if last_game_at is None or (game_played_at is not None and game_played_at > last_game_at):
             stats['last_game_at'] = game_played_at
@@ -231,10 +220,10 @@ def import_games_bulk_service(main_player_id: str, games_data_from_bga: list, se
                     players_stats[opponent.id]['draws'] += 1
                 
                 # ✅ Mettre à jour last_game_at avec timezone-aware datetime
-                game_played_at = _ensure_timezone_aware(game.played_at)
+                game_played_at = game.played_at
                 
                 for player_id in [main_player.id, opponent.id]:
-                    last_game_at = _ensure_timezone_aware(players_stats[player_id]['last_game_at'])
+                    last_game_at = players_stats[player_id]['last_game_at']
                     
                     if last_game_at is None or (game_played_at is not None and game_played_at > last_game_at):
                         players_stats[player_id]['last_game_at'] = game_played_at
@@ -707,7 +696,7 @@ def get_total_players_service() -> int:
     return count_total_players_data()
 
 def get_player_overview_service(player_id: str, season: int) -> dict:
-    playerSeasonStats = get_season_stats_by_playerdata(player_id=player_id, season=season)
+    playerSeasonStats = get_season_stats_by_player_data(player_id=player_id, season=season)
     return playerSeasonStats.json() if playerSeasonStats else {}
 
 def reload_player_service(player_id: str) -> dict:
@@ -904,7 +893,6 @@ def reload_player_service(player_id: str) -> dict:
             player.is_active = True
             
             # Sauvegarder
-            from app.data.player_data import update_player_data
             update_player_data(player)
             
             print(f"\n✅ Stats globales recalculées:")
@@ -948,7 +936,7 @@ def reload_player_service(player_id: str) -> dict:
                 season_win_rate = (season_wins / season_total * 100) if season_total > 0 else 0.0
                 
                 # Récupérer les stats existantes pour conserver rank et highest_rank
-                existing_stats = get_season_stats_by_playerdata(player_id, season_num)
+                existing_stats = get_season_stats_by_player_data(player_id, season_num)
                 
                 season_stats_updates.append({
                     'player_id': player_uuid,
@@ -972,7 +960,6 @@ def reload_player_service(player_id: str) -> dict:
             
             # Bulk update
             if season_stats_updates:
-                from app.data.player_data import bulk_upsert_season_stats_data
                 updated_count = bulk_upsert_season_stats_data(season_stats_updates)
                 print(f"\n✅ {updated_count} saisons mises à jour")
             
