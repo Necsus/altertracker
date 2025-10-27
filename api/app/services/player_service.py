@@ -294,8 +294,8 @@ def import_player_bga_service(bga_id: int) -> dict:
             'total_games': 0,
             'total_pages': 0,
             'seasons_processed': 0,
-            'seasons_with_games': 0,      # ✅ Nouvelles stats
-            'seasons_without_games': 0,   # ✅ Nouvelles stats
+            'seasons_with_games': 0,
+            'seasons_without_games': 0,
             'games_by_season': {}
         }
         
@@ -325,7 +325,6 @@ def import_player_bga_service(bga_id: int) -> dict:
                     
                     if not games_response or games_response.get('status') != 1:
                         print(f"⚠️  Aucune réponse pour la page {page}")
-                        # ✅ Si c'est la première page, pas de parties pour cette saison
                         if page == 1:
                             print(f"ℹ️  Pas de parties pour la saison {currentSeason.season}")
                             all_seasons_stats['seasons_without_games'] += 1
@@ -337,7 +336,6 @@ def import_player_bga_service(bga_id: int) -> dict:
                     pagination_info = games_response.get('data', {}).get('pagination', {})
                     
                     if not games_data or len(games_data) == 0:
-                        # ✅ Si c'est la première page et qu'elle est vide
                         if page == 1:
                             print(f"ℹ️  Aucune partie pour la saison {currentSeason.season}")
                             all_seasons_stats['seasons_without_games'] += 1
@@ -364,7 +362,6 @@ def import_player_bga_service(bga_id: int) -> dict:
                         
                 except Exception as e:
                     print(f"❌ Erreur lors de la récupération de la page {page}: {e}")
-                    # ✅ Si c'est la première page, considérer qu'il n'y a pas de parties
                     if page == 1:
                         print(f"⚠️  Impossible de récupérer les parties de la saison {currentSeason.season}")
                         all_seasons_stats['seasons_without_games'] += 1
@@ -429,20 +426,31 @@ def import_player_bga_service(bga_id: int) -> dict:
                 print(f"❌ Erreur lors de l'import des parties de la saison {currentSeason.season}: {e}")
                 import traceback
                 traceback.print_exc()
-                # ✅ Continuer avec la saison suivante même en cas d'erreur
                 continue
         
-        # 7. ✅ Affichage récapitulatif GLOBAL
-        if new_player is None:
-            print("\n⚠️  Aucune partie trouvée pour ce joueur sur aucune saison")
+        # 7. ✅ VÉRIFICATION : Si aucune partie trouvée sur AUCUNE saison, retourner une erreur
+        if all_seasons_stats['total_games'] == 0:
+            print("\n" + "="*80)
+            print("⚠️  AUCUNE PARTIE TROUVÉE")
+            print("="*80)
+            print(f"❌ Le joueur BGA #{bga_id} n'a aucune partie d'Altered sur les {len(seasons)} saisons vérifiées")
+            print(f"📅 Saisons vérifiées: {', '.join(str(s.season) for s in seasons)}")
+            print("="*80 + "\n")
+            
             return {
                 'status': 0,
-                'error': 'No games found for this player in any season',
+                'error': f'No Altered games found for player {bga_id} across all seasons',
                 'player_id': None,
                 'seasons_checked': len(seasons),
-                'seasons_without_games': all_seasons_stats['seasons_without_games']
+                'seasons_without_games': all_seasons_stats['seasons_without_games'],
+                'details': {
+                    'bga_id': bga_id,
+                    'seasons_verified': [s.season for s in seasons],
+                    'total_pages_checked': all_seasons_stats['total_pages']
+                }
             }
         
+        # 8. ✅ Affichage récapitulatif GLOBAL (si des parties ont été trouvées)
         print("\n" + "="*80)
         print(f"🏆 RÉSUMÉ GLOBAL - {new_player.name}")
         print("="*80)
@@ -464,6 +472,7 @@ def import_player_bga_service(bga_id: int) -> dict:
         return {
             'status': 1,
             'player_id': str(new_player.id),
+            'player_name': new_player.name,
             'seasons_stats': all_seasons_stats,
             'games_by_season': all_seasons_stats['games_by_season']
         }
