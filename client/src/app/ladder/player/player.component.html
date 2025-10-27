@@ -2,16 +2,86 @@
   <!-- Loading State -->
   @if (isLoading()) {
   <div class="container mx-auto px-4 py-8">
-    <div class="animate-pulse">
-      <!-- Header Skeleton -->
-      <div class="bg-gray-800 rounded-2xl p-8 mb-6">
-        <div class="flex items-start gap-6">
-          <div class="w-32 h-32 bg-gray-700 rounded-full"></div>
-          <div class="flex-1 space-y-4">
-            <div class="h-8 bg-gray-700 rounded w-1/3"></div>
-            <div class="h-4 bg-gray-700 rounded w-1/2"></div>
-            <div class="h-4 bg-gray-700 rounded w-2/3"></div>
+    <!-- ✅ Message d'information principal -->
+    <div class="bg-gradient-to-br from-amber-900 via-amber-800 to-orange-900 rounded-2xl p-8 mb-6 shadow-2xl">
+      <div class="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
+        <!-- Icône animée -->
+        <div class="flex-shrink-0">
+          <div class="relative">
+            <div class="w-20 h-20 bg-amber-500/20 rounded-full flex items-center justify-center">
+              <svg class="w-12 h-12 text-amber-400 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+                </path>
+              </svg>
+            </div>
+            <!-- Cercles animés autour -->
+            <div class="absolute inset-0 rounded-full border-4 border-amber-500/30 animate-ping"></div>
           </div>
+        </div>
+
+        <!-- Texte -->
+        <div class="flex-1">
+          <h2 class="text-3xl font-bold text-white mb-3">
+            🎮 Import des données en cours...
+          </h2>
+          <p class="text-amber-100 text-lg mb-2">
+            Récupération de l'historique des parties depuis Board Game Arena
+          </p>
+          <div class="flex flex-wrap items-center justify-center md:justify-start gap-4 text-amber-200">
+            <span class="flex items-center gap-2">
+              <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z">
+                </path>
+              </svg>
+              Analyse des saisons
+            </span>
+            <span class="flex items-center gap-2">
+              <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                </path>
+              </svg>
+              Calcul des statistiques
+            </span>
+            <span class="flex items-center gap-2">
+              <svg class="w-5 h-5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z">
+                </path>
+              </svg>
+              Quelques instants
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Skeleton du reste -->
+    <div class="animate-pulse">
+      <!-- Tabs Skeleton -->
+      <div class="bg-gray-800 rounded-xl p-4 mb-6">
+        <div class="flex gap-4">
+          <div class="h-12 bg-gray-700 rounded-lg flex-1"></div>
+          <div class="h-12 bg-gray-700 rounded-lg flex-1"></div>
+          <div class="h-12 bg-gray-700 rounded-lg flex-1"></div>
+        </div>
+      </div>
+
+      <!-- Stats Grid Skeleton -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-gray-800 rounded-xl p-6">
+          <div class="h-6 bg-gray-700 rounded w-1/2 mb-4"></div>
+          <div class="h-10 bg-gray-700 rounded w-3/4"></div>
+        </div>
+        <div class="bg-gray-800 rounded-xl p-6">
+          <div class="h-6 bg-gray-700 rounded w-1/2 mb-4"></div>
+          <div class="h-10 bg-gray-700 rounded w-3/4"></div>
+        </div>
+        <div class="bg-gray-800 rounded-xl p-6">
+          <div class="h-6 bg-gray-700 rounded w-1/2 mb-4"></div>
+          <div class="h-10 bg-gray-700 rounded w-3/4"></div>
         </div>
       </div>
     </div>
