@@ -40,10 +40,12 @@
             class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
             'header.stats' | translate }}</a>
         </li>
+        @if (isPublisher) {
         <li><a routerLink="/players" routerLinkActive="text-amber-400" style="user-select: none;"
             class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
             'header.players' | translate }}</a>
         </li>
+        }
         <li><a routerLink="/about" routerLinkActive="text-amber-400" style="user-select: none;"
             class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
             'header.about' | translate }}</a>
@@ -121,9 +123,11 @@ class="hover:text-amber-400 transition duration-300 cursor-pointer"><i class="fa
       <a routerLink="/stats" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
         class="block hover:text-amber-400 transition duration-300">{{
         'header.stats' | translate }}</a>
+      @if (isPublisher) {
       <a routerLink="/players" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
         class="block hover:text-amber-400 transition duration-300">{{
         'header.players' | translate }}</a>
+      }
       <a routerLink="/about" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
         class="block hover:text-amber-400 transition duration-300">{{
         'header.about' | translate }}</a>

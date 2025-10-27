@@ -15,6 +15,7 @@ export class HeaderComponent implements OnInit {
   isLoggedIn = false;
   isDropdownOpen = false;
   isAdmin = false;
+  isPublisher = false;
   username: string | null = null;
 
   constructor(
@@ -27,9 +28,11 @@ export class HeaderComponent implements OnInit {
       this.isLoggedIn = status;
       if (this.isLoggedIn) {
         this.isAdmin = this.authViewService.isAdmin();
+        this.isPublisher = this.authViewService.isPublisher();
         this.username = this.authViewService.getUsername();
       } else {
         this.isAdmin = false; // Réinitialiser si l'utilisateur n'est pas connecté
+        this.isPublisher = false; // Réinitialiser si l'utilisateur n'est pas connecté
         this.username = null; // Réinitialiser si l'utilisateur n'est pas connecté
       }
       this.cdr.detectChanges();
