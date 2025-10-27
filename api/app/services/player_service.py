@@ -413,16 +413,7 @@ def import_player_bga_service(bga_id: int) -> dict:
                     all_games_data, 
                     currentSeason.season
                 )
-                
                 all_seasons_stats['seasons_processed'] += 1
-                
-                # Affichage des stats de cette saison
-                print(f"\n📊 Saison {currentSeason.season} - Résultats:")
-                print(f"  ✅ Nouvelles parties: {games_stats['created']}")
-                print(f"  ℹ️  Déjà existantes: {games_stats['existing']}")
-                print(f"  ⏭️  Non-ranked: {games_stats['skipped_ranked']}")
-                print(f"  ❌ Erreurs: {games_stats['errors']}")
-                
             except Exception as e:
                 print(f"❌ Erreur lors de l'import des parties de la saison {currentSeason.season}: {e}")
                 import traceback

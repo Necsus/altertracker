@@ -106,7 +106,7 @@ def import_ladder_route(season: int):
         }), 500
     
 @player_bp.route('/ladder/<int:season>', methods=['GET'])
-@cache.cached(timeout=3600, query_string=True)
+@cache.cached(timeout=900, query_string=True)
 @jwt_required()
 def get_ladder_by_season_route(season: int):
     try:

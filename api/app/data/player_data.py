@@ -104,12 +104,6 @@ def update_player_stats_data(player: Player, wins: int = 0, losses: int = 0, dra
         raise e
 
 def batch_update_players_stats_data(players_stats: dict) -> None:
-    """
-    Met à jour les stats de plusieurs joueurs en batch
-    
-    Args:
-        players_stats: Dict {player_id: {'wins': int, 'losses': int, 'draws': int, 'last_game_at': datetime}}
-    """
     try:
         for player_id, stats in players_stats.items():
             player = db.session.query(Player).filter_by(id=player_id).first()
