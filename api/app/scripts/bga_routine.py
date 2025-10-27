@@ -466,6 +466,15 @@ def getPlayer(bga_id: int, retry: bool = True) -> dict:
         # ✅ Parser le HTML avec BeautifulSoup
         soup = BeautifulSoup(response.text, 'html.parser')
 
+        player_not_exists = soup.find('div', id='pagesection_player_do_not_exists')
+        if player_not_exists:
+            print(f"\033[91m❌ Joueur {bga_id} n'existe pas sur BGA\033[0m")
+            return {
+                'status': 0,
+                'error': f'Player {bga_id} does not exist',
+                'data': None
+            }
+
         player_data = {
             'bga_id': bga_id,
             'name': None,
@@ -473,6 +482,8 @@ def getPlayer(bga_id: int, retry: bool = True) -> dict:
             'country_name': None,
             'bio': None
         }
+
+
 
         # 1. ✅ Nom du joueur - SPAN avec id="real_player_name"
         name_elem = soup.find('span', id='real_player_name')
