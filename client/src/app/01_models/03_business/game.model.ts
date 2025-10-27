@@ -39,32 +39,6 @@ export interface GameModel {
   verified_at?: string; // ISO DateTime
 }
 
-export interface GameCreateDto {
-  table_id: number;
-  ranked: boolean;
-  player1_id: string;
-  player2_id: string;
-  player1_deck_id?: string;
-  player2_deck_id?: string;
-  winner_id?: string;
-  is_draw: boolean;
-  tournament_id?: string;
-  season?: string;
-  round?: number;
-  game_format?: string;
-  played_at: string;
-  start?: string;
-  end?: string;
-  duration_minutes?: number;
-  replay_url?: string;
-  notes?: string;
-}
-
-export interface GameUpdateDto extends Partial<GameCreateDto> {
-  is_verified?: boolean;
-  verified_by?: number;
-}
-
 export interface GameListResponse {
   games: GameModel[];
   total: number;

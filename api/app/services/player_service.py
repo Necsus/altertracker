@@ -1023,14 +1023,43 @@ def reload_player_service(player_id: str) -> dict:
 def import_table_service(table_id: int) -> dict:
     try:
         print(f"\n🔄 Import de la table ID: {table_id}...")
+
+        table = get_game_by_table_id_data(table_id)
         
         # 1. Récupérer les données de la table depuis l'API BGA
-        table_response = getTable(table_id)
-
+        data = getTable(table_id).get('data', {})
+        if not data:
+            return {
+                'status': 0,
+                'error': f'No data found for table ID: {table_id}',
+                'table_id': table_id
+            }
         
+        logs = data.get('logs', [])
+        if not logs or len(logs) == 0:
+            return {
+                'status': 0,
+                'error': f'No logs found for table ID: {table_id}',
+                'table_id': table_id
+            }
+        
+        decks_selections = []
+        
+        for log in logs:
+            log_data = log.get('data', [])[0]
+            if log_data.get('type', '') == 'updateInitialPrecoDeckSelection':
+                private_data = log_data.get('args', {}).get('args', {}).get('_private')
+                private_data['player_id'] = int(log.get('channel', '').replace('/player/p', ''))
+                if private_data:
+                    if private_data.get('selection', '') == 'API':
+                        private_data.pop('decks', None)
+                    decks_selections.append(private_data)
+                    if len(decks_selections) == 2:
+                        break
+
         return {
             'status': 1,
-            'table': table_response
+            'table': decks_selections
         }
         
     except Exception as e:

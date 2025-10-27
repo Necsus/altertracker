@@ -136,13 +136,12 @@ export class HistoryComponent {
     this.playerService.get_import_table$(table_id)
       .subscribe({
         next: (response: any) => {
+          this.loadingTableId = null;
           console.log('Table data:', response);
         },
         error: (error: any) => {
-          console.error('Error loading table data:', error);
-        },
-        complete: () => {
           this.loadingTableId = null;
+          console.error('Error loading table data:', error);
         }
       });
   }
