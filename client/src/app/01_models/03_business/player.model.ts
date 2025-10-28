@@ -1,6 +1,7 @@
 export interface PlayerModel {
   id: string;
   bga_id: number;
+  bga_banned: boolean | null;
   name: string;
   country: string | null;
   team_id: string | null;

@@ -450,7 +450,6 @@ def getPlayer(bga_id: int, retry: bool = True) -> dict:
         TournoiEnLigneid = db.session.query(CookieManager).filter_by(name="TournoiEnLigneid").first()
         TournoiEnLignetk = db.session.query(CookieManager).filter_by(name="TournoiEnLignetk").first()
         
-        # Récupérer les cookies avec la fonction helper
         headers = {
             "cookie": f"TournoiEnLigne_sso_user={TournoiEnLigne_sso_user.value};TournoiEnLigne_sso_id={TournoiEnLigne_sso_id.value};TournoiEnLignetkt={TournoiEnLignetkt.value};TournoiEnLigneidt={TournoiEnLigneidt.value};TournoiEnLignetk={TournoiEnLignetk.value};TournoiEnLigneid={TournoiEnLigneid.value}",
             "x-request-token": TournoiEnLigneidt.value,
@@ -459,20 +458,21 @@ def getPlayer(bga_id: int, retry: bool = True) -> dict:
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:144.0) Gecko/20100101 Firefox/144.0"
         }
 
-        
         response = requests.get(url, headers=headers, params=params)
-        
         response.raise_for_status()
+        
         # ✅ Parser le HTML avec BeautifulSoup
         soup = BeautifulSoup(response.text, 'html.parser')
 
+        # ✅ Vérifier si le joueur n'existe pas (banni ou supprimé)
         player_not_exists = soup.find('div', id='pagesection_player_do_not_exists')
         if player_not_exists:
-            print(f"\033[91m❌ Joueur {bga_id} n'existe pas sur BGA\033[0m")
+            print(f"\033[91m❌ Joueur {bga_id} n'existe pas sur BGA (banni ou supprimé)\033[0m")
             return {
                 'status': 0,
                 'error': f'Player {bga_id} does not exist',
-                'data': None
+                'data': None,
+                'bga_banned': True  # ✅ Indiquer que le joueur est banni
             }
 
         player_data = {
@@ -480,10 +480,9 @@ def getPlayer(bga_id: int, retry: bool = True) -> dict:
             'name': None,
             'country': None,
             'country_name': None,
-            'bio': None
+            'bio': None,
+            'bga_banned': False  # ✅ Joueur existant = pas banni
         }
-
-
 
         # 1. ✅ Nom du joueur - SPAN avec id="real_player_name"
         name_elem = soup.find('span', id='real_player_name')
@@ -493,7 +492,7 @@ def getPlayer(bga_id: int, retry: bool = True) -> dict:
         else:
             print("⚠️  Span #real_player_name non trouvé")
 
-        # 2. ✅ Avatar du joueur - IMG avec id="real_player_avatar"
+        # 2. ✅ Bio du joueur - DIV avec id="textdescription"
         bio_elem = soup.find('div', id='textdescription')
         if bio_elem:
             player_data['bio'] = bio_elem.get_text(strip=True)
@@ -501,28 +500,25 @@ def getPlayer(bga_id: int, retry: bool = True) -> dict:
         else:
             print("⚠️  Div #textdescription non trouvée")
 
-                # 3. ✅ Pays du joueur - Chercher la div.bga-flag avec data-country
-        # Structure: <div class="row-value"><div class="bga-flag" data-country="FR"></div> France</div>
+        # 3. ✅ Pays du joueur - Chercher la div.bga-flag avec data-country
         country_flag = soup.find('div', class_='bga-flag')
         if country_flag:
-            # Extraire le code pays depuis l'attribut data-country
             player_data['country'] = country_flag.get('data-country')
             
-            # Extraire le nom du pays depuis le texte parent
             row_value = country_flag.find_parent('div', class_='row-value')
             if row_value:
-                # Récupérer le texte complet et nettoyer
                 full_text = row_value.get_text(strip=True)
-                # Retirer les espaces et caractères spéciaux
                 country_name = full_text.replace('\xa0', ' ').strip()
                 player_data['country_name'] = country_name
                 
             print(f"✅ Pays trouvé: {player_data['country']} ({player_data['country_name']})")
         else:
             print("⚠️  Div .bga-flag non trouvée")
+            
         return {
             'status': 1,
-            'data': player_data
+            'data': player_data,
+            'bga_banned': False  # ✅ Joueur existant = pas banni
         }
 
     except requests.exceptions.RequestException as e:
@@ -535,7 +531,8 @@ def getPlayer(bga_id: int, retry: bool = True) -> dict:
         return {
             'status': 0,
             'error': f'Request failed: {str(e)}',
-            'data': None
+            'data': None,
+            'bga_banned': False  # ✅ Erreur réseau ≠ banni
         }
     except Exception as e:
         print(f"\033[91m❌ Erreur inattendue : {e}\033[0m")
@@ -544,7 +541,8 @@ def getPlayer(bga_id: int, retry: bool = True) -> dict:
         return {
             'status': 0,
             'error': f'Unexpected error: {str(e)}',
-            'data': None
+            'data': None,
+            'bga_banned': False  # ✅ Erreur technique ≠ banni
         }
     
 def import_ladder_from_bga(season: int, page: int = 0, retry: bool = True) -> dict:

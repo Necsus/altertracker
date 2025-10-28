@@ -270,6 +270,23 @@ def import_player_bga_service(bga_id: int) -> dict:
         # 1. Récupérer les infos du joueur
         player_response = getPlayer(bga_id)
         if not player_response or player_response.get('status') != 1:
+            # ✅ Vérifier si le joueur est banni
+            if player_response.get('bga_banned'):
+                # Chercher si le joueur existe déjà en base
+                existing_player = get_player_by_bga_id_data(bga_id)
+                if existing_player:
+                    # Marquer le joueur comme banni
+                    existing_player.bga_banned = True
+                    update_player_data(existing_player)
+                    print(f"⚠️  Joueur {existing_player.name} marqué comme banni")
+                    
+                return {
+                    'status': 0,
+                    'error': 'Player is banned or does not exist on BGA',
+                    'player_id': str(existing_player.id) if existing_player else None,
+                    'bga_banned': True
+                }
+            
             return {
                 'status': 0,
                 'error': player_response.get('error', 'Unknown error') if player_response else 'No response',

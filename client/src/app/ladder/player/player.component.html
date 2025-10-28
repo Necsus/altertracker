@@ -134,7 +134,22 @@
 
         <!-- Player Info -->
         <div class="flex-1">
-          <h1 class="text-4xl font-bold text-white mb-2">{{ player()!.name }}</h1>
+          <div class="flex items-center gap-3 mb-2">
+            <h1 class="text-4xl font-bold text-white">{{ player()!.name }}</h1>
+
+            <!-- ✅ Badge "Banni" discret -->
+            @if (player()!.bga_banned) {
+            <span
+              class="px-2 py-1 bg-gray-700 text-red-400 text-xs font-medium rounded border border-red-400/30 flex items-center gap-1.5">
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636">
+                </path>
+              </svg>
+              Compte supprimé
+            </span>
+            }
+          </div>
 
           <div class="flex flex-wrap items-center gap-4 text-amber-200 mb-3">
             @if (player()!.team_name) {

@@ -54,6 +54,7 @@ class Player(db.Model):
         
         return {
             'id': str(self.id),  # ✅ Convertir UUID en string pour JSON
+            'bga_banned': self.bga_banned,
             'name': self.name,
             'country': self.country,
             'team_id': str(self.team_id) if self.team_id else None,  # ✅ UUID en string
