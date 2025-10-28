@@ -634,6 +634,15 @@ def getTable(table_id: int, retry: bool = True) -> dict:
             "translated": "true"
         }
 
+        # url = "https://boardgamearena.com/12/altered/altered/notificationHistory.html"
+        # params = {
+        #     "table": table_id,
+        #     "from": 1,
+        #     "privateinc": 1,
+        #     "history": 1,
+        #     "noerrortracking": "true"
+        # }
+
         TournoiEnLigne_sso_user = db.session.query(CookieManager).filter_by(name="TournoiEnLigne_sso_user").first()
         TournoiEnLigne_sso_id = db.session.query(CookieManager).filter_by(name="TournoiEnLigne_sso_id").first()
         TournoiEnLigneidt = db.session.query(CookieManager).filter_by(name="TournoiEnLigneidt").first()
@@ -645,7 +654,6 @@ def getTable(table_id: int, retry: bool = True) -> dict:
             "cookie": f"TournoiEnLigne_sso_user={TournoiEnLigne_sso_user.value};TournoiEnLigne_sso_id={TournoiEnLigne_sso_id.value};TournoiEnLignetkt={TournoiEnLignetkt.value};TournoiEnLigneidt={TournoiEnLigneidt.value};TournoiEnLignetk={TournoiEnLignetk.value};TournoiEnLigneid={TournoiEnLigneid.value}",
             "x-request-token": TournoiEnLigneidt.value,
             "accept": "*/*",
-            "content-type": "application/x-www-form-urlencoded",
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:144.0) Gecko/20100101 Firefox/144.0"
         }
 
@@ -653,6 +661,7 @@ def getTable(table_id: int, retry: bool = True) -> dict:
         response.raise_for_status()
 
         data = response.json()
+
         # Vérifier le status
         status = data.get('status', 0)
         if status != 1:
@@ -696,3 +705,4 @@ def getTable(table_id: int, retry: bool = True) -> dict:
             'data': None,
             'pagination': None
         }
+        
