@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, effect, inject, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { GameHelper, GameModel } from '../../../01_models/03_business/game.model';
 import { PlayerService } from '../../../03_business/player.service';
 
@@ -13,7 +14,7 @@ interface GameStats {
   selector: 'app-player-history',
   standalone: true,
   templateUrl: './history.component.html',
-  imports: [CommonModule]
+  imports: [CommonModule, RouterLink]
 })
 export class HistoryComponent {
   player_id = input.required<string>();
@@ -102,6 +103,10 @@ export class HistoryComponent {
   getOpponentName(game: GameModel): string {
     if (!this.player_id()) return 'Unknown';
     return GameHelper.getOpponentName(game, this.player_id()) || 'Unknown';
+  }
+
+  getOpponentId(game: GameModel): string {
+    return game.player1_id === this.player_id() ? game.player2_id : game.player1_id;
   }
 
   getOpponentCountry(game: GameModel): string | undefined {
