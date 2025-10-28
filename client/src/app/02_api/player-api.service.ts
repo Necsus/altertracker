@@ -67,4 +67,8 @@ export class PlayerApiService {
   get_player_reload$(player_id: string): Observable<any> {
     return this.wabApiService.callGet$(this.controller, `reload/${player_id}`, undefined, 1800000); // 30 minutes
   }
+
+  get_import_table$(table_id: number): Observable<any> {
+    return this.wabApiService.callGet$(this.controller, `importtable/${table_id}`); // 30 minutes
+  }
 }

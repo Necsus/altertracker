@@ -100,4 +100,12 @@ export class PlayerService {
       })
     );
   }
+
+  get_import_table$(table_id: number): Observable<any> {
+    return this.playerApiService.get_import_table$(table_id).pipe(
+      map((response: any) => {
+        return response;
+      })
+    );
+  }
 }

@@ -104,12 +104,6 @@ def update_player_stats_data(player: Player, wins: int = 0, losses: int = 0, dra
         raise e
 
 def batch_update_players_stats_data(players_stats: dict) -> None:
-    """
-    Met à jour les stats de plusieurs joueurs en batch
-    
-    Args:
-        players_stats: Dict {player_id: {'wins': int, 'losses': int, 'draws': int, 'last_game_at': datetime}}
-    """
     try:
         for player_id, stats in players_stats.items():
             player = db.session.query(Player).filter_by(id=player_id).first()
@@ -260,7 +254,9 @@ def get_all_seasons_data() -> List[Season]:
     return db.session.query(Season).order_by(Season.season.desc()).all()
 
 def count_total_players_data() -> int:
-    return db.session.query(func.count(Player.id)).scalar()
+    return db.session.query(func.count(Player.id)).filter(
+        Player.bga_banned.isnot(True)
+    ).scalar()
 
 def get_current_season_data() -> Optional[Season]:
     return db.session.query(Season).filter_by(current=True).first()

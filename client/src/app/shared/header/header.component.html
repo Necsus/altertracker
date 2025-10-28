@@ -24,10 +24,6 @@
 
       <!-- Menu links -->
       <ul class="hidden sm:flex space-x-6 items-center">
-        <li><a routerLink="/" routerLinkActive="text-amber-400" [routerLinkActiveOptions]="{ exact: true }"
-            style="user-select: none;" class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
-            'header.home' | translate }}</a>
-        </li>
         <li><a routerLink="/articles" routerLinkActive="text-amber-400" [routerLinkActiveOptions]="{ exact: true }"
             style="user-select: none;" class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
             'header.articles' | translate }}</a>
@@ -111,9 +107,6 @@ class="hover:text-amber-400 transition duration-300 cursor-pointer"><i class="fa
     <!-- Mobile menu -->
     @if (isMenuOpen) {
     <div class="sm:hidden mt-4 space-y-4">
-      <a routerLink="/" routerLinkActive="text-amber-400" [routerLinkActiveOptions]="{ exact: true }"
-        (click)="isMenuOpen = false" class="block hover:text-amber-400 transition duration-300">{{
-        'header.home' | translate }}</a>
       <a routerLink="/articles" routerLinkActive="text-amber-400" [routerLinkActiveOptions]="{ exact: true }"
         (click)="isMenuOpen = false" class="block hover:text-amber-400 transition duration-300">{{
         'header.articles' | translate }}</a>

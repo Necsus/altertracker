@@ -9,6 +9,7 @@ class Player(db.Model):
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     bga_id = db.Column(db.Integer, unique=True, nullable=False)
+    bga_banned = db.Column(db.Boolean, default=False)
     name = db.Column(db.String(100), nullable=False)
     country = db.Column(db.String(3), nullable=True)
     team_id = db.Column(UUID(as_uuid=True), db.ForeignKey('teams.id'), nullable=True)  # ✅ UUID au lieu de Integer
@@ -53,6 +54,7 @@ class Player(db.Model):
         
         return {
             'id': str(self.id),  # ✅ Convertir UUID en string pour JSON
+            'bga_banned': self.bga_banned,
             'name': self.name,
             'country': self.country,
             'team_id': str(self.team_id) if self.team_id else None,  # ✅ UUID en string
@@ -186,7 +188,7 @@ class Game(db.Model):
     __tablename__ = 'games'
 
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    table_id = db.Column(db.Integer, nullable=False)
+    table_id = db.Column(db.Integer, unique=True, nullable=False)
     ranked = db.Column(db.Boolean, default=False)
 
     # Joueurs

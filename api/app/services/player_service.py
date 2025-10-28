@@ -3,7 +3,7 @@ import time
 import uuid
 from typing import List, Dict, Optional
 from app.models.player import Player, Game
-from app.scripts.bga_routine import getGames, getPlayer, getSearch, import_ladder_from_bga
+from app.scripts.bga_routine import getGames, getPlayer, getSearch, getTable, import_ladder_from_bga
 from app.data.player_data import (
     bulk_upsert_season_stats_data,
     count_total_players_data,
@@ -270,6 +270,23 @@ def import_player_bga_service(bga_id: int) -> dict:
         # 1. Récupérer les infos du joueur
         player_response = getPlayer(bga_id)
         if not player_response or player_response.get('status') != 1:
+            # ✅ Vérifier si le joueur est banni
+            if player_response.get('bga_banned'):
+                # Chercher si le joueur existe déjà en base
+                existing_player = get_player_by_bga_id_data(bga_id)
+                if existing_player:
+                    # Marquer le joueur comme banni
+                    existing_player.bga_banned = True
+                    update_player_data(existing_player)
+                    print(f"⚠️  Joueur {existing_player.name} marqué comme banni")
+                    
+                return {
+                    'status': 0,
+                    'error': 'Player is banned or does not exist on BGA',
+                    'player_id': str(existing_player.id) if existing_player else None,
+                    'bga_banned': True
+                }
+            
             return {
                 'status': 0,
                 'error': player_response.get('error', 'Unknown error') if player_response else 'No response',
@@ -413,16 +430,7 @@ def import_player_bga_service(bga_id: int) -> dict:
                     all_games_data, 
                     currentSeason.season
                 )
-                
                 all_seasons_stats['seasons_processed'] += 1
-                
-                # Affichage des stats de cette saison
-                print(f"\n📊 Saison {currentSeason.season} - Résultats:")
-                print(f"  ✅ Nouvelles parties: {games_stats['created']}")
-                print(f"  ℹ️  Déjà existantes: {games_stats['existing']}")
-                print(f"  ⏭️  Non-ranked: {games_stats['skipped_ranked']}")
-                print(f"  ❌ Erreurs: {games_stats['errors']}")
-                
             except Exception as e:
                 print(f"❌ Erreur lors de l'import des parties de la saison {currentSeason.season}: {e}")
                 import traceback
@@ -1027,4 +1035,56 @@ def reload_player_service(player_id: str) -> dict:
             'status': 0,
             'error': str(e),
             'player_id': player_id
+        }
+    
+def import_table_service(table_id: int) -> dict:
+    try:
+        print(f"\n🔄 Import de la table ID: {table_id}...")
+
+        table = get_game_by_table_id_data(table_id)
+        
+        # 1. Récupérer les données de la table depuis l'API BGA
+        data = getTable(table_id).get('data', {})
+        if not data:
+            return {
+                'status': 0,
+                'error': f'No data found for table ID: {table_id}',
+                'table_id': table_id
+            }
+        
+        logs = data.get('logs', [])
+        if not logs or len(logs) == 0:
+            return {
+                'status': 0,
+                'error': f'No logs found for table ID: {table_id}',
+                'table_id': table_id
+            }
+        
+        decks_selections = []
+        
+        for log in logs:
+            log_data = log.get('data', [])[0]
+            if log_data.get('type', '') == 'updateInitialPrecoDeckSelection':
+                private_data = log_data.get('args', {}).get('args', {}).get('_private')
+                private_data['player_id'] = int(log.get('channel', '').replace('/player/p', ''))
+                if private_data:
+                    if private_data.get('selection', '') == 'API':
+                        private_data.pop('decks', None)
+                    decks_selections.append(private_data)
+                    if len(decks_selections) == 2:
+                        break
+
+        return {
+            'status': 1,
+            'table': decks_selections
+        }
+        
+    except Exception as e:
+        print(f"\033[91m❌ Erreur critique lors de l'import de la table: {e}\033[0m")
+        import traceback
+        traceback.print_exc()
+        return {
+            'status': 0,
+            'error': str(e),
+            'table_id': table_id
         }

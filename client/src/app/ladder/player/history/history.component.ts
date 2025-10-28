@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, effect, inject, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { GameHelper, GameModel } from '../../../01_models/03_business/game.model';
 import { PlayerService } from '../../../03_business/player.service';
 
@@ -13,7 +14,7 @@ interface GameStats {
   selector: 'app-player-history',
   standalone: true,
   templateUrl: './history.component.html',
-  imports: [CommonModule]
+  imports: [CommonModule, RouterLink]
 })
 export class HistoryComponent {
   player_id = input.required<string>();
@@ -35,7 +36,7 @@ export class HistoryComponent {
     draws: 0
   };
   currentStreak = 0;
-
+  loadingTableId: number | null = null;
 
   private readonly playerService = inject(PlayerService);
 
@@ -104,6 +105,10 @@ export class HistoryComponent {
     return GameHelper.getOpponentName(game, this.player_id()) || 'Unknown';
   }
 
+  getOpponentId(game: GameModel): string {
+    return game.player1_id === this.player_id() ? game.player2_id : game.player1_id;
+  }
+
   getOpponentCountry(game: GameModel): string | undefined {
     // TODO: Récupérer le pays de l'adversaire depuis les données du joueur
     return undefined;
@@ -129,5 +134,20 @@ export class HistoryComponent {
       this.currentPage++;
       this.loadGames();
     }
+  }
+
+  loadTable(table_id: number): void {
+    this.loadingTableId = table_id;
+    this.playerService.get_import_table$(table_id)
+      .subscribe({
+        next: (response: any) => {
+          this.loadingTableId = null;
+          console.log('Table data:', response);
+        },
+        error: (error: any) => {
+          this.loadingTableId = null;
+          console.error('Error loading table data:', error);
+        }
+      });
   }
 }

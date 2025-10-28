@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, make_response, request
-from app.services.player_service import get_all_seasons_service, get_ladder_by_season_service, get_player_by_id_service, get_player_history_service, get_player_overview_service, get_total_players_service, import_player_bga_service, reload_player_service, search_players_bga_service, search_players_service, import_ladder_service
+from app.services.player_service import get_all_seasons_service, get_ladder_by_season_service, get_player_by_id_service, get_player_history_service, get_player_overview_service, get_total_players_service, import_player_bga_service, import_table_service, reload_player_service, search_players_bga_service, search_players_service, import_ladder_service
 from flask_jwt_extended import jwt_required
 from app.decorators.auth_decorator import admin_required
 from app.extensions import cache
@@ -7,6 +7,7 @@ from app.extensions import cache
 player_bp = Blueprint('player', __name__)
 
 @player_bp.route('/search', methods=['GET'])
+@jwt_required()
 def search_players_route():
     try:
         query = request.args.get('query', '', type=str)
@@ -20,6 +21,7 @@ def search_players_route():
         return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
     
 @player_bp.route('/searchbga', methods=['GET'])
+@jwt_required()
 def search_players_bga_route():
     try:
         query = request.args.get('query', '', type=str)
@@ -36,6 +38,7 @@ def search_players_bga_route():
         return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
     
 @player_bp.route('/importbga/<int:bga_id>', methods=['GET'])
+@jwt_required()
 def get_player_route(bga_id: int):
     try:
         response = import_player_bga_service(bga_id)
@@ -47,6 +50,7 @@ def get_player_route(bga_id: int):
         return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
 
 @player_bp.route('/<string:player_id>', methods=['GET'])
+@jwt_required()
 def get_player_by_id_route(player_id: str):
     try:
         player = get_player_by_id_service(player_id)
@@ -63,6 +67,7 @@ def get_player_by_id_route(player_id: str):
     
 
 @player_bp.route('/history/<string:player_id>', methods=['GET'])
+@jwt_required()
 def get_player_history_by_id_route(player_id: str):
     try:
         season = request.args.get('season', 0, type=int)
@@ -101,7 +106,8 @@ def import_ladder_route(season: int):
         }), 500
     
 @player_bp.route('/ladder/<int:season>', methods=['GET'])
-@cache.cached(timeout=3600, query_string=True)
+@cache.cached(timeout=900, query_string=True)
+@jwt_required()
 def get_ladder_by_season_route(season: int):
     try:
         # ✅ Paramètres de pagination
@@ -132,6 +138,7 @@ def get_ladder_by_season_route(season: int):
         return make_response(jsonify({'message': f'An error occurred: {str(e)}'}), 500)
 
 @player_bp.route('/infos', methods=['GET'])
+@jwt_required()
 def get_seasons_infos():
     try:
         return jsonify({
@@ -142,6 +149,7 @@ def get_seasons_infos():
         return make_response(jsonify({'message': f'An error occurred: {str(e)}'}), 500)
 
 @player_bp.route('/overview/<string:player_id>', methods=['GET'])
+@jwt_required()
 def get_player_overview_by_id_route(player_id: str):
     try:
         season = request.args.get('season', 0, type=int)
@@ -158,6 +166,7 @@ def get_player_overview_by_id_route(player_id: str):
         return make_response(jsonify({'message': f'An error occurred: {str(e)}'}), 500)
 
 @player_bp.route('/reload/<string:player_id>', methods=['GET'])
+@jwt_required()
 def reload_player_route(player_id: str):
     try:
         result = reload_player_service(player_id)
@@ -166,5 +175,16 @@ def reload_player_route(player_id: str):
             return jsonify(result), 200
         else:
             return jsonify(result), 400
+    except Exception as e:
+        return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
+    
+@player_bp.route('/importtable/<int:table_id>', methods=['GET'])
+@jwt_required()
+def import_table_route(table_id: int):
+    try:
+        result = import_table_service(table_id)
+        if result.get('status') != 1:
+            return jsonify({'message': result.get('error', 'Import failed')}), 500
+        return jsonify(result), 200
     except Exception as e:
         return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
