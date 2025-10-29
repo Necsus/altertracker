@@ -44,6 +44,33 @@ export class AuthViewService {
     }
   }
 
+  isBetaTester(): boolean {
+    const token = localStorage.getItem('access_token');
+    if (!token) return false;
+
+    try {
+      const decoded: any = jwtDecode(token);
+      return decoded.is_beta_tester || false;
+    } catch (err) {
+      console.error('Error decoding token', err);
+      return false;
+    }
+  }
+
+  activeBga(): boolean {
+    const token = localStorage.getItem('access_token');
+    if (!token) return false;
+
+    try {
+      const decoded: any = jwtDecode(token);
+      return decoded.active_bga || false;
+    } catch (err) {
+      console.error('Error decoding token', err);
+      return false;
+    }
+  }
+
+
   // Récupérer le username
   getUsername(): string | null {
     const token = localStorage.getItem('access_token');

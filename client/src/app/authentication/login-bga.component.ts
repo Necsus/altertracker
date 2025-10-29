@@ -1,70 +1,66 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, signal } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
-import { AuthService } from '../03_business/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login-bga',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
   templateUrl: './login-bga.component.html',
-  styleUrls: ['./login-bga.component.css']
+  imports: [CommonModule, ReactiveFormsModule]
 })
-export class LoginBgaComponent {
-  private readonly fb = inject(FormBuilder);
-  private readonly authService = inject(AuthService);
-  private readonly router = inject(Router);
-
+export class LoginBgaComponent implements OnInit {
   loginForm: FormGroup;
+  showPassword = signal(false);
   isLoading = signal(false);
   error = signal<string | null>(null);
-  showPassword = signal(false);
 
-  constructor() {
+  constructor(
+    private fb: FormBuilder,
+    private router: Router
+  ) {
     this.loginForm = this.fb.group({
-      login: ['', [Validators.required, Validators.minLength(3)]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      login: ['', Validators.required],
+      password: ['', Validators.required]
     });
   }
 
-  onSubmit(): void {
-    if (this.loginForm.invalid) {
-      this.error.set('Veuillez remplir tous les champs correctement');
-      return;
-    }
-
-    this.isLoading.set(true);
-    this.error.set(null);
-
-    // this.authService.login(this.loginForm.value).subscribe({
-    //   next: (response) => {
-    //     console.log('✅ Connexion réussie:', response);
-    //     this.isLoading.set(false);
-    //     this.router.navigate(['/ladder']);
-    //   },
-    //   error: (error) => {
-    //     console.error('❌ Erreur de connexion:', error);
-    //     this.isLoading.set(false);
-    //     this.error.set(error.error?.message || 'Identifiants incorrects');
-    //   }
-    // });
+  ngOnInit(): void {
+    // ...existing code...
   }
 
-  loginWithBGA(): void {
-    this.isLoading.set(true);
-    this.error.set(null);
-
-    try {
-      // this.authService.loginWithBGA();
-    } catch (err) {
-      console.error('❌ Erreur lors de la redirection BGA:', err);
-      this.isLoading.set(false);
-      this.error.set('Impossible de se connecter à BoardGameArena');
-    }
+  // ✅ Méthode pour retirer l'attribut readonly au focus
+  removeReadonly(event: FocusEvent): void {
+    const input = event.target as HTMLInputElement;
+    setTimeout(() => {
+      input.removeAttribute('readonly');
+    }, 100);
   }
 
   togglePasswordVisibility(): void {
     this.showPassword.set(!this.showPassword());
+  }
+
+  onSubmit(): void {
+    if (this.loginForm.valid) {
+      this.isLoading.set(true);
+      this.error.set(null);
+
+      const { login, password } = this.loginForm.value;
+
+      // this.authService.loginBGA(login, password).subscribe({
+      //   next: (response) => {
+      //     this.isLoading.set(false);
+      //     if (response.status === 1) {
+      //       this.router.navigate(['/ladder']);
+      //     } else {
+      //       this.error.set(response.error || 'Erreur de connexion');
+      //     }
+      //   },
+      //   error: (err) => {
+      //     this.isLoading.set(false);
+      //     this.error.set('Erreur de connexion au serveur');
+      //   }
+      // });
+    }
   }
 }

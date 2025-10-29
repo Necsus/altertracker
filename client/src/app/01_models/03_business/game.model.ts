@@ -9,6 +9,12 @@ export interface GameModel {
   player2_id: string; // UUID
   player2_name?: string;
 
+  player1_faction?: string;
+  player2_faction?: string;
+
+  player1_hero?: string;
+  player2_hero?: string;
+
   // Decks utilisés
   player1_deck_id?: string; // UUID
   player2_deck_id?: string; // UUID

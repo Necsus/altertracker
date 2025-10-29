@@ -198,6 +198,13 @@ class Game(db.Model):
     # Decks utilisés
     player1_deck_id = db.Column(UUID(as_uuid=True), db.ForeignKey('player_decks.id'), nullable=True)
     player2_deck_id = db.Column(UUID(as_uuid=True), db.ForeignKey('player_decks.id'), nullable=True)
+
+    # Factions utilisées
+    player1_faction = db.Column(db.String(2), nullable=True)
+    player2_faction = db.Column(db.String(2), nullable=True)
+
+    player1_hero = db.Column(db.String(100), nullable=True)
+    player2_hero = db.Column(db.String(100), nullable=True)
     
     # Résultat
     winner_id = db.Column(UUID(as_uuid=True), db.ForeignKey('players.id'), nullable=True)
@@ -239,11 +246,15 @@ class Game(db.Model):
             'table_id': self.table_id,
             'ranked': self.ranked,
             'player1_id': str(self.player1_id),
-            'player1_name': self.player1.name if self.player1 else None,  # ✅ Corrigé
-            'player1_country': self.player1.country if self.player1 else None,  # ✅ Ajouté
+            'player1_name': self.player1.name if self.player1 else None,
+            'player1_country': self.player1.country if self.player1 else None,
             'player2_id': str(self.player2_id),
             'player2_name': self.player2.name if self.player2 else None,
-            'player2_country': self.player2.country if self.player2 else None,  # ✅ Ajouté
+            'player2_country': self.player2.country if self.player2 else None,
+            'player1_faction': self.player1_faction,
+            'player2_faction': self.player2_faction,
+            'player1_hero': self.player1_hero,
+            'player2_hero': self.player2_hero,
             'player1_deck_id': str(self.player1_deck_id) if self.player1_deck_id else None,
             'player2_deck_id': str(self.player2_deck_id) if self.player2_deck_id else None,
             'winner_id': str(self.winner_id) if self.winner_id else None,

@@ -148,6 +148,8 @@ def login():
     additional_claims = {
         "is_admin": user.is_admin,
         "is_publisher": user.is_publisher,
+        "is_beta_tester": user.is_beta_tester,
+        "active_bga": user.active_bga,
         "username": user.username,
         "did_linked": True if user.discord_id else False
     }
@@ -166,6 +168,8 @@ def refresh_token():
     additional_claims = {
         "is_admin": user.is_admin,
         "is_publisher": user.is_publisher,
+        "is_beta_tester": user.is_beta_tester,
+        "active_bga": user.active_bga,
         "username": user.username,
         "did_linked": True if user.discord_id else False
     }

@@ -22,3 +22,23 @@ def publisher_required(fn):
             return jsonify({"message": "Publisher access required"}), 401
         return fn(*args, **kwargs)
     return wrapper
+
+def beta_tester_required(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        user_id = get_jwt_identity()
+        user = User.query.get(user_id)
+        if not user or not user.is_beta_tester:
+            return jsonify({"message": "Beta tester access required"}), 401
+        return fn(*args, **kwargs)
+    return wrapper
+
+def active_bga_required(fn):
+    @wraps(fn)
+    def wrapper(*args, **kwargs):
+        user_id = get_jwt_identity()
+        user = User.query.get(user_id)
+        if not user or not user.active_bga:
+            return jsonify({"message": "Bga access required"}), 401
+        return fn(*args, **kwargs)
+    return wrapper
