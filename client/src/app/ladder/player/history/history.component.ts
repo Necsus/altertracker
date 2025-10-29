@@ -3,6 +3,7 @@ import { Component, effect, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { GameHelper, GameModel } from '../../../01_models/03_business/game.model';
 import { PlayerService } from '../../../03_business/player.service';
+import { AuthViewService } from '../../../authentication/auth-view.service';
 
 interface GameStats {
   wins: number;
@@ -39,6 +40,11 @@ export class HistoryComponent {
   loadingTableId: number | null = null;
 
   private readonly playerService = inject(PlayerService);
+  private readonly authViewService = inject(AuthViewService);
+
+  get isActiveBga(): boolean {
+    return this.authViewService.activeBga();
+  }
 
   constructor() {
     effect(() => {

@@ -147,10 +147,9 @@ def update_user_alert():
         return jsonify({"message": f"Erreur lors de la mise à jour de l'alerte : {str(e)}"}), 400
 
 @user_bp.route('/contact', methods=['POST'])
-@jwt_required()
+@limiter.limit("5 per minute")
 def contact_form():
     try:
-        user_id = get_jwt_identity()
         data = request.get_json()
 
         # Vérification des champs requis
@@ -162,7 +161,7 @@ def contact_form():
             to=[{"email": "contact@altertracker.com", "name": "contact"}],
             subject=data.get('subject'),
             html_content= f"{data.get('email')}<br/>{data.get('message')}",
-            sender={"name": f"{data.get('name')} id: {user_id}", "email": "noreply@altertracker.com"}
+            sender={"name": f"{data.get('name')}", "email": "noreply@altertracker.com"}
         )
         try:
             response = mail_api.send_transac_email(send_smtp_email)

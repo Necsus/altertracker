@@ -23,9 +23,21 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "src/ads.txt",
-              "src/robots.txt",
-              "src/sitemap.xml"
+              {
+                "glob": "robots.txt",
+                "input": "src",
+                "output": "/"
+              },
+              {
+                "glob": "ads.txt",
+                "input": "src",
+                "output": "/"
+              },
+              {
+                "glob": "sitemap.xml",
+                "input": "src",
+                "output": "/"
+              }
             ],
             "styles": [
               "src/assets/css/styles.css",
@@ -93,9 +105,21 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "src/ads.txt",
-              "src/robots.txt",
-              "src/sitemap.xml"
+              {
+                "glob": "robots.txt",
+                "input": "src",
+                "output": "/"
+              },
+              {
+                "glob": "ads.txt",
+                "input": "src",
+                "output": "/"
+              },
+              {
+                "glob": "sitemap.xml",
+                "input": "src",
+                "output": "/"
+              }
             ],
             "styles": [
               "src/assets/css/styles.css",

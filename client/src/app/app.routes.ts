@@ -1,5 +1,8 @@
 import { Routes } from '@angular/router';
 import { AdminGuard } from './00_common/guards/admin.guard';
+import { BetaTesterGuard } from './00_common/guards/beta-tester.guard';
+import { BgaGuard } from './00_common/guards/bga.guard';
+import { noIndexGuard } from './00_common/guards/noindex.guard';
 import { PublisherGuard } from './00_common/guards/publisher.guard';
 import { TokenGuard } from './00_common/guards/token.guard';
 import { AboutComponent } from './about/about.component';
@@ -8,6 +11,7 @@ import { ArticleEditComponent } from './admin/article/article-edit.component';
 import { ArticlesComponent } from './article/articles.component';
 import { ArticleComponent } from './article/details/article.component';
 import { ForgotPasswordComponent } from './authentication/forgot-password/forgot-password.component';
+import { LoginBgaComponent } from './authentication/login-bga.component';
 import { LoginComponent } from './authentication/login.component';
 import { RegisterComponent } from './authentication/register.component';
 import { ResetPasswordComponent } from './authentication/reset-password/reset-password.component';
@@ -37,9 +41,9 @@ export const routes: Routes = [
   { path: 'cards', component: CardsComponent },
   { path: 'stats', component: StatsComponent },
   { path: 'stats/:reference', component: StatsComponent },
-  { path: 'players', component: LadderComponent, canActivate: [PublisherGuard] },
-  { path: 'player/:player_id', component: PlayerComponent, canActivate: [PublisherGuard] },
-  { path: 'team/:team_id', component: TeamComponent, canActivate: [PublisherGuard] },
+  { path: 'players', component: LadderComponent, canActivate: [BetaTesterGuard] },
+  { path: 'player/:player_id', component: PlayerComponent, canActivate: [BetaTesterGuard] },
+  { path: 'team/:team_id', component: TeamComponent, canActivate: [BetaTesterGuard] },
   { path: 'searches', component: UserSearchesComponent, canActivate: [TokenGuard] },
   { path: 'alerts', component: UserAlertsComponent, canActivate: [TokenGuard] },
   { path: 'me', component: MeComponent, canActivate: [TokenGuard] },
@@ -47,6 +51,7 @@ export const routes: Routes = [
   { path: 'chat', component: ChatComponent, canActivate: [TokenGuard] },
   { path: 'chat/:room_id', component: ChatComponent, canActivate: [TokenGuard] },
   { path: 'login', component: LoginComponent },
+  { path: 'login-bga', component: LoginBgaComponent, canActivate: [noIndexGuard, BgaGuard] },
   { path: 'register', component: RegisterComponent },
   { path: 'validate-email/:token', component: ValidateEmailComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
@@ -60,9 +65,9 @@ export const routes: Routes = [
   { path: 'cookies', component: CookiesPolicyComponent },
   { path: 'purchase-offers', component: PurchaseOffersComponent, canActivate: [TokenGuard] },
   { path: 'collection', component: CollectionComponent, canActivate: [TokenGuard] },
-  { path: 'admin', component: AdminComponent, canActivate: [AdminGuard] },
-  { path: 'admin/article/new', component: ArticleEditComponent, canActivate: [PublisherGuard] },
-  { path: 'admin/article/edit/:id', component: ArticleEditComponent, canActivate: [PublisherGuard] },
+  { path: 'admin', component: AdminComponent, canActivate: [noIndexGuard, AdminGuard] },
+  { path: 'admin/article/new', component: ArticleEditComponent, canActivate: [noIndexGuard, PublisherGuard] },
+  { path: 'admin/article/edit/:id', component: ArticleEditComponent, canActivate: [noIndexGuard, PublisherGuard] },
   { path: 'unauthorized', component: UnauthorizedComponent },
   { path: '**', component: NotFoundComponent }
 ];
