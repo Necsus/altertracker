@@ -23,6 +23,10 @@ export class HeaderComponent implements OnInit {
     private authViewService: AuthViewService,
     private cdr: ChangeDetectorRef) { }
 
+  get isBetaTester(): boolean {
+    return this.authViewService.isBetaTester();
+  }
+
   ngOnInit(): void {
     this.authViewService.isLoggedIn$.subscribe(status => {
       this.isLoggedIn = status;
