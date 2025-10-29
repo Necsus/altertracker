@@ -180,7 +180,7 @@ def reload_player_route(player_id: str):
     
 @player_bp.route('/importtable/<int:table_id>', methods=['GET'])
 @jwt_required()
-@active_bga_required()
+@active_bga_required
 def import_table_route(table_id: int):
     try:
         result = import_table_service(table_id)
