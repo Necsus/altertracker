@@ -20,6 +20,8 @@ class User(db.Model):
     is_banned = db.Column(db.Boolean, nullable=True)
     banned_at = db.Column(db.DateTime, nullable=True)
     discord_id = db.Column(db.String, nullable=True)
+    active_bga = db.Column(db.Boolean, default=False)
+    is_beta_tester = db.Column(db.Boolean, default=False)
 
     # ✅ Clé étrangère vers Player (SET NULL au lieu de CASCADE)
     player_id = db.Column(

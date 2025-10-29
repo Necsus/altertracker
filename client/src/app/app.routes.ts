@@ -8,6 +8,7 @@ import { ArticleEditComponent } from './admin/article/article-edit.component';
 import { ArticlesComponent } from './article/articles.component';
 import { ArticleComponent } from './article/details/article.component';
 import { ForgotPasswordComponent } from './authentication/forgot-password/forgot-password.component';
+import { LoginBgaComponent } from './authentication/login-bga.component';
 import { LoginComponent } from './authentication/login.component';
 import { RegisterComponent } from './authentication/register.component';
 import { ResetPasswordComponent } from './authentication/reset-password/reset-password.component';
@@ -47,6 +48,7 @@ export const routes: Routes = [
   { path: 'chat', component: ChatComponent, canActivate: [TokenGuard] },
   { path: 'chat/:room_id', component: ChatComponent, canActivate: [TokenGuard] },
   { path: 'login', component: LoginComponent },
+  { path: 'login-bga', component: LoginBgaComponent, canActivate: [AdminGuard] },
   { path: 'register', component: RegisterComponent },
   { path: 'validate-email/:token', component: ValidateEmailComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
