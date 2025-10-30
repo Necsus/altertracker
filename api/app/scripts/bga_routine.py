@@ -683,6 +683,7 @@ def getLogs(table_id: int, retry: bool = True) -> dict:
 
         return {
             'status': 1,
+            'error': '',
             'data': data.get('data', {}),
         }
         
@@ -712,20 +713,11 @@ def getLogs(table_id: int, retry: bool = True) -> dict:
 
 def getGamerView(table_id: int, retry: bool = True) -> dict:
     try:
-        url = "https://boardgamearena.com/gamereview?table=751728514&refreshtemplate=1"
+        url = "https://boardgamearena.com/gamereview"
         params = {
             "table": table_id,
             "refreshtemplate": 1
         }
-
-        # url = "https://boardgamearena.com/12/altered/altered/notificationHistory.html"
-        # params = {
-        #     "table": table_id,
-        #     "from": 1,
-        #     "privateinc": 1,
-        #     "history": 1,
-        #     "noerrortracking": "true"
-        # }
 
         TournoiEnLigne_sso_user = db.session.query(CookieManager).filter_by(name="TournoiEnLigne_sso_user").first()
         TournoiEnLigne_sso_id = db.session.query(CookieManager).filter_by(name="TournoiEnLigne_sso_id").first()
