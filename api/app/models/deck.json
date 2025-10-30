@@ -1,0 +1,2619 @@
+{
+  "status": 1,
+  "table": [
+    {
+      "API": {
+        "cardCount": 39,
+        "cards": {
+          "0": {
+            "card": {
+              "properties": {
+                "artist": "Nestor Papatriantafyllou",
+                "asset": "ALT_CORE_B_MU_04_C",
+                "costHand": 1,
+                "costReserve": 1,
+                "effectSupport": {
+                  "action": "Target",
+                  "args": {
+                    "effect": {
+                      "action": "Gain",
+                      "args": {
+                        "cardId": "me",
+                        "n": 1,
+                        "type": "anchored",
+                        "upTo": 99
+                      }
+                    },
+                    "maxHandCost": 3
+                  }
+                },
+                "faction": "MU",
+                "flavorText": "\"We don’t inherit the earth from our ancestors, we borrow it from our children.\"",
+                "forest": 0,
+                "mountain": 1,
+                "name": "Muna Caregiver",
+                "ocean": 0,
+                "rarity": 0,
+                "subtypes": [
+                  "druid"
+                ],
+                "supportDesc": "{D} : Target Character with Hand Cost {3} or less gains <ANCHORED>. (Discard me from Reserve to do this.)",
+                "supportIcon": "discard",
+                "type": "character",
+                "typeline": "Character - Druid",
+                "uid": "ALT_CORE_B_MU_04_C"
+              }
+            },
+            "n": 1
+          },
+          "1": {
+            "card": {
+              "properties": {
+                "artist": "Ba Vo",
+                "asset": "ALT_CORE_B_MU_06_R",
+                "costHand": 1,
+                "costReserve": 1,
+                "effectDesc": "{J} I gain $<ANCHORED>.  #At Noon — if I have 2 or more boosts, $<RESUPPLY>.#",
+                "effectPassive": {
+                  "Noon": {
+                    "condition": "hasBoost:2",
+                    "output": {
+                      "action": "Resupply",
+                      "args": []
+                    }
+                  }
+                },
+                "effectPlayed": {
+                  "action": "Gain",
+                  "args": {
+                    "cardId": "me",
+                    "n": 1,
+                    "type": "anchored",
+                    "upTo": 99
+                  }
+                },
+                "faction": "MU",
+                "flavorText": "Some say the harvesters are the caretakers of the world-trees.",
+                "forest": 1,
+                "mountain": 0,
+                "name": "Spindle Harvesters",
+                "ocean": 0,
+                "rarity": 1,
+                "subtypes": [
+                  "animal",
+                  "plant"
+                ],
+                "type": "character",
+                "typeline": "Character - Animal Plant",
+                "uid": "ALT_CORE_B_MU_06_R"
+              }
+            },
+            "n": 3
+          },
+          "2": {
+            "card": {
+              "properties": {
+                "artist": "Zael",
+                "asset": "ALT_BISE_B_MU_52_C",
+                "costHand": 2,
+                "costReserve": 2,
+                "effectDesc": "When a Character you control gains <ANCHORED> — I gain 1 boost.",
+                "effectPassive": {
+                  "Gain": {
+                    "conditions": [
+                      "hasPlayerGained:anchored"
+                    ],
+                    "output": {
+                      "action": "Gain",
+                      "args": {
+                        "cardId": "me",
+                        "n": 1,
+                        "type": "boost",
+                        "upTo": 99
+                      }
+                    }
+                  }
+                },
+                "extension": "WFTM",
+                "faction": "MU",
+                "flavorText": "She hunts mercilessly for treats and snuggles.",
+                "forest": 2,
+                "mountain": 1,
+                "name": "Cuddly Corgi",
+                "ocean": 1,
+                "rarity": 0,
+                "setIcon": "wfm",
+                "subtypes": [
+                  "animal"
+                ],
+                "type": "character",
+                "typeline": "Character - Animal",
+                "uid": "ALT_BISE_B_MU_52_C"
+              }
+            },
+            "n": 2
+          },
+          "3": {
+            "card": {
+              "properties": {
+                "artist": "Zael",
+                "asset": "ALT_BISE_B_MU_52_R",
+                "costHand": 2,
+                "costReserve": 2,
+                "effectDesc": "When a Character you control gains <ANCHORED> — #That Character# gains 1 boost.",
+                "effectPassive": {
+                  "Gain": {
+                    "conditions": [
+                      "hasPlayerGained:anchored"
+                    ],
+                    "output": {
+                      "action": "Gain",
+                      "args": {
+                        "cardId": "EFFECT",
+                        "n": 1,
+                        "type": "boost",
+                        "upTo": 99
+                      }
+                    }
+                  }
+                },
+                "extension": "WFTM",
+                "faction": "MU",
+                "flavorText": "She hunts mercilessly for treats and snuggles.",
+                "forest": 2,
+                "mountain": 1,
+                "name": "Cuddly Corgi",
+                "ocean": 1,
+                "rarity": 1,
+                "setIcon": "wfm",
+                "subtypes": [
+                  "animal"
+                ],
+                "type": "character",
+                "typeline": "Character - Animal",
+                "uid": "ALT_BISE_B_MU_52_R1"
+              }
+            },
+            "n": 1
+          },
+          "4": {
+            "card": {
+              "properties": {
+                "artist": "Edward Cheekokseang",
+                "asset": "ALT_CORE_B_AX_06_R",
+                "costHand": 2,
+                "costReserve": 2,
+                "effectDesc": "{J} #Plants# you control gain 1 boost.",
+                "effectPlayed": {
+                  "action": "SpecialEffect",
+                  "args": {
+                    "args": {
+                      "subType": "plant"
+                    },
+                    "effect": "boostAllSubtype"
+                  }
+                },
+                "faction": "MU",
+                "flavorText": "With every blow of his hammer, Ogun forges the Axiom's destiny.",
+                "forest": 2,
+                "mountain": 1,
+                "name": "Ogun",
+                "ocean": 1,
+                "rarity": 1,
+                "subtypes": [
+                  "engineer",
+                  "deity"
+                ],
+                "type": "character",
+                "typeline": "Character - Engineer Deity",
+                "uid": "ALT_CORE_B_AX_06_R2"
+              }
+            },
+            "n": 3
+          },
+          "5": {
+            "card": {
+              "properties": {
+                "artist": "Justice Wong",
+                "asset": "ALT_CORE_B_BR_11_U",
+                "costHand": 2,
+                "costReserve": 2,
+                "effectDesc": [
+                  "{J}",
+                  "If you control three or more Characters:",
+                  "Up to two target Characters each gain 1 boost.",
+                  "<BR>",
+                  "When a Character you control gains 1 or more boosts —",
+                  "[]]",
+                  "Up to one target Character with Hand Cost {3} or less other than me gains <ANCHORED>."
+                ],
+                "effectPassive": {
+                  "Gain": {
+                    "conditions": [
+                      "isCharacterBoostedAndUntap"
+                    ],
+                    "output": {
+                      "action": "Target",
+                      "args": {
+                        "effect": {
+                          "action": "Gain",
+                          "args": {
+                            "cardId": "EFFECT",
+                            "n": 1,
+                            "type": "anchored",
+                            "upTo": 99
+                          }
+                        },
+                        "excludeSelf": true,
+                        "maxHandCost": 3,
+                        "upTo": true
+                      }
+                    }
+                  }
+                },
+                "effectPlayed": {
+                  "action": "CheckCondition",
+                  "args": {
+                    "conditions": [
+                      "hasControl::3"
+                    ],
+                    "description": [
+                      "If you control three or more Characters:",
+                      "Up to two target Characters each gain 1 boost."
+                    ],
+                    "effect": {
+                      "action": "Target",
+                      "args": {
+                        "effect": {
+                          "action": "Gain",
+                          "args": {
+                            "type": "boost"
+                          }
+                        },
+                        "n": 2,
+                        "upTo": true
+                      }
+                    },
+                    "oppositeEffect": "OPPOSITE"
+                  }
+                },
+                "effectSupport": {
+                  "action": "SpecialEffect",
+                  "args": {
+                    "effect": "nextCharacterGains1Boost"
+                  }
+                },
+                "faction": "MU",
+                "forest": 0,
+                "mountain": 0,
+                "name": "Chiron",
+                "ocean": 0,
+                "rarity": 2,
+                "setIcon": "ks",
+                "subtypes": [
+                  "trainer"
+                ],
+                "supportDesc": [
+                  "{D}",
+                  "[]]",
+                  "The next Character you play this turn gains 1 boost."
+                ],
+                "supportIcon": "discard",
+                "type": "character",
+                "typeline": "Character - Trainer",
+                "uEffects": [
+                  [
+                    24,
+                    120,
+                    179
+                  ],
+                  [
+                    13,
+                    94,
+                    191
+                  ],
+                  [
+                    191,
+                    192,
+                    234
+                  ]
+                ],
+                "uid": "ALT_COREKS_B_BR_11_U_4077"
+              }
+            },
+            "n": 1
+          },
+          "6": {
+            "card": {
+              "properties": {
+                "artist": "Zero Wen",
+                "asset": "ALT_COREKS_B_MU_08_C",
+                "costHand": 2,
+                "costReserve": 2,
+                "effectDesc": "{J} I gain $<ANCHORED>.",
+                "effectPlayed": {
+                  "action": "Gain",
+                  "args": {
+                    "cardId": "me",
+                    "n": 1,
+                    "type": "anchored",
+                    "upTo": 99
+                  }
+                },
+                "faction": "MU",
+                "flavorText": "Little fella's got so mushroom in his heart.",
+                "forest": 1,
+                "mountain": 1,
+                "name": "Sneezer Shroom",
+                "ocean": 1,
+                "rarity": 0,
+                "subtypes": [
+                  "plant"
+                ],
+                "type": "character",
+                "typeline": "Character - Plant",
+                "uid": "ALT_CORE_B_MU_08_C"
+              }
+            },
+            "n": 3
+          },
+          "7": {
+            "card": {
+              "properties": {
+                "artist": "Khoa Viet",
+                "asset": "ALT_CYCLONE_B_LY_67_R",
+                "costHand": 2,
+                "costReserve": 2,
+                "effectDesc": "{J} I gain <ANCHORED>.  #At Noon — If I'm in {V}, create an <AEROLITH> token in target player's Landmarks.#",
+                "effectPassive": {
+                  "Noon": {
+                    "condition": "isInBiome:forest",
+                    "output": {
+                      "action": "InvokeToken",
+                      "args": {
+                        "allPlayers": true,
+                        "targetLocation": [
+                          "landmark"
+                        ],
+                        "tokenType": "NE_Common_Aerolith"
+                      }
+                    }
+                  }
+                },
+                "effectPlayed": {
+                  "action": "Gain",
+                  "args": {
+                    "cardId": "me",
+                    "n": 1,
+                    "type": "anchored",
+                    "upTo": 99
+                  }
+                },
+                "extension": "SO",
+                "faction": "MU",
+                "flavorText": "He's a fun guy, but he can get into some sticky situations.",
+                "forest": 2,
+                "mountain": 0,
+                "name": "Sticky Shroom",
+                "ocean": 0,
+                "rarity": 1,
+                "subtypes": [
+                  "plant"
+                ],
+                "type": "character",
+                "typeline": "Character - Plant",
+                "uid": "ALT_CYCLONE_B_LY_67_R2"
+              }
+            },
+            "n": 1
+          },
+          "8": {
+            "card": {
+              "properties": {
+                "artist": "Ba Vo",
+                "asset": "ALT_CORE_B_MU_13_C",
+                "costHand": 3,
+                "costReserve": 2,
+                "effectSupport": {
+                  "action": "Target",
+                  "args": {
+                    "effect": {
+                      "action": "Gain",
+                      "args": {
+                        "cardId": "me",
+                        "n": 1,
+                        "type": "anchored",
+                        "upTo": 99
+                      }
+                    },
+                    "maxHandCost": 3
+                  }
+                },
+                "faction": "MU",
+                "flavorText": "\"We are the sentinels of the Skein, always keeping a finger on the pulse of nature.\"",
+                "forest": 3,
+                "mountain": 2,
+                "name": "Muna Druid",
+                "ocean": 2,
+                "rarity": 0,
+                "subtypes": [
+                  "druid"
+                ],
+                "supportDesc": "{D} : Target Character with Hand Cost {3} or less gains <ANCHORED>. (Discard me from Reserve to do this.)",
+                "supportIcon": "discard",
+                "type": "character",
+                "typeline": "Character - Druid",
+                "uid": "ALT_CORE_B_MU_13_C"
+              }
+            },
+            "n": 3
+          },
+          "9": {
+            "card": {
+              "properties": {
+                "artist": "HuoMiao Studio",
+                "asset": "ALT_CORE_B_MU_15_C",
+                "costHand": 3,
+                "costReserve": 3,
+                "effectDesc": "{J} I gain $<ANCHORED>.  At Noon — I gain 1 boost.",
+                "effectPassive": {
+                  "Noon": {
+                    "condition": "isMe",
+                    "output": {
+                      "action": "Gain",
+                      "args": {
+                        "cardId": "me",
+                        "n": 1,
+                        "type": "boost",
+                        "upTo": 99
+                      }
+                    }
+                  }
+                },
+                "effectPlayed": {
+                  "action": "Gain",
+                  "args": {
+                    "cardId": "me",
+                    "n": 1,
+                    "type": "anchored",
+                    "upTo": 99
+                  }
+                },
+                "faction": "MU",
+                "flavorText": "They're sometimes seen dozing close to a pond, soaking in the water and the sunlight... ",
+                "forest": 0,
+                "mountain": 2,
+                "name": "Dracaena",
+                "ocean": 2,
+                "rarity": 0,
+                "subtypes": [
+                  "dragon",
+                  "plant"
+                ],
+                "type": "character",
+                "typeline": "Character - Dragon Plant",
+                "uid": "ALT_CORE_B_MU_15_C"
+              }
+            },
+            "n": 2
+          },
+          "10": {
+            "card": {
+              "properties": {
+                "artist": "HuoMiao Studio",
+                "asset": "ALT_CORE_B_MU_16_R",
+                "costHand": 3,
+                "costReserve": 3,
+                "effectDesc": "#{J} You may pay {1} to have me gain $<ANCHORED>.#  At Noon — $<RESUPPLY>.",
+                "effectPassive": {
+                  "Noon": {
+                    "condition": "isMe",
+                    "output": {
+                      "action": "Resupply",
+                      "args": []
+                    }
+                  }
+                },
+                "effectPlayed": {
+                  "childs": [
+                    {
+                      "action": "Pay",
+                      "args": {
+                        "pay": 1
+                      }
+                    },
+                    {
+                      "action": "Gain",
+                      "args": {
+                        "cardId": "me",
+                        "n": 1,
+                        "type": "anchored",
+                        "upTo": 99
+                      }
+                    }
+                  ],
+                  "optional": true,
+                  "type": "seq"
+                },
+                "faction": "MU",
+                "flavorText": "Moisturizing every day is essential.",
+                "forest": 2,
+                "mountain": 2,
+                "name": "Aloe Vera",
+                "ocean": 4,
+                "rarity": 1,
+                "subtypes": [
+                  "plant"
+                ],
+                "type": "character",
+                "typeline": "Character - Plant",
+                "uid": "ALT_CORE_B_MU_16_R"
+              }
+            },
+            "n": 3
+          },
+          "11": {
+            "card": {
+              "properties": {
+                "artist": "Zero Wen",
+                "asset": "ALT_CORE_B_AX_04_U",
+                "costHand": 3,
+                "costReserve": 2,
+                "effectDesc": [
+                  "{R}",
+                  "[]]",
+                  "You may put a card from your hand in Reserve.",
+                  "<BR>",
+                  "{J}",
+                  "If you control two or more Plants other than me:",
+                  "Target Character gains 1 boost.",
+                  "<BR>",
+                  "When a Character you control gains 1 or more boosts —",
+                  "[]]",
+                  "Up to one target Character with Hand Cost {3} or less other than me gains <ANCHORED>."
+                ],
+                "effectPassive": {
+                  "Gain": {
+                    "conditions": [
+                      "isCharacterBoostedAndUntap"
+                    ],
+                    "output": {
+                      "action": "Target",
+                      "args": {
+                        "effect": {
+                          "action": "Gain",
+                          "args": {
+                            "cardId": "EFFECT",
+                            "n": 1,
+                            "type": "anchored",
+                            "upTo": 99
+                          }
+                        },
+                        "excludeSelf": true,
+                        "maxHandCost": 3,
+                        "upTo": true
+                      }
+                    }
+                  }
+                },
+                "effectPlayed": {
+                  "action": "CheckCondition",
+                  "args": {
+                    "conditions": [
+                      "hasControl:plant:2:true"
+                    ],
+                    "description": [
+                      "If you control two or more Plants other than me:",
+                      "Target Character gains 1 boost."
+                    ],
+                    "effect": {
+                      "action": "Target",
+                      "args": {
+                        "effect": {
+                          "action": "Gain",
+                          "args": {
+                            "type": "boost"
+                          }
+                        }
+                      }
+                    },
+                    "oppositeEffect": "OPPOSITE"
+                  }
+                },
+                "effectReserve": {
+                  "action": "Target",
+                  "args": {
+                    "effect": {
+                      "action": "Discard",
+                      "args": {
+                        "destination": "reserve"
+                      }
+                    },
+                    "targetLocation": [
+                      "hand"
+                    ],
+                    "targetPlayer": "me",
+                    "targetType": [
+                      "character",
+                      "spell",
+                      "permanent"
+                    ],
+                    "upTo": true
+                  },
+                  "optional": true
+                },
+                "faction": "MU",
+                "forest": 2,
+                "mountain": 2,
+                "name": "Kelon Elemental",
+                "ocean": 2,
+                "rarity": 2,
+                "subtypes": [
+                  "elemental"
+                ],
+                "type": "character",
+                "typeline": "Character - Elemental",
+                "uEffects": [
+                  [
+                    1,
+                    41,
+                    191
+                  ],
+                  [
+                    24,
+                    77,
+                    166
+                  ],
+                  [
+                    13,
+                    94,
+                    191
+                  ]
+                ],
+                "uid": "ALT_CORE_B_AX_04_U_2982"
+              }
+            },
+            "n": 1
+          },
+          "12": {
+            "card": {
+              "properties": {
+                "artist": "Rémi Jacquot",
+                "asset": "ALT_CORE_B_LY_05_U",
+                "costHand": 3,
+                "costReserve": 2,
+                "effectDesc": [
+                  "{J}",
+                  "If you control two or more [BOOSTED_CHA_P] Characters:",
+                  "Target Character gains 2 boosts.",
+                  "<BR>",
+                  "When a Character you control gains 1 or more boosts —",
+                  "If you control two or more [BOOSTED_CHA_P] Characters:",
+                  "Up to one target Character with Hand Cost {3} or less other than me gains <ANCHORED>."
+                ],
+                "effectPassive": {
+                  "Gain": {
+                    "conditions": [
+                      "isCharacterBoostedAndUntap",
+                      "hasControl::2::boosted"
+                    ],
+                    "output": {
+                      "action": "Target",
+                      "args": {
+                        "effect": {
+                          "action": "Gain",
+                          "args": {
+                            "cardId": "EFFECT",
+                            "n": 1,
+                            "type": "anchored",
+                            "upTo": 99
+                          }
+                        },
+                        "excludeSelf": true,
+                        "maxHandCost": 3,
+                        "upTo": true
+                      }
+                    }
+                  }
+                },
+                "effectPlayed": {
+                  "action": "CheckCondition",
+                  "args": {
+                    "conditions": [
+                      "hasControl::2::boosted"
+                    ],
+                    "description": [
+                      "If you control two or more [BOOSTED_CHA_P] Characters:",
+                      "Target Character gains 2 boosts."
+                    ],
+                    "effect": {
+                      "action": "Target",
+                      "args": {
+                        "effect": {
+                          "action": "Gain",
+                          "args": {
+                            "n": 2,
+                            "type": "boost"
+                          }
+                        }
+                      }
+                    },
+                    "oppositeEffect": "OPPOSITE"
+                  }
+                },
+                "faction": "MU",
+                "forest": 2,
+                "mountain": 1,
+                "name": "Lyra Thespian",
+                "ocean": 1,
+                "rarity": 2,
+                "subtypes": [
+                  "artist"
+                ],
+                "type": "character",
+                "typeline": "Character - Artist",
+                "uEffects": [
+                  [
+                    24,
+                    119,
+                    169
+                  ],
+                  [
+                    13,
+                    94,
+                    169
+                  ]
+                ],
+                "uid": "ALT_CORE_B_LY_05_U_4418"
+              }
+            },
+            "n": 1
+          },
+          "13": {
+            "card": {
+              "properties": {
+                "artist": "Seppyo",
+                "asset": "ALT_CYCLONE_B_MU_70_C",
+                "costHand": 3,
+                "costReserve": 3,
+                "effectDesc": "{J} I gain $<ANCHORED>.  When a Character joins the Expedition facing me — I gain 1 boost.",
+                "effectPassive": {
+                  "ChooseAssignment": {
+                    "listeningConditions": [
+                      "isAddedCardAnyPlayer:character",
+                      "isPlayedInOpponentExpedition"
+                    ],
+                    "output": {
+                      "action": "Gain",
+                      "args": {
+                        "cardId": "me",
+                        "n": 1,
+                        "type": "boost",
+                        "upTo": 99
+                      }
+                    }
+                  },
+                  "InvokeToken": {
+                    "listeningConditions": [
+                      "isAddedCardAnyPlayer:character",
+                      "isPlayedInOpponentExpedition"
+                    ],
+                    "output": {
+                      "action": "Gain",
+                      "args": {
+                        "cardId": "me",
+                        "n": 1,
+                        "type": "boost",
+                        "upTo": 99
+                      }
+                    }
+                  },
+                  "MoveCard": {
+                    "conditions": [
+                      "isCardOfType:character",
+                      "isPlayedInOpponentExpedition"
+                    ],
+                    "output": {
+                      "action": "Gain",
+                      "args": {
+                        "cardId": "me",
+                        "n": 1,
+                        "type": "boost",
+                        "upTo": 99
+                      }
+                    }
+                  }
+                },
+                "effectPlayed": {
+                  "action": "Gain",
+                  "args": {
+                    "cardId": "me",
+                    "n": 1,
+                    "type": "anchored",
+                    "upTo": 99
+                  }
+                },
+                "extension": "SO",
+                "faction": "MU",
+                "flavorText": "Even the shyest become a bit less reserved when they hear its song.",
+                "forest": 1,
+                "mountain": 1,
+                "name": "Colorful Cuckoo",
+                "ocean": 1,
+                "rarity": 0,
+                "subtypes": [
+                  "animal"
+                ],
+                "type": "character",
+                "typeline": "Character - Animal",
+                "uid": "ALT_CYCLONE_B_MU_70_C"
+              }
+            },
+            "n": 2
+          },
+          "14": {
+            "card": {
+              "properties": {
+                "artist": "Zero Wen",
+                "asset": "ALT_CORE_B_BR_29_R",
+                "changedStats": [
+                  "costHand",
+                  "costReserve"
+                ],
+                "costHand": 2,
+                "costReserve": 2,
+                "effectDesc": "$<FLEETING>.  Discard one of your Mana Orbs. If you do, discard target Character or Permanent.",
+                "effectPlayed": {
+                  "childs": [
+                    {
+                      "action": "Gain",
+                      "args": {
+                        "cardId": "me",
+                        "n": 1,
+                        "type": "fleeting",
+                        "upTo": 99
+                      }
+                    },
+                    {
+                      "action": "Target",
+                      "args": {
+                        "effect": {
+                          "action": "Discard",
+                          "args": []
+                        },
+                        "targetLocation": [
+                          "mana"
+                        ],
+                        "targetPlayer": "me",
+                        "targetType": [
+                          "character",
+                          "token",
+                          "spell",
+                          "permanent"
+                        ]
+                      }
+                    },
+                    {
+                      "action": "Target",
+                      "args": {
+                        "effect": {
+                          "action": "Discard",
+                          "args": []
+                        },
+                        "targetType": [
+                          "character",
+                          "token",
+                          "permanent"
+                        ]
+                      }
+                    }
+                  ],
+                  "type": "seq"
+                },
+                "faction": "MU",
+                "flavorText": "Flames fly from his hand as he falls towards the monster, leaving a trail of glowing fire behind him...",
+                "name": "Mana Eruption",
+                "rarity": 1,
+                "subtypes": [
+                  "disruption"
+                ],
+                "type": "spell",
+                "typeline": "Spell - Disruption",
+                "uid": "ALT_CORE_B_BR_29_R2"
+              }
+            },
+            "n": 2
+          },
+          "15": {
+            "card": {
+              "properties": {
+                "artist": "HuoMiao Studio",
+                "asset": "ALT_CORE_B_MU_28_C",
+                "costHand": 1,
+                "costReserve": 3,
+                "effectDesc": "Target Character gains <ASLEEP>. (During Dusk, ignore its statistics. During Rest, it doesn't go to Reserve and it loses Asleep.)",
+                "effectPlayed": {
+                  "action": "Target",
+                  "args": {
+                    "effect": {
+                      "action": "Gain",
+                      "args": {
+                        "cardId": "EFFECT",
+                        "n": 1,
+                        "type": "asleep",
+                        "upTo": 99
+                      }
+                    }
+                  }
+                },
+                "faction": "MU",
+                "flavorText": "Yet beware of splinters of flax.",
+                "name": "Beauty Sleep",
+                "rarity": 0,
+                "subtypes": [
+                  "disruption"
+                ],
+                "type": "spell",
+                "typeline": "Spell - Disruption",
+                "uid": "ALT_CORE_B_MU_28_C"
+              }
+            },
+            "n": 1
+          },
+          "16": {
+            "card": {
+              "properties": {
+                "artist": "Zero Wen",
+                "asset": "ALT_CYCLONE_B_MU_75_R",
+                "costHand": 1,
+                "costReserve": 1,
+                "effectDesc": "#Target a player.# This Day, Characters with Hand Cost #{3} or more that they control# are <TOUGH_CHA_P_5>.",
+                "effectPlayed": {
+                  "action": "SpecialEffect",
+                  "args": {
+                    "args": {
+                      "minHandCost": 3,
+                      "tough": 5,
+                      "type": "character"
+                    },
+                    "effect": "globalTough"
+                  }
+                },
+                "extension": "SO",
+                "faction": "MU",
+                "flavorText": "\"This senseless hunt must stop!\"",
+                "name": "Kauri's Intervention",
+                "rarity": 1,
+                "subtypes": [
+                  "maneuver"
+                ],
+                "type": "spell",
+                "typeline": "Spell - Maneuver",
+                "uid": "ALT_CYCLONE_B_MU_75_R1"
+              }
+            },
+            "n": 1
+          },
+          "17": {
+            "card": {
+              "properties": {
+                "artist": "Rémi Jacquot",
+                "asset": "ALT_BISE_B_LY_61_R",
+                "costHand": 2,
+                "costReserve": 2,
+                "effectDesc": "<FLEETING>.  Target #two Characters# in play or in Reserve and exchange their boosts.  Draw a card.",
+                "effectPlayed": {
+                  "childs": [
+                    {
+                      "action": "Gain",
+                      "args": {
+                        "cardId": "me",
+                        "n": 1,
+                        "type": "fleeting",
+                        "upTo": 99
+                      }
+                    },
+                    {
+                      "action": "Target",
+                      "args": {
+                        "allIds": true,
+                        "effect": {
+                          "action": "BoostExchange",
+                          "args": []
+                        },
+                        "n": 2,
+                        "targetLocation": [
+                          "stormLeft",
+                          "stormRight",
+                          "reserve"
+                        ]
+                      }
+                    },
+                    {
+                      "action": "Draw",
+                      "args": {
+                        "players": "me"
+                      }
+                    }
+                  ],
+                  "type": "seq"
+                },
+                "extension": "WFTM",
+                "faction": "MU",
+                "flavorText": "When the rhythm picks up, the strings release the Sap covering them.",
+                "name": "Sap Duende",
+                "rarity": 1,
+                "setIcon": "wfm",
+                "subtypes": [
+                  "song"
+                ],
+                "type": "spell",
+                "typeline": "Spell - Song",
+                "uid": "ALT_BISE_B_LY_61_R2"
+              }
+            },
+            "n": 1
+          },
+          "18": {
+            "card": {
+              "properties": {
+                "artist": "Jean-Baptiste Andrier",
+                "asset": "ALT_BISE_B_MU_60_C",
+                "costHand": 2,
+                "costReserve": 2,
+                "effectDesc": "$<FLEETING>.  Choose one:  • Discard target <FLEETING> Character with Hand Cost {4} or less.  • Discard target Permanent with Hand Cost {4} or less.",
+                "effectPlayed": {
+                  "childs": [
+                    {
+                      "action": "Gain",
+                      "args": {
+                        "cardId": "me",
+                        "n": 1,
+                        "type": "fleeting",
+                        "upTo": 99
+                      }
+                    },
+                    {
+                      "childs": [
+                        {
+                          "action": "Target",
+                          "args": {
+                            "effect": {
+                              "action": "Discard",
+                              "args": []
+                            },
+                            "maxHandCost": 4,
+                            "statuses": [
+                              "fleeting"
+                            ],
+                            "targetType": [
+                              "character",
+                              "token"
+                            ]
+                          }
+                        },
+                        {
+                          "action": "Target",
+                          "args": {
+                            "effect": {
+                              "action": "Discard",
+                              "args": []
+                            },
+                            "maxHandCost": 4,
+                            "targetType": [
+                              "permanent"
+                            ]
+                          }
+                        }
+                      ],
+                      "type": "xor"
+                    }
+                  ],
+                  "type": "seq"
+                },
+                "extension": "WFTM",
+                "faction": "MU",
+                "flavorText": "Preserving harmony. Maintaining balance. Sometimes one thing must die so that another may live.",
+                "name": "Requiem",
+                "rarity": 0,
+                "setIcon": "wfm",
+                "subtypes": [
+                  "disruption",
+                  "song"
+                ],
+                "type": "spell",
+                "typeline": "Spell - Disruption Song",
+                "uid": "ALT_BISE_B_MU_60_C"
+              }
+            },
+            "n": 2
+          },
+          "19": {
+            "card": {
+              "properties": {
+                "artist": "Zero Wen",
+                "asset": "ALT_CORE_B_MU_27_C",
+                "costHand": 2,
+                "costReserve": 1,
+                "effectDesc": "Up to two target Characters each gain 1 boost$<BB>.",
+                "effectPlayed": {
+                  "action": "Target",
+                  "args": {
+                    "effect": {
+                      "action": "Gain",
+                      "args": {
+                        "type": "boost"
+                      }
+                    },
+                    "n": 2,
+                    "upTo": true
+                  }
+                },
+                "faction": "MU",
+                "flavorText": "When the sun shines, we'll shine together.",
+                "name": "Nurture",
+                "rarity": 0,
+                "subtypes": [
+                  "boon"
+                ],
+                "type": "spell",
+                "typeline": "Spell - Boon",
+                "uid": "ALT_CORE_B_MU_27_C"
+              }
+            },
+            "n": 2
+          },
+          "20": {
+            "card": {
+              "properties": {
+                "artist": "Zael",
+                "asset": "ALT_ALIZE_B_MU_44_C",
+                "costHand": 1,
+                "costReserve": 1,
+                "effectDesc": "{J} $<RESUPPLY>.  If an <ANCHORED> Character would leave my Expedition during the Afternoon, it loses <ANCHORED> instead.",
+                "effectPlayed": {
+                  "action": "Resupply",
+                  "args": []
+                },
+                "extension": "TBF",
+                "faction": "MU",
+                "flavorText": "A beautiful shelter from the raging elements outside.",
+                "name": "Floral Tent",
+                "protectAnchoredInExpedition": true,
+                "rarity": 0,
+                "setIcon": "tbf",
+                "subtypes": [
+                  "gear",
+                  "expedition"
+                ],
+                "type": "permanent",
+                "typeline": "Expedition_permanent - Gear",
+                "uid": "ALT_ALIZE_B_MU_44_C"
+              }
+            },
+            "n": 3
+          },
+          "hero": {
+            "card": {
+              "id": null,
+              "location": null,
+              "pId": null,
+              "properties": {
+                "artist": "Nestor Papatriantafyllou",
+                "asset": "ALT_CORE_B_MU_01_C",
+                "effectDesc": "The first Character you play each Afternoon gains 1 boost$<BB>.",
+                "effectPassive": {
+                  "ImmediateChooseAssignment": {
+                    "conditions": [
+                      "notUsed",
+                      "isCardPlayed:character"
+                    ],
+                    "output": {
+                      "childs": [
+                        {
+                          "action": "Gain",
+                          "args": {
+                            "cardId": "EFFECT",
+                            "n": 1,
+                            "type": "boost",
+                            "upTo": 99
+                          }
+                        },
+                        {
+                          "action": "SpecialEffect",
+                          "args": {
+                            "effect": "useCard"
+                          }
+                        }
+                      ],
+                      "type": "seq"
+                    }
+                  }
+                },
+                "faction": "MU",
+                "flavorText": "Nature must be nurtured to fully express its generosity.",
+                "landmarkSlots": 2,
+                "name": "Teija & Nauraa",
+                "rarity": 0,
+                "reserveSlots": 2,
+                "statData": 12,
+                "thumbnail": 0,
+                "type": "hero",
+                "typeline": "Muna Hero",
+                "uid": "ALT_CORE_B_MU_01_C"
+              },
+              "state": null
+            },
+            "n": 1
+          }
+        },
+        "deckName": "Post LCQ",
+        "faction": "MU",
+        "hero": "ALT_CORE_B_MU_01_C",
+        "id": "01K7VM1R2YESASTRP66Q090W5D"
+      },
+      "player_id": 95545487,
+      "selection": "API"
+    },
+    {
+      "API": {
+        "cardCount": 39,
+        "cards": {
+          "0": {
+            "card": {
+              "properties": {
+                "artist": "Nestor Papatriantafyllou",
+                "asset": "ALT_CORE_B_OR_16_R",
+                "changedStats": [
+                  "mountain",
+                  "ocean",
+                  "costHand",
+                  "costReserve"
+                ],
+                "costHand": 2,
+                "costReserve": 2,
+                "effectDesc": "When my Expedition fails to move forward during Dusk — Draw a card.",
+                "effectPassive": {
+                  "AfterDusk": {
+                    "condition": "myExpeditionHasNotMoved",
+                    "output": {
+                      "action": "Draw",
+                      "args": {
+                        "players": "me"
+                      }
+                    }
+                  }
+                },
+                "faction": "OD",
+                "flavorText": "Objection!",
+                "forest": 2,
+                "mountain": 2,
+                "name": "Ordis Attorney",
+                "ocean": 2,
+                "rarity": 1,
+                "subtypes": [
+                  "bureaucrat"
+                ],
+                "type": "character",
+                "typeline": "Character - Bureaucrat",
+                "uid": "ALT_CORE_B_OR_16_R"
+              }
+            },
+            "n": 3
+          },
+          "1": {
+            "card": {
+              "properties": {
+                "artist": "Ba Vo",
+                "asset": "ALT_BISE_B_MU_50_R",
+                "changedStats": [
+                  "costReserve"
+                ],
+                "costHand": 1,
+                "costReserve": 3,
+                "effectDesc": "#{R} I gain <ANCHORED>.#",
+                "effectInfinity": {
+                  "effectPassive": {
+                    "ChooseAssignment": {
+                      "conditions": [
+                        "isCardAdded:character:::true"
+                      ],
+                      "output": {
+                        "action": "Gain",
+                        "args": {
+                          "cardId": "me",
+                          "n": 1,
+                          "type": "boost",
+                          "upTo": 2
+                        }
+                      }
+                    },
+                    "InvokeToken": {
+                      "conditions": [
+                        "isCardAddedAnyPlayer:character:::true"
+                      ],
+                      "output": {
+                        "action": "Gain",
+                        "args": {
+                          "cardId": "me",
+                          "n": 1,
+                          "type": "boost",
+                          "upTo": 2
+                        }
+                      }
+                    },
+                    "MoveCard": {
+                      "conditions": [
+                        "isCardAddedAnyPlayer:character:::true",
+                        "hasSameOwner"
+                      ],
+                      "output": {
+                        "action": "Gain",
+                        "args": {
+                          "cardId": "me",
+                          "n": 1,
+                          "type": "boost",
+                          "upTo": 2
+                        }
+                      }
+                    }
+                  }
+                },
+                "effectReserve": {
+                  "action": "Gain",
+                  "args": {
+                    "cardId": "me",
+                    "n": 1,
+                    "type": "anchored",
+                    "upTo": 99
+                  }
+                },
+                "extension": "WFTM",
+                "faction": "OD",
+                "flavorText": "On the surface, pollination by bumblebeets is a key tool in growing Muna crops.",
+                "forest": 1,
+                "mountain": 1,
+                "name": "Bumblebeet",
+                "ocean": 1,
+                "rarity": 1,
+                "setIcon": "wfm",
+                "subtypes": [
+                  "plant",
+                  "animal"
+                ],
+                "supportDesc": "{I} #When another Character joins your Expeditions# — I gain 1 boost, up to a max of 2.",
+                "supportIcon": "infinity",
+                "type": "character",
+                "typeline": "Character - Plant Animal",
+                "uid": "ALT_BISE_B_MU_50_R2"
+              }
+            },
+            "n": 2
+          },
+          "2": {
+            "card": {
+              "properties": {
+                "artist": "Matteo Spirito",
+                "asset": "ALT_BISE_B_OR_49_C",
+                "costHand": 1,
+                "costReserve": 2,
+                "effectInfinity": {
+                  "effectPassive": {
+                    "ChooseAssignment": {
+                      "conditions": [
+                        "isCardAdded:character:::true",
+                        "hasSameOwner"
+                      ],
+                      "output": {
+                        "action": "Gain",
+                        "args": {
+                          "cardId": "me",
+                          "n": 1,
+                          "type": "boost",
+                          "upTo": 2
+                        }
+                      }
+                    },
+                    "InvokeToken": {
+                      "conditions": [
+                        "isCardAddedAnyPlayer:character:::true",
+                        "hasSameOwner"
+                      ],
+                      "output": {
+                        "action": "Gain",
+                        "args": {
+                          "cardId": "me",
+                          "n": 1,
+                          "type": "boost",
+                          "upTo": 2
+                        }
+                      }
+                    },
+                    "MoveCard": {
+                      "conditions": [
+                        "isCardAddedAnyPlayer:character:::true",
+                        "hasSameOwner"
+                      ],
+                      "output": {
+                        "action": "Gain",
+                        "args": {
+                          "cardId": "me",
+                          "n": 1,
+                          "type": "boost",
+                          "upTo": 2
+                        }
+                      }
+                    }
+                  }
+                },
+                "extension": "WFTM",
+                "faction": "OD",
+                "flavorText": "He's surprisingly happy for someone who cries all day.",
+                "forest": 1,
+                "mountain": 1,
+                "name": "Ordis Crier",
+                "ocean": 0,
+                "rarity": 0,
+                "setIcon": "wfm",
+                "subtypes": [
+                  "animal"
+                ],
+                "supportDesc": "{I} When another Character joins your Expeditions — I gain 1 boost, up to a max of 2.",
+                "supportIcon": "infinity",
+                "type": "character",
+                "typeline": "Character - Animal",
+                "uid": "ALT_BISE_B_OR_49_C"
+              }
+            },
+            "n": 2
+          },
+          "3": {
+            "card": {
+              "properties": {
+                "artist": "Jean-Baptiste Andrier",
+                "asset": "ALT_CORE_B_OR_05_R",
+                "changedStats": [
+                  "mountain",
+                  "ocean"
+                ],
+                "costHand": 1,
+                "costReserve": 1,
+                "faction": "OD",
+                "flavorText": "\"Chin up and stand tall. You’re shieldbearers of the Aegis now!\"",
+                "forest": 1,
+                "mountain": 2,
+                "name": "Ordis Trooper",
+                "ocean": 2,
+                "rarity": 1,
+                "subtypes": [
+                  "soldier"
+                ],
+                "type": "character",
+                "typeline": "Character - Soldier",
+                "uid": "ALT_CORE_B_OR_05_R"
+              }
+            },
+            "n": 3
+          },
+          "4": {
+            "card": {
+              "properties": {
+                "artist": "Romain Kurdi",
+                "asset": "ALT_ALIZE_B_MU_31_R",
+                "costHand": 2,
+                "costReserve": 2,
+                "effectDesc": "#{J}# You may exhaust ({T}) target card in Reserve. (Exhausted cards can't be played and have no Support abilities.)",
+                "effectPlayed": {
+                  "action": "Target",
+                  "args": {
+                    "effect": {
+                      "action": "Exhaust",
+                      "args": []
+                    },
+                    "targetLocation": [
+                      "reserve"
+                    ],
+                    "targetType": [
+                      "character",
+                      "spell",
+                      "permanent"
+                    ],
+                    "upTo": true
+                  }
+                },
+                "extension": "TBF",
+                "faction": "OD",
+                "flavorText": "Another holiday... Just the icing on the cake!",
+                "forest": 2,
+                "mountain": 1,
+                "name": "Jack Frost",
+                "ocean": 2,
+                "rarity": 1,
+                "setIcon": "tbf",
+                "subtypes": [
+                  "mage"
+                ],
+                "type": "character",
+                "typeline": "Character - Mage",
+                "uid": "ALT_ALIZE_B_MU_31_R2"
+              }
+            },
+            "n": 3
+          },
+          "5": {
+            "card": {
+              "properties": {
+                "artist": "Romain Kurdi",
+                "asset": "ALT_CORE_B_OR_08_C",
+                "costHand": 2,
+                "costReserve": 2,
+                "effectDesc": "When my Expedition fails to move forward during Dusk — $<SABOTAGE> after Rest.",
+                "effectPassive": {
+                  "AfterDusk": {
+                    "condition": "myExpeditionHasNotMoved",
+                    "output": {
+                      "action": "SpecialEffect",
+                      "args": {
+                        "effect": "AfterRestSabotage"
+                      }
+                    }
+                  }
+                },
+                "faction": "OD",
+                "flavorText": "Your document has expired. Needless to say, that's not his problem.",
+                "forest": 2,
+                "mountain": 1,
+                "name": "Monolith Legate",
+                "ocean": 2,
+                "rarity": 0,
+                "subtypes": [
+                  "bureaucrat"
+                ],
+                "type": "character",
+                "typeline": "Character - Bureaucrat",
+                "uid": "ALT_CORE_B_OR_08_C"
+              }
+            },
+            "n": 1
+          },
+          "6": {
+            "card": {
+              "properties": {
+                "artist": "Gaga Zhou",
+                "asset": "ALT_CORE_B_OR_09_C",
+                "costHand": 2,
+                "costReserve": 2,
+                "faction": "OD",
+                "flavorText": "Thankfully, he doesn't seal his contracts with a kiss.",
+                "forest": 3,
+                "mountain": 0,
+                "name": "The Frog Prince",
+                "ocean": 3,
+                "rarity": 0,
+                "subtypes": [
+                  "bureaucrat",
+                  "noble"
+                ],
+                "type": "character",
+                "typeline": "Character - Bureaucrat Noble",
+                "uid": "ALT_CORE_B_OR_09_C"
+              }
+            },
+            "n": 2
+          },
+          "7": {
+            "card": {
+              "properties": {
+                "artist": "Jefrey Yonathan",
+                "asset": "ALT_CYCLONE_B_OR_67_C",
+                "costHand": 2,
+                "costReserve": 2,
+                "effectDesc": "{H} If I'm in an Ascended Expedition, I gain 1 boost. Otherwise, my Expedition <ASCENDS>. (Until Rest, it can move forward even if matched in its region's terrains by the opponent's Expedition.)",
+                "effectHand": {
+                  "childs": [
+                    {
+                      "action": "CheckCondition",
+                      "args": {
+                        "condition": "isCardExpeditionAscended",
+                        "effect": {
+                          "action": "Gain",
+                          "args": {
+                            "cardId": "me",
+                            "n": 1,
+                            "type": "boost",
+                            "upTo": 99
+                          }
+                        },
+                        "oppositeEffect": {
+                          "action": "SpecialEffect",
+                          "args": {
+                            "effect": "ascend",
+                            "expedition": "source"
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "type": "xor"
+                },
+                "extension": "SO",
+                "faction": "OD",
+                "flavorText": "After months of expeditions, Aedyt felt she had finally spread her wings.",
+                "forest": 2,
+                "mountain": 2,
+                "name": "Ascended Trooper",
+                "ocean": 2,
+                "rarity": 0,
+                "subtypes": [
+                  "soldier"
+                ],
+                "type": "character",
+                "typeline": "Character - Soldier",
+                "uid": "ALT_CYCLONE_B_OR_67_C"
+              }
+            },
+            "n": 2
+          },
+          "8": {
+            "card": {
+              "properties": {
+                "artist": "Jefrey Yonathan",
+                "asset": "ALT_CYCLONE_B_OR_67_R",
+                "costHand": 2,
+                "costReserve": 2,
+                "effectDesc": "#{J}# If I'm in an Ascended Expedition, I gain 1 boost. Otherwise, my Expedition <ASCENDS>.",
+                "effectPlayed": {
+                  "childs": [
+                    {
+                      "action": "CheckCondition",
+                      "args": {
+                        "condition": "isCardExpeditionAscended",
+                        "effect": {
+                          "action": "Gain",
+                          "args": {
+                            "cardId": "me",
+                            "n": 1,
+                            "type": "boost",
+                            "upTo": 99
+                          }
+                        },
+                        "oppositeEffect": {
+                          "action": "SpecialEffect",
+                          "args": {
+                            "effect": "ascend",
+                            "expedition": "source"
+                          }
+                        }
+                      }
+                    }
+                  ],
+                  "type": "xor"
+                },
+                "extension": "SO",
+                "faction": "OD",
+                "flavorText": "After months of expeditions, Aedyt felt she had finally spread her wings.",
+                "forest": 2,
+                "mountain": 2,
+                "name": "Ascended Trooper",
+                "ocean": 2,
+                "rarity": 1,
+                "subtypes": [
+                  "soldier"
+                ],
+                "type": "character",
+                "typeline": "Character - Soldier",
+                "uid": "ALT_CYCLONE_B_OR_67_R1"
+              }
+            },
+            "n": 1
+          },
+          "9": {
+            "card": {
+              "properties": {
+                "artist": "Taras Susak",
+                "asset": "ALT_CYCLONE_B_OR_71_C",
+                "costHand": 2,
+                "costReserve": 2,
+                "effectDesc": "{H} Target Expedition <ASCENDS>. (Until Rest, it can move forward even if matched in its region's terrains by the opponent's Expedition.)",
+                "effectHand": {
+                  "action": "TargetExpedition",
+                  "args": {
+                    "effect": {
+                      "action": "SpecialEffect",
+                      "args": {
+                        "effect": "ascend"
+                      }
+                    }
+                  }
+                },
+                "extension": "SO",
+                "faction": "OD",
+                "flavorText": "At the slightest sign of intrusion, these stone lookouts come to life and sound the alarm.",
+                "forest": 2,
+                "mountain": 3,
+                "name": "Gargoyle",
+                "ocean": 0,
+                "rarity": 0,
+                "subtypes": [
+                  "elemental"
+                ],
+                "type": "character",
+                "typeline": "Character - Elemental",
+                "uid": "ALT_CYCLONE_B_OR_71_C"
+              }
+            },
+            "n": 2
+          },
+          "10": {
+            "card": {
+              "properties": {
+                "artist": "Taras Susak",
+                "asset": "ALT_BISE_B_OR_54_C",
+                "costHand": 3,
+                "costReserve": 3,
+                "effectDesc": "$<SCOUT_1> {1}.  When I leave the Expedition zone — Create an <ORDIS_RECRUIT> Soldier token in my Expedition.",
+                "effectPassive": {
+                  "LeaveExpedition": {
+                    "output": {
+                      "action": "InvokeToken",
+                      "args": {
+                        "pId": "controller",
+                        "targetLocation": [
+                          "source"
+                        ],
+                        "tokenType": "OD_Common_OrdisRecruit"
+                      }
+                    },
+                    "pId": "controller"
+                  }
+                },
+                "extension": "WFTM",
+                "faction": "OD",
+                "flavorText": "The Templars always ensure that the area is safe.",
+                "forest": 2,
+                "mountain": 2,
+                "name": "Aegis Templar",
+                "ocean": 3,
+                "rarity": 0,
+                "scout": 1,
+                "setIcon": "wfm",
+                "subtypes": [
+                  "soldier"
+                ],
+                "type": "character",
+                "typeline": "Character - Soldier",
+                "uid": "ALT_BISE_B_OR_54_C"
+              }
+            },
+            "n": 2
+          },
+          "11": {
+            "card": {
+              "properties": {
+                "artist": "Nestor Papatriantafyllou",
+                "asset": "ALT_CORE_B_LY_15_R",
+                "changedStats": [
+                  "costReserve"
+                ],
+                "costHand": 3,
+                "costReserve": 2,
+                "effectDesc": "{H} Up to one target Character gains <ASLEEP>. #You may have it gain 2 boosts.# (During Dusk, ignore its statistics. During Rest, it doesn't go to Reserve and it loses Asleep.)",
+                "effectHand": {
+                  "action": "Target",
+                  "args": {
+                    "effect": {
+                      "childs": [
+                        {
+                          "action": "Gain",
+                          "args": {
+                            "cardId": "EFFECT",
+                            "n": 1,
+                            "type": "asleep",
+                            "upTo": 99
+                          }
+                        },
+                        {
+                          "childs": [
+                            {
+                              "action": "Gain",
+                              "args": {
+                                "cardId": "EFFECT",
+                                "n": 1,
+                                "type": "asleep",
+                                "upTo": 99
+                              }
+                            },
+                            {
+                              "action": "Gain",
+                              "args": {
+                                "cardId": "EFFECT",
+                                "n": 2,
+                                "type": "boost",
+                                "upTo": 99
+                              }
+                            }
+                          ],
+                          "type": "seq"
+                        }
+                      ],
+                      "type": "xor"
+                    },
+                    "upTo": true
+                  }
+                },
+                "faction": "OD",
+                "flavorText": "\"Sand gives you a taste of what life is all about. Come morning, the castles you have built will be gone with the tide.\"",
+                "forest": 0,
+                "mountain": 3,
+                "name": "The Sandman",
+                "ocean": 3,
+                "rarity": 1,
+                "subtypes": [
+                  "artist"
+                ],
+                "type": "character",
+                "typeline": "Character - Artist",
+                "uid": "ALT_CORE_B_LY_15_R2"
+              }
+            },
+            "n": 2
+          },
+          "12": {
+            "card": {
+              "properties": {
+                "artist": "Anh Tung",
+                "asset": "ALT_CORE_B_OR_06_U",
+                "costHand": 3,
+                "costReserve": 2,
+                "effectDesc": [
+                  "{H}",
+                  "[]]",
+                  "Create an <ORDIS_RECRUIT> Soldier token in your Hero Expedition.",
+                  "<BR>",
+                  "{J}",
+                  "If you control three or more Characters:",
+                  "Draw a card."
+                ],
+                "effectHand": {
+                  "action": "InvokeToken",
+                  "args": {
+                    "pId": "controller",
+                    "targetLocation": [
+                      "stormLeft"
+                    ],
+                    "tokenType": "OD_Common_OrdisRecruit"
+                  }
+                },
+                "effectPlayed": {
+                  "action": "CheckCondition",
+                  "args": {
+                    "conditions": [
+                      "hasControl::3"
+                    ],
+                    "description": [
+                      "If you control three or more Characters:",
+                      "Draw a card."
+                    ],
+                    "effect": {
+                      "action": "Draw",
+                      "args": {
+                        "players": "me"
+                      }
+                    },
+                    "oppositeEffect": "OPPOSITE"
+                  }
+                },
+                "effectSupport": {
+                  "action": "Target",
+                  "args": {
+                    "effect": {
+                      "action": "Gain",
+                      "args": {
+                        "cardId": "EFFECT",
+                        "n": 1,
+                        "type": "fleeting",
+                        "upTo": 99
+                      }
+                    },
+                    "targetType": [
+                      "character",
+                      "token"
+                    ],
+                    "upTo": true
+                  }
+                },
+                "faction": "OD",
+                "forest": 2,
+                "mountain": 0,
+                "name": "Ordis Cadets",
+                "ocean": 2,
+                "rarity": 2,
+                "subtypes": [
+                  "apprentice",
+                  "soldier"
+                ],
+                "supportDesc": [
+                  "{D}",
+                  "[]]",
+                  "Up to one target Character gains <FLEETING>."
+                ],
+                "supportIcon": "discard",
+                "type": "character",
+                "typeline": "Character - Apprentice - Soldier",
+                "uEffects": [
+                  [
+                    22,
+                    66,
+                    191
+                  ],
+                  [
+                    24,
+                    90,
+                    179
+                  ],
+                  [
+                    70,
+                    191,
+                    192
+                  ]
+                ],
+                "uid": "ALT_CORE_B_OR_06_U_5693"
+              }
+            },
+            "n": 1
+          },
+          "13": {
+            "card": {
+              "properties": {
+                "artist": "Taras Susak",
+                "asset": "ALT_CORE_B_OR_11_U",
+                "costHand": 3,
+                "costReserve": 3,
+                "effectDesc": [
+                  "{J}",
+                  "If you control a token:",
+                  "Draw a card.",
+                  "<BR>",
+                  "{R}",
+                  "If you have less than eight Mana Orbs:",
+                  "Create an <ORDIS_RECRUIT> Soldier token in target Expedition.",
+                  "<BR>",
+                  "{R}",
+                  "You may pay {1}. If you do:",
+                  "You may discard target Permanent with Hand Cost {4} or more."
+                ],
+                "effectPlayed": {
+                  "action": "CheckCondition",
+                  "args": {
+                    "conditions": [
+                      "hasControl:token:1"
+                    ],
+                    "description": [
+                      "If you control a token:",
+                      "Draw a card."
+                    ],
+                    "effect": {
+                      "action": "Draw",
+                      "args": {
+                        "players": "me"
+                      }
+                    },
+                    "oppositeEffect": "OPPOSITE"
+                  }
+                },
+                "effectReserve": {
+                  "childs": [
+                    {
+                      "action": "CheckCondition",
+                      "args": {
+                        "conditions": [
+                          "hasLess8Mana"
+                        ],
+                        "description": [
+                          "If you have less than eight Mana Orbs:",
+                          "Create an <ORDIS_RECRUIT> Soldier token in target Expedition."
+                        ],
+                        "effect": {
+                          "action": "InvokeToken",
+                          "args": {
+                            "pId": "source",
+                            "tokenType": "OD_Common_OrdisRecruit"
+                          }
+                        },
+                        "oppositeEffect": "OPPOSITE"
+                      }
+                    },
+                    {
+                      "childs": [
+                        {
+                          "action": "Pay",
+                          "args": {
+                            "pay": 1
+                          }
+                        },
+                        {
+                          "action": "Target",
+                          "args": {
+                            "effect": {
+                              "action": "Discard",
+                              "args": []
+                            },
+                            "minHandCost": 4,
+                            "targetType": [
+                              "permanent"
+                            ],
+                            "upTo": true
+                          }
+                        }
+                      ],
+                      "optional": true,
+                      "type": "seq"
+                    }
+                  ],
+                  "type": "parallel"
+                },
+                "faction": "OD",
+                "forest": 2,
+                "mountain": 2,
+                "name": "Ozma",
+                "ocean": 2,
+                "rarity": 2,
+                "subtypes": [
+                  "noble"
+                ],
+                "type": "character",
+                "typeline": "Character - Noble",
+                "uEffects": [
+                  [
+                    24,
+                    90,
+                    188
+                  ],
+                  [
+                    1,
+                    81,
+                    198
+                  ],
+                  [
+                    1,
+                    104,
+                    186
+                  ]
+                ],
+                "uid": "ALT_CORE_B_OR_11_U_5057"
+              }
+            },
+            "n": 1
+          },
+          "14": {
+            "card": {
+              "properties": {
+                "artist": "Matteo Spirito",
+                "asset": "ALT_CORE_B_OR_14_C",
+                "costHand": 3,
+                "costReserve": 2,
+                "effectDesc": "{H} $<SABOTAGE>.",
+                "effectHand": {
+                  "action": "Target",
+                  "args": {
+                    "effect": {
+                      "action": "Discard",
+                      "args": []
+                    },
+                    "targetLocation": [
+                      "reserve"
+                    ],
+                    "targetType": [
+                      "character",
+                      "spell",
+                      "token",
+                      "permanent"
+                    ],
+                    "upTo": true
+                  }
+                },
+                "faction": "OD",
+                "flavorText": "Stirred, but not shaken.",
+                "forest": 2,
+                "mountain": 2,
+                "name": "Ordis Spy",
+                "ocean": 2,
+                "rarity": 0,
+                "subtypes": [
+                  "citizen"
+                ],
+                "type": "character",
+                "typeline": "Character - Citizen",
+                "uid": "ALT_CORE_B_OR_14_C"
+              }
+            },
+            "n": 2
+          },
+          "15": {
+            "card": {
+              "properties": {
+                "artist": "Matteo Spirito",
+                "asset": "ALT_CORE_B_OR_14_U",
+                "costHand": 3,
+                "costReserve": 3,
+                "effectDesc": [
+                  "{J}",
+                  "[]]",
+                  "<SABOTAGE>.",
+                  "<BR>",
+                  "When another non-token Character joins your Expeditions —",
+                  "You may put a card from your hand in Reserve. If you do:",
+                  "Create two <ORDIS_RECRUIT> Soldier tokens in my Expedition."
+                ],
+                "effectPassive": {
+                  "ChooseAssignment": {
+                    "conditions": [
+                      "isCardPlayed:characterOnly:::true"
+                    ],
+                    "output": {
+                      "action": "Target",
+                      "args": {
+                        "effect": {
+                          "childs": [
+                            {
+                              "action": "Discard",
+                              "args": {
+                                "destination": "reserve"
+                              }
+                            },
+                            {
+                              "childs": [
+                                {
+                                  "action": "InvokeToken",
+                                  "args": {
+                                    "pId": "controller",
+                                    "targetLocation": [
+                                      "initialSource"
+                                    ],
+                                    "tokenType": "OD_Common_OrdisRecruit"
+                                  }
+                                },
+                                {
+                                  "action": "InvokeToken",
+                                  "args": {
+                                    "moreThan1": true,
+                                    "pId": "controller",
+                                    "targetLocation": [
+                                      "initialSource"
+                                    ],
+                                    "tokenType": "OD_Common_OrdisRecruit"
+                                  }
+                                }
+                              ],
+                              "type": "seq"
+                            }
+                          ],
+                          "type": "seq"
+                        },
+                        "targetLocation": [
+                          "hand"
+                        ],
+                        "targetPlayer": "me",
+                        "targetType": [
+                          "character",
+                          "spell",
+                          "permanent"
+                        ],
+                        "upTo": true
+                      },
+                      "optional": true
+                    }
+                  }
+                },
+                "effectPlayed": {
+                  "action": "Target",
+                  "args": {
+                    "effect": {
+                      "action": "Discard",
+                      "args": []
+                    },
+                    "targetLocation": [
+                      "reserve"
+                    ],
+                    "targetType": [
+                      "character",
+                      "spell",
+                      "token",
+                      "permanent"
+                    ],
+                    "upTo": true
+                  }
+                },
+                "faction": "OD",
+                "forest": 2,
+                "mountain": 2,
+                "name": "Ordis Spy",
+                "ocean": 1,
+                "rarity": 2,
+                "subtypes": [
+                  "citizen"
+                ],
+                "type": "character",
+                "typeline": "Character - Citizen",
+                "uEffects": [
+                  [
+                    24,
+                    80,
+                    191
+                  ],
+                  [
+                    19,
+                    107,
+                    182
+                  ]
+                ],
+                "uid": "ALT_CORE_B_OR_14_U_3334"
+              }
+            },
+            "n": 1
+          },
+          "16": {
+            "card": {
+              "properties": {
+                "artist": "HuoMiao Studio",
+                "asset": "ALT_ALIZE_B_OR_42_C",
+                "costHand": 2,
+                "costReserve": 2,
+                "effectDesc": "<FLEETING>.  Send to Reserve target Character with no statistic over 3.",
+                "effectPlayed": {
+                  "childs": [
+                    {
+                      "action": "Gain",
+                      "args": {
+                        "cardId": "me",
+                        "n": 1,
+                        "type": "fleeting",
+                        "upTo": 99
+                      }
+                    },
+                    {
+                      "action": "Target",
+                      "args": {
+                        "effect": {
+                          "action": "Discard",
+                          "args": {
+                            "destination": "reserve"
+                          }
+                        },
+                        "maxStatistic": 3
+                      }
+                    }
+                  ],
+                  "type": "seq"
+                },
+                "extension": "TBF",
+                "faction": "OD",
+                "flavorText": "Do not collect 200 Florets.",
+                "name": "Tiny Jail",
+                "rarity": 0,
+                "setIcon": "tbf",
+                "subtypes": [
+                  "disruption"
+                ],
+                "type": "spell",
+                "typeline": "Spell - Disruption",
+                "uid": "ALT_ALIZE_B_OR_42_C"
+              }
+            },
+            "n": 1
+          },
+          "17": {
+            "card": {
+              "properties": {
+                "artist": "Fahmi Fauzi",
+                "asset": "ALT_CORE_B_YZ_20_R",
+                "costHand": 2,
+                "costReserve": 2,
+                "effectDesc": "$<FLEETING>.  Sacrifice a Character. If you do, draw two cards.",
+                "effectPlayed": {
+                  "childs": [
+                    {
+                      "action": "Gain",
+                      "args": {
+                        "cardId": "me",
+                        "n": 1,
+                        "type": "fleeting",
+                        "upTo": 99
+                      }
+                    },
+                    {
+                      "action": "CheckCondition",
+                      "args": {
+                        "condition": "canSacrifice",
+                        "effect": {
+                          "childs": [
+                            {
+                              "action": "Target",
+                              "args": {
+                                "effect": {
+                                  "action": "Discard",
+                                  "args": {
+                                    "desc": "sacrifice"
+                                  }
+                                },
+                                "targetPlayer": "me",
+                                "targetType": [
+                                  "character",
+                                  "token"
+                                ]
+                              }
+                            },
+                            {
+                              "action": "Draw",
+                              "args": {
+                                "n": 2,
+                                "players": "me"
+                              }
+                            }
+                          ],
+                          "type": "seq"
+                        }
+                      }
+                    }
+                  ],
+                  "type": "seq"
+                },
+                "faction": "OD",
+                "flavorText": "Her being begins to disintegrate as she breaks all the Mana bridges linking the idea of who she is to physical matter.",
+                "name": "Gift of Self",
+                "rarity": 1,
+                "subtypes": [
+                  "conjuration"
+                ],
+                "type": "spell",
+                "typeline": "Spell - Conjuration",
+                "uid": "ALT_CORE_B_YZ_20_R2"
+              }
+            },
+            "n": 1
+          },
+          "18": {
+            "card": {
+              "properties": {
+                "artist": "Jean-Baptiste Andrier",
+                "asset": "ALT_CORE_B_OR_24_C",
+                "costHand": 2,
+                "costReserve": 2,
+                "effectDesc": "$<FLEETING>.  Send to Reserve target Character with Hand Cost {X} or less, where X is the number of Characters you control.",
+                "effectPlayed": {
+                  "childs": [
+                    {
+                      "action": "Gain",
+                      "args": {
+                        "cardId": "me",
+                        "n": 1,
+                        "type": "fleeting",
+                        "upTo": 99
+                      }
+                    },
+                    {
+                      "action": "Target",
+                      "args": {
+                        "effect": {
+                          "action": "Discard",
+                          "args": {
+                            "destination": "reserve"
+                          }
+                        },
+                        "maxHandCost": "controlledCharacter"
+                      }
+                    }
+                  ],
+                  "type": "seq"
+                },
+                "faction": "OD",
+                "flavorText": "Through their Hive Mind, Ordis turns the thoughts of the multitude into a unified will.",
+                "name": "Teamwork Training",
+                "rarity": 0,
+                "subtypes": [
+                  "disruption"
+                ],
+                "type": "spell",
+                "typeline": "Spell - Disruption",
+                "uid": "ALT_CORE_B_OR_24_C"
+              }
+            },
+            "n": 2
+          },
+          "19": {
+            "card": {
+              "properties": {
+                "artist": "Justice Wong",
+                "asset": "ALT_BISE_B_OR_59_C",
+                "costHand": 3,
+                "costReserve": 3,
+                "effectDesc": "$<FLEETING>.  Choose one:  • Discard target <BOOSTED> Character.  • Discard target Permanent.",
+                "effectPlayed": {
+                  "childs": [
+                    {
+                      "action": "Gain",
+                      "args": {
+                        "cardId": "me",
+                        "n": 1,
+                        "type": "fleeting",
+                        "upTo": 99
+                      }
+                    },
+                    {
+                      "childs": [
+                        {
+                          "action": "Target",
+                          "args": {
+                            "effect": {
+                              "action": "Discard",
+                              "args": []
+                            },
+                            "statuses": "boost",
+                            "targetType": [
+                              "character",
+                              "token"
+                            ]
+                          }
+                        },
+                        {
+                          "action": "Target",
+                          "args": {
+                            "effect": {
+                              "action": "Discard",
+                              "args": []
+                            },
+                            "targetType": [
+                              "permanent"
+                            ]
+                          }
+                        }
+                      ],
+                      "type": "xor"
+                    }
+                  ],
+                  "type": "seq"
+                },
+                "extension": "WFTM",
+                "faction": "OD",
+                "flavorText": "\"Enough of this mess!\"",
+                "name": "License Withdrawal",
+                "rarity": 0,
+                "setIcon": "wfm",
+                "subtypes": [
+                  "disruption",
+                  "maneuver"
+                ],
+                "type": "spell",
+                "typeline": "Spell - Disruption Maneuver",
+                "uid": "ALT_BISE_B_OR_59_C"
+              }
+            },
+            "n": 3
+          },
+          "20": {
+            "card": {
+              "properties": {
+                "artist": "Matteo Spirito",
+                "asset": "ALT_CYCLONE_B_OR_80_C",
+                "costHand": 5,
+                "costReserve": 6,
+                "effectDesc": "Draw a card.  Both of your Expeditions <ASCEND>. (Until Rest, they can move forward even if matched in their regions' terrains by the opponent's Expeditions.)  Immediately play for free up to two Characters with Base Cost {3} or less. (Reserve Cost if from Reserve, Hand Cost otherwise.)",
+                "effectPlayed": {
+                  "childs": [
+                    {
+                      "action": "Draw",
+                      "args": {
+                        "players": "me"
+                      }
+                    },
+                    {
+                      "action": "SpecialEffect",
+                      "args": {
+                        "effect": "ascend",
+                        "expedition": "stormLeft"
+                      }
+                    },
+                    {
+                      "action": "SpecialEffect",
+                      "args": {
+                        "effect": "ascend",
+                        "expedition": "stormRight"
+                      }
+                    },
+                    {
+                      "action": "ChooseAssignment",
+                      "args": {
+                        "actions": [
+                          "play"
+                        ],
+                        "free": true,
+                        "maxBaseCost": 3,
+                        "types": [
+                          "character"
+                        ]
+                      },
+                      "optional": true
+                    },
+                    {
+                      "action": "ChooseAssignment",
+                      "args": {
+                        "actions": [
+                          "play"
+                        ],
+                        "free": true,
+                        "maxBaseCost": 3,
+                        "types": [
+                          "character"
+                        ]
+                      },
+                      "optional": true
+                    }
+                  ],
+                  "type": "seq"
+                },
+                "extension": "SO",
+                "faction": "OD",
+                "flavorText": "Like a beacon, the horizon calls us onward!",
+                "name": "Skybound Odyssey",
+                "rarity": 0,
+                "subtypes": [
+                  "maneuver"
+                ],
+                "type": "spell",
+                "typeline": "Spell - Maneuver",
+                "uid": "ALT_CYCLONE_B_OR_80_C"
+              }
+            },
+            "n": 2
+          },
+          "hero": {
+            "card": {
+              "id": null,
+              "location": null,
+              "pId": null,
+              "properties": {
+                "artist": "Edward Cheekokseang",
+                "asset": "ALT_CORE_B_OR_01_C",
+                "effectDesc": "At Noon — Create an <ORDIS_RECRUIT> Soldier token in your Hero Expedition.",
+                "effectPassive": {
+                  "Noon": {
+                    "condition": "isMe",
+                    "output": {
+                      "action": "InvokeToken",
+                      "args": {
+                        "pId": "source",
+                        "targetLocation": [
+                          "stormLeft"
+                        ],
+                        "tokenType": "OD_Common_OrdisRecruit"
+                      }
+                    }
+                  }
+                },
+                "faction": "OD",
+                "flavorText": "Follow me, friends! If we stand together, nothing can stop us! ",
+                "landmarkSlots": 2,
+                "name": "Sigismar & Wingspan",
+                "rarity": 0,
+                "reserveSlots": 2,
+                "statData": 14,
+                "thumbnail": 0,
+                "type": "hero",
+                "typeline": "Ordis Hero",
+                "uid": "ALT_CORE_B_OR_01_C"
+              },
+              "state": null
+            },
+            "n": 1
+          }
+        },
+        "deckName": "SIGISMAR FINAL",
+        "faction": "OR",
+        "hero": "ALT_CORE_B_OR_01_C",
+        "id": "01JN9SPFG4ZPV7RG53JHGM6VKX"
+      },
+      "player_id": 97200799,
+      "selection": "API"
+    }
+  ]
+}

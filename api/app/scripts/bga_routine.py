@@ -626,11 +626,12 @@ def import_ladder_from_bga(season: int, page: int = 0, retry: bool = True) -> di
             'pagination': None
         }
     
-def getTable(table_id: int, retry: bool = True) -> dict:
+def getLogs(table_id: int, retry: bool = True) -> dict:
     try:
+        getGamerView(table_id)
         url = "https://boardgamearena.com/archive/archive/logs.html"
         params = {
-            "table": table_id,  # ID du jeu Altered
+            "table": table_id,
             "translated": "true"
         }
 
@@ -653,6 +654,8 @@ def getTable(table_id: int, retry: bool = True) -> dict:
         headers = {
             "cookie": f"TournoiEnLigne_sso_user={TournoiEnLigne_sso_user.value};TournoiEnLigne_sso_id={TournoiEnLigne_sso_id.value};TournoiEnLignetkt={TournoiEnLignetkt.value};TournoiEnLigneidt={TournoiEnLigneidt.value};TournoiEnLignetk={TournoiEnLignetk.value};TournoiEnLigneid={TournoiEnLigneid.value}",
             "x-request-token": TournoiEnLigneidt.value,
+            "x-requested-with": "XMLHttpRequest",
+            "referer": f"https://boardgamearena.com/gamereview?table={table_id}",
             "accept": "*/*",
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:144.0) Gecko/20100101 Firefox/144.0"
         }
@@ -670,7 +673,8 @@ def getTable(table_id: int, retry: bool = True) -> dict:
                 print(f"\033[93m🔄 Reconnexion...\033[0m")
                 postLoginUserWithPassword()
                 time.sleep(1)
-                return getTable(table_id, retry=False)
+                return getLogs(table_id, retry=False)
+            print(f"\033[91m❌ Status 0 : {data.get('error', "BGA API error"),}\033[0m")
             return {
                 'status': 0,
                 'error': data.get('error', "BGA API error"),
@@ -688,7 +692,7 @@ def getTable(table_id: int, retry: bool = True) -> dict:
             print(f"\033[93m🔄 Reconnexion...\033[0m")
             postLoginUserWithPassword()
             time.sleep(1)
-            return getTable(table_id, retry=False)
+            return getLogs(table_id, retry=False)
         return {
             'status': 0,
             'error': f'Request failed: {str(e)}',
@@ -705,4 +709,69 @@ def getTable(table_id: int, retry: bool = True) -> dict:
             'data': None,
             'pagination': None
         }
+
+def getGamerView(table_id: int, retry: bool = True) -> dict:
+    try:
+        url = "https://boardgamearena.com/gamereview?table=751728514&refreshtemplate=1"
+        params = {
+            "table": table_id,
+            "refreshtemplate": 1
+        }
+
+        # url = "https://boardgamearena.com/12/altered/altered/notificationHistory.html"
+        # params = {
+        #     "table": table_id,
+        #     "from": 1,
+        #     "privateinc": 1,
+        #     "history": 1,
+        #     "noerrortracking": "true"
+        # }
+
+        TournoiEnLigne_sso_user = db.session.query(CookieManager).filter_by(name="TournoiEnLigne_sso_user").first()
+        TournoiEnLigne_sso_id = db.session.query(CookieManager).filter_by(name="TournoiEnLigne_sso_id").first()
+        TournoiEnLigneidt = db.session.query(CookieManager).filter_by(name="TournoiEnLigneidt").first()
+        TournoiEnLignetkt = db.session.query(CookieManager).filter_by(name="TournoiEnLignetkt").first()
+        TournoiEnLigneid = db.session.query(CookieManager).filter_by(name="TournoiEnLigneid").first()
+        TournoiEnLignetk = db.session.query(CookieManager).filter_by(name="TournoiEnLignetk").first()
         
+        headers = {
+            "cookie": f"TournoiEnLigne_sso_user={TournoiEnLigne_sso_user.value};TournoiEnLigne_sso_id={TournoiEnLigne_sso_id.value};TournoiEnLignetkt={TournoiEnLignetkt.value};TournoiEnLigneidt={TournoiEnLigneidt.value};TournoiEnLignetk={TournoiEnLignetk.value};TournoiEnLigneid={TournoiEnLigneid.value}",
+            "x-request-token": TournoiEnLigneidt.value,
+            "x-requested-with": "XMLHttpRequest",
+            "referer": f"https://boardgamearena.com/gamereview?table={table_id}",
+            "accept": "*/*",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:144.0) Gecko/20100101 Firefox/144.0"
+        }
+
+        response = requests.get(url, headers=headers, params=params)
+        response.raise_for_status()
+
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        return {
+            'status': 1,
+        }
+        
+    except requests.exceptions.RequestException as e:
+        print(f"\033[91m❌ Erreur HTTP : {e}\033[0m")
+        if retry:
+            print(f"\033[93m🔄 Reconnexion...\033[0m")
+            postLoginUserWithPassword()
+            time.sleep(1)
+            return getGamerView(table_id, retry=False)
+        return {
+            'status': 0,
+            'error': f'Request failed: {str(e)}',
+            'data': None,
+            'pagination': None
+        }
+    except Exception as e:
+        print(f"\033[91m❌ Erreur inattendue : {e}\033[0m")
+        import traceback
+        traceback.print_exc()
+        return {
+            'status': 0,
+            'error': f'Unexpected error: {str(e)}',
+            'data': None,
+            'pagination': None
+        }
