@@ -1048,7 +1048,7 @@ def import_table_service(table_id: int) -> dict:
         if result.get('status', 0) != 1:
             return {
                 'status': 0,
-                'error': f'Err : {result.get('error')}',
+                'error': f'Err : {result.get('error', 'err API')}',
                 'table_id': table_id
             }
 
