@@ -3,7 +3,7 @@ import time
 import uuid
 from typing import List, Dict, Optional
 from app.models.player import Player, Game
-from app.scripts.bga_routine import getGames, getPlayer, getSearch, getTable, import_ladder_from_bga
+from app.scripts.bga_routine import getGames, getLogs, getPlayer, getSearch, import_ladder_from_bga
 from app.data.player_data import (
     bulk_upsert_season_stats_data,
     count_total_players_data,
@@ -1044,14 +1044,15 @@ def import_table_service(table_id: int) -> dict:
         table = get_game_by_table_id_data(table_id)
         
         # 1. Récupérer les données de la table depuis l'API BGA
-        data = getTable(table_id).get('data', {})
-        if not data:
+        result = getLogs(table_id)
+        if result.get('status', 0) != 1:
             return {
                 'status': 0,
-                'error': f'No data found for table ID: {table_id}',
+                'error': f'Err : {result.get('error')}',
                 'table_id': table_id
             }
-        
+
+        data = result.get('data', {})
         logs = data.get('logs', [])
         # logs = data.get('data', [])
         if not logs or len(logs) == 0:

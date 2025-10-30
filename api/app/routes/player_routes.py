@@ -184,7 +184,7 @@ def reload_player_route(player_id: str):
 def import_table_route(table_id: int):
     try:
         result = import_table_service(table_id)
-        if result.get('status') != 1:
+        if result.get('status', 0) != 1:
             return jsonify({'message': result.get('error', 'Import failed')}), 500
         return jsonify(result), 200
     except Exception as e:
