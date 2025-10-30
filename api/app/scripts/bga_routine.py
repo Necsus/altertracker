@@ -674,10 +674,10 @@ def getLogs(table_id: int, retry: bool = True) -> dict:
                 postLoginUserWithPassword()
                 time.sleep(1)
                 return getLogs(table_id, retry=False)
-            print(f"\033[91m❌ Status 0 : {data.get('error', "BGA API error"),}\033[0m")
+            print(f"\033[91m❌ Status 0 : {data.get('error', 'BGA API error'),}\033[0m")
             return {
                 'status': 0,
-                'error': data.get('error', "BGA API error"),
+                'error': data.get('error', 'BGA API error'),
                 'data': None
             }
 
