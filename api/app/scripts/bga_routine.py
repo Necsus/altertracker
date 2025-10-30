@@ -628,7 +628,7 @@ def import_ladder_from_bga(season: int, page: int = 0, retry: bool = True) -> di
     
 def getLogs(table_id: int, retry: bool = True) -> dict:
     try:
-        getGamerView(table_id)
+        # getGamerView(table_id)
         url = "https://boardgamearena.com/archive/archive/logs.html"
         params = {
             "table": table_id,
