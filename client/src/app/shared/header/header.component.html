@@ -46,13 +46,24 @@
             class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
             'header.about' | translate }}</a>
         </li>
+
         <!-- Dropdown for logged-in users -->
         @if (isLoggedIn) {
         <li class="relative">
           <button
             class="flex items-center space-x-2 hover:text-amber-400 transition duration-300 focus:outline-none cursor-pointer"
             (click)="isDropdownOpen = !isDropdownOpen">
-            <span>{{ username }}</span>
+            <!-- ✅ Username avec badge -->
+            <span class="flex items-center gap-2">
+              <span>{{ username }}</span>
+              @if (getUserBadge(); as badge) {
+              <span
+                class="inline-flex items-center justify-center w-5 h-5 text-xs font-bold rounded {{ badge.color }} ring-2 ring-gray-800 shadow-lg"
+                [title]="badge.tooltip">
+                {{ badge.label }}
+              </span>
+              }
+            </span>
             <i class="fas fa-chevron-down"></i>
           </button>
           @if (isDropdownOpen) {
@@ -83,8 +94,6 @@
           </ul>
           }
         </li>
-        <!-- <li><a routerLink="/contact" routerLinkActive="text-amber-400" style="user-select: none;"
-class="hover:text-amber-400 transition duration-300 cursor-pointer"><i class="fas fa-bug"></i></a></li> -->
         }
         @else {
         <li><a routerLink="/login" routerLinkActive="text-amber-400"
@@ -125,9 +134,17 @@ class="hover:text-amber-400 transition duration-300 cursor-pointer"><i class="fa
         class="block hover:text-amber-400 transition duration-300">{{
         'header.about' | translate }}</a>
       @if (isLoggedIn) {
+      <!-- ✅ Username avec badge en mobile -->
       <a routerLink="/me" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
-        class="block hover:text-amber-400 transition duration-300">{{
-        username }}</a>
+        class="flex items-center gap-2 hover:text-amber-400 transition duration-300">
+        <span>{{ username }}</span>
+        @if (getUserBadge(); as badge) {
+        <span
+          class="inline-flex items-center justify-center w-5 h-5 text-xs font-bold rounded {{ badge.color }} ring-2 ring-gray-800 shadow-lg">
+          {{ badge.label }}
+        </span>
+        }
+      </a>
       <a routerLink="/purchase-offers" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
         class="block hover:text-amber-400 transition duration-300">{{
         'header.purchase_offers' | translate }}</a>

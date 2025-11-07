@@ -3,7 +3,7 @@ import time
 import uuid
 from typing import List, Dict, Optional
 from app.models.player import Player, Game
-from app.scripts.bga_routine import getGames, getLogs, getPlayer, getSearch, import_ladder_from_bga
+from app.scripts.bga_routine import getGamerView, getGames, getLogs, getPlayer, getSearch, getTableInfos, import_ladder_from_bga
 from app.data.player_data import (
     bulk_upsert_season_stats_data,
     count_total_players_data,
@@ -19,6 +19,7 @@ from app.data.player_data import (
     batch_update_players_stats_data,
     get_all_seasons_data,
     bulk_upsert_season_stats_data,
+    update_game_data,
     update_player_data
 )
 
@@ -1041,7 +1042,7 @@ def import_table_service(table_id: int) -> dict:
     try:
         print(f"\n🔄 Import de la table ID: {table_id}...")
 
-        table = get_game_by_table_id_data(table_id)
+        game = get_game_by_table_id_data(table_id)
         
         # 1. Récupérer les données de la table depuis l'API BGA
         result = getLogs(table_id)
@@ -1051,6 +1052,8 @@ def import_table_service(table_id: int) -> dict:
                 'error': f"Err : {result.get('error', 'err API')}",
                 'table_id': table_id
             }
+
+        # ti = getTableInfos(table_id)
 
         data = result.get('data', {})
         logs = data.get('logs', [])
@@ -1076,6 +1079,19 @@ def import_table_service(table_id: int) -> dict:
                     if len(decks_selections) == 2:
                         break
 
+        for player_data in decks_selections:
+            if player_data['player_id'] == game.player1.bga_id:
+                print(player_data['API']['hero'])
+                hero_model = get_faction_hero_by_reference(player_data['API']['hero'])
+                game.player1_faction = hero_model['faction']
+                game.player1_hero = hero_model['hero']
+            if player_data['player_id'] == game.player2.bga_id:
+                hero_model = get_faction_hero_by_reference(player_data['API']['hero'])
+                game.player2_faction = hero_model['faction']
+                game.player2_hero = hero_model['hero']
+
+        update_game_data(game)
+
         return {
             'status': 1,
             'table': decks_selections
@@ -1090,3 +1106,127 @@ def import_table_service(table_id: int) -> dict:
             'error': str(e),
             'table_id': table_id
         }
+    
+def get_faction_hero_by_reference(reference: str) -> dict:
+    model = {
+        'hero': None,
+        'hero_full': None,
+        'faction': None
+    }
+    match reference:
+        case ref if ref.endswith('YZ_01_C'):
+            model['hero'] = 'Akesha'
+            model['hero_full'] = 'Akesha & Taru'
+            model['faction'] = 'YZ'
+        case ref if ref.endswith('YZ_02_C'):
+            model['hero'] = 'Lindiwe'
+            model['hero_full'] = 'Lindiwe & Maw'
+            model['faction'] = 'YZ'
+        case ref if ref.endswith('YZ_03_C'):
+            model['hero'] = 'Afanas'
+            model['hero_full'] = 'Afanas & Senka'
+            model['faction'] = 'YZ'
+        case ref if ref.endswith('YZ_65_C'):
+            model['hero'] = 'Moyo'
+            model['hero_full'] = 'Moyo & Silk'
+            model['faction'] = 'YZ'
+
+        case ref if ref.endswith('OR_01_C'):
+            model['hero'] = 'Sigismar'
+            model['hero_full'] = 'Sigismar & Wingspan'
+            model['faction'] = 'OR'
+        case ref if ref.endswith('OR_02_C'):
+            model['hero'] = 'Waru'
+            model['hero_full'] = 'Waru & Mack'
+            model['faction'] = 'OR'
+        case ref if ref.endswith('OR_03_C'):
+            model['hero'] = 'Gulrang'
+            model['hero_full'] = 'Gulrang & Tocsin'
+            model['faction'] = 'OR'
+        case ref if ref.endswith('OR_65_C'):
+            model['hero'] = 'Zhen'
+            model['hero_full'] = 'Zhen & Zéphyr'
+            model['faction'] = 'OR'
+        case ref if ref.endswith('OR_85_C'):
+            model['hero'] = 'Matz'
+            model['hero_full'] = 'Matz & Hive'
+            model['faction'] = 'OR'
+
+        case ref if ref.endswith('MU_01_C'):
+            model['hero'] = 'Teija'
+            model['hero_full'] = 'Teija & Nauraa'
+            model['faction'] = 'MU'
+        case ref if ref.endswith('MU_02_C'):
+            model['hero'] = 'Arjun'
+            model['hero_full'] = 'Arjun & Spike'
+            model['faction'] = 'MU'
+        case ref if ref.endswith('MU_03_C'):
+            model['hero'] = 'Rin'
+            model['hero_full'] = 'Rin & Orchid'
+            model['faction'] = 'MU'
+        case ref if ref.endswith('MU_65_C'):
+            model['hero'] = 'Kauri'
+            model['hero_full'] = 'Kauri & Puff'
+            model['faction'] = 'MU'
+        case ref if ref.endswith('MU_85_C'):
+            model['hero'] = 'Turuun'
+            model['hero_full'] = 'Turuun & Benih'
+            model['faction'] = 'MU'
+
+        case ref if ref.endswith('LY_01_C'):
+            model['hero'] = 'Nevenka'
+            model['hero_full'] = 'Nevenka & Blotch'
+            model['faction'] = 'LY'
+        case ref if ref.endswith('LY_02_C'):
+            model['hero'] = 'Auraq'
+            model['hero_full'] = 'Auraq & Kibble'
+            model['faction'] = 'LY'
+        case ref if ref.endswith('LY_03_C'):
+            model['hero'] = 'Fen'
+            model['hero_full'] = 'Fen & Crowbar'
+            model['faction'] = 'LY'
+        case ref if ref.endswith('LY_65_C'):
+            model['hero'] = 'Nadir'
+            model['hero_full'] = 'Nadir & Bubbles'
+            model['faction'] = 'LY'
+
+        case ref if ref.endswith('BR_01_C'):
+            model['hero'] = 'Kojo'
+            model['hero_full'] = 'Kojo & Booda'
+            model['faction'] = 'BR'
+        case ref if ref.endswith('BR_02_C'):
+            model['hero'] = 'Atsadi'
+            model['hero_full'] = 'Atsadi & Surge'
+            model['faction'] = 'BR'
+        case ref if ref.endswith('BR_03_C'):
+            model['hero'] = 'Basira'
+            model['hero_full'] = 'Basira & Kaizaimon'
+            model['faction'] = 'BR'
+        case ref if ref.endswith('BR_65_C'):
+            model['hero'] = 'Sol'
+            model['hero_full'] = 'Sol & Halua'
+            model['faction'] = 'BR'
+
+        case ref if ref.endswith('AX_01_C'):
+            model['hero'] = 'Sierra'
+            model['hero_full'] = 'Sierra & Oddball'
+            model['faction'] = 'AX'
+        case ref if ref.endswith('AX_02_C'):
+            model['hero'] = 'Treyst'
+            model['hero_full'] = 'Treyst & Rossum'
+            model['faction'] = 'AX'
+        case ref if ref.endswith('AX_03_C'):
+            model['hero'] = 'Subhash'
+            model['hero_full'] = 'Subhash & Marmo'
+            model['faction'] = 'AX'
+        case ref if ref.endswith('AX_65_C'):
+            model['hero'] = 'Isaree'
+            model['hero_full'] = 'Isaree & Pebble'
+            model['faction'] = 'AX'
+        case ref if ref.endswith('AX_85_C'):
+            model['hero'] = 'Della'
+            model['hero_full'] = 'Della & Bolt'
+            model['faction'] = 'AX'
+        case _:
+            print(f"⚠️  Référence inconnue: {reference}")
+    return model

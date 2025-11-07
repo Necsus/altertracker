@@ -275,3 +275,28 @@ def update_player_data(player: Player) -> Player:
         db.session.rollback()
         print(f"❌ Erreur update_player_data: {e}")
         raise e
+
+def update_game_data(game: Game) -> Game:
+    try:
+        # Vérifier que la game existe en base
+        existing_game = db.session.query(Game).filter_by(id=game.id).first()
+        
+        if not existing_game:
+            raise ValueError(f"Game not found: {game.id}")
+        
+        # Mettre à jour les champs modifiables
+        existing_game.player1_faction = game.player1_faction
+        existing_game.player2_faction = game.player2_faction
+        existing_game.player1_hero = game.player1_hero
+        existing_game.player2_hero = game.player2_hero
+        existing_game.updated_at = datetime.now(timezone.utc)
+        
+        db.session.commit()
+        
+        print(f"✅ Game {game.table_id} mise à jour avec succès")
+        return existing_game
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f"❌ Erreur update_game_data: {e}")
+        raise e
