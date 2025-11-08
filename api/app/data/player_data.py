@@ -224,6 +224,33 @@ def bulk_upsert_season_stats_data(season_stats_updates: list[dict]) -> int:
         print(f"❌ Erreur bulk_upsert_season_stats_data: {e}")
         raise e
 
+def update_season_stats_bulk_data(season_stats_list: List[PlayerSeasonStats]) -> int:
+    """
+    Met à jour en masse les stats de saison
+    
+    Args:
+        season_stats_list: Liste d'objets PlayerSeasonStats à sauvegarder
+    
+    Returns:
+        Nombre d'objets mis à jour
+    """
+    try:
+        updated_count = 0
+        
+        for stats in season_stats_list:
+            db.session.merge(stats)  # merge gère automatiquement update/insert
+            updated_count += 1
+        
+        db.session.commit()
+        return updated_count
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f"❌ Erreur lors du bulk update des season stats: {e}")
+        import traceback
+        traceback.print_exc()
+        raise e
+
 def get_season_stats_data(
     season: int, 
     include_player: bool = True,
