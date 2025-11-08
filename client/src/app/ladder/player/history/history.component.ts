@@ -187,16 +187,33 @@ export class HistoryComponent {
   }
 
   // ✅ Helper pour vérifier si les infos du deck sont disponibles
-  hasPlayerDeckInfo(game: GameModel): boolean {
+  hasPlayerFaction(game: GameModel): boolean {
     const faction = this.getPlayerFaction(game);
+    return !!faction;
+  }
+
+  hasPlayerHero(game: GameModel): boolean {
     const hero = this.getPlayerHero(game);
-    return !!(faction && hero);
+    return !!hero;
+  }
+
+  hasOpponentFaction(game: GameModel): boolean {
+    const faction = this.getOpponentFaction(game);
+    return !!faction;
+  }
+
+  hasOpponentHero(game: GameModel): boolean {
+    const hero = this.getOpponentHero(game);
+    return !!hero;
+  }
+
+  // ✅ Garder hasPlayerDeckInfo pour la compatibilité (faction + hero)
+  hasPlayerDeckInfo(game: GameModel): boolean {
+    return this.hasPlayerFaction(game) && this.hasPlayerHero(game);
   }
 
   hasOpponentDeckInfo(game: GameModel): boolean {
-    const faction = this.getOpponentFaction(game);
-    const hero = this.getOpponentHero(game);
-    return !!(faction && hero);
+    return this.hasOpponentFaction(game) && this.hasOpponentHero(game);
   }
 
   // ✅ Helper pour obtenir la couleur de dégradé par faction

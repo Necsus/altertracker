@@ -757,7 +757,9 @@ def reload_player_service(player_id: str) -> dict:
             'skipped_ranked': 0,
             'errors': 0,
             'total_pages': 0,
-            'seasons_affected': set()
+            'seasons_affected': set(),
+            'tables_updated': 0,  # ✅ Nouveau
+            'incomplete_tables': 0  # ✅ Nouveau
         }
         
         # 5. Récupération de TOUTES les nouvelles parties (pagination automatique)
@@ -878,13 +880,65 @@ def reload_player_service(player_id: str) -> dict:
         else:
             print("ℹ️  Aucune nouvelle partie à importer")
         
-        # 7. ✅ RECALCUL COMPLET DES STATISTIQUES (toujours effectué)
+        # 7. ✅ NORMALISATION DES TABLES INCOMPLÈTES
+        print(f"\n{'='*80}")
+        print("🔍 VÉRIFICATION DES TABLES INCOMPLÈTES")
+        print(f"{'='*80}")
+        
+        try:
+            # Récupérer TOUTES les parties du joueur (toutes saisons)
+            all_player_games = get_player_history_data(player_id, season=None)
+            print(f"🎮 Total de parties en base: {len(all_player_games)}")
+            
+            # Identifier les tables incomplètes (sans faction ou sans héros)
+            incomplete_tables = []
+            
+            for game in all_player_games:
+                is_incomplete = (
+                    game.player1_faction is None or 
+                    game.player2_faction is None
+                )
+                
+                if is_incomplete:
+                    incomplete_tables.append(game)
+            
+            reload_stats['incomplete_tables'] = len(incomplete_tables)
+            
+            if incomplete_tables:
+                print(f"\n⚠️  {len(incomplete_tables)} table(s) incomplète(s) détectée(s)")
+                print(f"🔄 Mise à jour en cours...\n")
+                
+                # ✅ Mettre à jour chaque table incomplète
+                for idx, game in enumerate(incomplete_tables, 1):
+                    try:
+                        # ✅ Appeler import_table_service pour compléter les données
+                        import_result = import_table_service(game.table_id)
+
+                        if idx < len(incomplete_tables):
+                            time.sleep(0.1)
+                            
+                    except Exception as e:
+                        print(f"  ❌ Erreur table #{game.table_id}: {e}")
+                        reload_stats['errors'] += 1
+                        continue
+                
+                print(f"\n✅ Normalisation terminée: {reload_stats['tables_updated']}/{reload_stats['incomplete_tables']} tables mises à jour")
+            else:
+                print("✅ Toutes les tables sont complètes")
+                
+        except Exception as e:
+            print(f"❌ Erreur lors de la normalisation des tables: {e}")
+            import traceback
+            traceback.print_exc()
+            reload_stats['errors'] += 1
+        
+        # 8. ✅ RECALCUL COMPLET DES STATISTIQUES (toujours effectué)
         print(f"\n{'='*80}")
         print("📊 RECALCUL DES STATISTIQUES")
         print(f"{'='*80}")
         
         try:
-            # 7.1. Récupérer TOUTES les parties du joueur (toutes saisons)
+            # 8.1. Recharger TOUTES les parties (après normalisation)
             all_player_games = get_player_history_data(player_id, season=None)
             print(f"🎮 Total de parties en base: {len(all_player_games)}")
             
@@ -897,7 +951,7 @@ def reload_player_service(player_id: str) -> dict:
                     'stats': reload_stats
                 }
             
-            # 7.2. Recalculer les statistiques GLOBALES
+            # 8.2. Recalculer les statistiques GLOBALES
             player_uuid = uuid.UUID(player_id)
             global_stats = _calculate_player_stats_from_games(all_player_games, player_uuid)
             
@@ -912,7 +966,7 @@ def reload_player_service(player_id: str) -> dict:
             player.total_losses = total_losses
             player.total_draws = total_draws
             player.win_rate = round(win_rate, 2)
-            player.last_game_at = global_stats['last_game_at']  # ✅ Timestamp int
+            player.last_game_at = global_stats['last_game_at']
             player.updated_at = datetime.now(timezone.utc)
             player.is_active = True
             
@@ -924,7 +978,7 @@ def reload_player_service(player_id: str) -> dict:
             traceback.print_exc()
             reload_stats['errors'] += 1
         
-        # 7.3. ✅ Recalculer les statistiques PAR SAISON (TOUTES les saisons avec parties)
+        # 8.3. ✅ Recalculer les statistiques PAR SAISON (TOUTES les saisons avec parties)
         print(f"\n📅 Recalcul des stats par saison...")
 
         try:
@@ -995,7 +1049,7 @@ def reload_player_service(player_id: str) -> dict:
             traceback.print_exc()
             reload_stats['errors'] += 1
         
-        # 8. Résumé final
+        # 9. Résumé final
         reload_stats['seasons_affected'] = sorted(reload_stats['seasons_affected']) if reload_stats['seasons_affected'] else []
         
         print("\n" + "="*80)
@@ -1008,7 +1062,9 @@ def reload_player_service(player_id: str) -> dict:
         if reload_stats['seasons_affected']:
             print(f"📅 Saisons avec nouvelles parties: {', '.join(map(str, reload_stats['seasons_affected']))}")
         else:
-            print(f"📅 Aucune nouvelle partie (stats recalculées quand même)")
+            print(f"📅 Aucune nouvelle partie")
+        print(f"🔧 Tables incomplètes détectées: {reload_stats['incomplete_tables']}")
+        print(f"✅ Tables normalisées: {reload_stats['tables_updated']}")
         print(f"🔄 Toutes les stats ont été recalculées")
         print(f"❌ Erreurs: {reload_stats['errors']}")
         print("="*80 + "\n")
@@ -1043,58 +1099,116 @@ def import_table_service(table_id: int) -> dict:
         print(f"\n🔄 Import de la table ID: {table_id}...")
 
         game = get_game_by_table_id_data(table_id)
+
+        ti = getTableInfos(table_id)
+        if ti.get('status', 0) != 1:
+            return {
+                'status': 0,
+                'error': f"Err : {ti.get('error', 'err API')}",
+                'table_id': table_id
+            }
         
+
+        table_data = ti.get('data', {})
+        if table_data:
+            result =  table_data.get('result', {})
+            if not result:
+                return {
+                    'status': 0,
+                    'error': f"No result found for table ID: {table_id}",
+                    'table_id': table_id
+                }
+            stats = result.get('stats', {})
+            if not stats:
+                return {
+                    'status': 0,
+                    'error': f"No stats found for table ID: {table_id}",
+                    'table_id': table_id
+                }
+            table = stats.get('table', {})
+            if table:
+                winner_hero_model = get_faction_hero_by_label(table.get('gameWinner', {}).get('valuelabel', None))
+                loser_hero_model = get_faction_hero_by_label(table.get('gameLooser', {}).get('valuelabel', None))
+                if game.winner_id == game.player1_id:
+                    # Player1 a gagné → Player1 = winner_hero, Player2 = loser_hero
+                    game.player1_faction = winner_hero_model['faction']
+                    game.player1_hero = winner_hero_model['hero']
+                    game.player2_faction = loser_hero_model['faction']
+                    game.player2_hero = loser_hero_model['hero']
+                elif game.winner_id == game.player2_id:
+                    # Player2 a gagné → Player2 = winner_hero, Player1 = loser_hero
+                    game.player1_faction = loser_hero_model['faction']
+                    game.player1_hero = loser_hero_model['hero']
+                    game.player2_faction = winner_hero_model['faction']
+                    game.player2_hero = winner_hero_model['hero']
+
+            player = stats.get('player', {})
+            if player and (game.player1_faction is None or game.player2_faction is None):
+                # ✅ Convertir les bga_id en strings pour accéder au dictionnaire
+                p1_bga_id_str = str(game.player1.bga_id)
+                p2_bga_id_str = str(game.player2.bga_id)
+                
+                # Récupérer les valuelabels des factions
+                faction_labels = player.get('faction', {}).get('valuelabels', {})
+
+                # Vérifier que les clés existent
+                if p1_bga_id_str in faction_labels:
+                    faction_label_p1 = faction_labels[p1_bga_id_str]
+                    game.player1_faction = get_faction_code_by_label(faction_label_p1)
+                
+                if p2_bga_id_str in faction_labels:
+                    faction_label_p2 = faction_labels[p2_bga_id_str]
+                    game.player2_faction = get_faction_code_by_label(faction_label_p2)
+
         # 1. Récupérer les données de la table depuis l'API BGA
-        result = getLogs(table_id)
-        if result.get('status', 0) != 1:
-            return {
-                'status': 0,
-                'error': f"Err : {result.get('error', 'err API')}",
-                'table_id': table_id
-            }
-
-        # ti = getTableInfos(table_id)
-
-        data = result.get('data', {})
-        logs = data.get('logs', [])
-        # logs = data.get('data', [])
-        if not logs or len(logs) == 0:
-            return {
-                'status': 0,
-                'error': f'No logs found for table ID: {table_id}',
-                'table_id': table_id
-            }
+        # result = getLogs(table_id)
+        # if result.get('status', 0) != 1:
+        #     return {
+        #         'status': 0,
+        #         'error': f"Err : {result.get('error', 'err API')}",
+        #         'table_id': table_id
+        #     }
+        # data = result.get('data', {})
+        # logs = data.get('logs', [])
+        # if not logs or len(logs) == 0:
+        #     return {
+        #         'status': 0,
+        #         'error': f'No logs found for table ID: {table_id}',
+        #         'table_id': table_id
+        #     }
         
-        decks_selections = []
+        # decks_selections = []
         
-        for log in logs:
-            log_data = log.get('data', [])[0]
-            if log_data.get('type', '') == 'updateInitialPrecoDeckSelection':
-                private_data = log_data.get('args', {}).get('args', {}).get('_private')
-                private_data['player_id'] = int(log.get('channel', '').replace('/player/p', ''))
-                if private_data:
-                    if private_data.get('selection', '') == 'API':
-                        private_data.pop('decks', None)
-                    decks_selections.append(private_data)
-                    if len(decks_selections) == 2:
-                        break
+        # for log in logs:
+        #     log_data = log.get('data', [])[0]
+        #     if log_data.get('type', '') == 'updateInitialPrecoDeckSelection':
+        #         private_data = log_data.get('args', {}).get('args', {}).get('_private')
+        #         private_data['player_id'] = int(log.get('channel', '').replace('/player/p', ''))
+        #         if private_data:
+        #             if private_data.get('selection', '') == 'API':
+        #                 private_data.pop('decks', None)
+        #             decks_selections.append(private_data)
+        #             if len(decks_selections) == 2:
+        #                 break
 
-        for player_data in decks_selections:
-            if player_data['player_id'] == game.player1.bga_id:
-                print(player_data['API']['hero'])
-                hero_model = get_faction_hero_by_reference(player_data['API']['hero'])
-                game.player1_faction = hero_model['faction']
-                game.player1_hero = hero_model['hero']
-            if player_data['player_id'] == game.player2.bga_id:
-                hero_model = get_faction_hero_by_reference(player_data['API']['hero'])
-                game.player2_faction = hero_model['faction']
-                game.player2_hero = hero_model['hero']
+        # for player_data in decks_selections:
+        #     if player_data['player_id'] == game.player1.bga_id:
+        #         print(player_data['API']['hero'])
+        #         hero_model = get_faction_hero_by_reference(player_data['API']['hero'])
+        #         game.player1_faction = hero_model['faction']
+        #         game.player1_hero = hero_model['hero']
+        #     if player_data['player_id'] == game.player2.bga_id:
+        #         hero_model = get_faction_hero_by_reference(player_data['API']['hero'])
+        #         game.player2_faction = hero_model['faction']
+        #         game.player2_hero = hero_model['hero']
+
+
 
         update_game_data(game)
 
         return {
             'status': 1,
-            'table': decks_selections
+            'table': game.json()
         }
         
     except Exception as e:
@@ -1106,6 +1220,23 @@ def import_table_service(table_id: int) -> dict:
             'error': str(e),
             'table_id': table_id
         }
+    
+def get_faction_code_by_label(label: str) -> dict:
+    match label.lower():
+        case 'yzmir':
+            return 'YZ'
+        case 'ordis':
+            return 'OR'
+        case 'muna':
+            return 'MU'
+        case 'lyra':
+            return 'LY'
+        case 'bravos':
+            return 'BR'
+        case 'axiom':
+            return 'AX'
+        case _:
+            return None
     
 def get_faction_hero_by_reference(reference: str) -> dict:
     model = {
@@ -1229,4 +1360,143 @@ def get_faction_hero_by_reference(reference: str) -> dict:
             model['faction'] = 'AX'
         case _:
             print(f"⚠️  Référence inconnue: {reference}")
+    return model
+
+def get_faction_hero_by_label(label: str) -> dict:
+    model = {
+        'hero': None,
+        'hero_full': None,
+        'faction': None
+    }
+    
+    if not label:
+        print(f"⚠️  Label vide")
+        return model
+    
+    # Normaliser le label (lowercase + strip)
+    search_label = label.lower().strip()
+    
+    # Yzyraté (YZ)
+    if 'akesha' in search_label or 'taru' in search_label:
+        model['hero'] = 'Akesha'
+        model['hero_full'] = 'Akesha & Taru'
+        model['faction'] = 'YZ'
+    elif 'lindiwe' in search_label or 'maw' in search_label:
+        model['hero'] = 'Lindiwe'
+        model['hero_full'] = 'Lindiwe & Maw'
+        model['faction'] = 'YZ'
+    elif 'afanas' in search_label or 'senka' in search_label:
+        model['hero'] = 'Afanas'
+        model['hero_full'] = 'Afanas & Senka'
+        model['faction'] = 'YZ'
+    elif 'moyo' in search_label or 'silk' in search_label:
+        model['hero'] = 'Moyo'
+        model['hero_full'] = 'Moyo & Silk'
+        model['faction'] = 'YZ'
+    
+    # Ordis (OR)
+    elif 'sigismar' in search_label or 'wingspan' in search_label:
+        model['hero'] = 'Sigismar'
+        model['hero_full'] = 'Sigismar & Wingspan'
+        model['faction'] = 'OR'
+    elif 'waru' in search_label or 'mack' in search_label:
+        model['hero'] = 'Waru'
+        model['hero_full'] = 'Waru & Mack'
+        model['faction'] = 'OR'
+    elif 'gulrang' in search_label or 'tocsin' in search_label:
+        model['hero'] = 'Gulrang'
+        model['hero_full'] = 'Gulrang & Tocsin'
+        model['faction'] = 'OR'
+    elif 'zhen' in search_label or 'zéphyr' in search_label or 'zephyr' in search_label:
+        model['hero'] = 'Zhen'
+        model['hero_full'] = 'Zhen & Zéphyr'
+        model['faction'] = 'OR'
+    elif 'matz' in search_label or 'hive' in search_label:
+        model['hero'] = 'Matz'
+        model['hero_full'] = 'Matz & Hive'
+        model['faction'] = 'OR'
+    
+    # Muna (MU)
+    elif 'teija' in search_label or 'nauraa' in search_label:
+        model['hero'] = 'Teija'
+        model['hero_full'] = 'Teija & Nauraa'
+        model['faction'] = 'MU'
+    elif 'arjun' in search_label or 'spike' in search_label:
+        model['hero'] = 'Arjun'
+        model['hero_full'] = 'Arjun & Spike'
+        model['faction'] = 'MU'
+    elif 'rin' in search_label or 'orchid' in search_label:
+        model['hero'] = 'Rin'
+        model['hero_full'] = 'Rin & Orchid'
+        model['faction'] = 'MU'
+    elif 'kauri' in search_label or 'puff' in search_label:
+        model['hero'] = 'Kauri'
+        model['hero_full'] = 'Kauri & Puff'
+        model['faction'] = 'MU'
+    elif 'turuun' in search_label or 'benih' in search_label:
+        model['hero'] = 'Turuun'
+        model['hero_full'] = 'Turuun & Benih'
+        model['faction'] = 'MU'
+    
+    # Lyra (LY)
+    elif 'nevenka' in search_label or 'blotch' in search_label:
+        model['hero'] = 'Nevenka'
+        model['hero_full'] = 'Nevenka & Blotch'
+        model['faction'] = 'LY'
+    elif 'auraq' in search_label or 'kibble' in search_label:
+        model['hero'] = 'Auraq'
+        model['hero_full'] = 'Auraq & Kibble'
+        model['faction'] = 'LY'
+    elif 'fen' in search_label or 'crowbar' in search_label:
+        model['hero'] = 'Fen'
+        model['hero_full'] = 'Fen & Crowbar'
+        model['faction'] = 'LY'
+    elif 'nadir' in search_label or 'bubbles' in search_label:
+        model['hero'] = 'Nadir'
+        model['hero_full'] = 'Nadir & Bubbles'
+        model['faction'] = 'LY'
+    
+    # Bravos (BR)
+    elif 'kojo' in search_label or 'booda' in search_label:
+        model['hero'] = 'Kojo'
+        model['hero_full'] = 'Kojo & Booda'
+        model['faction'] = 'BR'
+    elif 'atsadi' in search_label or 'surge' in search_label:
+        model['hero'] = 'Atsadi'
+        model['hero_full'] = 'Atsadi & Surge'
+        model['faction'] = 'BR'
+    elif 'basira' in search_label or 'kaizaimon' in search_label:
+        model['hero'] = 'Basira'
+        model['hero_full'] = 'Basira & Kaizaimon'
+        model['faction'] = 'BR'
+    elif 'sol' in search_label or 'halua' in search_label:
+        model['hero'] = 'Sol'
+        model['hero_full'] = 'Sol & Halua'
+        model['faction'] = 'BR'
+    
+    # Axiom (AX)
+    elif 'sierra' in search_label or 'oddball' in search_label:
+        model['hero'] = 'Sierra'
+        model['hero_full'] = 'Sierra & Oddball'
+        model['faction'] = 'AX'
+    elif 'treyst' in search_label or 'rossum' in search_label:
+        model['hero'] = 'Treyst'
+        model['hero_full'] = 'Treyst & Rossum'
+        model['faction'] = 'AX'
+    elif 'subhash' in search_label or 'marmo' in search_label:
+        model['hero'] = 'Subhash'
+        model['hero_full'] = 'Subhash & Marmo'
+        model['faction'] = 'AX'
+    elif 'isaree' in search_label or 'pebble' in search_label:
+        model['hero'] = 'Isaree'
+        model['hero_full'] = 'Isaree & Pebble'
+        model['faction'] = 'AX'
+    elif 'della' in search_label or 'bolt' in search_label:
+        model['hero'] = 'Della'
+        model['hero_full'] = 'Della & Bolt'
+        model['faction'] = 'AX'
+    
+    else:
+        print(f"⚠️  Label inconnu: {label}")
+    
     return model
