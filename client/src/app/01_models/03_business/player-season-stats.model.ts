@@ -1,5 +1,21 @@
 import { PlayerModel } from './player.model';
 
+export interface FactionStats {
+  wins: number;
+  losses: number;
+  draws: number;
+  games: number;
+  win_rate: number;
+}
+
+export interface HeroStats {
+  wins: number;
+  losses: number;
+  draws: number;
+  games: number;
+  win_rate: number;
+}
+
 export interface PlayerSeasonStatsModel {
   id: string; // UUID
   player_id: string; // UUID
@@ -19,6 +35,19 @@ export interface PlayerSeasonStatsModel {
   // Classement
   rank: number | null;
   highest_rank: number | null;
+
+  // ✅ Nouvelles propriétés
+  most_played_faction: string | null;
+  most_played_hero: string | null;
+  faction_stats: Record<string, FactionStats>;
+  hero_stats: Record<string, HeroStats>;
+  avg_reflexion_time: number | null;
+  total_reflexion_time: number | null;
+  fastest_game_minutes: number | null;
+  slowest_game_minutes: number | null;
+  current_streak: number;
+  best_win_streak: number;
+  worst_loss_streak: number;
 
   // Tournois
   tournaments_played: number;

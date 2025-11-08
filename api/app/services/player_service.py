@@ -980,13 +980,13 @@ def reload_player_service(player_id: str) -> dict:
             traceback.print_exc()
             reload_stats['errors'] += 1
         
-        # 8.3. ✅ Recalculer les statistiques PAR SAISON (TOUTES les saisons avec parties)
-        print(f"\n📅 Recalcul des stats par saison...")
-
+        # 8.3. ✅ Recalculer les statistiques PAR SAISON avec enrichissement
+        print(f"\n📅 Recalcul des stats par saison (enrichies)...")
+    
         try:
             season_stats_updates = []
             
-            # ✅ Récupérer TOUTES les saisons où le joueur a des parties
+            # Récupérer TOUTES les saisons où le joueur a des parties
             all_seasons_with_games = set()
             for game in all_player_games:
                 all_seasons_with_games.add(game.season)
@@ -997,54 +997,85 @@ def reload_player_service(player_id: str) -> dict:
             
             # Pour chaque saison où le joueur a des parties
             for season_num in all_seasons_with_games:
-                # Récupérer TOUTES les parties de cette saison
-                season_games = [g for g in all_player_games if g.season == season_num]
+                # ✅ Calculer TOUTES les stats (basiques + enrichies) en un seul pass
+                enriched_stats = calculate_enriched_season_stats(
+                    player_uuid,
+                    season_num,
+                    all_player_games  # Passer toutes les parties (filtrage interne)
+                )
                 
-                if not season_games:
-                    print(f"  ⚠️  Saison {season_num}: Aucune partie (ignorée)")
-                    continue
-                
-                # Calculer les stats
-                season_stats = _calculate_player_stats_from_games(season_games, player_uuid)
-                
-                season_total = len(season_games)
-                season_wins = season_stats['wins']
-                season_losses = season_stats['losses']
-                season_draws = season_stats['draws']
-                season_win_rate = (season_wins / season_total * 100) if season_total > 0 else 0.0
-                
-                # Récupérer les stats existantes pour conserver rank et highest_rank
+                # ✅ Récupérer l'objet PlayerSeasonStats existant (ou le créer)
                 existing_stats = get_season_stats_by_player_data(player_id, season_num)
                 
-                season_stats_updates.append({
-                    'player_id': player_uuid,
-                    'season': str(season_num),
-                    'wins': season_wins,
-                    'losses': season_losses,
-                    'draws': season_draws,
-                    'win_rate': round(season_win_rate, 2),
-                    'points': existing_stats.points if existing_stats else 0,
-                    'rank': existing_stats.rank if existing_stats else None,
-                    'highest_rank': existing_stats.highest_rank if existing_stats else None
-                })
+                if existing_stats:
+                    # ✅ Mettre à jour l'objet existant
+                    existing_stats.wins = enriched_stats['wins']
+                    existing_stats.losses = enriched_stats['losses']
+                    existing_stats.draws = enriched_stats['draws']
+                    existing_stats.win_rate = enriched_stats['win_rate']
+                    existing_stats.most_played_faction = enriched_stats.get('most_played_faction')
+                    existing_stats.most_played_hero = enriched_stats.get('most_played_hero')
+                    existing_stats.faction_stats = enriched_stats.get('faction_stats', {})
+                    existing_stats.hero_stats = enriched_stats.get('hero_stats', {})
+                    existing_stats.avg_reflexion_time = enriched_stats.get('avg_reflexion_time')
+                    existing_stats.total_reflexion_time = enriched_stats.get('total_reflexion_time')
+                    existing_stats.fastest_game_minutes = enriched_stats.get('fastest_game_minutes')
+                    existing_stats.slowest_game_minutes = enriched_stats.get('slowest_game_minutes')
+                    existing_stats.current_streak = enriched_stats.get('current_streak', 0)
+                    existing_stats.best_win_streak = enriched_stats.get('best_win_streak', 0)
+                    existing_stats.worst_loss_streak = enriched_stats.get('worst_loss_streak', 0)
+                    existing_stats.updated_at = datetime.now(timezone.utc)
+                    
+                    season_stats_updates.append(existing_stats)
+                else:
+                    # ✅ Créer un nouvel objet PlayerSeasonStats
+                    from app.models.player import PlayerSeasonStats
+                    
+                    new_stats = PlayerSeasonStats(
+                        player_id=player_uuid,
+                        season=str(season_num),
+                        points=0,
+                        wins=enriched_stats['wins'],
+                        losses=enriched_stats['losses'],
+                        draws=enriched_stats['draws'],
+                        win_rate=enriched_stats['win_rate'],
+                        rank=None,
+                        highest_rank=None,
+                        most_played_faction=enriched_stats.get('most_played_faction'),
+                        most_played_hero=enriched_stats.get('most_played_hero'),
+                        faction_stats=enriched_stats.get('faction_stats', {}),
+                        hero_stats=enriched_stats.get('hero_stats', {}),
+                        avg_reflexion_time=enriched_stats.get('avg_reflexion_time'),
+                        total_reflexion_time=enriched_stats.get('total_reflexion_time'),
+                        fastest_game_minutes=enriched_stats.get('fastest_game_minutes'),
+                        slowest_game_minutes=enriched_stats.get('slowest_game_minutes'),
+                        current_streak=enriched_stats.get('current_streak', 0),
+                        best_win_streak=enriched_stats.get('best_win_streak', 0),
+                        worst_loss_streak=enriched_stats.get('worst_loss_streak', 0),
+                        tournaments_played=0,
+                        tournaments_won=0,
+                        created_at=datetime.now(timezone.utc),
+                        updated_at=datetime.now(timezone.utc)
+                    )
+                    
+                    season_stats_updates.append(new_stats)
                 
                 print(f"  📅 Saison {season_num}:")
-                print(f"    🎮 Parties: {season_total}")
-                print(f"    ✅ Victoires: {season_wins}")
-                print(f"    ❌ Défaites: {season_losses}")
-                print(f"    ⚖️  Nuls: {season_draws}")
-                print(f"    📊 Win rate: {season_win_rate:.2f}%")
-                if existing_stats:
-                    print(f"    🏆 Points (ladder): {existing_stats.points}")
-                    print(f"    📍 Rank: {existing_stats.rank or 'N/A'}")
+                print(f"    🎮 Parties: {enriched_stats['wins'] + enriched_stats['losses'] + enriched_stats['draws']}")
+                print(f"    ✅ Victoires: {enriched_stats['wins']}")
+                print(f"    📊 Win rate: {enriched_stats['win_rate']:.2f}%")
+                print(f"    🎯 Faction principale: {enriched_stats['most_played_faction']}")
+                print(f"    🦸 Héros principal: {enriched_stats['most_played_hero']}")
+                print(f"    ⏱️  Temps moyen: {enriched_stats['avg_reflexion_time']}s")
             
+            # ✅ Sauvegarder via la couche data
             # Bulk update
             if season_stats_updates:
-                updated_count = bulk_upsert_season_stats_data(season_stats_updates)
-                print(f"\n✅ {updated_count} saison(s) mise(s) à jour")
-            else:
-                print(f"\n⚠️  Aucune saison à mettre à jour")
-            
+                from app.data.player_data import update_season_stats_bulk_data
+                
+                updated_count = update_season_stats_bulk_data(season_stats_updates)
+                print(f"\n✅ {updated_count} saison(s) mise(s) à jour (avec stats enrichies)")
+        
         except Exception as e:
             print(f"❌ Erreur recalcul stats par saison: {e}")
             import traceback
@@ -1103,7 +1134,7 @@ def import_table_service(table_id: int) -> dict:
         game = get_game_by_table_id_data(table_id)
 
         ti = getTableInfos(table_id)
-        if ti.get('status', 0) != 1:
+        if (ti.get('status', 0) != 1):
             return {
                 'status': 0,
                 'error': f"Err : {ti.get('error', 'err API')}",
@@ -1512,3 +1543,151 @@ def get_faction_hero_by_label(label: str) -> dict:
         print(f"⚠️  Label inconnu: {label}")
     
     return model
+
+def calculate_enriched_season_stats(player_id: uuid.UUID, season: int, games: List[Game]) -> dict:
+    """
+    Calcule les statistiques enrichies pour une saison (optimisé)
+    
+    Args:
+        player_id: UUID du joueur
+        season: Numéro de saison
+        games: Liste des parties déjà chargées (évite requête supplémentaire)
+    
+    Returns:
+        Dict avec toutes les stats calculées
+    """
+    
+    # Filtrer les parties de la saison (games déjà fourni)
+    season_games = [g for g in games if g.season == season]
+    
+    if not season_games:
+        return {}
+    
+    # ✅ Variables d'accumulation (1 seul pass sur les données)
+    wins = 0
+    losses = 0
+    draws = 0
+    
+    faction_stats = {}  # {'AX': {'wins': 0, 'losses': 0, 'draws': 0, 'games': 0}}
+    hero_stats = {}     # {'Sigismar & Wingspan': {'wins': 0, 'losses': 0, 'draws': 0}}
+    
+    total_reflexion_time = 0
+    reflexion_count = 0
+    
+    fastest_game = None
+    slowest_game = None
+    
+    current_streak = 0
+    best_win_streak = 0
+    worst_loss_streak = 0
+    temp_win_streak = 0
+    temp_loss_streak = 0
+    
+    # ✅ SINGLE PASS : Parcourir les parties UNE SEULE FOIS
+    for game in sorted(season_games, key=lambda x: x.played_at):
+        # Déterminer faction et héros du joueur
+        is_player1 = game.player1_id == player_id
+        player_faction = game.player1_faction if is_player1 else game.player2_faction
+        player_hero = game.player1_hero if is_player1 else game.player2_hero
+        player_reflexion = game.player1_reflexion_time if is_player1 else game.player2_reflexion_time
+        
+        # Résultat
+        is_win = game.winner_id == player_id
+        is_draw = game.is_draw
+        is_loss = not is_win and not is_draw
+        
+        # Stats globales
+        if is_win:
+            wins += 1
+            temp_win_streak += 1
+            temp_loss_streak = 0
+            best_win_streak = max(best_win_streak, temp_win_streak)
+        elif is_loss:
+            losses += 1
+            temp_loss_streak += 1
+            temp_win_streak = 0
+            worst_loss_streak = max(worst_loss_streak, temp_loss_streak)
+        else:
+            draws += 1
+            temp_win_streak = 0
+            temp_loss_streak = 0
+        
+        # Streak actuel (dernière partie)
+        current_streak = temp_win_streak if temp_win_streak > 0 else -temp_loss_streak
+        
+        # Stats par faction
+        if player_faction:
+            if player_faction not in faction_stats:
+                faction_stats[player_faction] = {'wins': 0, 'losses': 0, 'draws': 0, 'games': 0}
+            
+            faction_stats[player_faction]['games'] += 1
+            if is_win:
+                faction_stats[player_faction]['wins'] += 1
+            elif is_loss:
+                faction_stats[player_faction]['losses'] += 1
+            else:
+                faction_stats[player_faction]['draws'] += 1
+        
+        # Stats par héros
+        if player_hero:
+            if player_hero not in hero_stats:
+                hero_stats[player_hero] = {'wins': 0, 'losses': 0, 'draws': 0, 'games': 0}
+            
+            hero_stats[player_hero]['games'] += 1
+            if is_win:
+                hero_stats[player_hero]['wins'] += 1
+            elif is_loss:
+                hero_stats[player_hero]['losses'] += 1
+            else:
+                hero_stats[player_hero]['draws'] += 1
+        
+        # Temps de réflexion
+        if player_reflexion and player_reflexion > 0:
+            total_reflexion_time += player_reflexion
+            reflexion_count += 1
+        
+        # Durée de partie
+        if game.duration_minutes:
+            if fastest_game is None or game.duration_minutes < fastest_game:
+                fastest_game = game.duration_minutes
+            if slowest_game is None or game.duration_minutes > slowest_game:
+                slowest_game = game.duration_minutes
+    
+    # ✅ Calcul du win_rate global
+    total_games = wins + losses + draws
+    win_rate = (wins / total_games * 100) if total_games > 0 else 0.0
+    
+    # ✅ Faction/Héros le plus joué
+    most_played_faction = max(faction_stats.items(), key=lambda x: x[1]['games'])[0] if faction_stats else None
+    most_played_hero = max(hero_stats.items(), key=lambda x: x[1]['games'])[0] if hero_stats else None
+    
+    # ✅ Moyenne temps de réflexion
+    avg_reflexion_time = (total_reflexion_time // reflexion_count) if reflexion_count > 0 else None
+    
+    # ✅ Calculer win_rate par faction
+    for faction, stats in faction_stats.items():
+        games_count = stats['games']
+        stats['win_rate'] = (stats['wins'] / games_count * 100) if games_count > 0 else 0.0
+    
+    # ✅ Calculer win_rate par héros
+    for hero, stats in hero_stats.items():
+        games_count = stats['games']
+        stats['win_rate'] = (stats['wins'] / games_count * 100) if games_count > 0 else 0.0
+    
+    return {
+        'wins': wins,
+        'losses': losses,
+        'draws': draws,
+        'win_rate': round(win_rate, 2),
+        'most_played_faction': most_played_faction,
+        'most_played_hero': most_played_hero,
+        'faction_stats': faction_stats,
+        'hero_stats': hero_stats,
+        'avg_reflexion_time': avg_reflexion_time,
+        'total_reflexion_time': total_reflexion_time,
+        'fastest_game_minutes': fastest_game,
+        'slowest_game_minutes': slowest_game,
+        'current_streak': current_streak,
+        'best_win_streak': best_win_streak,
+        'worst_loss_streak': worst_loss_streak,
+    }

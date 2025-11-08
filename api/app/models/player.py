@@ -439,6 +439,23 @@ class PlayerSeasonStats(db.Model):
     tournaments_played = db.Column(db.Integer, default=0)
     tournaments_won = db.Column(db.Integer, default=0)
     
+    # ✅ Nouvelles colonnes pour les stats par faction
+    most_played_faction = db.Column(db.String(2), nullable=True)
+    most_played_hero = db.Column(db.String(100), nullable=True)
+    faction_stats = db.Column(db.JSON, nullable=True)  # {'AX': {'wins': 5, 'losses': 2, 'games': 7}, ...}
+    hero_stats = db.Column(db.JSON, nullable=True)     # {'Sigismar & Wingspan': {'wins': 3, 'losses': 1}, ...}
+    
+    # Stats de temps
+    avg_reflexion_time = db.Column(db.Integer, nullable=True)  # Moyenne en secondes
+    total_reflexion_time = db.Column(db.Integer, nullable=True)  # Total en secondes
+    fastest_game_minutes = db.Column(db.Integer, nullable=True)
+    slowest_game_minutes = db.Column(db.Integer, nullable=True)
+    
+    # Streaks
+    current_streak = db.Column(db.Integer, default=0)
+    best_win_streak = db.Column(db.Integer, default=0)
+    worst_loss_streak = db.Column(db.Integer, default=0)
+    
     created_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
     updated_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc), onupdate=datetime.datetime.now(datetime.timezone.utc))
     
@@ -462,13 +479,26 @@ class PlayerSeasonStats(db.Model):
             'total_games': self.wins + self.losses + self.draws,
             'rank': self.rank,
             'highest_rank': self.highest_rank,
+            
+            # ✅ Nouvelles stats
+            'most_played_faction': self.most_played_faction,
+            'most_played_hero': self.most_played_hero,
+            'faction_stats': self.faction_stats or {},
+            'hero_stats': self.hero_stats or {},
+            'avg_reflexion_time': self.avg_reflexion_time,
+            'total_reflexion_time': self.total_reflexion_time,
+            'fastest_game_minutes': self.fastest_game_minutes,
+            'slowest_game_minutes': self.slowest_game_minutes,
+            'current_streak': self.current_streak,
+            'best_win_streak': self.best_win_streak,
+            'worst_loss_streak': self.worst_loss_streak,
+            
             'tournaments_played': self.tournaments_played,
             'tournaments_won': self.tournaments_won,
             'created_at': self.created_at.isoformat() if self.created_at else None,
             'updated_at': self.updated_at.isoformat() if self.updated_at else None,
         }
         
-        # ✅ Inclure les données du joueur si demandé
         if include_player and self.player:
             data['player'] = self.player.json()
         
