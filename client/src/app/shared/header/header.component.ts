@@ -27,6 +27,35 @@ export class HeaderComponent implements OnInit {
     return this.authViewService.isBetaTester();
   }
 
+  // ✅ Helper pour obtenir le badge avec priorité
+  getUserBadge(): { label: string; color: string; tooltip: string } | null {
+    if (this.isAdmin) {
+      return {
+        label: 'A',
+        color: 'bg-red-600 text-white',
+        tooltip: 'Admin'
+      };
+    }
+
+    if (this.isBetaTester) {
+      return {
+        label: 'B',
+        color: 'bg-blue-600 text-white',
+        tooltip: 'Beta Tester'
+      };
+    }
+
+    if (this.isPublisher) {
+      return {
+        label: 'P',
+        color: 'bg-purple-600 text-white',
+        tooltip: 'Publisher'
+      };
+    }
+
+    return null;
+  }
+
   ngOnInit(): void {
     this.authViewService.isLoggedIn$.subscribe(status => {
       this.isLoggedIn = status;
@@ -35,9 +64,9 @@ export class HeaderComponent implements OnInit {
         this.isPublisher = this.authViewService.isPublisher();
         this.username = this.authViewService.getUsername();
       } else {
-        this.isAdmin = false; // Réinitialiser si l'utilisateur n'est pas connecté
-        this.isPublisher = false; // Réinitialiser si l'utilisateur n'est pas connecté
-        this.username = null; // Réinitialiser si l'utilisateur n'est pas connecté
+        this.isAdmin = false;
+        this.isPublisher = false;
+        this.username = null;
       }
       this.cdr.detectChanges();
     });

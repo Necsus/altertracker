@@ -205,6 +205,9 @@ class Game(db.Model):
 
     player1_hero = db.Column(db.String(100), nullable=True)
     player2_hero = db.Column(db.String(100), nullable=True)
+
+    player1_reflexion_time = db.Column(db.Integer, nullable=True)
+    player2_reflexion_time = db.Column(db.Integer, nullable=True)
     
     # Résultat
     winner_id = db.Column(UUID(as_uuid=True), db.ForeignKey('players.id'), nullable=True)
@@ -240,39 +243,78 @@ class Game(db.Model):
     def __repr__(self):
         return f"<Game {self.id}: {self.player1_id} vs {self.player2_id}>"
     
-    def json(self):
-        return {
+    def json(self, include_players: bool = True, include_decks: bool = False):
+        """
+        Sérialise la partie en JSON
+        
+        Args:
+            include_players: Inclure les objets joueurs complets
+            include_decks: Inclure les objets decks complets
+        """
+        data = {
             'id': str(self.id),
             'table_id': self.table_id,
             'ranked': self.ranked,
+            
+            # IDs des joueurs
             'player1_id': str(self.player1_id),
+            'player2_id': str(self.player2_id),
+            
+            # Infos rapides des joueurs
             'player1_name': self.player1.name if self.player1 else None,
             'player1_country': self.player1.country if self.player1 else None,
-            'player2_id': str(self.player2_id),
             'player2_name': self.player2.name if self.player2 else None,
             'player2_country': self.player2.country if self.player2 else None,
+            
+            # Factions et héros
             'player1_faction': self.player1_faction,
             'player2_faction': self.player2_faction,
             'player1_hero': self.player1_hero,
             'player2_hero': self.player2_hero,
+            
+            # Decks
             'player1_deck_id': str(self.player1_deck_id) if self.player1_deck_id else None,
             'player2_deck_id': str(self.player2_deck_id) if self.player2_deck_id else None,
+
+            'player1_reflexion_time': self.player1_reflexion_time,
+            'player2_reflexion_time': self.player2_reflexion_time,
+            
+            # Résultat
             'winner_id': str(self.winner_id) if self.winner_id else None,
             'is_draw': self.is_draw,
+            
+            # Contexte
             'tournament_id': str(self.tournament_id) if self.tournament_id else None,
             'season': self.season,
             'round': self.round,
             'game_format': self.game_format,
+            
+            # Dates
             'played_at': self.played_at.isoformat() if self.played_at else None,
             'start': self.start.isoformat() if self.start else None,
             'end': self.end.isoformat() if self.end else None,
             'duration_minutes': self.duration_minutes,
+            
+            # Métadonnées
             'replay_url': self.replay_url,
             'notes': self.notes,
             'is_verified': self.is_verified,
             'verified_by': self.verified_by,
             'verified_at': self.verified_at.isoformat() if self.verified_at else None,
         }
+        
+        # ✅ Ajouter les objets joueurs complets si demandé
+        if include_players:
+            data['player1'] = self.player1.json() if self.player1 else None
+            data['player2'] = self.player2.json() if self.player2 else None
+        
+        # ✅ Ajouter les objets decks complets si demandé
+        if include_decks:
+            data['player1_deck'] = self.player1_deck.json() if self.player1_deck else None
+            data['player2_deck'] = self.player2_deck.json() if self.player2_deck else None
+        
+        return data
+
 
 class Tournament(db.Model):
     __tablename__ = 'tournaments'

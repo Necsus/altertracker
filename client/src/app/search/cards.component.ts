@@ -236,7 +236,7 @@ export class CardsComponent implements OnInit, OnDestroy {
     if (card) {
       this.alteredService.getMarketOffer$(card)
         .pipe(
-          delay(300), // Respecte le délai entre les requêtes
+          delay(500), // Respecte le délai entre les requêtes
           map((offerRequest) => {
             this.requestQueue.push(offerRequest); // Ajoute la requête à la file d'attente
             this.progressSubject.next(this.requestQueue.length); // Met à jour la progression
