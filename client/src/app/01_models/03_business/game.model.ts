@@ -22,6 +22,9 @@ export interface GameModel {
   player1_reflexion_time?: number; // en secondes
   player2_reflexion_time?: number; // en secondes
 
+  player1_nb_turns?: number;
+  player2_nb_turns?: number;
+
   // Résultat
   winner_id?: string; // UUID
   is_draw: boolean;

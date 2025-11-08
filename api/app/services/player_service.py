@@ -898,7 +898,9 @@ def reload_player_service(player_id: str) -> dict:
                     game.player1_faction is None or 
                     game.player2_faction is None or 
                     game.player1_reflexion_time is None or 
-                    game.player2_reflexion_time is None
+                    game.player2_reflexion_time is None or 
+                    game.player1_nb_turns is None or 
+                    game.player2_nb_turns is None
                 )
                 
                 if is_incomplete:
@@ -1017,8 +1019,8 @@ def reload_player_service(player_id: str) -> dict:
                     existing_stats.most_played_hero = enriched_stats.get('most_played_hero')
                     existing_stats.faction_stats = enriched_stats.get('faction_stats', {})
                     existing_stats.hero_stats = enriched_stats.get('hero_stats', {})
-                    existing_stats.avg_reflexion_time = enriched_stats.get('avg_reflexion_time')
                     existing_stats.total_reflexion_time = enriched_stats.get('total_reflexion_time')
+                    existing_stats.total_turns = enriched_stats.get('total_turns')
                     existing_stats.fastest_game_minutes = enriched_stats.get('fastest_game_minutes')
                     existing_stats.slowest_game_minutes = enriched_stats.get('slowest_game_minutes')
                     existing_stats.current_streak = enriched_stats.get('current_streak', 0)
@@ -1045,8 +1047,8 @@ def reload_player_service(player_id: str) -> dict:
                         most_played_hero=enriched_stats.get('most_played_hero'),
                         faction_stats=enriched_stats.get('faction_stats', {}),
                         hero_stats=enriched_stats.get('hero_stats', {}),
-                        avg_reflexion_time=enriched_stats.get('avg_reflexion_time'),
                         total_reflexion_time=enriched_stats.get('total_reflexion_time'),
+                        total_turns = enriched_stats.get('total_turns'),
                         fastest_game_minutes=enriched_stats.get('fastest_game_minutes'),
                         slowest_game_minutes=enriched_stats.get('slowest_game_minutes'),
                         current_streak=enriched_stats.get('current_streak', 0),
@@ -1066,7 +1068,6 @@ def reload_player_service(player_id: str) -> dict:
                 print(f"    📊 Win rate: {enriched_stats['win_rate']:.2f}%")
                 print(f"    🎯 Faction principale: {enriched_stats['most_played_faction']}")
                 print(f"    🦸 Héros principal: {enriched_stats['most_played_hero']}")
-                print(f"    ⏱️  Temps moyen: {enriched_stats['avg_reflexion_time']}s")
             
             # ✅ Sauvegarder via la couche data
             # Bulk update
@@ -1129,8 +1130,6 @@ def reload_player_service(player_id: str) -> dict:
     
 def import_table_service(table_id: int) -> dict:
     try:
-        print(f"\n🔄 Import de la table ID: {table_id}...")
-
         game = get_game_by_table_id_data(table_id)
 
         ti = getTableInfos(table_id)
@@ -1176,7 +1175,9 @@ def import_table_service(table_id: int) -> dict:
                     game.player2_hero = winner_hero_model['hero']
 
             player = stats.get('player', {})
-            if player and (game.player1_faction is None or game.player2_faction is None or game.player1_reflexion_time is None or game.player2_reflexion_time is None):
+            if player and (game.player1_faction is None or game.player2_faction is None or 
+                          game.player1_reflexion_time is None or game.player2_reflexion_time is None or 
+                          game.player1_nb_turns is None or game.player2_nb_turns is None):
                 # ✅ Convertir les bga_id en strings pour accéder au dictionnaire
                 p1_bga_id_str = str(game.player1.bga_id)
                 p2_bga_id_str = str(game.player2.bga_id)
@@ -1194,58 +1195,22 @@ def import_table_service(table_id: int) -> dict:
                     game.player2_faction = get_faction_code_by_label(faction_label_p2)
 
                 # Récupérer les valuelabels des temps de réflexion
-                reflection_time_labels = player.get('reflexion_time', {}).get('values', {})
+                reflection_time_values = player.get('reflexion_time', {}).get('values', {})
 
                 # Vérifier que les clés existent
-                if p1_bga_id_str in reflection_time_labels:
-                    game.player1_reflexion_time = reflection_time_labels[p1_bga_id_str]
-                if p2_bga_id_str in reflection_time_labels:
-                    game.player2_reflexion_time = reflection_time_labels[p2_bga_id_str]
+                if p1_bga_id_str in reflection_time_values:
+                    game.player1_reflexion_time = reflection_time_values[p1_bga_id_str]
+                if p2_bga_id_str in reflection_time_values:
+                    game.player2_reflexion_time = reflection_time_values[p2_bga_id_str]
 
+                # Récupérer les valuelabels des temps de réflexion
+                turns_values = player.get('turns', {}).get('values', {})
 
-        # 1. Récupérer les données de la table depuis l'API BGA
-        # result = getLogs(table_id)
-        # if result.get('status', 0) != 1:
-        #     return {
-        #         'status': 0,
-        #         'error': f"Err : {result.get('error', 'err API')}",
-        #         'table_id': table_id
-        #     }
-        # data = result.get('data', {})
-        # logs = data.get('logs', [])
-        # if not logs or len(logs) == 0:
-        #     return {
-        #         'status': 0,
-        #         'error': f'No logs found for table ID: {table_id}',
-        #         'table_id': table_id
-        #     }
-        
-        # decks_selections = []
-        
-        # for log in logs:
-        #     log_data = log.get('data', [])[0]
-        #     if log_data.get('type', '') == 'updateInitialPrecoDeckSelection':
-        #         private_data = log_data.get('args', {}).get('args', {}).get('_private')
-        #         private_data['player_id'] = int(log.get('channel', '').replace('/player/p', ''))
-        #         if private_data:
-        #             if private_data.get('selection', '') == 'API':
-        #                 private_data.pop('decks', None)
-        #             decks_selections.append(private_data)
-        #             if len(decks_selections) == 2:
-        #                 break
-
-        # for player_data in decks_selections:
-        #     if player_data['player_id'] == game.player1.bga_id:
-        #         print(player_data['API']['hero'])
-        #         hero_model = get_faction_hero_by_reference(player_data['API']['hero'])
-        #         game.player1_faction = hero_model['faction']
-        #         game.player1_hero = hero_model['hero']
-        #     if player_data['player_id'] == game.player2.bga_id:
-        #         hero_model = get_faction_hero_by_reference(player_data['API']['hero'])
-        #         game.player2_faction = hero_model['faction']
-        #         game.player2_hero = hero_model['hero']
-
-
+                # Vérifier que les clés existent
+                if p1_bga_id_str in turns_values:
+                    game.player1_nb_turns = turns_values[p1_bga_id_str]
+                if p2_bga_id_str in turns_values:
+                    game.player2_nb_turns = turns_values[p2_bga_id_str]
 
         update_game_data(game)
 
@@ -1263,6 +1228,70 @@ def import_table_service(table_id: int) -> dict:
             'error': str(e),
             'table_id': table_id
         }
+    
+def import_deck_service(table_id: int) -> dict:
+    try:
+        game = get_game_by_table_id_data(table_id)
+
+        # 1. Récupérer les données de la table depuis l'API BGA
+        result = getLogs(table_id)
+        if result.get('status', 0) != 1:
+            return {
+                'status': 0,
+                'error': f"Err : {result.get('error', 'err API')}",
+                'table_id': table_id
+            }
+        data = result.get('data', {})
+        logs = data.get('logs', [])
+        if not logs or len(logs) == 0:
+            return {
+                'status': 0,
+                'error': f'No logs found for table ID: {table_id}',
+                'table_id': table_id
+            }
+        
+        decks_selections = []
+        
+        for log in logs:
+            log_data = log.get('data', [])[0]
+            if log_data.get('type', '') == 'updateInitialPrecoDeckSelection':
+                private_data = log_data.get('args', {}).get('args', {}).get('_private')
+                private_data['player_id'] = int(log.get('channel', '').replace('/player/p', ''))
+                if private_data:
+                    if private_data.get('selection', '') == 'API':
+                        private_data.pop('decks', None)
+                    decks_selections.append(private_data)
+                    if len(decks_selections) == 2:
+                        break
+
+        for player_data in decks_selections:
+            if player_data['player_id'] == game.player1.bga_id:
+                print(player_data['API']['hero'])
+                hero_model = get_faction_hero_by_reference(player_data['API']['hero'])
+                game.player1_faction = hero_model['faction']
+                game.player1_hero = hero_model['hero']
+            if player_data['player_id'] == game.player2.bga_id:
+                hero_model = get_faction_hero_by_reference(player_data['API']['hero'])
+                game.player2_faction = hero_model['faction']
+                game.player2_hero = hero_model['hero']
+
+        update_game_data(game)
+
+        return {
+            'status': 1,
+            'table': game.json()
+        }
+        
+    except Exception as e:
+        print(f"\033[91m❌ Erreur critique lors de l'import de la table: {e}\033[0m")
+        import traceback
+        traceback.print_exc()
+        return {
+            'status': 0,
+            'error': str(e),
+            'table_id': table_id
+        }
+
     
 def get_faction_code_by_label(label: str) -> dict:
     match label.lower():
@@ -1545,18 +1574,6 @@ def get_faction_hero_by_label(label: str) -> dict:
     return model
 
 def calculate_enriched_season_stats(player_id: uuid.UUID, season: int, games: List[Game]) -> dict:
-    """
-    Calcule les statistiques enrichies pour une saison (optimisé)
-    
-    Args:
-        player_id: UUID du joueur
-        season: Numéro de saison
-        games: Liste des parties déjà chargées (évite requête supplémentaire)
-    
-    Returns:
-        Dict avec toutes les stats calculées
-    """
-    
     # Filtrer les parties de la saison (games déjà fourni)
     season_games = [g for g in games if g.season == season]
     
@@ -1572,7 +1589,7 @@ def calculate_enriched_season_stats(player_id: uuid.UUID, season: int, games: Li
     hero_stats = {}     # {'Sigismar & Wingspan': {'wins': 0, 'losses': 0, 'draws': 0}}
     
     total_reflexion_time = 0
-    reflexion_count = 0
+    total_turns = 0  # ✅ Nombre total de tours
     
     fastest_game = None
     slowest_game = None
@@ -1590,6 +1607,7 @@ def calculate_enriched_season_stats(player_id: uuid.UUID, season: int, games: Li
         player_faction = game.player1_faction if is_player1 else game.player2_faction
         player_hero = game.player1_hero if is_player1 else game.player2_hero
         player_reflexion = game.player1_reflexion_time if is_player1 else game.player2_reflexion_time
+        player_turns = game.player1_nb_turns if is_player1 else game.player2_nb_turns
         
         # Résultat
         is_win = game.winner_id == player_id
@@ -1641,10 +1659,10 @@ def calculate_enriched_season_stats(player_id: uuid.UUID, season: int, games: Li
             else:
                 hero_stats[player_hero]['draws'] += 1
         
-        # Temps de réflexion
-        if player_reflexion and player_reflexion > 0:
+        # ✅ Accumuler temps BRUT + tours (pas de calcul de moyenne ici)
+        if player_reflexion and player_reflexion > 0 and player_turns and player_turns > 0:
             total_reflexion_time += player_reflexion
-            reflexion_count += 1
+            total_turns += player_turns
         
         # Durée de partie
         if game.duration_minutes:
@@ -1660,9 +1678,6 @@ def calculate_enriched_season_stats(player_id: uuid.UUID, season: int, games: Li
     # ✅ Faction/Héros le plus joué
     most_played_faction = max(faction_stats.items(), key=lambda x: x[1]['games'])[0] if faction_stats else None
     most_played_hero = max(hero_stats.items(), key=lambda x: x[1]['games'])[0] if hero_stats else None
-    
-    # ✅ Moyenne temps de réflexion
-    avg_reflexion_time = (total_reflexion_time // reflexion_count) if reflexion_count > 0 else None
     
     # ✅ Calculer win_rate par faction
     for faction, stats in faction_stats.items():
@@ -1683,8 +1698,8 @@ def calculate_enriched_season_stats(player_id: uuid.UUID, season: int, games: Li
         'most_played_hero': most_played_hero,
         'faction_stats': faction_stats,
         'hero_stats': hero_stats,
-        'avg_reflexion_time': avg_reflexion_time,
-        'total_reflexion_time': total_reflexion_time,
+        'total_reflexion_time': total_reflexion_time,  # ✅ Temps BRUT total
+        'total_turns': total_turns,  # ✅ Nombre total de tours
         'fastest_game_minutes': fastest_game,
         'slowest_game_minutes': slowest_game,
         'current_streak': current_streak,
