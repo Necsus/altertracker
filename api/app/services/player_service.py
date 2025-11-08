@@ -896,7 +896,9 @@ def reload_player_service(player_id: str) -> dict:
             for game in all_player_games:
                 is_incomplete = (
                     game.player1_faction is None or 
-                    game.player2_faction is None
+                    game.player2_faction is None or 
+                    game.player1_reflexion_time is None or 
+                    game.player2_reflexion_time is None
                 )
                 
                 if is_incomplete:
@@ -1161,7 +1163,7 @@ def import_table_service(table_id: int) -> dict:
                     game.player2_faction = get_faction_code_by_label(faction_label_p2)
 
                 # Récupérer les valuelabels des temps de réflexion
-                reflection_time_labels = player.get('faction', {}).get('reflexion_time', {})
+                reflection_time_labels = player.get('reflexion_time', {}).get('values', {})
 
                 # Vérifier que les clés existent
                 if p1_bga_id_str in reflection_time_labels:
