@@ -205,6 +205,9 @@ class Game(db.Model):
 
     player1_hero = db.Column(db.String(100), nullable=True)
     player2_hero = db.Column(db.String(100), nullable=True)
+
+    player1_reflexion_time = db.Column(db.Integer, nullable=True)
+    player2_reflexion_time = db.Column(db.Integer, nullable=True)
     
     # Résultat
     winner_id = db.Column(UUID(as_uuid=True), db.ForeignKey('players.id'), nullable=True)
@@ -272,6 +275,9 @@ class Game(db.Model):
             # Decks
             'player1_deck_id': str(self.player1_deck_id) if self.player1_deck_id else None,
             'player2_deck_id': str(self.player2_deck_id) if self.player2_deck_id else None,
+
+            'player1_reflexion_time': self.player1_reflexion_time,
+            'player2_reflexion_time': self.player2_reflexion_time,
             
             # Résultat
             'winner_id': str(self.winner_id) if self.winner_id else None,

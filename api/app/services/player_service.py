@@ -1143,7 +1143,7 @@ def import_table_service(table_id: int) -> dict:
                     game.player2_hero = winner_hero_model['hero']
 
             player = stats.get('player', {})
-            if player and (game.player1_faction is None or game.player2_faction is None):
+            if player and (game.player1_faction is None or game.player2_faction is None or game.player1_reflexion_time is None or game.player2_reflexion_time is None):
                 # ✅ Convertir les bga_id en strings pour accéder au dictionnaire
                 p1_bga_id_str = str(game.player1.bga_id)
                 p2_bga_id_str = str(game.player2.bga_id)
@@ -1159,6 +1159,16 @@ def import_table_service(table_id: int) -> dict:
                 if p2_bga_id_str in faction_labels:
                     faction_label_p2 = faction_labels[p2_bga_id_str]
                     game.player2_faction = get_faction_code_by_label(faction_label_p2)
+
+                # Récupérer les valuelabels des temps de réflexion
+                reflection_time_labels = player.get('faction', {}).get('reflexion_time', {})
+
+                # Vérifier que les clés existent
+                if p1_bga_id_str in reflection_time_labels:
+                    game.player1_reflexion_time = reflection_time_labels[p1_bga_id_str]
+                if p2_bga_id_str in reflection_time_labels:
+                    game.player2_reflexion_time = reflection_time_labels[p2_bga_id_str]
+
 
         # 1. Récupérer les données de la table depuis l'API BGA
         # result = getLogs(table_id)

@@ -19,6 +19,9 @@ export interface GameModel {
   player1_deck_id?: string; // UUID
   player2_deck_id?: string; // UUID
 
+  player1_reflexion_time?: number; // en secondes
+  player2_reflexion_time?: number; // en secondes
+
   // Résultat
   winner_id?: string; // UUID
   is_draw: boolean;

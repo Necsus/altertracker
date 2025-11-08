@@ -259,4 +259,22 @@ export class HistoryComponent {
         return 'border-gray-700';
     }
   }
+
+  /**
+   * Formate le temps de réflexion en minutes:secondes
+   * @param seconds Temps en secondes
+   * @returns Format "Xmin Ys" ou "Xs" si moins d'une minute
+   */
+  formatReflectionTime(seconds: number | null | undefined): string {
+    if (!seconds || seconds === 0) return 'N/A';
+
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+
+    if (minutes === 0) {
+      return `${remainingSeconds}s`;
+    }
+
+    return `${minutes}min ${remainingSeconds}s`;
+  }
 }

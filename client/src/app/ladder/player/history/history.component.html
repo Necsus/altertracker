@@ -336,6 +336,21 @@
                 </div>
                 }
 
+                <!-- ✅ Temps de réflexion -->
+                @if (game.player1_reflexion_time) {
+                <div class="flex items-center justify-between">
+                  <span class="text-gray-500 text-sm flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Réflexion
+                  </span>
+                  <span class="text-cyan-400 font-medium font-mono">{{ formatReflectionTime(game.player1_reflexion_time)
+                    }}</span>
+                </div>
+                }
+
                 @if (game.player1_deck_id) {
                 <div class="flex items-center justify-between">
                   <span class="text-gray-500 text-sm">Deck</span>
@@ -380,6 +395,21 @@
                 <div class="flex items-center justify-between">
                   <span class="text-gray-500 text-sm">Héros</span>
                   <span class="text-amber-400 font-medium">{{ game.player2_hero }}</span>
+                </div>
+                }
+
+                <!-- ✅ Temps de réflexion -->
+                @if (game.player2_reflexion_time) {
+                <div class="flex items-center justify-between">
+                  <span class="text-gray-500 text-sm flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Réflexion
+                  </span>
+                  <span class="text-cyan-400 font-medium font-mono">{{ formatReflectionTime(game.player2_reflexion_time)
+                    }}</span>
                 </div>
                 }
 
