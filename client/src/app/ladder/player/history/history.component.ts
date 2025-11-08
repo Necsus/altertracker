@@ -277,4 +277,36 @@ export class HistoryComponent {
 
     return `${minutes}min ${remainingSeconds}s`;
   }
+
+  /**
+   * Calcule le temps de réflexion moyen par tour
+   * @param reflexionTime Temps total de réflexion en secondes
+   * @param nbTurns Nombre de tours joués
+   * @returns Temps moyen par tour en secondes
+   */
+  calculateAverageReflectionTime(reflexionTime: number | null | undefined, nbTurns: number | null | undefined): number | null {
+    if (!reflexionTime || !nbTurns || nbTurns === 0) return null;
+    return Math.round(reflexionTime / nbTurns);
+  }
+
+  /**
+   * Formate le temps de réflexion moyen avec indication du nombre de tours
+   * @param reflexionTime Temps total en secondes
+   * @param nbTurns Nombre de tours
+   * @returns Format "Xmin Ys/tour (Y tours)" ou "N/A"
+   */
+  formatAverageReflectionTime(reflexionTime: number | null | undefined, nbTurns: number | null | undefined): string {
+    const avgTime = this.calculateAverageReflectionTime(reflexionTime, nbTurns);
+
+    if (!avgTime) return 'N/A';
+
+    const minutes = Math.floor(avgTime / 60);
+    const seconds = avgTime % 60;
+
+    if (minutes === 0) {
+      return `${seconds}s/tour`;
+    }
+
+    return `${minutes}min ${seconds}s/tour`;
+  }
 }

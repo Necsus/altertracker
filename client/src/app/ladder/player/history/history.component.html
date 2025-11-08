@@ -351,6 +351,27 @@
                 </div>
                 }
 
+                <!-- ✅ Temps de réflexion moyen -->
+                @if (game.player1_reflexion_time && game.player1_nb_turns) {
+                <div class="flex items-center justify-between">
+                  <span class="text-gray-500 text-sm flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Réflexion moy.
+                  </span>
+                  <div class="text-right">
+                    <div class="text-cyan-400 font-medium font-mono">
+                      {{ formatAverageReflectionTime(game.player1_reflexion_time, game.player1_nb_turns) }}
+                    </div>
+                    <div class="text-gray-500 text-xs">
+                      {{ game.player1_nb_turns }} tour{{ game.player1_nb_turns > 1 ? 's' : '' }}
+                    </div>
+                  </div>
+                </div>
+                }
+
                 @if (game.player1_deck_id) {
                 <div class="flex items-center justify-between">
                   <span class="text-gray-500 text-sm">Deck</span>
@@ -410,6 +431,27 @@
                   </span>
                   <span class="text-cyan-400 font-medium font-mono">{{ formatReflectionTime(game.player2_reflexion_time)
                     }}</span>
+                </div>
+                }
+
+                <!-- ✅ Temps de réflexion moyen -->
+                @if (game.player2_reflexion_time && game.player2_nb_turns) {
+                <div class="flex items-center justify-between">
+                  <span class="text-gray-500 text-sm flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    Réflexion moy.
+                  </span>
+                  <div class="text-right">
+                    <div class="text-cyan-400 font-medium font-mono">
+                      {{ formatAverageReflectionTime(game.player2_reflexion_time, game.player2_nb_turns) }}
+                    </div>
+                    <div class="text-gray-500 text-xs">
+                      {{ game.player2_nb_turns }} tour{{ game.player2_nb_turns > 1 ? 's' : '' }}
+                    </div>
+                  </div>
                 </div>
                 }
 

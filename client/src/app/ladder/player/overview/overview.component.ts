@@ -44,21 +44,47 @@ export class OverviewComponent {
     return ratio.toFixed(2);
   }
 
-  // ✅ Helper pour formater le temps de réflexion
-  formatReflectionTime(seconds: number | null | undefined): string {
-    if (!seconds || seconds === 0) return 'N/A';
-
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = seconds % 60;
-
-    if (hours > 0) {
-      return `${hours}h ${minutes}min`;
+  // ✅ NOUVEAU : Formater le temps total avec indication des tours
+  formatTotalReflectionTime(): string {
+    if (!this.playerStats?.total_reflexion_time || !this.playerStats?.total_turns) {
+      return 'N/A';
     }
-    if (minutes > 0) {
-      return `${minutes}min ${remainingSeconds}s`;
+
+    const totalSeconds = this.playerStats.total_reflexion_time;
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    let result = '';
+    if (hours > 0) result += `${hours}h `;
+    if (minutes > 0) result += `${minutes}min `;
+    if (seconds > 0 && hours === 0) result += `${seconds}s`;
+
+    return `${result.trim()}`;
+  }
+
+  // ✅ Calcule le temps de réflexion moyen PAR TOUR (en frontend)
+  calculateAverageReflectionTime(): number | null {
+    if (!this.playerStats?.total_reflexion_time || !this.playerStats?.total_turns || this.playerStats.total_turns === 0) {
+      return null;
     }
-    return `${remainingSeconds}s`;
+    return Math.round(this.playerStats.total_reflexion_time / this.playerStats.total_turns);
+  }
+
+  // ✅ Formate le temps de réflexion moyen par tour
+  formatReflectionTime(): string {
+    const avgTime = this.calculateAverageReflectionTime();
+
+    if (!avgTime) return 'N/A';
+
+    const minutes = Math.floor(avgTime / 60);
+    const seconds = avgTime % 60;
+
+    if (minutes === 0) {
+      return `${seconds}s/tour`;
+    }
+
+    return `${minutes}min ${seconds}s/tour`;
   }
 
   // ✅ Helper pour obtenir les factions triées

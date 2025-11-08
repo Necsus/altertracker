@@ -208,6 +208,9 @@ class Game(db.Model):
 
     player1_reflexion_time = db.Column(db.Integer, nullable=True)
     player2_reflexion_time = db.Column(db.Integer, nullable=True)
+
+    player1_nb_turns = db.Column(db.Integer, nullable=True)
+    player2_nb_turns = db.Column(db.Integer, nullable=True)
     
     # Résultat
     winner_id = db.Column(UUID(as_uuid=True), db.ForeignKey('players.id'), nullable=True)
@@ -278,6 +281,9 @@ class Game(db.Model):
 
             'player1_reflexion_time': self.player1_reflexion_time,
             'player2_reflexion_time': self.player2_reflexion_time,
+
+            'player1_nb_turns': self.player1_nb_turns,
+            'player2_nb_turns': self.player2_nb_turns,
             
             # Résultat
             'winner_id': str(self.winner_id) if self.winner_id else None,
@@ -446,8 +452,8 @@ class PlayerSeasonStats(db.Model):
     hero_stats = db.Column(db.JSON, nullable=True)     # {'Sigismar & Wingspan': {'wins': 3, 'losses': 1}, ...}
     
     # Stats de temps
-    avg_reflexion_time = db.Column(db.Integer, nullable=True)  # Moyenne en secondes
     total_reflexion_time = db.Column(db.Integer, nullable=True)  # Total en secondes
+    total_turns = db.Column(db.Integer, nullable=True)  # Total de tours joués
     fastest_game_minutes = db.Column(db.Integer, nullable=True)
     slowest_game_minutes = db.Column(db.Integer, nullable=True)
     
@@ -485,10 +491,13 @@ class PlayerSeasonStats(db.Model):
             'most_played_hero': self.most_played_hero,
             'faction_stats': self.faction_stats or {},
             'hero_stats': self.hero_stats or {},
-            'avg_reflexion_time': self.avg_reflexion_time,
+            
+            # ✅ Stats de temps
             'total_reflexion_time': self.total_reflexion_time,
+            'total_turns': self.total_turns,  # ✅ NOUVEAU
             'fastest_game_minutes': self.fastest_game_minutes,
             'slowest_game_minutes': self.slowest_game_minutes,
+            
             'current_streak': self.current_streak,
             'best_win_streak': self.best_win_streak,
             'worst_loss_streak': self.worst_loss_streak,

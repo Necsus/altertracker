@@ -41,10 +41,13 @@ export interface PlayerSeasonStatsModel {
   most_played_hero: string | null;
   faction_stats: Record<string, FactionStats>;
   hero_stats: Record<string, HeroStats>;
-  avg_reflexion_time: number | null;
+
+  // Stats de temps
   total_reflexion_time: number | null;
+  total_turns: number | null;  // Total de tours joués
   fastest_game_minutes: number | null;
   slowest_game_minutes: number | null;
+
   current_streak: number;
   best_win_streak: number;
   worst_loss_streak: number;
