@@ -69,6 +69,6 @@ export class PlayerApiService {
   }
 
   get_import_table$(table_id: number): Observable<any> {
-    return this.wabApiService.callGet$(this.controller, `importtable/${table_id}`); // 30 minutes
+    return this.wabApiService.callGet$(this.controller, `importtable/${table_id}`);
   }
 }
