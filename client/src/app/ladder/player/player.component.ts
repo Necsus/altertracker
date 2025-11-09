@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { PlayerSeasonStatsModel } from '../../01_models/03_business/player-season-stats.model';
 import { PlayerModel } from '../../01_models/03_business/player.model';
 import { SeasonModel } from '../../01_models/03_business/season.model';
 import { PlayerService } from '../../03_business/player.service';
@@ -27,7 +28,9 @@ export class PlayerComponent implements OnInit {
   selectedSeason = signal<number | null>(null);
   seasons = signal<SeasonModel[]>([]);
 
-  // ✅ Ajout des signaux pour le reload
+  // ✅ Ajout des stats de saison pour le héros
+  playerStats = signal<PlayerSeasonStatsModel | null>(null);
+
   lastReloadDate = signal<Date | null>(null);
   isReloading = signal(false);
 
@@ -56,9 +59,10 @@ export class PlayerComponent implements OnInit {
         const currentSeason = response.seasons.find((s: SeasonModel) => s.current);
         if (currentSeason) {
           this.selectedSeason.set(currentSeason.season);
+          this.loadPlayerStats(currentSeason.season);
         } else if (this.seasons.length > 0) {
-          // Sinon, prendre la plus récente
           this.selectedSeason.set(response.seasons[0].season);
+          this.loadPlayerStats(response.seasons[0].season);
         }
       },
       error: (error) => {
@@ -76,7 +80,6 @@ export class PlayerComponent implements OnInit {
         this.player_id.set(playerId);
         this.player.set(player);
         this.isLoading.set(false);
-        // ✅ Mettre à jour la date de dernier chargement
         this.lastReloadDate.set(new Date(player.updated_at ?? ''));
       },
       error: (error) => {
@@ -86,8 +89,51 @@ export class PlayerComponent implements OnInit {
     });
   }
 
+  // ✅ Charger les stats de saison pour récupérer le héros le plus joué
+  loadPlayerStats(season: number): void {
+    if (!this.player_id()) return;
+
+    this.playerService.get_player_overview$(this.player_id(), season).subscribe({
+      next: (stats: any) => {
+        this.playerStats.set(stats);
+      },
+      error: (err) => {
+        console.error('Erreur lors du chargement des stats:', err);
+        this.playerStats.set(null);
+      }
+    });
+  }
+
   onSeasonChange(newSeason: number): void {
     this.selectedSeason.set(newSeason);
+    this.loadPlayerStats(newSeason);
+  }
+
+  // ✅ Helper pour obtenir l'URL de l'image du héros
+  getHeroImageUrl(): string {
+    const hero = this.playerStats()?.most_played_hero;
+    if (!hero) return '';
+    return `/assets/img/hero/${hero.toLowerCase()}.jpg`;
+  }
+
+  // ✅ Helper pour obtenir la faction du héros principal
+  getMostPlayedFaction(): string | null {
+    return this.playerStats()?.most_played_faction || null;
+  }
+
+  // ✅ Helper pour le dégradé de faction
+  getFactionGradient(faction: string | null): string {
+    if (!faction) return 'from-gray-800 via-gray-900 to-black';
+
+    switch (faction.toUpperCase()) {
+      case 'AX': return 'from-amber-900/90 via-amber-800/80 to-orange-900/90';
+      case 'BR': return 'from-red-900/90 via-red-800/80 to-red-950/90';
+      case 'OR': return 'from-blue-900/90 via-blue-800/80 to-blue-950/90';
+      case 'MU': return 'from-green-900/90 via-green-800/80 to-green-950/90';
+      case 'YZ': return 'from-purple-900/90 via-purple-800/80 to-purple-950/90';
+      case 'LY': return 'from-pink-900/90 via-pink-800/80 to-pink-950/90';
+      default: return 'from-gray-800/90 via-gray-900/80 to-black/90';
+    }
   }
 
   // ✅ Méthode pour recharger les données du joueur
