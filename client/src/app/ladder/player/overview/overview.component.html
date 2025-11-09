@@ -87,10 +87,15 @@
       </div>
       }
 
-      <!-- Image héros en background -->
+      <!-- Image héros en background avec même technique que le header -->
       <div class="absolute inset-0 opacity-20 rounded-lg overflow-hidden">
-        <img [src]="'/assets/img/hero/' + item.hero.toLowerCase() + '.jpg'" [alt]="item.hero"
-          class="w-full h-full object-cover blur-sm" (error)="$event.target.src='/assets/img/hero/unknown.jpg'">
+        <div class="relative w-full h-full">
+          <!-- Image décalée vers le haut sans étendre le conteneur -->
+          <div class="absolute inset-y-0 inset-x-0 -top-5">
+            <img [src]="'/assets/img/hero/' + item.hero.toLowerCase() + '.jpg'" [alt]="item.hero"
+              class="w-full h-full object-cover object-top blur-sm">
+          </div>
+        </div>
       </div>
 
       <div class="relative p-4">

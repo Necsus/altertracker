@@ -164,7 +164,7 @@ export class HistoryComponent {
 
   // ✅ Helper pour obtenir l'URL de l'image de héros
   getHeroImageUrl(hero: string | undefined): string {
-    if (!hero) return '/assets/img/hero/unknown.jpg';
+    if (!hero) return '';
     return `/assets/img/hero/${hero.toLowerCase()}.jpg`;
   }
 
