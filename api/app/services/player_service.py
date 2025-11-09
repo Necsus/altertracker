@@ -914,6 +914,10 @@ def reload_player_service(player_id: str) -> dict:
                     try:
                         # ✅ Appeler import_table_service pour compléter les données
                         import_table_service(game.table_id)
+
+                        # if idx < len(incomplete_tables):
+                        #     time.sleep(0.1)
+                            
                     except Exception as e:
                         print(f"  ❌ Erreur table #{game.table_id}: {e}")
                         reload_stats['errors'] += 1
@@ -1423,8 +1427,6 @@ def get_faction_hero_by_reference(reference: str) -> dict:
             model['hero'] = 'Della'
             model['hero_full'] = 'Della & Bolt'
             model['faction'] = 'AX'
-        case _:
-            print(f"⚠️  Référence inconnue: {reference}")
     return model
 
 def get_faction_hero_by_label(label: str) -> dict:
@@ -1435,7 +1437,6 @@ def get_faction_hero_by_label(label: str) -> dict:
     }
     
     if not label:
-        print(f"⚠️  Label vide")
         return model
     
     # Normaliser le label (lowercase + strip)
@@ -1560,10 +1561,6 @@ def get_faction_hero_by_label(label: str) -> dict:
         model['hero'] = 'Della'
         model['hero_full'] = 'Della & Bolt'
         model['faction'] = 'AX'
-    
-    else:
-        print(f"⚠️  Label inconnu: {label}")
-    
     return model
 
 def calculate_enriched_season_stats(player_id: uuid.UUID, season: int, games: List[Game]) -> dict:
