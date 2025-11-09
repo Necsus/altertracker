@@ -32,12 +32,10 @@
             class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
             'header.stats' | translate }}</a>
         </li>
-        @if (isBetaTester) {
         <li><a routerLink="/players" routerLinkActive="text-amber-400" style="user-select: none;"
             class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
             'header.players' | translate }}</a>
         </li>
-        }
         <li><a routerLink="/articles" routerLinkActive="text-amber-400" [routerLinkActiveOptions]="{ exact: true }"
             style="user-select: none;" class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
             'header.articles' | translate }}</a>
@@ -125,11 +123,9 @@
       <a routerLink="/stats" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
         class="block hover:text-amber-400 transition duration-300">{{
         'header.stats' | translate }}</a>
-      @if (isBetaTester) {
       <a routerLink="/players" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
         class="block hover:text-amber-400 transition duration-300">{{
         'header.players' | translate }}</a>
-      }
       <a routerLink="/about" routerLinkActive="text-amber-400" (click)="isMenuOpen = false"
         class="block hover:text-amber-400 transition duration-300">{{
         'header.about' | translate }}</a>
