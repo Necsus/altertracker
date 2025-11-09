@@ -374,7 +374,6 @@ def import_player_bga_service(bga_id: int) -> dict:
                     
                     if has_more:
                         page += 1
-                        time.sleep(0.1)
                     else:
                         print(f"✅ Dernière page atteinte")
                         break
@@ -610,7 +609,6 @@ def import_ladder_service(season: int, max_pages: int = None) -> dict:
             if has_more:
                 print(f"✅ Page {page + 1} traitée, passage à la page suivante...")
                 page += 1
-                time.sleep(0.1)  # Petit délai pour ne pas surcharger l'API
             else:
                 print(f"✅ Page {page + 1} traitée, dernière page atteinte")
         
@@ -798,7 +796,6 @@ def reload_player_service(player_id: str) -> dict:
                 has_more = pagination_info.get('has_more', False)
                 if has_more:
                     page += 1
-                    time.sleep(0.1)
                 else:
                     break
                     
@@ -916,11 +913,7 @@ def reload_player_service(player_id: str) -> dict:
                 for idx, game in enumerate(incomplete_tables, 1):
                     try:
                         # ✅ Appeler import_table_service pour compléter les données
-                        import_result = import_table_service(game.table_id)
-
-                        if idx < len(incomplete_tables):
-                            time.sleep(0.1)
-                            
+                        import_table_service(game.table_id)
                     except Exception as e:
                         print(f"  ❌ Erreur table #{game.table_id}: {e}")
                         reload_stats['errors'] += 1
