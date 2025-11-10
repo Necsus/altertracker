@@ -156,7 +156,7 @@
     </app-player-header>
 
     <!-- Tabs Navigation -->
-    <div class="bg-gray-800 rounded-xl p-2 mb-6 shadow-lg">
+    <div class="bg-gray-800 rounded-xl p-2 my-6 shadow-lg">
       <div class="flex flex-col md:flex-row items-stretch md:items-center gap-2">
         <div class="flex-shrink-0 md:w-64">
           <select [(ngModel)]="selectedSeason" (ngModelChange)="onSeasonChange($event)"
@@ -191,15 +191,11 @@
 
     <!-- Tab Content -->
     <div class="space-y-6">
-
       <!-- Overview Tab -->
       @if (activeTab() === 'overview') {
-      <!-- ✅ Stats globales -->
-      <app-player-global-stats [player]="player()!"></app-player-global-stats>
-
-      <!-- ✅ Stats de saison détaillées -->
-      @if (seasonStats()) {
-      <app-player-overview [seasonStats]="seasonStats()"></app-player-overview>
+      @if (seasonStats() && player()) {
+      <app-player-overview [seasonStats]="seasonStats()" [player]="player()!">
+      </app-player-overview>
       }
       }
 

@@ -1,16 +1,19 @@
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
 import { PlayerSeasonStatsModel } from '../../../01_models/03_business/player-season-stats.model';
+import { PlayerModel } from '../../../01_models/03_business/player.model';
+import { PlayerGlobalStatsComponent } from '../player-global-stats/player-global-stats.component';
 
 @Component({
   selector: 'app-player-overview',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, PlayerGlobalStatsComponent],
   templateUrl: './overview.component.html'
 })
 export class OverviewComponent {
-  // ✅ Reçoit les stats depuis le parent (pas de requête ici)
+  // ✅ Reçoit les stats ET le player depuis le parent
   seasonStats = input.required<PlayerSeasonStatsModel | null>();
+  player = input.required<PlayerModel>();
 
   calculateWinLossRatio(): string {
     const stats = this.seasonStats();

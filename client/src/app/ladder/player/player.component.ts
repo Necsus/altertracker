@@ -8,7 +8,6 @@ import { SeasonModel } from '../../01_models/03_business/season.model';
 import { PlayerService } from '../../03_business/player.service';
 import { HistoryComponent } from './history/history.component';
 import { OverviewComponent } from './overview/overview.component';
-import { PlayerGlobalStatsComponent } from './player-global-stats/player-global-stats.component';
 import { PlayerHeaderComponent } from './player-header/player-header.component';
 
 @Component({
@@ -18,7 +17,6 @@ import { PlayerHeaderComponent } from './player-header/player-header.component';
     CommonModule,
     FormsModule,
     PlayerHeaderComponent,
-    PlayerGlobalStatsComponent,
     HistoryComponent,
     OverviewComponent
   ],
@@ -63,7 +61,6 @@ export class PlayerComponent implements OnInit {
     if (playerId) {
       this.player_id.set(playerId);
       this.loadPlayer(playerId);
-      this.loadSeasons();
     } else {
       this.error.set('ID du joueur manquant');
       this.isLoading.set(false);
@@ -78,6 +75,7 @@ export class PlayerComponent implements OnInit {
       next: (player: PlayerModel) => {
         this.player.set(player);
         this.lastReloadDate.set(new Date(player.updated_at ?? ''));
+        this.loadSeasons();
         this.isLoading.set(false);
       },
       error: (error) => {
