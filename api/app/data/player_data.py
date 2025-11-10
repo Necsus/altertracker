@@ -332,14 +332,14 @@ def update_game_data(game: Game) -> Game:
 def get_tournament_by_id_data(tournament_id: str) -> Optional[Tournament]:
     return Tournament.query.filter_by(id=tournament_id).first()
 
-def get_tournament_by_bga_id_data(tournament_id: str) -> Optional[Tournament]:
-    return Tournament.query.filter_by(bga_id=tournament_id).first()
+def get_tournament_by_bga_id_data(bga_id: int) -> Optional[Tournament]:
+    return Tournament.query.filter_by(bga_id=bga_id).first()
 
 def create_tournament_data(tournament: Tournament) -> Tournament:
     try:
         db.session.add(tournament)
         db.session.commit()
-        print(f"✅ Tournoi créé: {tournament.tournament_name} (ID: {tournament.id})")
+        print(f"✅ Tournoi créé: {tournament.name} (ID: {tournament.id})")
         return tournament
     except Exception as e:
         db.session.rollback()
@@ -356,7 +356,7 @@ def get_or_create_tournament_data(bga_id: int, tournament_name: str, championshi
     # Créer un nouveau tournoi
     new_tournament = Tournament(
         bga_id=bga_id,
-        tournament_name=tournament_name,
+        name=tournament_name,
         championship_name=championship_name
     )
     

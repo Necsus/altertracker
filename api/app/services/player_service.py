@@ -1142,7 +1142,7 @@ def import_table_service(table_id: int) -> dict:
 
         table_data = ti.get('data', {})
         if table_data:
-            result =  table_data.get('result', {})
+            result = table_data.get('result', {})
             if not result:
                 return {
                     'status': 0,
@@ -1181,23 +1181,20 @@ def import_table_service(table_id: int) -> dict:
                 if tournament:
                     tournament_name = tournament.get('tournament_name', None)
                     championship_name = tournament.get('championship_name', None)
-                    tournament_id = tournament.get('id', None)
+                    tournament_bga_id = tournament.get('id', None)
 
-                    if tournament_id and tournament_name:
+                    if tournament_bga_id and tournament_name:
                         try:
-                            # ✅ Créer ou récupérer le tournoi
                             tournament = get_or_create_tournament_data(
-                                tournament_id=tournament_id,
+                                bga_id=tournament_bga_id,
                                 tournament_name=tournament_name,
                                 championship_name=championship_name
                             )
                             
-                            # ✅ Associer le tournoi à la partie
                             game.tournament_id = tournament.id
                             print(f"🏆 Partie #{table_id} associée au tournoi '{tournament_name}'")
                         except Exception as e:
                             print(f"⚠️  Erreur création/association tournoi: {e}")
-                            # ✅ Ne pas bloquer l'import si le tournoi échoue
                     else:
                         print(f"⚠️  Données de tournoi incomplètes pour la partie #{table_id}")
 
