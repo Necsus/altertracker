@@ -1,56 +1,49 @@
 import { CommonModule } from '@angular/common';
-import { Component, effect, inject, input } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { PlayerSeasonStatsModel } from '../../../01_models/03_business/player-season-stats.model';
-import { PlayerService } from '../../../03_business/player.service';
 
 @Component({
   selector: 'app-player-overview',
-  templateUrl: './overview.component.html',
-  imports: [CommonModule]
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './overview.component.html'
 })
 export class OverviewComponent {
-  player_id = input.required<string>();
-  selectedSeason = input<number | null>(null);
-
-  playerStats: PlayerSeasonStatsModel | null = null;
-
-  private readonly playerService = inject(PlayerService);
-
-  constructor() {
-    effect(() => {
-      this.loadPlayerBySeason();
-    });
-  }
-
-  loadPlayerBySeason(): void {
-    if (!this.player_id()) return;
-
-    this.playerService.get_player_overview$(this.player_id(), this.selectedSeason() ?? 0).subscribe({
-      next: (response: any) => {
-        this.playerStats = response || null;
-      },
-      error: (err: any) => {
-        console.error('Erreur lors du chargement des statistiques du joueur :', err);
-        this.playerStats = null;
-      }
-    });
-  }
+  // ✅ Reçoit les stats depuis le parent (pas de requête ici)
+  seasonStats = input.required<PlayerSeasonStatsModel | null>();
 
   calculateWinLossRatio(): string {
-    if (!this.playerStats || this.playerStats.losses === 0) {
-      return this.playerStats?.wins?.toString() || '0';
+    const stats = this.seasonStats();
+    if (!stats || stats.losses === 0) {
+      return stats?.wins?.toString() || '0';
     }
-    const ratio = (this.playerStats.wins ?? 0) / (this.playerStats.losses ?? 0);
+    const ratio = (stats.wins ?? 0) / (stats.losses ?? 0);
     return ratio.toFixed(2);
   }
 
-  // ✅ NOUVEAU : Formater le temps total avec indication des tours
-  formatTotalReflectionTime(): string {
-    if (!this.playerStats?.total_reflexion_time || !this.playerStats?.total_turns) {
-      return 'N/A';
-    }
+  getSortedFactions(): Array<{ faction: string, stats: any }> {
+    const stats = this.seasonStats();
+    if (!stats?.faction_stats) return [];
 
-    const totalSeconds = this.playerStats.total_reflexion_time;
+    return Object.entries(stats.faction_stats)
+      .map(([faction, stats]) => ({ faction, stats }))
+      .sort((a, b) => b.stats.games - a.stats.games);
+  }
+
+  getAllHeroes(): Array<{ hero: string, stats: any }> {
+    const stats = this.seasonStats();
+    if (!stats?.hero_stats) return [];
+
+    return Object.entries(stats.hero_stats)
+      .map(([hero, stats]) => ({ hero, stats }))
+      .sort((a, b) => b.stats.games - a.stats.games);
+  }
+
+  formatTotalReflectionTime(): string {
+    const stats = this.seasonStats();
+    if (!stats?.total_reflexion_time || !stats?.total_turns) return 'N/A';
+
+    const totalSeconds = stats.total_reflexion_time;
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
@@ -60,57 +53,26 @@ export class OverviewComponent {
     if (minutes > 0) result += `${minutes}min `;
     if (seconds > 0 && hours === 0) result += `${seconds}s`;
 
-    return `${result.trim()}`;
+    return result.trim();
   }
 
-  // ✅ Calcule le temps de réflexion moyen PAR TOUR (en frontend)
   calculateAverageReflectionTime(): number | null {
-    if (!this.playerStats?.total_reflexion_time || !this.playerStats?.total_turns || this.playerStats.total_turns === 0) {
-      return null;
-    }
-    return Math.round(this.playerStats.total_reflexion_time / this.playerStats.total_turns);
+    const stats = this.seasonStats();
+    if (!stats?.total_reflexion_time || !stats?.total_turns || stats.total_turns === 0) return null;
+    return Math.round(stats.total_reflexion_time / stats.total_turns);
   }
 
-  // ✅ Formate le temps de réflexion moyen par tour
   formatReflectionTime(): string {
     const avgTime = this.calculateAverageReflectionTime();
-
     if (!avgTime) return 'N/A';
 
     const minutes = Math.floor(avgTime / 60);
     const seconds = avgTime % 60;
 
-    if (minutes === 0) {
-      return `${seconds}s/tour`;
-    }
-
+    if (minutes === 0) return `${seconds}s/tour`;
     return `${minutes}min ${seconds}s/tour`;
   }
 
-  // ✅ Helper pour obtenir les factions triées
-  getSortedFactions(): Array<{ faction: string, stats: any }> {
-    if (!this.playerStats?.faction_stats) return [];
-
-    return Object.entries(this.playerStats.faction_stats)
-      .map(([faction, stats]) => ({ faction, stats }))
-      .sort((a, b) => b.stats.games - a.stats.games);
-  }
-
-  // ✅ Helper pour obtenir TOUS les héros triés (pas que le top 3)
-  getAllHeroes(): Array<{ hero: string, stats: any }> {
-    if (!this.playerStats?.hero_stats) return [];
-
-    return Object.entries(this.playerStats.hero_stats)
-      .map(([hero, stats]) => ({ hero, stats }))
-      .sort((a, b) => b.stats.games - a.stats.games);  // Tri par nombre de parties
-  }
-
-  // ✅ Garder getTopHeroes si besoin ailleurs (optionnel)
-  getTopHeroes(): Array<{ hero: string, stats: any }> {
-    return this.getAllHeroes().slice(0, 3);
-  }
-
-  // ✅ Helper pour la couleur du dégradé par faction
   getFactionGradient(faction: string): string {
     switch (faction.toUpperCase()) {
       case 'AX': return 'from-amber-800 to-amber-900';
@@ -123,7 +85,6 @@ export class OverviewComponent {
     }
   }
 
-  // ✅ Helper pour la couleur de bordure par faction
   getFactionBorderColor(faction: string): string {
     switch (faction.toUpperCase()) {
       case 'AX': return 'border-amber-500';
@@ -136,7 +97,6 @@ export class OverviewComponent {
     }
   }
 
-  // ✅ Helper pour la couleur du texte par faction
   getFactionTextColor(faction: string): string {
     switch (faction.toUpperCase()) {
       case 'AX': return 'text-amber-400';
