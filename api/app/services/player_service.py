@@ -1159,7 +1159,7 @@ def import_table_service(table_id: int) -> dict:
 
             result = table_data.get('result', {})
             if result and game.ranked:
-                players = result.get('players', [])
+                players = result.get('player', [])
                 for player_data in players:
                     if str(player_data.get('player_id', '')) == str(game.player1.bga_id):
                         arena_points_win = player_data.get('arena_points_win', None)
