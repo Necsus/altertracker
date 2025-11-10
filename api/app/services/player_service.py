@@ -2,12 +2,14 @@ from datetime import datetime, timezone
 import time
 import uuid
 from typing import List, Dict, Optional
-from app.models.player import Player, Game
-from app.scripts.bga_routine import getGamerView, getGames, getLogs, getPlayer, getSearch, getTableInfos, import_ladder_from_bga
+from app.models.player import Player
+from app.models.game import Game
+from app.scripts.bga_routine import getGames, getLogs, getPlayer, getSearch, getTableInfos, import_ladder_from_bga
 from app.data.player_data import (
     bulk_upsert_season_stats_data,
     count_total_players_data,
     create_player_data,
+    get_or_create_tournament_data,
     get_player_by_id_data,
     get_player_history_data,
     get_season_stats_by_player_data,
@@ -1140,13 +1142,62 @@ def import_table_service(table_id: int) -> dict:
 
         table_data = ti.get('data', {})
         if table_data:
-            result =  table_data.get('result', {})
+            result = table_data.get('result', {})
             if not result:
                 return {
                     'status': 0,
                     'error': f"No result found for table ID: {table_id}",
                     'table_id': table_id
                 }
+            
+            options = table_data.get('options', {})
+            if options:
+                opt201 = options.get('201', {})
+                if opt201:
+                    value = opt201.get('value', None)
+                    game.ranked = (value == '2') if value is not None else None
+
+            result = table_data.get('result', {})
+            if result and game.ranked:
+                players = result.get('players', [])
+                for player_data in players:
+                    if str(player_data.get('player_id', '')) == str(game.player1.bga_id):
+                        arena_points_win = player_data.get('arena_points_win', None)
+                        arena_after_game = player_data.get('arena_after_game', None)
+                        
+                        game.player1_arena_point_win = float(arena_points_win) if arena_points_win is not None else None
+                        game.player1_arena_point_after_game = float(arena_after_game) if arena_after_game is not None else None
+                    
+                    elif str(player_data.get('player_id', '')) == str(game.player2.bga_id):
+                        arena_points_win = player_data.get('arena_points_win', None)
+                        arena_after_game = player_data.get('arena_after_game', None)
+                        
+                        game.player2_arena_point_win = float(arena_points_win) if arena_points_win is not None else None
+                        game.player2_arena_point_after_game = float(arena_after_game) if arena_after_game is not None else None
+                
+
+            if table_data.get('has_tournament', '0') == '1':
+                tournament = table_data.get('tournament', {})
+                if tournament:
+                    tournament_name = tournament.get('tournament_name', None)
+                    championship_name = tournament.get('championship_name', None)
+                    tournament_bga_id = tournament.get('id', None)
+
+                    if tournament_bga_id and tournament_name:
+                        try:
+                            tournament = get_or_create_tournament_data(
+                                bga_id=tournament_bga_id,
+                                tournament_name=tournament_name,
+                                championship_name=championship_name
+                            )
+                            
+                            game.tournament_id = tournament.id
+                            print(f"🏆 Partie #{table_id} associée au tournoi '{tournament_name}'")
+                        except Exception as e:
+                            print(f"⚠️  Erreur création/association tournoi: {e}")
+                    else:
+                        print(f"⚠️  Données de tournoi incomplètes pour la partie #{table_id}")
+
             stats = result.get('stats', {})
             if not stats:
                 return {
@@ -1154,6 +1205,7 @@ def import_table_service(table_id: int) -> dict:
                     'error': f"No stats found for table ID: {table_id}",
                     'table_id': table_id
                 }
+
             table = stats.get('table', {})
             if table:
                 winner_hero_model = get_faction_hero_by_label(table.get('gameWinner', {}).get('valuelabel', None))
@@ -1175,26 +1227,20 @@ def import_table_service(table_id: int) -> dict:
             if player and (game.player1_faction is None or game.player2_faction is None or 
                           game.player1_reflexion_time is None or game.player2_reflexion_time is None or 
                           game.player1_nb_turns is None or game.player2_nb_turns is None):
-                # ✅ Convertir les bga_id en strings pour accéder au dictionnaire
                 p1_bga_id_str = str(game.player1.bga_id)
                 p2_bga_id_str = str(game.player2.bga_id)
                 
                 # Récupérer les valuelabels des factions
                 faction_labels = player.get('faction', {}).get('valuelabels', {})
-
-                # Vérifier que les clés existent
                 if p1_bga_id_str in faction_labels:
                     faction_label_p1 = faction_labels[p1_bga_id_str]
                     game.player1_faction = get_faction_code_by_label(faction_label_p1)
-                
                 if p2_bga_id_str in faction_labels:
                     faction_label_p2 = faction_labels[p2_bga_id_str]
                     game.player2_faction = get_faction_code_by_label(faction_label_p2)
 
                 # Récupérer les valuelabels des temps de réflexion
                 reflection_time_values = player.get('reflexion_time', {}).get('values', {})
-
-                # Vérifier que les clés existent
                 if p1_bga_id_str in reflection_time_values:
                     game.player1_reflexion_time = reflection_time_values[p1_bga_id_str]
                 if p2_bga_id_str in reflection_time_values:
@@ -1202,8 +1248,6 @@ def import_table_service(table_id: int) -> dict:
 
                 # Récupérer les valuelabels des temps de réflexion
                 turns_values = player.get('turns', {}).get('values', {})
-
-                # Vérifier que les clés existent
                 if p1_bga_id_str in turns_values:
                     game.player1_nb_turns = turns_values[p1_bga_id_str]
                 if p2_bga_id_str in turns_values:

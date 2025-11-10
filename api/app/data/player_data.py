@@ -1,7 +1,8 @@
 from typing import List, Optional
 import uuid
 from datetime import datetime, timezone
-from app.models.player import Player, Game, PlayerSeasonStats
+from app.models.player import Player, PlayerSeasonStats, Tournament
+from app.models.game import Game
 from app.extensions import db
 from sqlalchemy import func, case
 from sqlalchemy.orm import joinedload
@@ -327,3 +328,36 @@ def update_game_data(game: Game) -> Game:
         db.session.rollback()
         print(f"❌ Erreur update_game_data: {e}")
         raise e
+
+def get_tournament_by_id_data(tournament_id: str) -> Optional[Tournament]:
+    return Tournament.query.filter_by(id=tournament_id).first()
+
+def get_tournament_by_bga_id_data(bga_id: int) -> Optional[Tournament]:
+    return Tournament.query.filter_by(bga_id=bga_id).first()
+
+def create_tournament_data(tournament: Tournament) -> Tournament:
+    try:
+        db.session.add(tournament)
+        db.session.commit()
+        print(f"✅ Tournoi créé: {tournament.name} (ID: {tournament.id})")
+        return tournament
+    except Exception as e:
+        db.session.rollback()
+        print(f"❌ Erreur création tournoi: {e}")
+        raise e
+
+def get_or_create_tournament_data(bga_id: int, tournament_name: str, championship_name: str = None) -> Tournament:
+    # Chercher le tournoi existant
+    existing_tournament = get_tournament_by_bga_id_data(bga_id)
+    
+    if existing_tournament:
+        return existing_tournament
+    
+    # Créer un nouveau tournoi
+    new_tournament = Tournament(
+        bga_id=bga_id,
+        name=tournament_name,
+        championship_name=championship_name
+    )
+    
+    return create_tournament_data(new_tournament)

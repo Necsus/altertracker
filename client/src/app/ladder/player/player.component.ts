@@ -109,19 +109,16 @@ export class PlayerComponent implements OnInit {
     this.loadPlayerStats(newSeason);
   }
 
-  // ✅ Helper pour obtenir l'URL de l'image du héros
   getHeroImageUrl(): string {
     const hero = this.playerStats()?.most_played_hero;
     if (!hero) return '';
     return `/assets/img/hero/${hero.toLowerCase()}.jpg`;
   }
 
-  // ✅ Helper pour obtenir la faction du héros principal
   getMostPlayedFaction(): string | null {
     return this.playerStats()?.most_played_faction || null;
   }
 
-  // ✅ Helper pour le dégradé de faction
   getFactionGradient(faction: string | null): string {
     if (!faction) return 'from-gray-800 via-gray-900 to-black';
 
