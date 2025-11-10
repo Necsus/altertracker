@@ -69,14 +69,7 @@ class Game(db.Model):
     def __repr__(self):
         return f"<Game {self.id}: {self.player1_id} vs {self.player2_id}>"
     
-    def json(self, include_players: bool = True, include_decks: bool = False):
-        """
-        Sérialise la partie en JSON
-        
-        Args:
-            include_players: Inclure les objets joueurs complets
-            include_decks: Inclure les objets decks complets
-        """
+    def json(self, include_players: bool = True, include_decks: bool = False, include_tournament: bool = False):
         data = {
             'id': str(self.id),
             'table_id': self.table_id,
@@ -107,6 +100,12 @@ class Game(db.Model):
 
             'player1_nb_turns': self.player1_nb_turns,
             'player2_nb_turns': self.player2_nb_turns,
+
+            'player1_arena_point_win': self.player1_arena_point_win,
+            'player2_arena_point_win': self.player2_arena_point_win,
+
+            'player1_arena_point_after_game': self.player1_arena_point_after_game,
+            'player2_arena_point_after_game': self.player2_arena_point_after_game,
             
             # Résultat
             'winner_id': str(self.winner_id) if self.winner_id else None,
@@ -132,15 +131,16 @@ class Game(db.Model):
             'verified_at': self.verified_at.isoformat() if self.verified_at else None,
         }
         
-        # ✅ Ajouter les objets joueurs complets si demandé
         if include_players:
             data['player1'] = self.player1.json() if self.player1 else None
             data['player2'] = self.player2.json() if self.player2 else None
         
-        # ✅ Ajouter les objets decks complets si demandé
         if include_decks:
             data['player1_deck'] = self.player1_deck.json() if self.player1_deck else None
             data['player2_deck'] = self.player2_deck.json() if self.player2_deck else None
+
+        if include_tournament and self.tournament:
+            data['tournament'] = self.tournament.json()
         
         return data
 

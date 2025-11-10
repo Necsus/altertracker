@@ -226,18 +226,18 @@
                 </span>
                 }
 
-                @if (game.ranked) {
+                @if (game.ranked === true) {
                 <span
                   class="px-2 py-1 bg-amber-900/50 text-amber-400 rounded-md text-xs font-semibold border border-amber-700">
                   CLASSÉE
                 </span>
-                } @else {
+                }
+                @if (game.ranked === false && !game.tournament_id) {
                 <span
                   class="px-2 py-1 bg-gray-700 text-gray-400 rounded-md text-xs font-semibold border border-gray-600">
                   NORMALE
                 </span>
                 }
-
                 @if (game.tournament_id) {
                 <span class="flex items-center gap-1 text-purple-400">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
