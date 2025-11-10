@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { PlayerSeasonStatsModel } from '../../01_models/03_business/player-season-stats.model';
@@ -8,31 +8,46 @@ import { SeasonModel } from '../../01_models/03_business/season.model';
 import { PlayerService } from '../../03_business/player.service';
 import { HistoryComponent } from './history/history.component';
 import { OverviewComponent } from './overview/overview.component';
+import { PlayerHeaderComponent } from './player-header/player-header.component';
 
 @Component({
   selector: 'app-player',
   standalone: true,
-  imports: [CommonModule, FormsModule, HistoryComponent, OverviewComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    PlayerHeaderComponent,
+    HistoryComponent,
+    OverviewComponent
+  ],
   templateUrl: './player.component.html'
 })
 export class PlayerComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly playerService = inject(PlayerService);
 
+  // ✅ Signals d'état
   player_id = signal<string>('');
   player = signal<PlayerModel | null>(null);
   isLoading = signal(true);
   error = signal<string | null>(null);
   activeTab = signal('overview');
+  isReloading = signal(false);
+  lastReloadDate = signal<Date | null>(null);
 
+  // ✅ Signals pour les saisons
   selectedSeason = signal<number | null>(null);
   seasons = signal<SeasonModel[]>([]);
 
-  // ✅ Ajout des stats de saison pour le héros
-  playerStats = signal<PlayerSeasonStatsModel | null>(null);
+  // ✅ Stats de saison (une seule source de vérité)
+  seasonStats = signal<PlayerSeasonStatsModel | null>(null);
+  isLoadingSeasonStats = signal(false);
 
-  lastReloadDate = signal<Date | null>(null);
-  isReloading = signal(false);
+  // ✅ Computed signals
+  readonly currentSeasonName = computed(() => {
+    const season = this.selectedSeason();
+    return season ? `Saison ${season}` : 'Toutes les saisons';
+  });
 
   tabs = [
     { id: 'overview', label: 'Vue d\'ensemble', icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z' },
@@ -44,43 +59,24 @@ export class PlayerComponent implements OnInit {
   ngOnInit(): void {
     const playerId = this.route.snapshot.paramMap.get('player_id');
     if (playerId) {
+      this.player_id.set(playerId);
       this.loadPlayer(playerId);
-      this.loadSeasons();
     } else {
       this.error.set('ID du joueur manquant');
       this.isLoading.set(false);
     }
   }
 
-  loadSeasons(): void {
-    this.playerService.get_season_info$().subscribe({
-      next: (response: any) => {
-        this.seasons.set(response.seasons || []);
-        const currentSeason = response.seasons.find((s: SeasonModel) => s.current);
-        if (currentSeason) {
-          this.selectedSeason.set(currentSeason.season);
-          this.loadPlayerStats(currentSeason.season);
-        } else if (this.seasons.length > 0) {
-          this.selectedSeason.set(response.seasons[0].season);
-          this.loadPlayerStats(response.seasons[0].season);
-        }
-      },
-      error: (error) => {
-        console.error('Erreur lors du chargement des saisons:', error);
-      }
-    });
-  }
-
-  loadPlayer(playerId: string): void {
+  private loadPlayer(playerId: string): void {
     this.isLoading.set(true);
     this.error.set(null);
 
     this.playerService.get_player_by_id$(playerId).subscribe({
       next: (player: PlayerModel) => {
-        this.player_id.set(playerId);
         this.player.set(player);
-        this.isLoading.set(false);
         this.lastReloadDate.set(new Date(player.updated_at ?? ''));
+        this.loadSeasons();
+        this.isLoading.set(false);
       },
       error: (error) => {
         this.error.set(error.error?.message || 'Erreur de chargement');
@@ -89,68 +85,62 @@ export class PlayerComponent implements OnInit {
     });
   }
 
-  // ✅ Charger les stats de saison pour récupérer le héros le plus joué
-  loadPlayerStats(season: number): void {
-    if (!this.player_id()) return;
+  private loadSeasons(): void {
+    this.playerService.get_season_info$().subscribe({
+      next: (response: any) => {
+        const seasons: SeasonModel[] = response.seasons || [];
+        this.seasons.set(seasons);
+
+        // Sélectionner la saison courante
+        const currentSeason = seasons.find(s => s.current);
+        if (currentSeason) {
+          this.selectedSeason.set(currentSeason.season);
+          this.loadSeasonStats(currentSeason.season);
+        } else if (seasons.length > 0) {
+          this.selectedSeason.set(seasons[0].season);
+          this.loadSeasonStats(seasons[0].season);
+        }
+      },
+      error: (error) => {
+        console.error('Erreur lors du chargement des saisons:', error);
+      }
+    });
+  }
+
+  // ✅ UNIQUE point de chargement des stats de saison
+  private loadSeasonStats(season: number): void {
+    if (!this.player_id() || this.isLoadingSeasonStats()) return;
+
+    this.isLoadingSeasonStats.set(true);
 
     this.playerService.get_player_overview$(this.player_id(), season).subscribe({
-      next: (stats: any) => {
-        this.playerStats.set(stats);
+      next: (stats: PlayerSeasonStatsModel) => {
+        this.seasonStats.set(stats);
+        this.isLoadingSeasonStats.set(false);
       },
       error: (err) => {
         console.error('Erreur lors du chargement des stats:', err);
-        this.playerStats.set(null);
+        this.seasonStats.set(null);
+        this.isLoadingSeasonStats.set(false);
       }
     });
   }
 
   onSeasonChange(newSeason: number): void {
     this.selectedSeason.set(newSeason);
-    this.loadPlayerStats(newSeason);
+    this.loadSeasonStats(newSeason);
   }
 
-  getHeroImageUrl(): string {
-    const hero = this.playerStats()?.most_played_hero;
-    if (!hero) return '';
-    return `/assets/img/hero/${hero.toLowerCase()}.jpg`;
-  }
-
-  getMostPlayedFaction(): string | null {
-    return this.playerStats()?.most_played_faction || null;
-  }
-
-  getFactionGradient(faction: string | null): string {
-    if (!faction) return 'from-gray-800 via-gray-900 to-black';
-
-    switch (faction.toUpperCase()) {
-      case 'AX': return 'from-amber-900/90 via-amber-800/80 to-orange-900/90';
-      case 'BR': return 'from-red-900/90 via-red-800/80 to-red-950/90';
-      case 'OR': return 'from-blue-900/90 via-blue-800/80 to-blue-950/90';
-      case 'MU': return 'from-green-900/90 via-green-800/80 to-green-950/90';
-      case 'YZ': return 'from-purple-900/90 via-purple-800/80 to-purple-950/90';
-      case 'LY': return 'from-pink-900/90 via-pink-800/80 to-pink-950/90';
-      default: return 'from-gray-800/90 via-gray-900/80 to-black/90';
-    }
-  }
-
-  // ✅ Méthode pour recharger les données du joueur
   reloadPlayerData(): void {
-    if (this.isReloading()) {
-      console.log('⚠️  Rechargement déjà en cours');
-      return;
-    }
+    if (this.isReloading()) return;
 
     const playerId = this.player_id();
-    if (!playerId) {
-      console.error('❌ Aucun player_id disponible');
-      return;
-    }
+    if (!playerId) return;
 
-    console.log('🔄 Rechargement des données du joueur...');
     this.isReloading.set(true);
 
     this.playerService.get_player_reload$(playerId).subscribe({
-      next: (result: any) => {
+      next: () => {
         window.location.reload();
       },
       error: (error) => {
@@ -161,7 +151,7 @@ export class PlayerComponent implements OnInit {
   }
 
   retry(): void {
-    const playerId = this.route.snapshot.paramMap.get('id');
+    const playerId = this.route.snapshot.paramMap.get('player_id');
     if (playerId) {
       this.loadPlayer(playerId);
     }
