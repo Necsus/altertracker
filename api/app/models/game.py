@@ -49,12 +49,6 @@ class Game(db.Model):
     played_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
     duration_minutes = db.Column(db.Integer, nullable=True)
     replay_url = db.Column(db.String(255), nullable=True)
-    notes = db.Column(db.Text, nullable=True)
-    
-    # Validation
-    is_verified = db.Column(db.Boolean, default=False)
-    verified_by = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
-    verified_at = db.Column(db.DateTime, nullable=True)
     
     start = db.Column(db.DateTime, nullable=True)
     end = db.Column(db.DateTime, nullable=True)
@@ -124,11 +118,7 @@ class Game(db.Model):
             'duration_minutes': self.duration_minutes,
             
             # Métadonnées
-            'replay_url': self.replay_url,
-            'notes': self.notes,
-            'is_verified': self.is_verified,
-            'verified_by': self.verified_by,
-            'verified_at': self.verified_at.isoformat() if self.verified_at else None,
+            'replay_url': self.replay_url
         }
         
         if include_players:
