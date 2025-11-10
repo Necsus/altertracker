@@ -1,6 +1,6 @@
-<div class="min-h-screen bg-gray-900 text-gray-100">
-  <!-- Loading State -->
-  @if (isLoading()) {
+<!-- Loading State -->
+@if (isLoading()) {
+<div class="bg-gray-900 text-gray-100">
   <div class="container mx-auto px-4 py-8">
     <!-- ✅ Message d'information principal -->
     <div class="bg-gradient-to-br from-amber-900 via-amber-800 to-orange-900 rounded-2xl p-8 mb-6 shadow-2xl">
@@ -86,8 +86,9 @@
       </div>
     </div>
   </div>
-  }
-
+</div>
+}
+<div class="min-h-screen bg-gray-900 text-gray-100">
   <!-- Error State -->
   @if (error() && !isLoading()) {
   <div class="container mx-auto px-4 py-16">
