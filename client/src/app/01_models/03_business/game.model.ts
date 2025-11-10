@@ -1,7 +1,8 @@
 export interface GameModel {
   id: string; // UUID
   table_id: number;
-  ranked: boolean;
+  ranked?: boolean;
+  tournament_id?: string; // UUID
 
   // Joueurs
   player1_id: string; // UUID
@@ -25,12 +26,17 @@ export interface GameModel {
   player1_nb_turns?: number;
   player2_nb_turns?: number;
 
+  player1_arena_point_win?: number;
+  player2_arena_point_win?: number;
+
+  player1_arena_point_after_game?: number;
+  player2_arena_point_after_game?: number;
+
   // Résultat
   winner_id?: string; // UUID
   is_draw: boolean;
 
   // Contexte
-  tournament_id?: string; // UUID
   season?: string;
   round?: number;
   game_format?: string;
