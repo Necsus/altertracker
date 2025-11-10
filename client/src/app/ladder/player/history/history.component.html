@@ -226,15 +226,22 @@
                 </span>
                 }
 
-                @if (game.ranked) {
+                @if (game.ranked === true) {
                 <span
                   class="px-2 py-1 bg-amber-900/50 text-amber-400 rounded-md text-xs font-semibold border border-amber-700">
                   CLASSÉE
                 </span>
-                } @else {
+                }
+                @if (game.ranked === false) {
                 <span
                   class="px-2 py-1 bg-gray-700 text-gray-400 rounded-md text-xs font-semibold border border-gray-600">
                   NORMALE
+                </span>
+                }
+                @if (!game.ranked) {
+                <span
+                  class="px-2 py-1 bg-gray-700 text-gray-400 rounded-md text-xs font-semibold border border-gray-600">
+                  ?
                 </span>
                 }
 
