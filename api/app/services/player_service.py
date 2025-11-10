@@ -1208,6 +1208,10 @@ def import_table_service(table_id: int) -> dict:
 
             table = stats.get('table', {})
             if table:
+                days_value = table.get('days', {}).get('value', 0)
+                if days_value is not None:
+                    game.round = int(days_value)
+
                 winner_hero_model = get_faction_hero_by_label(table.get('gameWinner', {}).get('valuelabel', None))
                 loser_hero_model = get_faction_hero_by_label(table.get('gameLooser', {}).get('valuelabel', None))
                 if game.winner_id == game.player1_id:
