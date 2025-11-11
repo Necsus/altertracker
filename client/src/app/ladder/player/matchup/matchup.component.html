@@ -1,0 +1,268 @@
+<!-- Loading State -->
+@if (isLoading) {
+<div class="bg-gray-800 rounded-xl p-12 shadow-lg">
+  <div class="flex items-center justify-center">
+    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500"></div>
+  </div>
+</div>
+}
+
+@if (!isLoading) {
+<div class="space-y-6">
+
+  <!-- ✅ Section 1: Matchups par Héros Adverses -->
+  <div class="bg-gray-800 rounded-xl p-4 shadow-xl">
+    <div class="mb-4">
+      <div class="flex items-center gap-2 mb-3">
+        <svg class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+        </svg>
+        <h2 class="text-xl font-bold text-white">Matchups par Héros</h2>
+        <span class="text-gray-500 text-sm ml-auto">{{ totalHeroGames() }} parties</span>
+      </div>
+
+      <!-- Filtre par héros - Tabs avec images -->
+      <div class="mb-4">
+        <p class="text-gray-400 text-xs mb-2">Filtrer par mon héros :</p>
+        <div class="flex flex-wrap gap-2">
+          <!-- Tab "Tous" -->
+          <button (click)="selectedPlayerHero.set('ALL')" [class.bg-amber-600]="selectedPlayerHero() === 'ALL'"
+            [class.ring-2]="selectedPlayerHero() === 'ALL'" [class.ring-amber-400]="selectedPlayerHero() === 'ALL'"
+            [class.bg-gray-700]="selectedPlayerHero() !== 'ALL'"
+            [class.hover:bg-gray-600]="selectedPlayerHero() !== 'ALL'"
+            class="flex items-center gap-2 px-3 py-2 rounded-lg transition-all shadow-lg group">
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+            <span class="text-white font-semibold text-sm">Tous</span>
+            <span class="text-white/70 text-xs">({{ totalHeroGames() }})</span>
+          </button>
+
+          <!-- Tabs pour chaque héros -->
+          @for (hero of playerHeroes(); track hero.hero) {
+          <button (click)="selectedPlayerHero.set(hero.hero)" [class.ring-2]="selectedPlayerHero() === hero.hero"
+            [class.ring-amber-400]="selectedPlayerHero() === hero.hero"
+            [class.scale-105]="selectedPlayerHero() === hero.hero"
+            class="relative flex items-center gap-2 px-2 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 transition-all shadow-lg group overflow-hidden">
+            <!-- Image du héros -->
+            <div class="relative w-8 h-8 rounded-full overflow-hidden ring-2 ring-white/20">
+              <img [src]="getHeroImageUrl(hero.hero)" [alt]="hero.hero" class="w-full h-full object-cover"
+                onerror="this.src='/assets/img/hero/default.jpg'">
+            </div>
+            <div class="flex flex-col items-start">
+              <span class="text-white font-semibold text-xs leading-tight">{{ hero.hero }}</span>
+              <span class="text-white/60 text-[10px]">{{ hero.games }} parties</span>
+            </div>
+            <!-- Badge faction -->
+            <img [src]="getFactionImageUrl(hero.faction)" [alt]="hero.faction"
+              class="absolute top-1 right-1 w-4 h-4 rounded-full shadow-lg ring-1 ring-white/30">
+          </button>
+          }
+        </div>
+      </div>
+
+      <p class="text-gray-400 text-xs">
+        Performance contre les héros adverses rencontrés
+      </p>
+    </div>
+
+    @if (heroMatchups().length === 0) {
+    <div class="text-center py-8">
+      <svg class="w-12 h-12 text-gray-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <p class="text-gray-500">Aucune donnée disponible</p>
+    </div>
+    } @else {
+    <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3">
+      @for (matchup of heroMatchups(); track matchup.hero) {
+      <div
+        class="relative bg-gradient-to-br {{ getFactionGradient(matchup.faction) }} rounded-xl border {{ getFactionBorderColor(matchup.faction) }} overflow-hidden hover:shadow-2xl transition-all duration-200 hover:scale-105 group">
+
+        <!-- Badge faction en haut à droite -->
+        <div class="absolute top-2 right-2 z-20">
+          <img [src]="getFactionImageUrl(matchup.faction)" [alt]="matchup.faction"
+            class="w-6 h-6 rounded-full shadow-lg ring-2 ring-white/30">
+        </div>
+
+        <!-- Win Rate en haut avec background blur -->
+        <div class="absolute top-2 left-2 right-10 z-20">
+          <div class="bg-black/60 backdrop-blur-sm rounded-lg px-2 py-1 border border-white/20 inline-block">
+            <span class="font-bold text-sm {{ getWinRateColor(matchup.winRate) }} drop-shadow-lg">
+              {{ matchup.winRate | number: '1.0-0' }}%
+            </span>
+          </div>
+        </div>
+
+        <!-- Image du héros au centre -->
+        <div class="relative h-32 flex items-center justify-center p-4">
+          <div class="relative w-20 h-20 rounded-full overflow-hidden ring-4 ring-white/20 shadow-2xl">
+            <img [src]="getHeroImageUrl(matchup.hero)" [alt]="matchup.hero" class="w-full h-full object-cover"
+              onerror="this.src='/assets/img/hero/default.jpg'">
+          </div>
+        </div>
+
+        <!-- Nom du héros et stats en bas -->
+        <div class="bg-black/60 backdrop-blur-sm p-2 border-t border-white/10">
+          <h3 class="text-white font-bold text-xs text-center mb-2 truncate drop-shadow">{{ matchup.hero }}</h3>
+
+          <!-- Victoires / Défaites -->
+          <div class="flex justify-center gap-3 text-xs">
+            <div class="flex items-center gap-1">
+              <svg class="w-3 h-3 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clip-rule="evenodd" />
+              </svg>
+              <span class="text-green-400 font-bold">{{ matchup.wins }}</span>
+            </div>
+            <div class="text-gray-500">-</div>
+            <div class="flex items-center gap-1">
+              <svg class="w-3 h-3 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clip-rule="evenodd" />
+              </svg>
+              <span class="text-red-400 font-bold">{{ matchup.losses }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+    }
+  </div>
+
+  <!-- ✅ Section 2: Matchups par Faction Adverse -->
+  <div class="bg-gray-800 rounded-xl p-4 shadow-xl">
+    <div class="mb-4">
+      <div class="flex items-center gap-2 mb-3">
+        <svg class="w-6 h-6 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9"></path>
+        </svg>
+        <h2 class="text-xl font-bold text-white">Matchups par Faction</h2>
+        <span class="text-gray-500 text-sm ml-auto">{{ totalFactionGames() }} parties</span>
+      </div>
+
+      <!-- Filtre par faction - Tabs avec images -->
+      <div class="mb-4">
+        <p class="text-gray-400 text-xs mb-2">Filtrer par ma faction :</p>
+        <div class="flex flex-wrap gap-2">
+          <!-- Tab "Toutes" -->
+          <button (click)="selectedPlayerFaction.set('ALL')" [class.bg-purple-600]="selectedPlayerFaction() === 'ALL'"
+            [class.ring-2]="selectedPlayerFaction() === 'ALL'"
+            [class.ring-purple-400]="selectedPlayerFaction() === 'ALL'"
+            [class.bg-gray-700]="selectedPlayerFaction() !== 'ALL'"
+            [class.hover:bg-gray-600]="selectedPlayerFaction() !== 'ALL'"
+            class="flex items-center gap-2 px-3 py-2 rounded-lg transition-all shadow-lg group">
+            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+            <span class="text-white font-semibold text-sm">Toutes</span>
+            <span class="text-white/70 text-xs">({{ totalFactionGames() }})</span>
+          </button>
+
+          <!-- Tabs pour chaque faction -->
+          @for (faction of playerFactions(); track faction.faction) {
+          <button (click)="selectedPlayerFaction.set(faction.faction)"
+            [class.ring-2]="selectedPlayerFaction() === faction.faction"
+            [class.ring-purple-400]="selectedPlayerFaction() === faction.faction"
+            [class.scale-105]="selectedPlayerFaction() === faction.faction"
+            class="relative flex items-center gap-2 px-3 py-2 rounded-lg bg-gradient-to-br {{ getFactionGradient(faction.faction) }} hover:brightness-110 transition-all shadow-lg group">
+            <!-- Image de la faction -->
+            <div class="relative w-8 h-8 rounded-lg overflow-hidden ring-2 ring-white/30 bg-black/20">
+              <img [src]="getFactionImageUrl(faction.faction)" [alt]="faction.faction"
+                class="w-full h-full object-contain p-1">
+            </div>
+            <div class="flex flex-col items-start">
+              <span class="text-white font-bold text-xs uppercase leading-tight">{{ faction.faction }}</span>
+              <span class="text-white/80 text-[10px]">{{ faction.games }} parties</span>
+            </div>
+          </button>
+          }
+        </div>
+      </div>
+
+      <p class="text-gray-400 text-xs">
+        Performance contre les 6 factions du jeu
+      </p>
+    </div>
+
+    @if (factionMatchups().length === 0) {
+    <div class="text-center py-8">
+      <svg class="w-12 h-12 text-gray-600 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4">
+        </path>
+      </svg>
+      <p class="text-gray-500">Aucune donnée disponible</p>
+    </div>
+    } @else {
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      @for (matchup of factionMatchups(); track matchup.faction) {
+      <div
+        class="relative bg-gradient-to-br {{ getFactionGradient(matchup.faction) }} rounded-xl border-2 {{ getFactionBorderColor(matchup.faction) }} overflow-hidden hover:shadow-2xl transition-all duration-200 hover:scale-105 group">
+
+        <!-- Win Rate en haut avec background blur -->
+        <div class="absolute top-3 left-3 right-3 z-20 flex justify-center">
+          <div
+            class="bg-black/70 backdrop-blur-sm rounded-lg px-3 py-1.5 border border-white/30 inline-block shadow-lg">
+            <span class="font-bold text-base {{ getWinRateColor(matchup.winRate) }} drop-shadow-lg">
+              {{ matchup.winRate | number: '1.0-0' }}%
+            </span>
+          </div>
+        </div>
+
+        <!-- Image de la faction au centre -->
+        <div class="relative h-40 flex items-center justify-center p-6 pt-12">
+          <div class="relative w-24 h-24 rounded-2xl overflow-hidden ring-4 ring-white/30 shadow-2xl bg-black/20">
+            <img [src]="getFactionImageUrl(matchup.faction)" [alt]="matchup.faction"
+              class="w-full h-full object-contain p-2">
+          </div>
+        </div>
+
+        <!-- Nom de la faction et stats en bas -->
+        <div class="bg-black/70 backdrop-blur-sm p-3 border-t-2 border-white/20">
+          <h3 class="text-white font-bold text-sm text-center mb-3 uppercase tracking-wider drop-shadow">
+            {{ matchup.faction }}
+          </h3>
+
+          <!-- Victoires / Défaites avec icônes -->
+          <div class="flex justify-center gap-4 mb-2">
+            <div class="flex items-center gap-1.5">
+              <svg class="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clip-rule="evenodd" />
+              </svg>
+              <span class="text-green-400 font-bold text-base">{{ matchup.wins }}</span>
+            </div>
+            <div class="text-gray-400 font-bold text-base">-</div>
+            <div class="flex items-center gap-1.5">
+              <svg class="w-4 h-4 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clip-rule="evenodd" />
+              </svg>
+              <span class="text-red-400 font-bold text-base">{{ matchup.losses }}</span>
+            </div>
+          </div>
+
+          <!-- Record compact en bas -->
+          <div class="text-center bg-black/30 rounded-lg py-1 border border-white/10">
+            <span class="text-white/80 font-mono text-[10px] tracking-wider uppercase">
+              {{ matchup.games }} parties
+            </span>
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+    }
+  </div>
+
+</div>
+}

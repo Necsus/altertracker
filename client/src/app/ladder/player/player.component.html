@@ -205,6 +205,9 @@
       }
 
       <!-- Matchups/Decks tabs (inchangés) -->
+      @if (activeTab() === 'matchups' && player_id() && selectedSeason()) {
+      <app-player-matchups [player_id]="player_id()" [selectedSeason]="selectedSeason()!"></app-player-matchups>
+      }
     </div>
   </div>
   }

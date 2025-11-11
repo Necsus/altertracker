@@ -7,6 +7,7 @@ import { PlayerModel } from '../../01_models/03_business/player.model';
 import { SeasonModel } from '../../01_models/03_business/season.model';
 import { PlayerService } from '../../03_business/player.service';
 import { HistoryComponent } from './history/history.component';
+import { MatchupComponent } from './matchup/matchup.component';
 import { OverviewComponent } from './overview/overview.component';
 import { PlayerHeaderComponent } from './player-header/player-header.component';
 
@@ -18,7 +19,8 @@ import { PlayerHeaderComponent } from './player-header/player-header.component';
     FormsModule,
     PlayerHeaderComponent,
     HistoryComponent,
-    OverviewComponent
+    OverviewComponent,
+    MatchupComponent
   ],
   templateUrl: './player.component.html'
 })
