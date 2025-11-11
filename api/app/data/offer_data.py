@@ -142,14 +142,18 @@ def get_count_offers_edited_today_data() -> int:
 
 def get_last_deleted_offers_data() -> list[dict]:
     try:
-        # ✅ Utiliser select() au lieu de subquery()
-        subquery = select(Offer.previous_offer).where(Offer.previous_offer != None).scalar_subquery()
+        # ✅ Version corrigée : Récupère les offres supprimées qui ne sont pas référencées par d'autres
+        # Créer un alias pour la sous-requête
+        referring_offers = db.aliased(Offer)
         
         results = db.session.query(Offer, Card).join(
             Card, Offer.reference_card == Card.reference
+        ).outerjoin(
+            referring_offers,
+            referring_offers.previous_offer == Offer.id
         ).filter(
             Offer.is_deleted == True,
-            ~Offer.id.in_(subquery)  # ✅ Plus de warning
+            referring_offers.id.is_(None)  # ✅ Aucune offre ne référence celle-ci
         ).order_by(
             Offer.deleted_at.desc()
         ).limit(10).all()
@@ -171,12 +175,15 @@ def get_count_offers_deleted_today_data() -> int:
     today_utc_start = datetime.combine(today_paris, datetime.min.time()).astimezone(timezone('UTC'))
     today_utc_end = datetime.combine(today_paris, datetime.max.time()).astimezone(timezone('UTC'))
 
-    # ✅ Utiliser select() au lieu de subquery()
-    available_subq = select(Offer.reference_card).where(Offer.status == 'available').scalar_subquery()
+    # ✅ Sous-requête pour trouver les reference_card qui ont encore des offres disponibles
+    available_references = select(Offer.reference_card).where(
+        Offer.status == 'available'
+    ).distinct().scalar_subquery()
 
+    # ✅ Compter les reference_card uniques supprimées aujourd'hui qui n'ont plus d'offres disponibles
     return db.session.query(func.count(func.distinct(Offer.reference_card))).filter(
         Offer.deleted_at >= today_utc_start,
         Offer.deleted_at <= today_utc_end,
         Offer.is_deleted == True,
-        ~Offer.reference_card.in_(available_subq)  # ✅ Plus de warning
+        ~Offer.reference_card.in_(available_references)
     ).scalar()
