@@ -30,7 +30,7 @@ export class OverviewComponent {
 
     return Object.entries(stats.faction_stats)
       .map(([faction, stats]) => ({ faction, stats }))
-      .sort((a, b) => b.stats.games - a.stats.games);
+      .sort((a, b) => b.stats.win_rate - a.stats.win_rate); // ✅ Tri par winrate décroissant
   }
 
   getAllHeroes(): Array<{ hero: string, stats: any }> {
@@ -39,7 +39,7 @@ export class OverviewComponent {
 
     return Object.entries(stats.hero_stats)
       .map(([hero, stats]) => ({ hero, stats }))
-      .sort((a, b) => b.stats.games - a.stats.games);
+      .sort((a, b) => b.stats.win_rate - a.stats.win_rate); // ✅ Tri par winrate décroissant
   }
 
   formatTotalReflectionTime(): string {
