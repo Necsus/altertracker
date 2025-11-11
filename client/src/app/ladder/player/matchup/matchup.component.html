@@ -152,9 +152,9 @@
         <p class="text-gray-400 text-xs mb-2">Filtrer par ma faction :</p>
         <div class="flex flex-wrap gap-2">
           <!-- Tab "Toutes" -->
-          <button (click)="selectedPlayerFaction.set('ALL')" [class.bg-purple-600]="selectedPlayerFaction() === 'ALL'"
+          <button (click)="selectedPlayerFaction.set('ALL')" [class.bg-amber-600]="selectedPlayerFaction() === 'ALL'"
             [class.ring-2]="selectedPlayerFaction() === 'ALL'"
-            [class.ring-purple-400]="selectedPlayerFaction() === 'ALL'"
+            [class.ring-amber-400]="selectedPlayerFaction() === 'ALL'"
             [class.bg-gray-700]="selectedPlayerFaction() !== 'ALL'"
             [class.hover:bg-gray-600]="selectedPlayerFaction() !== 'ALL'"
             class="flex items-center gap-2 px-3 py-2 rounded-lg transition-all shadow-lg group">
@@ -169,7 +169,7 @@
           @for (faction of playerFactions(); track faction.faction) {
           <button (click)="selectedPlayerFaction.set(faction.faction)"
             [class.ring-2]="selectedPlayerFaction() === faction.faction"
-            [class.ring-purple-400]="selectedPlayerFaction() === faction.faction"
+            [class.ring-amber-400]="selectedPlayerFaction() === faction.faction"
             [class.scale-105]="selectedPlayerFaction() === faction.faction"
             class="relative flex items-center gap-2 px-3 py-2 rounded-lg bg-gradient-to-br {{ getFactionGradient(faction.faction) }} hover:brightness-110 transition-all shadow-lg group">
             <!-- Image de la faction -->
