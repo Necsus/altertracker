@@ -13,4 +13,4 @@ RUN pip install -r requirements.txt
 
 ENV FLASK_APP=run.py
 
-CMD ["gunicorn", "-w", "4", "-k", "gevent", "-b", "0.0.0.0:5001", "--timeout", "120", "run:app"]
+CMD ["gunicorn", "-w", "4", "-k", "geventwebsocket.gunicorn.workers.GeventWebSocketWorker", "-b", "0.0.0.0:5001", "--timeout", "120", "run:app"]

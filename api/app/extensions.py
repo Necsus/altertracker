@@ -14,7 +14,13 @@ migrate = Migrate()
 mail_conf = sib_api_v3_sdk.Configuration()
 mail_conf.api_key['api-key'] = ConfigEnv.BREVO_API_KEY
 mail_api = sib_api_v3_sdk.TransactionalEmailsApi(sib_api_v3_sdk.ApiClient(mail_conf))
-socketio = SocketIO()
+
+# ✅ Configuration SocketIO avec message queue Redis pour production
+if ConfigEnv.FLASK_ENV == 'production':
+    socketio = SocketIO(message_queue='redis://redis.altertracker.svc.cluster.local:6379')
+else:
+    socketio = SocketIO()
+
 cache = Cache(config={'CACHE_TYPE': 'SimpleCache'})
 
 limiter = Limiter(

@@ -29,7 +29,19 @@ def create_app():
     db.init_app(app)
     jwt = JWTManager(app)
     migrate.init_app(app, db)
-    socketio.init_app(app, cors_allowed_origins=ConfigEnv.CORS_ORIGINS, async_mode='gevent')
+    # ✅ Configuration SocketIO avec options complètes pour production
+    socketio.init_app(
+        app, 
+        cors_allowed_origins=ConfigEnv.CORS_ORIGINS, 
+        async_mode='gevent',
+        logger=ConfigEnv.FLASK_ENV != 'production',
+        engineio_logger=ConfigEnv.FLASK_ENV != 'production',
+        # ✅ Permettre les transports polling et websocket
+        transports=['websocket', 'polling'],
+        # ✅ Timeout plus long pour éviter les déconnexions
+        ping_timeout=60,
+        ping_interval=25
+    )
     limiter.init_app(app)
     cache.init_app(app)
 
