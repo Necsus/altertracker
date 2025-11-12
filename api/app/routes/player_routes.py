@@ -125,6 +125,7 @@ def get_ladder_by_season_route(season: int):
     try:
         # ✅ Paramètres de pagination
         include_player = request.args.get('include_player', 'true').lower() == 'true'
+        hero = request.args.get('hero', None, type=str)
         page = request.args.get('page', 1, type=int)
         limit = request.args.get('limit', 100, type=int)
         
@@ -137,7 +138,8 @@ def get_ladder_by_season_route(season: int):
         
         # ✅ Récupérer le ladder avec pagination
         ladder = get_ladder_by_season_service(
-            season=season, 
+            season=season,
+            hero=hero,
             include_player=include_player,
             page=page,
             limit=limit

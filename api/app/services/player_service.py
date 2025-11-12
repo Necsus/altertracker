@@ -649,7 +649,8 @@ def import_ladder_service(season: int, max_pages: int = None) -> dict:
         }
     
 def get_ladder_by_season_service(
-    season: int, 
+    season: int,
+    hero: str = None,
     include_player: bool = True,
     page: int = 1,
     limit: int = 100
@@ -659,7 +660,8 @@ def get_ladder_by_season_service(
         
         # ✅ Récupérer les stats avec pagination
         stats, total = get_season_stats_data(
-            season=season, 
+            season=season,
+            hero=hero,
             include_player=include_player,
             page=page,
             limit=limit
