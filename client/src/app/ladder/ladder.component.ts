@@ -30,7 +30,34 @@ export class LadderComponent implements OnInit {
 
   selectedSeason: number | null = null;
   selectedHero: string = ''; // Filtre héros (pour l'affichage uniquement)
-  availableHeroes: string[] = []; // ✅ Liste complète des héros
+
+  // ✅ Liste fixe des héros (basée sur les images disponibles)
+  availableHeroes: string[] = [
+    'Afanas',
+    'Akesha',
+    'Arjun',
+    'Atsadi',
+    'Auraq',
+    'Basira',
+    'Fen',
+    'Gulrang',
+    'Isaree',
+    'Kauri',
+    'Kojo',
+    'Lindiwe',
+    'Moyo',
+    'Nadir',
+    'Nevenka',
+    'Rin',
+    'Sierra',
+    'Sigismar',
+    'Sol',
+    'Subhash',
+    'Teija',
+    'Treyst',
+    'Waru',
+    'Zhen'
+  ];
 
   totalPlayers = 0;
   activePlayers = 0;
@@ -94,44 +121,28 @@ export class LadderComponent implements OnInit {
   loadPlayers(): void {
     if (!this.selectedSeason) return;
 
-    this.playerService.get_season_stats$(this.selectedSeason, this.currentPage, this.itemsPerPage).subscribe({
+    this.playerService.get_season_stats$(this.selectedSeason, this.selectedHero ?? null, this.currentPage, this.itemsPerPage).subscribe({
       next: (response) => {
         this.players = response.ladder || [];
         this.totalPages = response.pagination.total_pages || 1;
         this.activePlayers = response.total_players || 0;
 
-        this.extractAvailableHeroes();
+        // ✅ Plus besoin d'extraire les héros dynamiquement
       },
       error: (err) => console.error('Erreur lors du chargement des joueurs :', err)
     });
   }
 
-  private extractAvailableHeroes(): void {
-    const heroesSet = new Set<string>();
-
-    this.players.forEach(player => {
-      if (player.most_played_hero) {
-        heroesSet.add(player.most_played_hero);
-      }
-    });
-
-    // Garder les héros déjà présents + ajouter les nouveaux
-    const existingSet = new Set(this.availableHeroes);
-    heroesSet.forEach(hero => existingSet.add(hero));
-
-    this.availableHeroes = Array.from(existingSet).sort();
-  }
-
   onFilterChange(): void {
     this.currentPage = 1;
-    this.selectedHero = '';
-    this.availableHeroes = [];
     this.updateUrlParams();
     this.loadPlayers();
   }
 
   onHeroFilterChange(): void {
+    this.currentPage = 1;
     this.updateUrlParams();
+    this.loadPlayers();
   }
 
   get filteredPlayers(): PlayerSeasonStatsModel[] {

@@ -67,10 +67,11 @@ export class PlayerService {
 
   get_season_stats$(
     season: number,
+    hero: string | null = null,
     page: number = 1,
     limit: number = 100
   ): Observable<any> {
-    return this.playerApiService.get_season_stats$(season, page, limit).pipe(
+    return this.playerApiService.get_season_stats$(season, hero, page, limit).pipe(
       map((response: any) => {
         return response;
       })

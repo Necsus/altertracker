@@ -40,11 +40,13 @@ export class PlayerApiService {
 
   get_season_stats$(
     season: number,
+    hero: string | null = null,
     page: number = 1,
     limit: number = 100,
     includePlayer: boolean = true
   ): Observable<any> {
     const params = new URLSearchParams({
+      hero: hero ? hero : '',
       page: page.toString(),
       limit: limit.toString(),
       include_player: includePlayer.toString()

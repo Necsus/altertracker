@@ -253,12 +253,17 @@ def update_season_stats_bulk_data(season_stats_list: List[PlayerSeasonStats]) ->
         raise e
 
 def get_season_stats_data(
-    season: int, 
+    season: int,
+    hero: str = None,
     include_player: bool = True,
     page: int = 1,
     limit: int = 100
 ) -> tuple[List[PlayerSeasonStats], int]:
     query = db.session.query(PlayerSeasonStats).filter_by(season=str(season))
+    
+    # ✅ Filtrer par hero si spécifié
+    if hero:
+        query = query.filter(PlayerSeasonStats.most_played_hero == hero)
     
     # ✅ Eager loading du player pour éviter les N+1 queries
     if include_player:
