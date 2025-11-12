@@ -628,34 +628,75 @@ def import_ladder_from_bga(season: int, page: int = 0, retry: bool = True) -> di
     
 def getLogs(table_id: int, retry: bool = True) -> dict:
     try:
+        # ✅ ÉTAPE 1 : Charger gamereview AVANT d'appeler logs.html (comme le navigateur)
+        session = requests.Session()
+        
+        TournoiEnLigne_sso_user = db.session.query(CookieManager).filter_by(name="TournoiEnLigne_sso_user").first()
+        TournoiEnLigne_sso_id = db.session.query(CookieManager).filter_by(name="TournoiEnLigne_sso_id").first()
+        TournoiEnLigneidt = db.session.query(CookieManager).filter_by(name="TournoiEnLigneidt").first()
+        TournoiEnLignetkt = db.session.query(CookieManager).filter_by(name="TournoiEnLignetkt").first()
+        TournoiEnLigneid = db.session.query(CookieManager).filter_by(name="TournoiEnLigneid").first()
+        TournoiEnLignetk = db.session.query(CookieManager).filter_by(name="TournoiEnLignetk").first()
+        
+        # Configuration de la session avec les cookies
+        session.cookies.set('TournoiEnLigne_sso_user', TournoiEnLigne_sso_user.value, domain='.boardgamearena.com')
+        session.cookies.set('TournoiEnLigne_sso_id', TournoiEnLigne_sso_id.value, domain='.boardgamearena.com')
+        session.cookies.set('TournoiEnLigneidt', TournoiEnLigneidt.value, domain='.boardgamearena.com')
+        session.cookies.set('TournoiEnLignetkt', TournoiEnLignetkt.value, domain='.boardgamearena.com')
+        session.cookies.set('TournoiEnLigneid', TournoiEnLigneid.value, domain='.boardgamearena.com')
+        session.cookies.set('TournoiEnLignetk', TournoiEnLignetk.value, domain='.boardgamearena.com')
+        
+        # Headers de base pour la session
+        session.headers.update({
+            "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
+            "accept-encoding": "gzip, deflate, br",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:144.0) Gecko/20100101 Firefox/144.0"
+        })
+        
+        # Charger la page gamereview pour initialiser la session
+        gamereview_url = "https://boardgamearena.com/gamereview"
+        gamereview_params = {"table": table_id}
+        
+        print(f"📄 Chargement de gamereview pour table {table_id}...")
+        gamereview_response = session.get(
+            gamereview_url,
+            params=gamereview_params,
+            headers={
+                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+                "upgrade-insecure-requests": "1",
+            },
+            timeout=10
+        )
+        gamereview_response.raise_for_status()
+        
+        # ✅ Petit délai pour simuler le temps de chargement de la page
+        time.sleep(0.5)
+        
+        # ✅ ÉTAPE 2 : Maintenant appeler logs.html (comme le fait automatiquement la page)
         rt = getRequestTable(table_id)
         if rt["data"] and rt["data"] is True:
-            url = "https://boardgamearena.com/archive/archive/logs.html"
-            params = {
+            logs_url = "https://boardgamearena.com/archive/archive/logs.html"
+            logs_params = {
                 "table": table_id,
-                "translated": "true"
+                "translated": "true",
+                "dojo.preventCache": int(time.time() * 1000)  # ✅ Timestamp pour éviter le cache
             }
-
-            TournoiEnLigne_sso_user = db.session.query(CookieManager).filter_by(name="TournoiEnLigne_sso_user").first()
-            TournoiEnLigne_sso_id = db.session.query(CookieManager).filter_by(name="TournoiEnLigne_sso_id").first()
-            TournoiEnLigneidt = db.session.query(CookieManager).filter_by(name="TournoiEnLigneidt").first()
-            TournoiEnLignetkt = db.session.query(CookieManager).filter_by(name="TournoiEnLignetkt").first()
-            TournoiEnLigneid = db.session.query(CookieManager).filter_by(name="TournoiEnLigneid").first()
-            TournoiEnLignetk = db.session.query(CookieManager).filter_by(name="TournoiEnLignetk").first()
             
-            headers = {
-                "cookie": f"TournoiEnLigne_sso_user={TournoiEnLigne_sso_user.value};TournoiEnLigne_sso_id={TournoiEnLigne_sso_id.value};TournoiEnLignetkt={TournoiEnLignetkt.value};TournoiEnLigneidt={TournoiEnLigneidt.value};TournoiEnLignetk={TournoiEnLignetk.value};TournoiEnLigneid={TournoiEnLigneid.value}",
-                "x-request-token": TournoiEnLigneidt.value,
-                "x-requested-with": "XMLHttpRequest",
-                "referer": f"https://boardgamearena.com/gamereview?table={table_id}",
-                "accept": "*/*",
-                "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:144.0) Gecko/20100101 Firefox/144.0"
-            }
+            print(f"📊 Récupération des logs pour table {table_id}...")
+            logs_response = session.get(
+                logs_url,
+                params=logs_params,
+                headers={
+                    "accept": "application/json, text/javascript, */*",
+                    "x-request-token": TournoiEnLigneidt.value,
+                    "x-requested-with": "XMLHttpRequest",
+                    "referer": f"https://boardgamearena.com/gamereview?table={table_id}",
+                },
+                timeout=10
+            )
+            logs_response.raise_for_status()
 
-            response = requests.get(url, headers=headers, params=params)
-            response.raise_for_status()
-
-            data = response.json()
+            data = logs_response.json()
 
             # Vérifier le status
             status = data.get('status', 0)
@@ -666,7 +707,7 @@ def getLogs(table_id: int, retry: bool = True) -> dict:
                     postLoginUserWithPassword()
                     time.sleep(1)
                     return getLogs(table_id, retry=False)
-                print(f"\033[91m❌ Status 0 : {data.get('error', 'BGA API error'),}\033[0m")
+                print(f"\033[91m❌ Status 0 : {data.get('error', 'BGA API error')}\033[0m")
                 return {
                     'status': 0,
                     'error': data.get('error', 'BGA API error'),
@@ -681,7 +722,7 @@ def getLogs(table_id: int, retry: bool = True) -> dict:
         return {
             'status': 0,
             'error': 'requestTable false',
-            'data': data.get('data', {}),
+            'data': None,
         }
     except requests.exceptions.RequestException as e:
         print(f"\033[91m❌ Erreur HTTP : {e}\033[0m")
@@ -693,8 +734,7 @@ def getLogs(table_id: int, retry: bool = True) -> dict:
         return {
             'status': 0,
             'error': f'Request failed: {str(e)}',
-            'data': None,
-            'pagination': None
+            'data': None
         }
     except Exception as e:
         print(f"\033[91m❌ Erreur inattendue : {e}\033[0m")
@@ -703,8 +743,7 @@ def getLogs(table_id: int, retry: bool = True) -> dict:
         return {
             'status': 0,
             'error': f'Unexpected error: {str(e)}',
-            'data': None,
-            'pagination': None
+            'data': None
         }
 
 def getRequestTable(table_id: int, retry: bool = True) -> dict:
