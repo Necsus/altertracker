@@ -30,7 +30,8 @@ def search_players_data(query: str, limit: int = 10) -> List[Player]:
     
     # Recherche avec tri par priorité puis par nom
     players = db.session.query(Player).filter(
-        func.lower(Player.name).like(f'%{query_lower}%')
+        func.lower(Player.name).like(f'%{query_lower}%'),
+        Player.is_anonymized.isnot(True)
     ).order_by(
         priority,
         Player.name
