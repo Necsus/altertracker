@@ -74,9 +74,7 @@ class Game(db.Model):
             'player2_id': str(self.player2_id),
             
             # Infos rapides des joueurs
-            'player1_name': self.player1.name if self.player1 else None,
             'player1_country': self.player1.country if self.player1 else None,
-            'player2_name': self.player2.name if self.player2 else None,
             'player2_country': self.player2.country if self.player2 else None,
             
             # Factions et héros
@@ -124,7 +122,9 @@ class Game(db.Model):
         if include_players:
             data['player1'] = self.player1.json() if self.player1 else None
             data['player2'] = self.player2.json() if self.player2 else None
-        
+            data['player2_name'] = data['player2']['name'] if data['player2']['name'] else None
+            data['player1_name'] = data['player1']['name'] if data['player1']['name'] else None
+
         if include_decks:
             data['player1_deck'] = self.player1_deck.json() if self.player1_deck else None
             data['player2_deck'] = self.player2_deck.json() if self.player2_deck else None
