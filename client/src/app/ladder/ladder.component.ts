@@ -71,8 +71,10 @@ export class LadderComponent implements OnInit {
   // Search
   searchQuery = '';
   searchResults: any[] = [];
+  searchResultsBGA: any[] = [];  // ✅ Nouveaux résultats BGA
   showSearchDropdown = false;
   isSearching = false;
+  isSearchingBGA = false;  // ✅ État de recherche BGA
   private searchSubject = new Subject<string>();
 
   isImporting = false;
@@ -267,8 +269,42 @@ export class LadderComponent implements OnInit {
   }
 
   searchOnBGA(): void {
-    this.showSearchDropdown = false;
-    console.log('Recherche BGA pour :', this.searchQuery);
+    if (this.searchQuery.length < 2) return;
+
+    this.isSearchingBGA = true;
+    this.playerService.search_players_bga$(this.searchQuery).subscribe({
+      next: (results) => {
+        this.searchResultsBGA = results;
+        this.isSearchingBGA = false;
+        // Garder le dropdown ouvert pour afficher les résultats BGA
+        this.showSearchDropdown = true;
+      },
+      error: (err) => {
+        console.error('Erreur de recherche BGA :', err);
+        this.isSearchingBGA = false;
+      }
+    });
+  }
+
+  selectPlayerBGA(player: any): void {
+    if (!player.bga_id) return;
+
+    // Importer le joueur depuis BGA
+    this.isSearchingBGA = true;
+    this.playerService.import_player_bga$(player.bga_id).subscribe({
+      next: (playerId: string) => {
+        this.isSearchingBGA = false;
+        this.showSearchDropdown = false;
+        this.searchQuery = '';
+        this.searchResultsBGA = [];
+        // Naviguer vers le profil du joueur importé
+        this.router.navigate(['/player', playerId]);
+      },
+      error: (err) => {
+        console.error('Erreur d\'import BGA :', err);
+        this.isSearchingBGA = false;
+      }
+    });
   }
 
   getPlayerInitials(name: string): string {

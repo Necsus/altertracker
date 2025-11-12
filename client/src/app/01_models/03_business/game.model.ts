@@ -1,3 +1,5 @@
+import { PlayerModel } from './player.model';
+
 export interface GameModel {
   id: string; // UUID
   table_id: number;
@@ -55,6 +57,9 @@ export interface GameModel {
   is_verified: boolean;
   verified_by?: number;
   verified_at?: string; // ISO DateTime
+
+  player1?: PlayerModel;
+  player2?: PlayerModel;
 }
 
 export interface GameListResponse {
@@ -91,13 +96,13 @@ export class GameHelper {
   static getWinnerName(game: GameModel): string | null {
     if (game.is_draw) return 'Draw';
     if (!game.winner_id) return null;
-    return game.winner_id === game.player1_id ? game.player1_name || 'Player 1' : game.player2_name || 'Player 2';
+    return game.winner_id === game.player1_id ? game.player1?.name || 'Player 1' : game.player2?.name || 'Player 2';
   }
 
   static getLoserName(game: GameModel): string | null {
     if (game.is_draw) return null;
     if (!game.winner_id) return null;
-    return game.winner_id === game.player1_id ? game.player2_name || 'Player 2' : game.player1_name || 'Player 1';
+    return game.winner_id === game.player1_id ? game.player2?.name || 'Player 2' : game.player1?.name || 'Player 1';
   }
 
   static getOpponentId(game: GameModel, playerId: string): string {
@@ -105,7 +110,7 @@ export class GameHelper {
   }
 
   static getOpponentName(game: GameModel, playerId: string): string | undefined {
-    return game.player1_id === playerId ? game.player2_name : game.player1_name;
+    return game.player1_id === playerId ? game.player2?.name : game.player1?.name;
   }
 
   static isPlayerWinner(game: GameModel, playerId: string): boolean {

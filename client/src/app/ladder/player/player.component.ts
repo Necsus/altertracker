@@ -78,7 +78,7 @@ export class PlayerComponent implements OnInit {
     this.playerService.get_player_by_id$(playerId).subscribe({
       next: (player: PlayerModel) => {
         this.player.set(player);
-        this.lastReloadDate.set(new Date(player.updated_at ?? ''));
+        this.lastReloadDate.set(player.updated_at ? new Date(player.updated_at) : null);
         this.loadSeasons();
         this.isLoading.set(false);
       },

@@ -23,13 +23,16 @@ class Player(db.Model):
     total_draws = db.Column(db.Integer, default=0)
     win_rate = db.Column(db.Float, default=0.0)
     
+    # ✅ RGPD - Anonymisation
+    is_anonymized = db.Column(db.Boolean, default=False, nullable=True)
+    anonymized_at = db.Column(db.DateTime, nullable=True)
+    
     # Métadonnées
     created_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
     updated_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc), onupdate=datetime.datetime.now(datetime.timezone.utc))
     is_active = db.Column(db.Boolean, default=True)
     last_game_at = db.Column(db.DateTime, nullable=True)
 
-    # ✅ Relation inverse vers User (back_populates au lieu de backref)
     user = relationship("User", back_populates="player", uselist=False, passive_deletes=True)
     
     # Relations
@@ -41,6 +44,25 @@ class Player(db.Model):
         return f"<Player {self.name}>"
     
     def json(self):
+        if self.is_anonymized:
+            return {
+                'id': str(self.id),
+                'name': f"Anonymous#{str(self.id)[:8]}",
+                'country': None,
+                'team_id': None,
+                'team_name': None,
+                'avatar_url': None,
+                'bio': None,
+                'total_points': self.total_points,
+                'total_wins': self.total_wins,
+                'total_losses': self.total_losses,
+                'total_draws': self.total_draws,
+                'win_rate': self.win_rate,
+                'total_games': self.total_wins + self.total_losses + self.total_draws,
+                'is_anonymized': True,
+                'is_active': self.is_active,
+            }
+        
         # ✅ Accès sécurisé à la relation user
         user_data = {}
         try:
@@ -71,6 +93,7 @@ class Player(db.Model):
             'updated_at': self.updated_at.isoformat() if self.updated_at else None,
             'is_active': self.is_active,
             'last_game_at': self.last_game_at.isoformat() if self.last_game_at else None,
+            'is_anonymized': self.is_anonymized,
             **user_data  # ✅ Ajouter les données utilisateur si disponibles
         }
     
@@ -127,71 +150,6 @@ class Team(db.Model):
             'is_active': self.is_active,
         }
 
-
-class PlayerDeck(db.Model):
-    __tablename__ = 'player_decks'
-
-    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    player_id = db.Column(UUID(as_uuid=True), db.ForeignKey('players.id'), nullable=False)
-    name = db.Column(db.String(100), nullable=False)
-    faction = db.Column(db.String(50), nullable=False)
-    hero_reference = db.Column(db.String(50), nullable=False)
-    
-    deck_list = db.Column(db.JSON, nullable=False)
-    
-    # Stats du deck
-    games_played = db.Column(db.Integer, default=0)
-    wins = db.Column(db.Integer, default=0)
-    losses = db.Column(db.Integer, default=0)
-    win_rate = db.Column(db.Float, default=0.0)
-    
-    created_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
-    updated_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc), onupdate=datetime.datetime.now(datetime.timezone.utc))
-    last_used_at = db.Column(db.DateTime, nullable=True)
-    is_active = db.Column(db.Boolean, default=True)
-    is_public = db.Column(db.Boolean, default=False)
-    
-    # Relations simplifiées - pas de back_populates vers Game
-    player = db.relationship('Player', back_populates='decks')
-
-    def __repr__(self):
-        return f"<PlayerDeck {self.name} - {self.faction}>"
-    
-    @property
-    def games(self):
-        """Récupère toutes les parties jouées avec ce deck"""
-        from app.models.game import Game
-        return Game.query.filter(
-            db.or_(
-                Game.player1_deck_id == self.id,
-                Game.player2_deck_id == self.id
-            )
-        ).all()
-    
-    def json(self):
-        return {
-            'id': str(self.id),  # ✅ UUID en string
-            'player_id': str(self.player_id),  # ✅ UUID en string
-            'name': self.name,
-            'faction': self.faction,
-            'hero_reference': self.hero_reference,
-            'deck_list': self.deck_list,
-            'games_played': self.games_played,
-            'wins': self.wins,
-            'losses': self.losses,
-            'win_rate': self.win_rate,
-            'created_at': self.created_at.isoformat() if self.created_at else None,
-            'updated_at': self.updated_at.isoformat() if self.updated_at else None,
-            'last_used_at': self.last_used_at.isoformat() if self.last_used_at else None,
-            'is_active': self.is_active,
-            'is_public': self.is_public,
-        }
-    
-    def calculate_win_rate(self):
-        if self.games_played > 0:
-            self.win_rate = (self.wins / self.games_played) * 100
-        else:
-            self.win_rate = 0.0
 
 class Tournament(db.Model):
     __tablename__ = 'tournaments'
@@ -280,9 +238,9 @@ class TournamentParticipant(db.Model):
     
     def json(self):
         return {
-            'id': str(self.id),  # ✅ UUID en string
-            'tournament_id': str(self.tournament_id),  # ✅ UUID en string
-            'player_id': str(self.player_id),  # ✅ UUID en string
+            'id': str(self.id),
+            'tournament_id': str(self.tournament_id),
+            'player_id': str(self.player_id),
             'player_name': self.player.name if self.player else None,
             'deck_id': str(self.deck_id) if self.deck_id else None,
             'final_rank': self.final_rank,

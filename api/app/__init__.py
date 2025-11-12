@@ -13,6 +13,7 @@ from app.routes.cookie_manager_routes import cookiemanager_bp
 from app.routes.chat_routes import chat_bp
 from app.routes.article_routes import article_bp
 from app.routes.player_routes import player_bp
+from app.routes.deck_routes import deck_bp  # ✅ Import des routes decks
 from app.config import Config, ConfigEnv
 from flask_jwt_extended import JWTManager
 from app.extensions import socketio
@@ -28,7 +29,19 @@ def create_app():
     db.init_app(app)
     jwt = JWTManager(app)
     migrate.init_app(app, db)
-    socketio.init_app(app, cors_allowed_origins=ConfigEnv.CORS_ORIGINS, async_mode='gevent')
+    # ✅ Configuration SocketIO avec options complètes pour production
+    socketio.init_app(
+        app, 
+        cors_allowed_origins=ConfigEnv.CORS_ORIGINS, 
+        async_mode='gevent',
+        logger=ConfigEnv.FLASK_ENV != 'production',
+        engineio_logger=ConfigEnv.FLASK_ENV != 'production',
+        # ✅ Permettre les transports polling et websocket
+        transports=['websocket', 'polling'],
+        # ✅ Timeout plus long pour éviter les déconnexions
+        ping_timeout=60,
+        ping_interval=25
+    )
     limiter.init_app(app)
     cache.init_app(app)
 
@@ -44,6 +57,7 @@ def create_app():
     app.register_blueprint(chat_bp, url_prefix="/api/chat")
     app.register_blueprint(article_bp, url_prefix='/api/article')
     app.register_blueprint(player_bp, url_prefix='/api/player')
+    app.register_blueprint(deck_bp, url_prefix='/api/decks')  # ✅ Enregistrer les routes decks
 
     @app.before_request
     def handle_options():
