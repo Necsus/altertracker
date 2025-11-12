@@ -1,8 +1,8 @@
-from sqlalchemy import func
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from app.models.card import Card
-from app.models.offer import Offer  # Assurez-vous que le modèle Offer est correctement importé
+from app.models.offer import Offer
 from typing import List, Optional
 from app.extensions import db
 from datetime import datetime
@@ -76,15 +76,15 @@ def get_last_added_offers_data() -> list[dict]:
     return db.session.query(Offer, Card).join(
             Card, Offer.reference_card == Card.reference
         ).filter(
-            Offer.previous_offer == None,  # Inclure uniquement les offres sans previous_offer
-            Offer.is_deleted == False  # Exclure les offres supprimées
+            Offer.previous_offer == None,
+            Offer.is_deleted == False
         ).order_by(
-            Offer.created_at.desc()  # Trier par date de création décroissante
+            Offer.created_at.desc()
         ).limit(10).all()
 
 def get_count_offers_added_today_data() -> int:
     paris_tz = timezone('Europe/Paris')
-    today_paris = datetime.now(paris_tz).date()  # Obtenir la date actuelle dans le fuseau de Paris
+    today_paris = datetime.now(paris_tz).date()
     today_utc_start = datetime.combine(today_paris, datetime.min.time()).astimezone(timezone('UTC'))
     today_utc_end = datetime.combine(today_paris, datetime.max.time()).astimezone(timezone('UTC'))
 
@@ -95,29 +95,25 @@ def get_count_offers_added_today_data() -> int:
         Offer.previous_offer == None
     ).scalar()
 
-# a revoir avec le 
 def get_last_edited_offers_data() -> list[dict]:
     try:
-        # Alias pour la jointure avec la previous_offer
         previous_offer_alias = db.aliased(Offer)
 
-        # Requête principale
         results = db.session.query(
-            Offer,  # Offre actuelle
-            previous_offer_alias,  # Offre précédente
-            Card  # Carte de référence
+            Offer,
+            previous_offer_alias,
+            Card
         ).join(
-            Card, Offer.reference_card == Card.reference  # Jointure avec la carte
+            Card, Offer.reference_card == Card.reference
         ).outerjoin(
-            previous_offer_alias, Offer.previous_offer == previous_offer_alias.id  # Jointure avec l'offre précédente
+            previous_offer_alias, Offer.previous_offer == previous_offer_alias.id
         ).filter(
-            Offer.is_deleted == False,  # Exclure les offres supprimées
-            Offer.previous_offer != None  # Inclure uniquement les offres avec une previous_offer
+            Offer.is_deleted == False,
+            Offer.previous_offer != None
         ).order_by(
-            Offer.created_at.desc()  # Trier par date de création décroissante
-        ).limit(10).all()  # Limiter les résultats aux 10 dernières offres
+            Offer.created_at.desc()
+        ).limit(10).all()
 
-        # Formater les résultats en liste de dictionnaires
         return [
             {
                 "offer": offer.json(),
@@ -132,7 +128,7 @@ def get_last_edited_offers_data() -> list[dict]:
     
 def get_count_offers_edited_today_data() -> int:
     paris_tz = timezone('Europe/Paris')
-    today_paris = datetime.now(paris_tz).date()  # Obtenir la date actuelle dans le fuseau de Paris
+    today_paris = datetime.now(paris_tz).date()
     today_utc_start = datetime.combine(today_paris, datetime.min.time()).astimezone(timezone('UTC'))
     today_utc_end = datetime.combine(today_paris, datetime.max.time()).astimezone(timezone('UTC'))
 
@@ -146,19 +142,22 @@ def get_count_offers_edited_today_data() -> int:
 
 def get_last_deleted_offers_data() -> list[dict]:
     try:
-        # Sous-requête pour récupérer les IDs présents dans previous_offer
-        subquery = db.session.query(Offer.previous_offer).filter(Offer.previous_offer != None).subquery()
-        # Requête principale
+        # ✅ Version corrigée : Récupère les offres supprimées qui ne sont pas référencées par d'autres
+        # Créer un alias pour la sous-requête
+        referring_offers = db.aliased(Offer)
+        
         results = db.session.query(Offer, Card).join(
             Card, Offer.reference_card == Card.reference
+        ).outerjoin(
+            referring_offers,
+            referring_offers.previous_offer == Offer.id
         ).filter(
-            Offer.is_deleted == True,  # Vérifier que l'offre est supprimée
-            ~Offer.id.in_(subquery)  # Vérifier que l'ID n'est pas dans previous_offer
+            Offer.is_deleted == True,
+            referring_offers.id.is_(None)  # ✅ Aucune offre ne référence celle-ci
         ).order_by(
-            Offer.deleted_at.desc()  # Trier par date de suppression décroissante
-        ).limit(10).all()  # Limiter les résultats aux 10 dernières offres
+            Offer.deleted_at.desc()
+        ).limit(10).all()
 
-        # Formater les résultats en liste de dictionnaires
         return [
             {
                 "offer": offer.json(),
@@ -172,15 +171,19 @@ def get_last_deleted_offers_data() -> list[dict]:
     
 def get_count_offers_deleted_today_data() -> int:
     paris_tz = timezone('Europe/Paris')
-    today_paris = datetime.now(paris_tz).date()  # Obtenir la date actuelle dans le fuseau de Paris
+    today_paris = datetime.now(paris_tz).date()
     today_utc_start = datetime.combine(today_paris, datetime.min.time()).astimezone(timezone('UTC'))
     today_utc_end = datetime.combine(today_paris, datetime.max.time()).astimezone(timezone('UTC'))
 
-    available_subq = db.session.query(Offer.reference_card).filter(Offer.status == 'available').subquery()
+    # ✅ Sous-requête pour trouver les reference_card qui ont encore des offres disponibles
+    available_references = select(Offer.reference_card).where(
+        Offer.status == 'available'
+    ).distinct().scalar_subquery()
 
+    # ✅ Compter les reference_card uniques supprimées aujourd'hui qui n'ont plus d'offres disponibles
     return db.session.query(func.count(func.distinct(Offer.reference_card))).filter(
         Offer.deleted_at >= today_utc_start,
         Offer.deleted_at <= today_utc_end,
         Offer.is_deleted == True,
-        ~Offer.reference_card.in_(available_subq)
+        ~Offer.reference_card.in_(available_references)
     ).scalar()
