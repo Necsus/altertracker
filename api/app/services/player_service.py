@@ -1281,53 +1281,38 @@ def import_deck_service(table_id: int) -> dict:
 
         # 1. Récupérer les données de la table depuis l'API BGA
         result = getGamerView(table_id)
-        print(result)
-        # result = getLogs(table_id)
-        # if result.get('status', 0) != 1:
-        #     return {
-        #         'status': 0,
-        #         'error': f"Err : {result.get('error', 'err API')}",
-        #         'table_id': table_id
-        #     }
-        # data = result.get('data', {})
-        # logs = data.get('logs', [])
-        # if not logs or len(logs) == 0:
-        #     return {
-        #         'status': 0,
-        #         'error': f'No logs found for table ID: {table_id}',
-        #         'table_id': table_id
-        #     }
+        if result.get('status', 0) != 1:
+            return {
+                'status': 0,
+                'error': f"Err : {result.get('error', 'err API')}",
+                'table_id': table_id
+            }
+        data = result.get('data', {})
+        logs = data.get('logs', [])
+        if not logs or len(logs) == 0:
+            return {
+                'status': 0,
+                'error': f'No logs found for table ID: {table_id}',
+                'table_id': table_id
+            }
         
-        # decks_selections = []
+        decks_selections = []
         
-        # for log in logs:
-        #     log_data = log.get('data', [])[0]
-        #     if log_data.get('type', '') == 'updateInitialPrecoDeckSelection':
-        #         private_data = log_data.get('args', {}).get('args', {}).get('_private')
-        #         private_data['player_id'] = int(log.get('channel', '').replace('/player/p', ''))
-        #         if private_data:
-        #             if private_data.get('selection', '') == 'API':
-        #                 private_data.pop('decks', None)
-        #             decks_selections.append(private_data)
-        #             if len(decks_selections) == 2:
-        #                 break
-
-        # for player_data in decks_selections:
-        #     if player_data['player_id'] == game.player1.bga_id:
-        #         print(player_data['API']['hero'])
-        #         hero_model = get_faction_hero_by_reference(player_data['API']['hero'])
-        #         game.player1_faction = hero_model['faction']
-        #         game.player1_hero = hero_model['hero']
-        #     if player_data['player_id'] == game.player2.bga_id:
-        #         hero_model = get_faction_hero_by_reference(player_data['API']['hero'])
-        #         game.player2_faction = hero_model['faction']
-        #         game.player2_hero = hero_model['hero']
-
-        # update_game_data(game)
-
+        for log in logs:
+            log_data = log.get('data', [])[0]
+            if log_data.get('type', '') == 'updateInitialPrecoDeckSelection':
+                private_data = log_data.get('args', {}).get('args', {}).get('_private')
+                private_data['player_id'] = int(log.get('channel', '').replace('/player/p', ''))
+                if private_data:
+                    if private_data.get('selection', '') == 'API':
+                        private_data.pop('decks', None)
+                    decks_selections.append(private_data)
+                    if len(decks_selections) == 2:
+                        break
+                    
         return {
             'status': 1,
-            'table': game.json()
+            'table': decks_selections
         }
         
     except Exception as e:

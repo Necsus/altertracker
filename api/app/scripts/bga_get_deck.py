@@ -3,10 +3,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.common.exceptions import TimeoutException, NoSuchElementException
 import time
+import json
 from app.models.cookie_manager import CookieManager
 from app.extensions import db
 
@@ -15,13 +14,16 @@ def init_selenium_driver(headless: bool = True) -> webdriver.Chrome:
     chrome_options = Options()
     
     if headless:
-        chrome_options.add_argument("--headless=new")  # Mode headless moderne
+        chrome_options.add_argument("--headless=new")
     
     chrome_options.add_argument("--disable-blink-features=AutomationControlled")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--no-sandbox")
     chrome_options.add_argument("--window-size=1920,1080")
     chrome_options.add_argument("user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
+    
+    # ✅ Activer la capture des requêtes réseau
+    chrome_options.set_capability('goog:loggingPrefs', {'performance': 'ALL'})
     
     # Laisser Selenium 4.x gérer automatiquement le driver
     driver = webdriver.Chrome(options=chrome_options)
@@ -64,9 +66,79 @@ def init_selenium_driver(headless: bool = True) -> webdriver.Chrome:
     
     return driver
 
+def intercept_logs_response(driver: webdriver.Chrome, table_id: int) -> dict:
+    """
+    Intercepte la réponse de l'appel logs.html qui est automatiquement fait par gamereview
+    """
+    try:
+        print(f"🔍 Interception des requêtes réseau pour la table {table_id}...")
+        
+        # Récupérer tous les logs de performance
+        logs = driver.get_log('performance')
+        
+        for log in logs:
+            try:
+                log_message = json.loads(log['message'])
+                message = log_message.get('message', {})
+                method = message.get('method', '')
+                
+                # Chercher les réponses réseau (Network.responseReceived)
+                if method == 'Network.responseReceived':
+                    params = message.get('params', {})
+                    response = params.get('response', {})
+                    url = response.get('url', '')
+                    
+                    # Vérifier si c'est l'appel logs.html pour notre table
+                    if 'logs.html' in url and f'table={table_id}' in url:
+                        request_id = params.get('requestId')
+                        print(f"✅ Requête logs.html interceptée : {url}")
+                        
+                        # Récupérer le corps de la réponse via Chrome DevTools Protocol
+                        try:
+                            response_body = driver.execute_cdp_cmd(
+                                'Network.getResponseBody',
+                                {'requestId': request_id}
+                            )
+                            
+                            body = response_body.get('body', '')
+                            
+                            # Parser le JSON
+                            if body:
+                                logs_data = json.loads(body)
+                                print(f"✅ Données logs.html récupérées : {len(str(logs_data))} caractères")
+                                return {
+                                    'status': 1,
+                                    'error': '',
+                                    'data': logs_data
+                                }
+                        except Exception as e:
+                            print(f"⚠️  Erreur lors de la récupération du corps de la réponse : {e}")
+                            continue
+                            
+            except json.JSONDecodeError:
+                continue
+            except Exception as e:
+                continue
+        
+        return {
+            'status': 0,
+            'error': 'logs.html request not found in network logs',
+            'data': None
+        }
+        
+    except Exception as e:
+        print(f"\033[91m❌ Erreur lors de l'interception des logs réseau : {e}\033[0m")
+        import traceback
+        traceback.print_exc()
+        return {
+            'status': 0,
+            'error': f'Network interception error: {str(e)}',
+            'data': None
+        }
+
 def getGamerView(table_id: int, retry: bool = True, driver: webdriver.Chrome = None) -> dict:
     """
-    Récupère les informations d'une partie via Selenium
+    Récupère les informations d'une partie en interceptant l'appel logs.html fait automatiquement par gamereview
     """
     should_quit_driver = False
     
@@ -77,9 +149,9 @@ def getGamerView(table_id: int, retry: bool = True, driver: webdriver.Chrome = N
             should_quit_driver = True
         
         # Naviguer vers la page de review de la partie
-        url = f"https://boardgamearena.com/gamereview?table={table_id}"
-        print(f"🌐 Navigation vers : {url}")
-        driver.get(url)
+        gamereview_url = f"https://boardgamearena.com/gamereview?table={table_id}"
+        print(f"🌐 Navigation vers gamereview : {gamereview_url}")
+        driver.get(gamereview_url)
         
         # Attendre que la page soit chargée
         wait = WebDriverWait(driver, 10)
@@ -95,12 +167,12 @@ def getGamerView(table_id: int, retry: bool = True, driver: webdriver.Chrome = N
                 'data': None
             }
         except NoSuchElementException:
-            # Pas d'erreur trouvée, c'est bon !
             pass
         
         # Attendre que le contenu principal soit chargé
         try:
             wait.until(EC.presence_of_element_located((By.ID, "game_name")))
+            print("✅ Page gamereview chargée")
         except TimeoutException:
             print(f"\033[91m❌ Timeout : Le contenu de la partie ne s'est pas chargé\033[0m")
             return {
@@ -109,113 +181,13 @@ def getGamerView(table_id: int, retry: bool = True, driver: webdriver.Chrome = N
                 'data': None
             }
         
-        # Extraire les données de la partie
-        game_data = {}
+        # Attendre un peu pour que tous les appels réseau soient terminés
+        time.sleep(2)
         
-        # 1. Nom du jeu
-        try:
-            game_name = driver.find_element(By.ID, "game_name").text
-            game_data['game_name'] = game_name
-            print(f"✅ Jeu : {game_name}")
-        except NoSuchElementException:
-            game_data['game_name'] = None
+        # ✅ Intercepter la réponse de logs.html qui a été automatiquement appelée
+        result = intercept_logs_response(driver, table_id)
         
-        # 2. Date de la partie
-        try:
-            date_element = driver.find_element(By.CSS_SELECTOR, ".smalltext.gamestatedate")
-            game_data['game_date'] = date_element.text
-            print(f"✅ Date : {game_data['game_date']}")
-        except NoSuchElementException:
-            game_data['game_date'] = None
-        
-        # 3. Informations des joueurs
-        try:
-            players = []
-            player_panels = driver.find_elements(By.CSS_SELECTOR, ".player-panel, .player_board_inner")
-            
-            for panel in player_panels:
-                player_info = {}
-                
-                # Nom du joueur
-                try:
-                    name_elem = panel.find_element(By.CSS_SELECTOR, ".playername, .player_name")
-                    player_info['name'] = name_elem.text
-                except NoSuchElementException:
-                    player_info['name'] = None
-                
-                # Score
-                try:
-                    score_elem = panel.find_element(By.CSS_SELECTOR, ".player_score_value, .score")
-                    player_info['score'] = score_elem.text
-                except NoSuchElementException:
-                    player_info['score'] = None
-                
-                # Rang
-                try:
-                    rank_elem = panel.find_element(By.CSS_SELECTOR, ".rank, .player_rank")
-                    player_info['rank'] = rank_elem.text
-                except NoSuchElementException:
-                    player_info['rank'] = None
-                
-                if player_info['name']:
-                    players.append(player_info)
-            
-            game_data['players'] = players
-            print(f"✅ {len(players)} joueurs trouvés")
-            
-        except Exception as e:
-            print(f"⚠️  Erreur lors de l'extraction des joueurs : {e}")
-            game_data['players'] = []
-        
-        # 4. Résultat de la partie
-        try:
-            result_elem = driver.find_element(By.CSS_SELECTOR, ".gameresult, .game_result")
-            game_data['result'] = result_elem.text
-            print(f"✅ Résultat : {game_data['result']}")
-        except NoSuchElementException:
-            game_data['result'] = None
-        
-        # 5. Durée de la partie
-        try:
-            duration_elem = driver.find_element(By.CSS_SELECTOR, ".gameduration, .game_duration")
-            game_data['duration'] = duration_elem.text
-            print(f"✅ Durée : {game_data['duration']}")
-        except NoSuchElementException:
-            game_data['duration'] = None
-        
-        # 6. Screenshot de la partie (optionnel)
-        try:
-            # Prendre un screenshot de la zone de jeu
-            game_area = driver.find_element(By.ID, "game_play_area")
-            screenshot = game_area.screenshot_as_base64
-            game_data['screenshot'] = screenshot
-            print(f"✅ Screenshot capturé")
-        except Exception as e:
-            print(f"⚠️  Impossible de capturer le screenshot : {e}")
-            game_data['screenshot'] = None
-        
-        # 7. Logs de la partie (cliquer sur l'onglet logs si présent)
-        try:
-            logs_tab = driver.find_element(By.CSS_SELECTOR, "a[href='#logs'], .logs_tab")
-            logs_tab.click()
-            time.sleep(1)
-            
-            logs_container = driver.find_element(By.ID, "logs")
-            logs_entries = logs_container.find_elements(By.CSS_SELECTOR, ".log, .logentry")
-            
-            logs = [entry.text for entry in logs_entries if entry.text]
-            game_data['logs'] = logs
-            print(f"✅ {len(logs)} logs extraits")
-            
-        except Exception as e:
-            print(f"⚠️  Logs non disponibles : {e}")
-            game_data['logs'] = []
-        
-        return {
-            'status': 1,
-            'error': '',
-            'data': game_data
-        }
+        return result
         
     except TimeoutException as e:
         print(f"\033[91m❌ Timeout Selenium : {e}\033[0m")
@@ -262,7 +234,7 @@ def get_multiple_games_with_selenium(table_ids: list[int]) -> list[dict]:
             print(f"\n📊 Récupération de la partie {table_id}...")
             result = getGamerView(table_id, retry=True, driver=driver)
             results.append(result)
-            time.sleep(1)  # Petit délai entre chaque partie
+            time.sleep(1)
         
         return results
         
