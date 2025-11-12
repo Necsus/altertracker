@@ -109,7 +109,7 @@ def intercept_logs_response(driver: webdriver.Chrome, table_id: int) -> dict:
                                 return {
                                     'status': 1,
                                     'error': '',
-                                    'data': logs_data
+                                    'data': logs_data.get('data', {})
                                 }
                         except Exception as e:
                             print(f"⚠️  Erreur lors de la récupération du corps de la réponse : {e}")
