@@ -15,26 +15,23 @@ class Game(db.Model):
     player1_id = db.Column(UUID(as_uuid=True), db.ForeignKey('players.id'), nullable=False)
     player2_id = db.Column(UUID(as_uuid=True), db.ForeignKey('players.id'), nullable=False)
     
-    # Decks utilisés
+    # Decks utilisés (OPTIONNEL - peut être NULL si le deck n'est pas tracké)
     player1_deck_id = db.Column(UUID(as_uuid=True), db.ForeignKey('player_decks.id'), nullable=True)
     player2_deck_id = db.Column(UUID(as_uuid=True), db.ForeignKey('player_decks.id'), nullable=True)
 
-    # Factions utilisées
+    # ✅ TOUJOURS stocker faction/hero directement (plus fiable que les decks)
     player1_faction = db.Column(db.String(2), nullable=True)
     player2_faction = db.Column(db.String(2), nullable=True)
-
     player1_hero = db.Column(db.String(100), nullable=True)
     player2_hero = db.Column(db.String(100), nullable=True)
 
+    # Stats de la partie
     player1_reflexion_time = db.Column(db.Integer, nullable=True)
     player2_reflexion_time = db.Column(db.Integer, nullable=True)
-
     player1_nb_turns = db.Column(db.Integer, nullable=True)
     player2_nb_turns = db.Column(db.Integer, nullable=True)
-
     player1_arena_point_win = db.Column(db.Float, nullable=True)
     player2_arena_point_win = db.Column(db.Float, nullable=True)
-
     player1_arena_point_after_game = db.Column(db.Float, nullable=True)
     player2_arena_point_after_game = db.Column(db.Float, nullable=True)
     
@@ -53,12 +50,15 @@ class Game(db.Model):
     start = db.Column(db.DateTime, nullable=True)
     end = db.Column(db.DateTime, nullable=True)
 
+    # Relations simplifiées
     player1 = db.relationship('Player', foreign_keys=[player1_id], backref='games_as_player1')
     player2 = db.relationship('Player', foreign_keys=[player2_id], backref='games_as_player2')
-    player1_deck = db.relationship('PlayerDeck', foreign_keys=[player1_deck_id], back_populates='games_as_player1')
-    player2_deck = db.relationship('PlayerDeck', foreign_keys=[player2_deck_id], back_populates='games_as_player2')
     winner = db.relationship('Player', foreign_keys=[winner_id], backref='won_games')
     tournament = db.relationship('Tournament', backref='games')
+    
+    # ✅ Relations vers les decks sans back_populates (évite les conflits)
+    player1_deck = db.relationship('PlayerDeck', foreign_keys=[player1_deck_id])
+    player2_deck = db.relationship('PlayerDeck', foreign_keys=[player2_deck_id])
 
     def __repr__(self):
         return f"<Game {self.id}: {self.player1_id} vs {self.player2_id}>"

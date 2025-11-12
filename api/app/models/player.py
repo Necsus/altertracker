@@ -131,8 +131,8 @@ class Team(db.Model):
 class PlayerDeck(db.Model):
     __tablename__ = 'player_decks'
 
-    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)  # ✅ UUID
-    player_id = db.Column(UUID(as_uuid=True), db.ForeignKey('players.id'), nullable=False)  # ✅ UUID
+    id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    player_id = db.Column(UUID(as_uuid=True), db.ForeignKey('players.id'), nullable=False)
     name = db.Column(db.String(100), nullable=False)
     faction = db.Column(db.String(50), nullable=False)
     hero_reference = db.Column(db.String(50), nullable=False)
@@ -151,14 +151,22 @@ class PlayerDeck(db.Model):
     is_active = db.Column(db.Boolean, default=True)
     is_public = db.Column(db.Boolean, default=False)
     
-    # Relations
+    # Relations simplifiées - pas de back_populates vers Game
     player = db.relationship('Player', back_populates='decks')
-    # ✅ Relations corrigées avec viewonly pour éviter les conflits
-    games_as_player1 = db.relationship('Game', foreign_keys='Game.player1_deck_id', back_populates='player1_deck', lazy='dynamic', viewonly=True)
-    games_as_player2 = db.relationship('Game', foreign_keys='Game.player2_deck_id', back_populates='player2_deck', lazy='dynamic', viewonly=True)
 
     def __repr__(self):
         return f"<PlayerDeck {self.name} - {self.faction}>"
+    
+    @property
+    def games(self):
+        """Récupère toutes les parties jouées avec ce deck"""
+        from app.models.game import Game
+        return Game.query.filter(
+            db.or_(
+                Game.player1_deck_id == self.id,
+                Game.player2_deck_id == self.id
+            )
+        ).all()
     
     def json(self):
         return {
