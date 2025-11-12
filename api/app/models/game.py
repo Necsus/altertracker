@@ -15,7 +15,7 @@ class Game(db.Model):
     player1_id = db.Column(UUID(as_uuid=True), db.ForeignKey('players.id'), nullable=False)
     player2_id = db.Column(UUID(as_uuid=True), db.ForeignKey('players.id'), nullable=False)
     
-    # Decks utilisés (OPTIONNEL - peut être NULL si le deck n'est pas tracké)
+    # ✅ Decks utilisés (NOUVEAU - lien vers PlayerDeck)
     player1_deck_id = db.Column(UUID(as_uuid=True), db.ForeignKey('player_decks.id'), nullable=True)
     player2_deck_id = db.Column(UUID(as_uuid=True), db.ForeignKey('player_decks.id'), nullable=True)
 

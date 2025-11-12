@@ -899,10 +899,8 @@ def reload_player_service(player_id: str) -> dict:
                 is_incomplete = (
                     game.player1_faction is None or 
                     game.player2_faction is None or 
-                    game.player1_reflexion_time is None or 
-                    game.player2_reflexion_time is None or 
-                    game.player1_nb_turns is None or 
-                    game.player2_nb_turns is None
+                    game.player1_reflexion_time is None or game.player2_reflexion_time is None or 
+                    game.player1_nb_turns is None or game.player2_nb_turns is None
                 )
                 
                 if is_incomplete:
@@ -1278,8 +1276,17 @@ def import_table_service(table_id: int) -> dict:
         }
     
 def import_deck_service(table_id: int) -> dict:
+    """
+    Importe les decks d'une partie BGA et les parse avec le système de normalisation
+    """
     try:
         game = get_game_by_table_id_data(table_id)
+        if not game:
+            return {
+                'status': 0,
+                'error': f'Game not found for table ID: {table_id}',
+                'table_id': table_id
+            }
 
         # 1. Récupérer les données de la table depuis l'API BGA
         result = getGamerView(table_id)
@@ -1289,6 +1296,7 @@ def import_deck_service(table_id: int) -> dict:
                 'error': f"Err : {result.get('error', 'err API')}",
                 'table_id': table_id
             }
+        
         data = result.get('data', {})
         logs = data.get('logs', [])
         if not logs or len(logs) == 0:
@@ -1298,27 +1306,72 @@ def import_deck_service(table_id: int) -> dict:
                 'table_id': table_id
             }
         
+        # 2. Extraire les données de sélection de decks
         decks_selections = []
         
         for log in logs:
             log_data = log.get('data', [])[0]
             if log_data.get('type', '') == 'updateInitialPrecoDeckSelection':
                 private_data = log_data.get('args', {}).get('args', {}).get('_private')
-                private_data['player_id'] = int(log.get('channel', '').replace('/player/p', ''))
                 if private_data:
+                    player_id_from_channel = int(log.get('channel', '').replace('/player/p', ''))
+                    private_data['player_id'] = player_id_from_channel
+                    
+                    # Ne garder que les decks API (pas les decks RANDOM)
                     if private_data.get('selection', '') == 'API':
-                        private_data.pop('decks', None)
-                    decks_selections.append(private_data)
+                        private_data.pop('decks', None)  # Supprimer les decks non-API
+                        decks_selections.append(private_data)
+                    
                     if len(decks_selections) == 2:
                         break
-                    
+        
+        # 3. ✅ PARSER ET STOCKER LES DECKS avec le nouveau système
+        from app.services.deck_service import DeckService
+        
+        parsed_decks = []
+        
+        for deck_selection in decks_selections:
+            bga_player_id = deck_selection.get('player_id')
+            
+            # Trouver le joueur correspondant
+            player = get_player_by_bga_id_data(bga_player_id)
+            if not player:
+                print(f"⚠️  Joueur BGA #{bga_player_id} non trouvé en base")
+                continue
+            
+            # Parser le deck avec le nouveau service
+            deck = DeckService.parse_bga_deck(deck_selection, player.id)
+            
+            if deck:
+                parsed_decks.append({
+                    'player_id': str(player.id),
+                    'player_bga_id': bga_player_id,
+                    'deck_id': str(deck.id),
+                    'deck_name': deck.deck_name,
+                    'faction': deck.faction,
+                    'hero': deck.hero,
+                    'unique_count': deck.unique_count
+                })
+                
+                # ✅ Associer le deck à la game
+                if game.player1.bga_id == bga_player_id:
+                    game.player1_deck_id = deck.id
+                elif game.player2.bga_id == bga_player_id:
+                    game.player2_deck_id = deck.id
+        
+        # 4. Sauvegarder les liens game<->deck
+        if game.player1_deck_id or game.player2_deck_id:
+            update_game_data(game)
+            print(f"✅ Decks associés à la partie #{table_id}")
+        
         return {
             'status': 1,
-            'table': decks_selections
+            'table_id': table_id,
+            'decks': parsed_decks
         }
         
     except Exception as e:
-        print(f"\033[91m❌ Erreur critique lors de l'import de la table: {e}\033[0m")
+        print(f"\033[91m❌ Erreur critique lors de l'import des decks: {e}\033[0m")
         import traceback
         traceback.print_exc()
         return {
