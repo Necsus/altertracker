@@ -55,8 +55,8 @@ class Game(db.Model):
 
     player1 = db.relationship('Player', foreign_keys=[player1_id], backref='games_as_player1')
     player2 = db.relationship('Player', foreign_keys=[player2_id], backref='games_as_player2')
-    player1_deck = db.relationship('PlayerDeck', foreign_keys=[player1_deck_id], backref='deck1_games')
-    player2_deck = db.relationship('PlayerDeck', foreign_keys=[player2_deck_id], backref='deck2_games')
+    player1_deck = db.relationship('PlayerDeck', foreign_keys=[player1_deck_id], back_populates='games_as_player1')
+    player2_deck = db.relationship('PlayerDeck', foreign_keys=[player2_deck_id], back_populates='games_as_player2')
     winner = db.relationship('Player', foreign_keys=[winner_id], backref='won_games')
     tournament = db.relationship('Tournament', backref='games')
 

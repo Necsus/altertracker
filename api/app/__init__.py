@@ -28,7 +28,7 @@ def create_app():
     db.init_app(app)
     jwt = JWTManager(app)
     migrate.init_app(app, db)
-    socketio.init_app(app, cors_allowed_origins=ConfigEnv.CORS_ORIGINS, async_mode='eventlet')
+    socketio.init_app(app, cors_allowed_origins=ConfigEnv.CORS_ORIGINS, async_mode='gevent')
     limiter.init_app(app)
     cache.init_app(app)
 
