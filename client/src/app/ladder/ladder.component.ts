@@ -178,29 +178,30 @@ export class LadderComponent implements OnInit {
     }
   }
 
-  getVisiblePages(): (number | string)[] {
-    const pages: (number | string)[] = [];
+  getVisiblePages(): Array<{ value: number | string, index: number }> {
+    const pages: Array<{ value: number | string, index: number }> = [];
     const maxVisible = 7;
+    let index = 0;
 
     if (this.totalPages <= maxVisible) {
       for (let i = 1; i <= this.totalPages; i++) {
-        pages.push(i);
+        pages.push({ value: i, index: index++ });
       }
     } else {
       if (this.currentPage <= 4) {
-        for (let i = 1; i <= 5; i++) pages.push(i);
-        pages.push('...');
-        pages.push(this.totalPages);
+        for (let i = 1; i <= 5; i++) pages.push({ value: i, index: index++ });
+        pages.push({ value: '...', index: index++ });
+        pages.push({ value: this.totalPages, index: index++ });
       } else if (this.currentPage >= this.totalPages - 3) {
-        pages.push(1);
-        pages.push('...');
-        for (let i = this.totalPages - 4; i <= this.totalPages; i++) pages.push(i);
+        pages.push({ value: 1, index: index++ });
+        pages.push({ value: '...', index: index++ });
+        for (let i = this.totalPages - 4; i <= this.totalPages; i++) pages.push({ value: i, index: index++ });
       } else {
-        pages.push(1);
-        pages.push('...');
-        for (let i = this.currentPage - 1; i <= this.currentPage + 1; i++) pages.push(i);
-        pages.push('...');
-        pages.push(this.totalPages);
+        pages.push({ value: 1, index: index++ });
+        pages.push({ value: '...', index: index++ });
+        for (let i = this.currentPage - 1; i <= this.currentPage + 1; i++) pages.push({ value: i, index: index++ });
+        pages.push({ value: '...', index: index++ });
+        pages.push({ value: this.totalPages, index: index++ });
       }
     }
 
