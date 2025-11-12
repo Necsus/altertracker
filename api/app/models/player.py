@@ -153,7 +153,9 @@ class PlayerDeck(db.Model):
     
     # Relations
     player = db.relationship('Player', back_populates='decks')
-    games = db.relationship('Game', foreign_keys='Game.player1_deck_id', backref='deck1_games', lazy='dynamic')
+    # ✅ Relations corrigées avec viewonly pour éviter les conflits
+    games_as_player1 = db.relationship('Game', foreign_keys='Game.player1_deck_id', back_populates='player1_deck', lazy='dynamic', viewonly=True)
+    games_as_player2 = db.relationship('Game', foreign_keys='Game.player2_deck_id', back_populates='player2_deck', lazy='dynamic', viewonly=True)
 
     def __repr__(self):
         return f"<PlayerDeck {self.name} - {self.faction}>"
