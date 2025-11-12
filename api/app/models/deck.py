@@ -116,8 +116,8 @@ class PlayerDeck(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
     updated_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc))
     
-    # Relations
-    player = db.relationship('Player', backref='decks')
+    # ✅ Relations avec back_populates (pas backref pour éviter les conflits)
+    player = db.relationship('Player', back_populates='decks')
     archetype = db.relationship('DeckArchetype', backref='decks')
     
     __table_args__ = (
@@ -154,14 +154,14 @@ class PlayerDeck(db.Model):
 
 
 # ============================================================================
-# TABLE 3 : CARD EFFECT (normalisation des effets)
+# TABLE 3 : CARD EFFECT MAPPING (normalisation des effets)
 # ============================================================================
-class CardEffect(db.Model):
+class DeckCardEffect(db.Model):
     """
     Table de référence pour normaliser les cartes par leurs effets
     Permet de comparer des cartes avec différents designs mais mêmes effets
     """
-    __tablename__ = 'card_effects'
+    __tablename__ = 'deck_card_effects'
     
     id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     

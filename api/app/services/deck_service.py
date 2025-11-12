@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from app.models.deck import (
     PlayerDeck, 
     DeckArchetype, 
-    CardEffect,
+    DeckCardEffect,  # ✅ Renommé
     compute_deck_signature,
     normalize_card_effect
 )
@@ -174,7 +174,7 @@ class DeckService:
         Enregistre un effet de carte en DB si nouveau
         """
         try:
-            existing = CardEffect.query.filter_by(effect_hash=effect_hash).first()
+            existing = DeckCardEffect.query.filter_by(effect_hash=effect_hash).first()
             
             if existing:
                 # Ajouter l'UID s'il n'existe pas déjà
@@ -183,7 +183,7 @@ class DeckService:
                     db.session.commit()
             else:
                 # Créer le nouvel effet
-                new_effect = CardEffect(
+                new_effect = DeckCardEffect(
                     effect_hash=effect_hash,
                     card_name=card_props.get('name'),
                     card_type=card_props.get('type'),
