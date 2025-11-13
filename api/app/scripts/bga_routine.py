@@ -628,7 +628,6 @@ def import_ladder_from_bga(season: int, page: int = 0, retry: bool = True) -> di
     
 def getLogs(table_id: int, retry: bool = True) -> dict:
     try:
-        # ✅ ÉTAPE 1 : Charger gamereview AVANT d'appeler logs.html (comme le navigateur)
         session = requests.Session()
         
         TournoiEnLigne_sso_user = db.session.query(CookieManager).filter_by(name="TournoiEnLigne_sso_user").first()

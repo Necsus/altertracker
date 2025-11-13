@@ -17,6 +17,7 @@ import { RegisterComponent } from './authentication/register.component';
 import { ResetPasswordComponent } from './authentication/reset-password/reset-password.component';
 import { StatsComponent } from './card/stats.component';
 import { ChatComponent } from './chat/chat.component';
+import { DeckDetailComponent } from './deck/deck-detail/deck-detail.component';
 import { HomeComponent } from './home/home.component';
 import { LadderComponent } from './ladder/ladder.component';
 import { PlayerComponent } from './ladder/player/player.component';
@@ -44,6 +45,7 @@ export const routes: Routes = [
   { path: 'players', component: LadderComponent, canActivate: [TokenGuard] },
   { path: 'player/:player_id', component: PlayerComponent, canActivate: [TokenGuard] },
   { path: 'team/:team_id', component: TeamComponent, canActivate: [BetaTesterGuard] },
+  { path: 'deck/:deck_id', component: DeckDetailComponent, canActivate: [TokenGuard] },
   { path: 'searches', component: UserSearchesComponent, canActivate: [TokenGuard] },
   { path: 'alerts', component: UserAlertsComponent, canActivate: [TokenGuard] },
   { path: 'me', component: MeComponent, canActivate: [TokenGuard] },
