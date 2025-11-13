@@ -38,6 +38,24 @@ def search_players_bga_service(query: str) -> list:
             'error': data.get('error', 'Unknown error') if data else 'No response',
             'players': []
         }
+    
+    # Filtrer les joueurs anonymisés présents dans la BDD
+    players = data.get('players', [])
+    filtered_players = []
+    
+    for player in players:
+        bga_id = player.get('bga_id')
+        if bga_id:
+            existing_player = get_player_by_bga_id_data(bga_id)
+            # Exclure si le joueur existe ET est anonymisé
+            if existing_player and existing_player.is_anonymized:
+                continue
+        filtered_players.append(player)
+    
+    # Mettre à jour les données avec les joueurs filtrés
+    if 'players' in data:
+        data['players'] = filtered_players
+    
     return data
 
 def get_player_by_id_service(player_id: str) -> dict:
@@ -132,19 +150,18 @@ def _calculate_player_stats_from_games(games: List[Game], player_id: uuid.UUID) 
         else:
             stats['losses'] += 1
         
-        # ✅ S'assurer que les deux datetimes sont timezone-aware
-        game_played_at = game.played_at
+        # ✅ Utiliser game.start (date de DÉBUT) au lieu de game.played_at (date de FIN)
+        game_start_date = game.start
         last_game_at = stats['last_game_at']
         
-        if last_game_at is None or (game_played_at is not None and game_played_at > last_game_at):
-            stats['last_game_at'] = game_played_at
+        if last_game_at is None or (game_start_date is not None and game_start_date > last_game_at):
+            stats['last_game_at'] = game_start_date
     
     return stats
 
 def import_games_bulk_service(main_player_id: str, games_data_from_bga: list, season: int) -> dict:
     try:
         # 1. Validation du joueur principal
-        main_player_uuid = uuid.UUID(main_player_id)
         main_player = get_player_by_id_data(main_player_id)
         
         if not main_player:
@@ -224,14 +241,14 @@ def import_games_bulk_service(main_player_id: str, games_data_from_bga: list, se
                     players_stats[main_player.id]['draws'] += 1
                     players_stats[opponent.id]['draws'] += 1
                 
-                # ✅ Mettre à jour last_game_at avec timezone-aware datetime
-                game_played_at = game.played_at
+                # ✅ Utiliser game.start (date de DÉBUT) au lieu de game.played_at (date de FIN)
+                game_start_date = game.start
                 
                 for player_id in [main_player.id, opponent.id]:
                     last_game_at = players_stats[player_id]['last_game_at']
                     
-                    if last_game_at is None or (game_played_at is not None and game_played_at > last_game_at):
-                        players_stats[player_id]['last_game_at'] = game_played_at
+                    if last_game_at is None or (game_start_date is not None and game_start_date > last_game_at):
+                        players_stats[player_id]['last_game_at'] = game_start_date
                 
                 stats['created'] += 1
                 
@@ -1329,6 +1346,7 @@ def import_deck_service(table_id: int) -> dict:
         from app.services.deck_service import DeckService
         
         parsed_decks = []
+        game_updated = False
         
         for deck_selection in decks_selections:
             bga_player_id = deck_selection.get('player_id')
@@ -1353,21 +1371,40 @@ def import_deck_service(table_id: int) -> dict:
                     'unique_count': deck.unique_count
                 })
                 
-                # ✅ Associer le deck à la game
+                # ✅ Associer le deck à la game ET mettre à jour faction/hero
                 if game.player1.bga_id == bga_player_id:
                     game.player1_deck_id = deck.id
+                    # ✅ Mettre à jour faction et hero depuis le deck si non définis
+                    if not game.player1_faction:
+                        game.player1_faction = deck.faction
+                        game_updated = True
+                    if not game.player1_hero:
+                        game.player1_hero = deck.hero
+                        game_updated = True
+                    print(f"✅ Deck player1 associé - Faction: {deck.faction}, Hero: {deck.hero}")
+                    
                 elif game.player2.bga_id == bga_player_id:
                     game.player2_deck_id = deck.id
+                    # ✅ Mettre à jour faction et hero depuis le deck si non définis
+                    if not game.player2_faction:
+                        game.player2_faction = deck.faction
+                        game_updated = True
+                    if not game.player2_hero:
+                        game.player2_hero = deck.hero
+                        game_updated = True
+                    print(f"✅ Deck player2 associé - Faction: {deck.faction}, Hero: {deck.hero}")
         
-        # 4. Sauvegarder les liens game<->deck
-        if game.player1_deck_id or game.player2_deck_id:
+        # 4. Sauvegarder les liens game<->deck et les mises à jour de faction/hero
+        if game.player1_deck_id or game.player2_deck_id or game_updated:
             update_game_data(game)
-            print(f"✅ Decks associés à la partie #{table_id}")
+            if game_updated:
+                print(f"✅ Game #{table_id} mise à jour avec faction/hero depuis les decks")
         
         return {
             'status': 1,
             'table_id': table_id,
-            'decks': parsed_decks
+            'decks': parsed_decks,
+            'game_updated': game_updated
         }
         
     except Exception as e:

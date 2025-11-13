@@ -8,16 +8,19 @@ from sqlalchemy import func, case
 from sqlalchemy.orm import joinedload
 from app.models.season import Season
 
-def _ensure_timezone_aware(dt: Optional[datetime]) -> Optional[datetime]:
+def _normalize_to_day_start(dt: Optional[datetime]) -> Optional[datetime]:
+    """
+    Normalise une datetime pour ne garder que le jour à 0h00 UTC
+    """
     if dt is None:
         return None
     
-    # Si déjà timezone-aware, retourner tel quel
-    if dt.tzinfo is not None and dt.tzinfo.utcoffset(dt) is not None:
-        return dt
+    # Assurer timezone-aware
+    if dt.tzinfo is None or dt.tzinfo.utcoffset(dt) is None:
+        dt = dt.replace(tzinfo=timezone.utc)
     
-    # Sinon, ajouter UTC
-    return dt.replace(tzinfo=timezone.utc)
+    # Normaliser à 0h00 du jour
+    return dt.replace(hour=0, minute=0, second=0, microsecond=0)
 
 def search_players_data(query: str, limit: int = 10) -> List[Player]:
     query_lower = query.lower()
@@ -88,8 +91,8 @@ def update_player_stats_data(player: Player, wins: int = 0, losses: int = 0, dra
         
         if last_game_at:
             # ✅ Normaliser les datetimes avant comparaison
-            last_game_at_aware = _ensure_timezone_aware(last_game_at)
-            player_last_game_aware = _ensure_timezone_aware(player.last_game_at)
+            last_game_at_aware = _normalize_to_day_start(last_game_at)
+            player_last_game_aware = _normalize_to_day_start(player.last_game_at)
             
             if player_last_game_aware is None or (last_game_at_aware is not None and last_game_at_aware > player_last_game_aware):
                 player.last_game_at = last_game_at_aware
@@ -117,8 +120,8 @@ def batch_update_players_stats_data(players_stats: dict) -> None:
                 last_game_at = stats.get('last_game_at')
                 if last_game_at:
                     # ✅ Normaliser les deux datetimes avant comparaison
-                    last_game_at_aware = _ensure_timezone_aware(last_game_at)
-                    player_last_game_aware = _ensure_timezone_aware(player.last_game_at)
+                    last_game_at_aware = _normalize_to_day_start(last_game_at)
+                    player_last_game_aware = _normalize_to_day_start(player.last_game_at)
                     
                     if player_last_game_aware is None or (last_game_at_aware is not None and last_game_at_aware > player_last_game_aware):
                         player.last_game_at = last_game_at_aware

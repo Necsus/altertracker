@@ -1,5 +1,6 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
+from app.decorators.auth_decorator import active_bga_required
 from app.services.deck_service import DeckService
 from app.models.deck import PlayerDeck, DeckArchetype
 from app.extensions import db
@@ -10,6 +11,7 @@ deck_bp = Blueprint('deck', __name__)
 
 @deck_bp.route('/<string:deck_id>', methods=['GET'])
 @jwt_required()
+@active_bga_required
 def get_deck_route(deck_id: str):
     """
     Récupère les détails d'un deck
@@ -33,6 +35,7 @@ def get_deck_route(deck_id: str):
 
 @deck_bp.route('/player/<string:player_id>', methods=['GET'])
 @jwt_required()
+@active_bga_required
 def get_player_decks_route(player_id: str):
     """
     Récupère tous les decks d'un joueur
@@ -76,6 +79,7 @@ def get_player_decks_route(player_id: str):
 
 @deck_bp.route('/compare', methods=['GET'])
 @jwt_required()
+@active_bga_required
 def compare_decks_route():
     """
     Compare deux decks
@@ -110,6 +114,7 @@ def compare_decks_route():
 
 @deck_bp.route('/archetype/<string:archetype_id>', methods=['GET'])
 @jwt_required()
+@active_bga_required
 def get_archetype_route(archetype_id: str):
     """
     Récupère un archétype de deck avec tous ses decks
@@ -137,6 +142,7 @@ def get_archetype_route(archetype_id: str):
 
 @deck_bp.route('/meta/snapshot', methods=['GET'])
 @jwt_required()
+@active_bga_required
 def get_meta_snapshot_route():
     """
     Récupère un snapshot du métagame (type HSReplay)
@@ -163,6 +169,7 @@ def get_meta_snapshot_route():
 
 @deck_bp.route('/archetype/search', methods=['GET'])
 @jwt_required()
+@active_bga_required
 def search_archetypes_route():
     """
     Recherche d'archétypes par faction/hero
@@ -198,6 +205,7 @@ def search_archetypes_route():
 
 @deck_bp.route('/stats', methods=['GET'])
 @jwt_required()
+@active_bga_required
 def get_deck_stats_route():
     """
     Statistiques globales sur les decks

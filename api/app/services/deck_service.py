@@ -67,15 +67,11 @@ class DeckService:
                 # Compter les raretés
                 if rarity == 0:
                     common_count += count
-                elif rarity >= 1:
+                elif rarity == 1:
                     rare_count += count
                 
-                # Détecter les uniques (cartes avec changedStats ou mention dans le nom)
-                is_unique = (
-                    'changedStats' in card_props or
-                    card_props.get('uid', '').endswith('_U_') or
-                    '#' in uid  # Parfois les uniques ont un # dans l'UID
-                )
+                # ✅ Détecter les uniques : rarity == 2
+                is_unique = (rarity == 2)
                 
                 if is_unique:
                     unique_cards.append(uid)
