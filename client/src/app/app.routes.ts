@@ -45,7 +45,7 @@ export const routes: Routes = [
   { path: 'players', component: LadderComponent, canActivate: [TokenGuard] },
   { path: 'player/:player_id', component: PlayerComponent, canActivate: [TokenGuard] },
   { path: 'team/:team_id', component: TeamComponent, canActivate: [BetaTesterGuard] },
-  { path: 'deck/:deck_id', component: DeckDetailComponent, canActivate: [TokenGuard] },
+  { path: 'deck/:deck_id', component: DeckDetailComponent, canActivate: [BgaGuard] },
   { path: 'searches', component: UserSearchesComponent, canActivate: [TokenGuard] },
   { path: 'alerts', component: UserAlertsComponent, canActivate: [TokenGuard] },
   { path: 'me', component: MeComponent, canActivate: [TokenGuard] },

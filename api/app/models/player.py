@@ -47,7 +47,7 @@ class Player(db.Model):
         if self.is_anonymized:
             return {
                 'id': str(self.id),
-                'name': f"Anonymous#{str(self.id)[:8]}",
+                'name': f"#Anonymous#",
                 'country': None,
                 'team_id': None,
                 'team_name': None,
