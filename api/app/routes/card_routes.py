@@ -172,3 +172,27 @@ def get_effect(lang: str):
         return jsonify([effect.json() for effect in effects]), 200
     except Exception as e:
         return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)
+
+@card_bp.route('/batch', methods=['POST'])
+@cache.cached(timeout=3600, query_string=True)
+def get_cards_batch():
+    """
+    Récupère plusieurs cartes en une seule requête
+    Body: { "references": ["ALT_CORE_B_AX_01_R1", "ALT_CORE_B_AX_02_C", ...] }
+    """
+    try:
+        data = request.get_json()
+        references = data.get('references', [])
+        
+        if not references:
+            return jsonify({'cards': {}}), 200
+        
+        from app.services.card_service import get_cards_batch_service
+        cards = get_cards_batch_service(references)
+        
+        # Retourner un dictionnaire avec reference -> card data
+        return jsonify({
+            'cards': {card['reference']: card for card in cards}
+        }), 200
+    except Exception as e:
+        return make_response(jsonify({'message': 'An error occurred: ' + str(e)}), 500)

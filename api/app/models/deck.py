@@ -149,6 +149,29 @@ class PlayerDeck(db.Model):
         if include_cards:
             data['cards_by_uid'] = self.cards_by_uid
             data['unique_cards'] = self.unique_cards
+            
+            # ✅ Enrichir avec les URLs des images
+            from app.models.card import Card
+            
+            # Récupérer toutes les références de cartes
+            all_card_refs = list(self.cards_by_uid.keys()) + (self.unique_cards or [])
+            unique_refs = list(set(all_card_refs))
+            
+            if unique_refs:
+                # Récupérer les cartes en une seule requête
+                cards = Card.query.filter(Card.reference.in_(unique_refs)).all()
+                
+                # Créer un mapping reference -> image data
+                cards_data = {}
+                for card in cards:
+                    cards_data[card.reference] = {
+                        'imagePath': card.imagePath,
+                        'name': card.name,
+                        'name_en': card.name_en,
+                        'rarity': card.rarity
+                    }
+                
+                data['cards_data'] = cards_data
         
         return data
 

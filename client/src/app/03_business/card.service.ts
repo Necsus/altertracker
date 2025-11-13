@@ -72,4 +72,10 @@ export class CardService {
       return dbModel;
     }));
   }
+
+  getCardsBatch$(references: string[]): Observable<{ [key: string]: any }> {
+    return this.cardApiService.get_cards_batch$(references).pipe(
+      map((response: { cards: { [key: string]: any } }) => response.cards)
+    );
+  }
 }

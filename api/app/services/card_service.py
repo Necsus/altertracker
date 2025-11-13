@@ -224,3 +224,11 @@ def update_card_service(data: dict) -> Optional[Card]:
 
 def get_effect_service(lang: str) -> List[dict]:
     return get_effect_data(lang)
+
+def get_cards_batch_service(references: List[str]) -> List[dict]:
+    """
+    Récupère plusieurs cartes en une seule requête
+    Retourne uniquement les données essentielles (reference, imagePath, name)
+    """
+    from app.data.card_data import get_cards_batch_data
+    return get_cards_batch_data(references)
