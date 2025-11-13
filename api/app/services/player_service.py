@@ -150,12 +150,12 @@ def _calculate_player_stats_from_games(games: List[Game], player_id: uuid.UUID) 
         else:
             stats['losses'] += 1
         
-        # ✅ S'assurer que les deux datetimes sont timezone-aware
-        game_played_at = game.played_at
+        # ✅ Utiliser game.start (date de DÉBUT) au lieu de game.played_at (date de FIN)
+        game_start_date = game.start
         last_game_at = stats['last_game_at']
         
-        if last_game_at is None or (game_played_at is not None and game_played_at > last_game_at):
-            stats['last_game_at'] = game_played_at
+        if last_game_at is None or (game_start_date is not None and game_start_date > last_game_at):
+            stats['last_game_at'] = game_start_date
     
     return stats
 
@@ -241,14 +241,14 @@ def import_games_bulk_service(main_player_id: str, games_data_from_bga: list, se
                     players_stats[main_player.id]['draws'] += 1
                     players_stats[opponent.id]['draws'] += 1
                 
-                # ✅ Mettre à jour last_game_at avec timezone-aware datetime
-                game_played_at = game.played_at
+                # ✅ Utiliser game.start (date de DÉBUT) au lieu de game.played_at (date de FIN)
+                game_start_date = game.start
                 
                 for player_id in [main_player.id, opponent.id]:
                     last_game_at = players_stats[player_id]['last_game_at']
                     
-                    if last_game_at is None or (game_played_at is not None and game_played_at > last_game_at):
-                        players_stats[player_id]['last_game_at'] = game_played_at
+                    if last_game_at is None or (game_start_date is not None and game_start_date > last_game_at):
+                        players_stats[player_id]['last_game_at'] = game_start_date
                 
                 stats['created'] += 1
                 
