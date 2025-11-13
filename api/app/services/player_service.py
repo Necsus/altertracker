@@ -38,6 +38,24 @@ def search_players_bga_service(query: str) -> list:
             'error': data.get('error', 'Unknown error') if data else 'No response',
             'players': []
         }
+    
+    # Filtrer les joueurs anonymisés présents dans la BDD
+    players = data.get('players', [])
+    filtered_players = []
+    
+    for player in players:
+        bga_id = player.get('bga_id')
+        if bga_id:
+            existing_player = get_player_by_bga_id_data(bga_id)
+            # Exclure si le joueur existe ET est anonymisé
+            if existing_player and existing_player.is_anonymized:
+                continue
+        filtered_players.append(player)
+    
+    # Mettre à jour les données avec les joueurs filtrés
+    if 'players' in data:
+        data['players'] = filtered_players
+    
     return data
 
 def get_player_by_id_service(player_id: str) -> dict:
