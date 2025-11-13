@@ -45,8 +45,9 @@ def search_players_data(query: str, limit: int = 10) -> List[Player]:
 def create_player_data(new_player: Player) -> Player:
     existing = get_player_by_bga_id_data(new_player.bga_id)
     if existing:
-        existing.name = new_player.name
-        existing.country = new_player.country
+        if not existing.is_anonymized:  # ✅ Respecter l'anonymisation
+            existing.name = new_player.name
+            existing.country = new_player.country
         existing.is_active = True
         db.session.commit()
         return existing
