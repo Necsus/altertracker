@@ -38,16 +38,67 @@ class DeckArchetype(db.Model):
         Index('idx_archetype_signature', 'effect_signature'),
     )
     
+    def update_stats_from_decks(self):
+        """
+        Recalcule les statistiques de l'archétype depuis tous les decks associés
+        """
+        # Récupérer tous les decks de cet archétype
+        decks = PlayerDeck.query.filter_by(archetype_id=self.id).all()
+        
+        total_games = 0
+        total_wins = 0
+        total_losses = 0
+        season_data = {}
+        
+        for deck in decks:
+            total_games += deck.total_games
+            total_wins += deck.total_wins
+            total_losses += deck.total_losses
+            
+            # Agréger par saison
+            if deck.season:
+                season_key = str(deck.season)
+                if season_key not in season_data:
+                    season_data[season_key] = {
+                        'games': 0,
+                        'wins': 0,
+                        'losses': 0,
+                        'decks': 0
+                    }
+                
+                season_data[season_key]['games'] += deck.total_games
+                season_data[season_key]['wins'] += deck.total_wins
+                season_data[season_key]['losses'] += deck.total_losses
+                season_data[season_key]['decks'] += 1
+        
+        # Calculer les win rates par saison
+        for season_key, stats in season_data.items():
+            if stats['games'] > 0:
+                stats['win_rate'] = round((stats['wins'] / stats['games']) * 100, 1)
+            else:
+                stats['win_rate'] = 0.0
+        
+        self.total_decks = len(decks)
+        self.total_games = total_games
+        self.win_rate = (total_wins / total_games * 100) if total_games > 0 else 0.0
+        self.season_stats = season_data
+        self.updated_at = datetime.datetime.now(datetime.timezone.utc)
+        
+        db.session.commit()
+    
     def json(self):
         return {
             'id': str(self.id),
             'name': self.name,
             'faction': self.faction,
             'hero': self.hero,
+            'effect_signature': self.effect_signature,
             'total_decks': self.total_decks,
             'total_games': self.total_games,
             'win_rate': self.win_rate,
-            'season_stats': self.season_stats
+            'season_stats': self.season_stats,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None
         }
 
 
@@ -107,6 +158,7 @@ class PlayerDeck(db.Model):
     # Stats du deck
     total_games = db.Column(db.Integer, default=0)
     total_wins = db.Column(db.Integer, default=0)
+    total_losses = db.Column(db.Integer, default=0)
     win_rate = db.Column(db.Float, default=0.0)
     
     # Dernière utilisation
@@ -126,9 +178,44 @@ class PlayerDeck(db.Model):
         Index('idx_deck_archetype', 'archetype_id'),
     )
     
-    def json(self, include_cards: bool = True):
+    def update_stats_from_games(self):
+        """
+        Recalcule les statistiques du deck depuis les parties associées
+        """
+        from app.models.game import Game
+        
+        # Récupérer toutes les parties où ce deck a été utilisé
+        games_as_p1 = Game.query.filter_by(player1_deck_id=self.id).all()
+        games_as_p2 = Game.query.filter_by(player2_deck_id=self.id).all()
+        
+        total_wins = 0
+        total_losses = 0
+        
+        # Compter les victoires/défaites
+        for game in games_as_p1:
+            if game.winner_id == self.player_id:
+                total_wins += 1
+            elif game.winner_id is not None:  # Pas de nul
+                total_losses += 1
+        
+        for game in games_as_p2:
+            if game.winner_id == self.player_id:
+                total_wins += 1
+            elif game.winner_id is not None:
+                total_losses += 1
+        
+        self.total_games = total_wins + total_losses
+        self.total_wins = total_wins
+        self.total_losses = total_losses
+        self.win_rate = (total_wins / self.total_games * 100) if self.total_games > 0 else 0.0
+        self.updated_at = datetime.datetime.now(datetime.timezone.utc)
+        
+        db.session.commit()
+    
+    def json(self, include_cards: bool = True, include_archetype: bool = False):
         data = {
             'id': str(self.id),
+            'player_id': str(self.player_id),
             'bga_deck_id': self.bga_deck_id,
             'deck_name': self.deck_name,
             'faction': self.faction,
@@ -140,17 +227,25 @@ class PlayerDeck(db.Model):
             'common_count': self.common_count,
             'total_games': self.total_games,
             'total_wins': self.total_wins,
+            'total_losses': self.total_losses,
             'win_rate': self.win_rate,
             'last_used_at': self.last_used_at.isoformat() if self.last_used_at else None,
             'season': self.season,
-            'archetype_id': str(self.archetype_id) if self.archetype_id else None
+            'deck_signature': self.deck_signature,
+            'archetype_id': str(self.archetype_id) if self.archetype_id else None,
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'updated_at': self.updated_at.isoformat() if self.updated_at else None
         }
+        
+        # Inclure l'archétype complet si demandé
+        if include_archetype and self.archetype:
+            data['archetype'] = self.archetype.json()
         
         if include_cards:
             data['cards_by_uid'] = self.cards_by_uid
             data['unique_cards'] = self.unique_cards
             
-            # ✅ Enrichir avec les URLs des images
+            # ✅ Enrichir avec le modèle Card complet
             from app.models.card import Card
             
             # Récupérer toutes les références de cartes
@@ -161,15 +256,10 @@ class PlayerDeck(db.Model):
                 # Récupérer les cartes en une seule requête
                 cards = Card.query.filter(Card.reference.in_(unique_refs)).all()
                 
-                # Créer un mapping reference -> image data
+                # Créer un mapping reference -> modèle Card complet
                 cards_data = {}
                 for card in cards:
-                    cards_data[card.reference] = {
-                        'imagePath': card.imagePath,
-                        'name': card.name,
-                        'name_en': card.name_en,
-                        'rarity': card.rarity
-                    }
+                    cards_data[card.reference] = card.json()
                 
                 data['cards_data'] = cards_data
         

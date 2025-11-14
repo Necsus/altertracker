@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
+import { CardModel } from '../01_models/03_business/card.model';
 import { DeckApiService } from '../02_api/deck-api.service';
 
 export interface DeckModel {
@@ -13,8 +14,8 @@ export interface DeckModel {
   unique_count: number;
   rare_count: number;
   total_games: number;
-  wins: number;
-  losses: number;
+  total_wins: number;
+  total_losses: number;
   draws: number;
   win_rate: number;
   deck_signature: string;
@@ -22,7 +23,7 @@ export interface DeckModel {
   archetype_name?: string;
   cards_by_uid?: { [key: string]: number };
   unique_cards?: string[];
-  cards_data?: { [key: string]: { imagePath: string; name: string; name_en: string; rarity: string } };
+  cards_data?: { [key: string]: CardModel };
   created_at: string;
   last_used_at: string;
 }

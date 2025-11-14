@@ -122,7 +122,7 @@
             class="bg-gray-800/80 backdrop-blur-md rounded-xl p-3 md:p-4 text-center border-2 border-amber-500/30 shadow-xl">
             <div class="text-2xl md:text-3xl font-bold text-white drop-shadow-lg">{{ seasonStats()?.win_rate || 0 |
               number: '1.0-0' }}%</div>
-            <div class="text-amber-400 text-xs uppercase tracking-wide font-semibold">Victoires</div>
+            <div class="text-amber-400 text-xs uppercase tracking-wide font-semibold">Win Rate</div>
           </div>
 
           <!-- Wins -->
@@ -130,7 +130,7 @@
             class="bg-gray-800/80 backdrop-blur-md rounded-xl p-3 md:p-4 text-center border-2 border-green-500/30 shadow-xl">
             <div class="text-2xl md:text-3xl font-bold text-green-400 drop-shadow-lg">{{ seasonStats()?.wins || 0 }}
             </div>
-            <div class="text-green-400 text-xs uppercase tracking-wide font-semibold">Wins</div>
+            <div class="text-green-400 text-xs uppercase tracking-wide font-semibold">Victoires</div>
           </div>
 
           <!-- Losses -->
@@ -138,7 +138,7 @@
             class="bg-gray-800/80 backdrop-blur-md rounded-xl p-3 md:p-4 text-center border-2 border-red-500/30 shadow-xl">
             <div class="text-2xl md:text-3xl font-bold text-red-400 drop-shadow-lg">{{ seasonStats()?.losses || 0 }}
             </div>
-            <div class="text-red-400 text-xs uppercase tracking-wide font-semibold">Losses</div>
+            <div class="text-red-400 text-xs uppercase tracking-wide font-semibold">Défaites</div>
           </div>
 
           <!-- Bouton Reload (projection de contenu) -->

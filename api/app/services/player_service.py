@@ -1355,6 +1355,7 @@ def import_deck_service(table_id: int) -> dict:
         
         parsed_decks = []
         game_updated = False
+        decks_to_update_stats = []  # ✅ Liste des decks à mettre à jour après sauvegarde
         
         for deck_selection in decks_selections:
             bga_player_id = deck_selection.get('player_id')
@@ -1365,7 +1366,7 @@ def import_deck_service(table_id: int) -> dict:
                 print(f"⚠️  Joueur BGA #{bga_player_id} non trouvé en base")
                 continue
             
-            # Parser le deck avec le nouveau service
+            # Parser le deck avec le nouveau service (SANS recalcul immédiat)
             deck = DeckService.parse_bga_deck(deck_selection, player.id)
             
             if deck:
@@ -1401,12 +1402,28 @@ def import_deck_service(table_id: int) -> dict:
                         game.player2_hero = deck.hero
                         game_updated = True
                     print(f"✅ Deck player2 associé - Faction: {deck.faction}, Hero: {deck.hero}")
+                
+                # ✅ Garder le deck pour recalcul ultérieur
+                decks_to_update_stats.append(deck)
         
-        # 4. Sauvegarder les liens game<->deck et les mises à jour de faction/hero
+        # 4. ✅ Sauvegarder les liens game<->deck et les mises à jour de faction/hero
         if game.player1_deck_id or game.player2_deck_id or game_updated:
             update_game_data(game)
             if game_updated:
                 print(f"✅ Game #{table_id} mise à jour avec faction/hero depuis les decks")
+        
+        # 5. ✅ MAINTENANT recalculer les stats des decks (après sauvegarde des liens)
+        for deck in decks_to_update_stats:
+            try:
+                print(f"🔄 Recalcul des stats pour le deck {deck.deck_name}...")
+                deck.update_stats_from_games()
+                
+                # ✅ Recalculer également les stats de l'archétype
+                if deck.archetype:
+                    print(f"🔄 Recalcul des stats de l'archétype {deck.archetype.name}...")
+                    deck.archetype.update_stats_from_decks()
+            except Exception as e:
+                print(f"⚠️  Erreur lors du recalcul des stats du deck {deck.id}: {e}")
         
         return {
             'status': 1,

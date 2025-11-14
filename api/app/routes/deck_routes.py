@@ -2,8 +2,6 @@ from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required
 from app.decorators.auth_decorator import active_bga_required
 from app.services.deck_service import DeckService
-from app.models.deck import PlayerDeck, DeckArchetype
-from app.extensions import db
 from uuid import UUID
 
 deck_bp = Blueprint('deck', __name__)
@@ -14,18 +12,18 @@ deck_bp = Blueprint('deck', __name__)
 @active_bga_required
 def get_deck_route(deck_id: str):
     """
-    Récupère les détails d'un deck
-    GET /api/decks/<deck_id>
+    Récupère les détails d'un deck avec enrichissement automatique des cartes
+    GET /api/decks/<deck_id>?include_cards=true
     """
     try:
-        deck = PlayerDeck.query.filter_by(id=UUID(deck_id)).first()
+        include_cards = request.args.get('include_cards', 'true').lower() == 'true'
+        
+        deck = DeckService.get_deck_by_id(UUID(deck_id), include_cards)
         
         if not deck:
             return jsonify({'message': 'Deck not found'}), 404
         
-        include_cards = request.args.get('include_cards', 'true').lower() == 'true'
-        
-        return jsonify(deck.json(include_cards=include_cards)), 200
+        return jsonify(deck), 200
         
     except ValueError:
         return jsonify({'message': 'Invalid deck ID format'}), 400
@@ -38,8 +36,8 @@ def get_deck_route(deck_id: str):
 @active_bga_required
 def get_player_decks_route(player_id: str):
     """
-    Récupère tous les decks d'un joueur
-    GET /api/decks/player/<player_id>?season=2&faction=OR
+    Récupère tous les decks d'un joueur avec pagination
+    GET /api/decks/player/<player_id>?season=2&faction=OR&page=1&limit=50
     """
     try:
         season = request.args.get('season', type=int)
@@ -47,29 +45,15 @@ def get_player_decks_route(player_id: str):
         page = request.args.get('page', 1, type=int)
         limit = request.args.get('limit', 50, type=int)
         
-        query = PlayerDeck.query.filter_by(player_id=UUID(player_id))
+        result = DeckService.get_player_decks(
+            UUID(player_id), 
+            season=season, 
+            faction=faction, 
+            page=page, 
+            limit=limit
+        )
         
-        if season:
-            query = query.filter_by(season=season)
-        
-        if faction:
-            query = query.filter_by(faction=faction)
-        
-        # Trier par dernière utilisation
-        query = query.order_by(PlayerDeck.last_used_at.desc())
-        
-        total = query.count()
-        decks = query.limit(limit).offset((page - 1) * limit).all()
-        
-        return jsonify({
-            'decks': [deck.json(include_cards=False) for deck in decks],
-            'pagination': {
-                'current_page': page,
-                'total_pages': (total + limit - 1) // limit,
-                'total_decks': total,
-                'limit': limit
-            }
-        }), 200
+        return jsonify(result), 200
         
     except ValueError:
         return jsonify({'message': 'Invalid player ID format'}), 400
@@ -92,17 +76,18 @@ def compare_decks_route():
         if not deck1_id or not deck2_id:
             return jsonify({'message': 'Both deck1 and deck2 parameters are required'}), 400
         
-        deck1 = PlayerDeck.query.filter_by(id=UUID(deck1_id)).first()
-        deck2 = PlayerDeck.query.filter_by(id=UUID(deck2_id)).first()
+        comparison = DeckService.compare_decks_by_id(UUID(deck1_id), UUID(deck2_id))
         
-        if not deck1 or not deck2:
+        if not comparison:
             return jsonify({'message': 'One or both decks not found'}), 404
         
-        comparison = DeckService.compare_decks(deck1, deck2)
+        # Récupérer les decks pour l'affichage
+        deck1 = DeckService.get_deck_by_id(UUID(deck1_id), include_cards=False)
+        deck2 = DeckService.get_deck_by_id(UUID(deck2_id), include_cards=False)
         
         return jsonify({
-            'deck1': deck1.json(include_cards=False),
-            'deck2': deck2.json(include_cards=False),
+            'deck1': deck1,
+            'deck2': deck2,
             'comparison': comparison
         }), 200
         
@@ -117,22 +102,16 @@ def compare_decks_route():
 @active_bga_required
 def get_archetype_route(archetype_id: str):
     """
-    Récupère un archétype de deck avec tous ses decks
+    Récupère un archétype de deck avec des exemples de decks
     GET /api/decks/archetype/<archetype_id>
     """
     try:
-        archetype = DeckArchetype.query.filter_by(id=UUID(archetype_id)).first()
+        result = DeckService.get_archetype_by_id(UUID(archetype_id))
         
-        if not archetype:
+        if not result:
             return jsonify({'message': 'Archetype not found'}), 404
         
-        # Récupérer les decks de cet archétype
-        decks = PlayerDeck.query.filter_by(archetype_id=archetype.id).limit(10).all()
-        
-        return jsonify({
-            'archetype': archetype.json(),
-            'sample_decks': [deck.json(include_cards=False) for deck in decks]
-        }), 200
+        return jsonify(result), 200
         
     except ValueError:
         return jsonify({'message': 'Invalid archetype ID format'}), 400
@@ -173,29 +152,21 @@ def get_meta_snapshot_route():
 def search_archetypes_route():
     """
     Recherche d'archétypes par faction/hero
-    GET /api/decks/archetype/search?faction=OR&hero=Sigismar
+    GET /api/decks/archetype/search?faction=OR&hero=Sigismar&min_games=10
     """
     try:
         faction = request.args.get('faction', type=str)
         hero = request.args.get('hero', type=str)
         min_games = request.args.get('min_games', 10, type=int)
         
-        query = DeckArchetype.query
-        
-        if faction:
-            query = query.filter_by(faction=faction)
-        
-        if hero:
-            query = query.filter_by(hero=hero)
-        
-        # Filtrer par nombre minimum de parties
-        query = query.filter(DeckArchetype.total_games >= min_games)
-        
-        # Trier par popularité
-        archetypes = query.order_by(DeckArchetype.total_games.desc()).limit(20).all()
+        archetypes = DeckService.search_archetypes(
+            faction=faction, 
+            hero=hero, 
+            min_games=min_games
+        )
         
         return jsonify({
-            'archetypes': [archetype.json() for archetype in archetypes],
+            'archetypes': archetypes,
             'total': len(archetypes)
         }), 200
         
@@ -214,32 +185,11 @@ def get_deck_stats_route():
     try:
         season = request.args.get('season', type=int)
         
-        query = PlayerDeck.query
-        
-        if season:
-            query = query.filter_by(season=season)
-        
-        total_decks = query.count()
-        unique_archetypes = db.session.query(DeckArchetype).count()
-        
-        # Top 5 factions
-        faction_stats = db.session.query(
-            PlayerDeck.faction,
-            db.func.count(PlayerDeck.id).label('count')
-        ).group_by(PlayerDeck.faction).order_by(db.text('count DESC')).limit(5).all()
-        
-        # Top 5 héros
-        hero_stats = db.session.query(
-            PlayerDeck.hero,
-            db.func.count(PlayerDeck.id).label('count')
-        ).group_by(PlayerDeck.hero).order_by(db.text('count DESC')).limit(5).all()
+        stats = DeckService.get_deck_stats(season)
         
         return jsonify({
             'season': season,
-            'total_decks': total_decks,
-            'unique_archetypes': unique_archetypes,
-            'top_factions': [{'faction': f, 'count': c} for f, c in faction_stats],
-            'top_heroes': [{'hero': h, 'count': c} for h, c in hero_stats]
+            **stats
         }), 200
         
     except Exception as e:
