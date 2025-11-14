@@ -32,14 +32,11 @@ interface FactionMatchup {
   templateUrl: './matchup.component.html'
 })
 export class MatchupComponent {
-  // ✅ Inputs (signal-based)
   player_id = input.required<string>();
   selectedSeason = input.required<number>();
 
-  // ✅ State
   private readonly playerService = inject(PlayerService);
 
-  // ✅ Transformer games en signal pour la réactivité
   games = signal<GameModel[]>([]);
   isLoading = false;
 
