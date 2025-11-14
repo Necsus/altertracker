@@ -64,6 +64,16 @@ class DeckService:
                 if not uid:
                     continue
                 
+                # ✅ NORMALISATION DES CARTES RARES : Ajouter _R1 ou _R2
+                if rarity == 1 and uid.endswith('_R'):
+                    # Détecter si la carte est in-faction ou out-of-faction
+                    is_in_faction = f"_{faction}_" in uid
+                    
+                    # Ajouter le bon suffixe
+                    uid = f"{uid}1" if is_in_faction else f"{uid}2"
+                    
+                    print(f"  📝 Normalisation rare: {card_props.get('name')} -> {uid} (in-faction: {is_in_faction})")
+                
                 # Compter les raretés
                 if rarity == 0:
                     common_count += count

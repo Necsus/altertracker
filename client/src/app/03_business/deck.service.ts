@@ -22,6 +22,7 @@ export interface DeckModel {
   archetype_name?: string;
   cards_by_uid?: { [key: string]: number };
   unique_cards?: string[];
+  cards_data?: { [key: string]: { imagePath: string; name: string; name_en: string; rarity: string } };
   created_at: string;
   last_used_at: string;
 }

@@ -94,31 +94,78 @@
       <div class="mb-6">
         <h3 class="text-lg font-semibold text-amber-400 mb-3 flex items-center gap-2">
           <i class="fas fa-star"></i>
-          Cartes Uniques
+          Cartes Uniques ({{deck()!.unique_cards!.length}})
         </h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
           @for (uid of deck()!.unique_cards!; track uid) {
-          <div class="bg-gray-900 rounded-lg p-3 border-2 border-amber-500">
-            <p class="font-mono text-sm text-amber-400">{{uid}}</p>
+          <div class="relative group">
+            <div class="bg-gradient-to-br from-amber-500 to-amber-700 rounded-lg p-1">
+              <img [src]="getCardImageUrl(uid)" [alt]="uid"
+                class="w-full rounded-md shadow-lg hover:scale-105 transition-transform duration-200"
+                onerror="this.src='assets/img/cardback.webp'">
+            </div>
+            <p class="mt-2 font-mono text-xs text-amber-400 text-center truncate">{{uid}}</p>
           </div>
           }
         </div>
       </div>
       }
 
-      <!-- Regular Cards -->
-      <h3 class="text-lg font-semibold text-gray-300 mb-3 flex items-center gap-2">
-        <i class="fas fa-layer-group"></i>
-        Cartes Régulières
-      </h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-        @for (entry of getCardEntries(); track entry[0]) {
-        <div class="bg-gray-900 rounded-lg p-3 flex items-center justify-between">
-          <p class="font-mono text-sm text-gray-300">{{entry[0]}}</p>
-          <span class="bg-gray-700 px-3 py-1 rounded-full text-sm font-bold text-white">×{{entry[1]}}</span>
+      <!-- Rare Cards -->
+      @if (getRareCards().length > 0) {
+      <div class="mb-6">
+        <h3 class="text-lg font-semibold text-purple-400 mb-3 flex items-center gap-2">
+          <i class="fas fa-gem"></i>
+          Cartes Rares ({{getRareCards().length}})
+        </h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          @for (entry of getRareCards(); track entry[0]) {
+          <div class="relative group">
+            <div class="bg-gradient-to-br from-purple-600 to-purple-800 rounded-lg p-1">
+              <img [src]="getCardImageUrl(entry[0])" [alt]="entry[0]"
+                class="w-full rounded-md shadow-lg hover:scale-105 transition-transform duration-200"
+                onerror="this.src='assets/img/cardback.webp'">
+              @if (entry[1] > 1) {
+              <div
+                class="absolute top-2 right-2 bg-black bg-opacity-75 rounded-full w-8 h-8 flex items-center justify-center">
+                <span class="text-white font-bold text-sm">×{{entry[1]}}</span>
+              </div>
+              }
+            </div>
+            <p class="mt-2 font-mono text-xs text-purple-400 text-center truncate">{{entry[0]}}</p>
+          </div>
+          }
         </div>
-        }
       </div>
+      }
+
+      <!-- Common Cards -->
+      @if (getCommonCards().length > 0) {
+      <div>
+        <h3 class="text-lg font-semibold text-gray-400 mb-3 flex items-center gap-2">
+          <i class="fas fa-layer-group"></i>
+          Cartes Communes ({{getCommonCards().length}})
+        </h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          @for (entry of getCommonCards(); track entry[0]) {
+          <div class="relative group">
+            <div class="bg-gradient-to-br from-gray-600 to-gray-800 rounded-lg p-1">
+              <img [src]="getCardImageUrl(entry[0])" [alt]="entry[0]"
+                class="w-full rounded-md shadow-lg hover:scale-105 transition-transform duration-200"
+                onerror="this.src='assets/img/cardback.webp'">
+              @if (entry[1] > 1) {
+              <div
+                class="absolute top-2 right-2 bg-black bg-opacity-75 rounded-full w-8 h-8 flex items-center justify-center">
+                <span class="text-white font-bold text-sm">×{{entry[1]}}</span>
+              </div>
+              }
+            </div>
+            <p class="mt-2 font-mono text-xs text-gray-400 text-center truncate">{{entry[0]}}</p>
+          </div>
+          }
+        </div>
+      </div>
+      }
     </div>
 
     <!-- Metadata -->

@@ -47,4 +47,8 @@ export class CardApiService {
   get_effects$(lang: string): Observable<EffectModel[]> {
     return this.wabApiService.callGet$(this.controller, `effect/${lang}`);
   }
+
+  get_cards_batch$(references: string[]): Observable<{ cards: { [key: string]: any } }> {
+    return this.wabApiService.callPost$(this.controller, 'batch', { references });
+  }
 }

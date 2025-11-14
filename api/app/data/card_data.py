@@ -413,3 +413,20 @@ def get_last_added_cards_data() -> list[dict]:
 
 def get_effect_data(lang: str) -> list[dict]:
     return db.session.query(Effect).filter(Effect.language == lang).all()
+
+def get_cards_batch_data(references: list[str]) -> list[dict]:
+    """
+    Récupère plusieurs cartes en une seule requête optimisée
+    Retourne uniquement les données essentielles pour l'affichage
+    """
+    cards = db.session.query(Card).filter(Card.reference.in_(references)).all()
+    return [
+        {
+            'reference': card.reference,
+            'imagePath': card.imagePath,
+            'name': card.name,
+            'name_en': card.name_en,
+            'rarity': card.rarity
+        }
+        for card in cards
+    ]
