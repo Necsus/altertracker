@@ -1,11 +1,19 @@
 from typing import Dict, List, Optional
 from datetime import datetime, timezone
+from uuid import UUID
 from app.models.deck import (
     PlayerDeck, 
     DeckArchetype, 
-    DeckCardEffect,  # ✅ Renommé
+    DeckCardEffect,
     compute_deck_signature,
     normalize_card_effect
+)
+from app.data.deck_data import (
+    get_deck_by_id_data,
+    get_player_decks_data,
+    get_archetype_by_id_data,
+    search_archetypes_data,
+    get_deck_stats_data
 )
 from app.extensions import db
 import uuid
@@ -155,15 +163,18 @@ class DeckService:
             db.session.add(new_deck)
             db.session.commit()
             
-            # Incrémenter le compteur d'archétype
+            # ✅ Recalculer les stats du deck depuis les parties
+            new_deck.update_stats_from_games()
+            
+            # ✅ Recalculer les stats de l'archétype
             if archetype:
-                archetype.total_decks += 1
-                db.session.commit()
+                archetype.update_stats_from_decks()
             
             print(f"✅ Deck créé: {deck_name} ({faction}/{hero_name})")
             print(f"   - Signature: {deck_signature[:16]}...")
             print(f"   - Uniques: {len(unique_cards)}")
             print(f"   - Rares: {rare_count}, Communes: {common_count}")
+            print(f"   - Stats: {new_deck.total_games} parties, {new_deck.win_rate:.1f}% winrate")
             
             return new_deck
             
@@ -346,3 +357,54 @@ class DeckService:
         except Exception as e:
             print(f"❌ Erreur get_meta_snapshot: {e}")
             return []
+    
+    @staticmethod
+    def get_deck_by_id(deck_id: UUID, include_cards: bool = True) -> Optional[Dict]:
+        """
+        Récupère un deck par son ID
+        """
+        return get_deck_by_id_data(deck_id, include_cards)
+    
+    @staticmethod
+    def get_player_decks(player_id: UUID, season: Optional[int] = None, 
+                        faction: Optional[str] = None, page: int = 1, 
+                        limit: int = 50) -> Dict:
+        """
+        Récupère tous les decks d'un joueur
+        """
+        return get_player_decks_data(player_id, season, faction, page, limit)
+    
+    @staticmethod
+    def get_archetype_by_id(archetype_id: UUID) -> Optional[Dict]:
+        """
+        Récupère un archétype avec des exemples de decks
+        """
+        return get_archetype_by_id_data(archetype_id)
+    
+    @staticmethod
+    def search_archetypes(faction: Optional[str] = None, hero: Optional[str] = None, 
+                         min_games: int = 10) -> List[Dict]:
+        """
+        Recherche d'archétypes
+        """
+        return search_archetypes_data(faction, hero, min_games)
+    
+    @staticmethod
+    def get_deck_stats(season: Optional[int] = None) -> Dict:
+        """
+        Statistiques globales sur les decks
+        """
+        return get_deck_stats_data(season)
+    
+    @staticmethod
+    def compare_decks_by_id(deck1_id: UUID, deck2_id: UUID) -> Optional[Dict]:
+        """
+        Compare deux decks par leurs IDs
+        """
+        deck1 = PlayerDeck.query.filter_by(id=deck1_id).first()
+        deck2 = PlayerDeck.query.filter_by(id=deck2_id).first()
+        
+        if not deck1 or not deck2:
+            return None
+        
+        return DeckService.compare_decks(deck1, deck2)

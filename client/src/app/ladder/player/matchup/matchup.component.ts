@@ -32,24 +32,17 @@ interface FactionMatchup {
   templateUrl: './matchup.component.html'
 })
 export class MatchupComponent {
-  // ✅ Inputs (signal-based)
   player_id = input.required<string>();
   selectedSeason = input.required<number>();
 
-  // ✅ State
   private readonly playerService = inject(PlayerService);
 
-  // ✅ Transformer games en signal pour la réactivité
   games = signal<GameModel[]>([]);
   isLoading = false;
 
-  // ✅ Signal pour le filtre de héros sélectionné
   selectedPlayerHero = signal<string>('ALL');
-
-  // ✅ Signal pour le filtre de faction sélectionnée
   selectedPlayerFaction = signal<string>('ALL');
 
-  // ✅ Computed: Compte total de games avec héros non null
   readonly totalHeroGames = computed(() => {
     return this.games().filter(g => this.getPlayerHero(g) && this.getOpponentHero(g)).length;
   });
