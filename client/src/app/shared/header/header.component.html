@@ -44,6 +44,10 @@
             class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
             'header.about' | translate }}</a>
         </li>
+        <li><a routerLink="/contact" routerLinkActive="text-amber-400" style="user-select: none;"
+            class="hover:text-amber-400 transition duration-300 cursor-pointer">{{
+            'header.contact' | translate }}</a>
+        </li>
 
         <!-- Dropdown for logged-in users -->
         @if (isLoggedIn) {

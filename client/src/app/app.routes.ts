@@ -22,6 +22,7 @@ import { HomeComponent } from './home/home.component';
 import { LadderComponent } from './ladder/ladder.component';
 import { PlayerComponent } from './ladder/player/player.component';
 import { TeamComponent } from './ladder/team/team.component';
+import { LegalComponent } from './legal/legal.component';
 import { CookiesPolicyComponent } from './policy/cookies.component';
 import { PolicyComponent } from './policy/policy.component';
 import { CardsComponent } from './search/cards.component';
@@ -64,6 +65,7 @@ export const routes: Routes = [
   { path: 'join-discord', component: JoinDiscordComponent },
   { path: 'about', component: AboutComponent },
   { path: 'policy', component: PolicyComponent },
+  { path: 'legal', component: LegalComponent },
   { path: 'cookies', component: CookiesPolicyComponent },
   { path: 'purchase-offers', component: PurchaseOffersComponent, canActivate: [TokenGuard] },
   { path: 'collection', component: CollectionComponent, canActivate: [TokenGuard] },
