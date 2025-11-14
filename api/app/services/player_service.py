@@ -699,8 +699,16 @@ def get_ladder_by_season_service(
                 }
             }
         
-        # ✅ Sérialiser avec les données du player
-        ladder = [stat.json(include_player=include_player) for stat in stats]
+        # ✅ Sérialiser avec les données du player (masquer l'ID si anonymisé)
+        ladder = []
+        for stat in stats:
+            stat_json = stat.json(include_player=include_player)
+            
+            # ✅ Si le joueur est anonymisé, supprimer son ID
+            if include_player and stat.player and stat.player.is_anonymized:
+                stat_json['player']['id'] = None
+            
+            ladder.append(stat_json)
         
         # Calculer quelques métadonnées utiles (sur la page actuelle)
         page_players = len(stats)

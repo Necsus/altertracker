@@ -265,15 +265,20 @@
                   </div>
                   }
                   <div>
+                    @if (player.player.id) {
                     <a [routerLink]="['/player', player.player.id]"
                       class="font-semibold text-white hover:text-amber-400">{{
                       player.player.name }}</a>
                     <div class="text-sm text-gray-400">{{ player.player.country }}</div>
+                    } @else {
+                    <span class="font-semibold text-gray-400">{{
+                      player.player.name }}</span>
+                    }
                   </div>
                 </div>
               </td>
               <td class="px-6 py-4 whitespace-nowrap hidden md:table-cell">
-                @if (player.player.team_id) {
+                @if (player.player.team_id && player.player.id) {
                 <span
                   class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-900 text-blue-300">
                   <i class="fas fa-flag mr-1"></i>{{ player.player.team_name }}
@@ -286,7 +291,11 @@
                 <span class="text-lg font-bold text-amber-500">{{ player.points | number }}</span>
               </td>
               <td class="px-6 py-4 whitespace-nowrap text-right hidden lg:table-cell">
+                @if (player.player.id) {
                 <span class="text-green-400 font-semibold">{{ player.win_rate | number: '1.0-0' }}%</span>
+                } @else {
+                <span class="text-gray-500">-</span>
+                }
               </td>
             </tr>
             } @empty {
