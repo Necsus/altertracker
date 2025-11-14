@@ -1,5 +1,5 @@
 export interface PlayerModel {
-  id: string;
+  id: string | null;
   bga_id: number;
   bga_banned: boolean | null;
   name: string;
@@ -18,4 +18,5 @@ export interface PlayerModel {
   updated_at: string | null;
   is_active: boolean | null;
   last_game_at: string | null;
+  is_anonymized: boolean | null;
 }
