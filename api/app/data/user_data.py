@@ -112,6 +112,18 @@ def get_user_alert_with_card_data(id_user: int) -> list[dict]:
 
 def save_user_alert_data(data: dict) -> UserAlert:
     try:
+        # ✅ VÉRIFIER SI L'ALERTE EXISTE DÉJÀ
+        existing_alert = db.session.query(UserAlert).filter_by(
+            id_user=data.get('id_user'),
+            id_search=data.get('id_search'),
+            reference_card=data.get('reference_card')
+        ).first()
+        
+        if existing_alert:
+            # ✅ Alerte déjà existante, on la retourne sans créer de doublon
+            return existing_alert
+        
+        # ✅ Créer une nouvelle alerte seulement si elle n'existe pas
         user_alert = UserAlert(**data)
         db.session.add(user_alert)
         db.session.commit()
