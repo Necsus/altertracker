@@ -8,15 +8,14 @@ app = create_app()
 with app.app_context():
     print("🔍 Recherche des doublons d'alertes...")
     
-    # ✅ Trouver les doublons (id_user, id_search, reference_card)
+    # ✅ CORRECTION : Trouver les doublons (id_user, reference_card) - id_search peut être NULL
     duplicates = (
         db.session.query(
             UserAlert.id_user,
-            UserAlert.id_search,
             UserAlert.reference_card,
             func.count(UserAlert.id).label('nb')
         )
-        .group_by(UserAlert.id_user, UserAlert.id_search, UserAlert.reference_card)
+        .group_by(UserAlert.id_user, UserAlert.reference_card)
         .having(func.count(UserAlert.id) > 1)
         .all()
     )
@@ -29,13 +28,13 @@ with app.app_context():
     else:
         print(f"⚠️  {total_groups} groupe(s) de doublons trouvé(s)")
 
-    for id_user, id_search, reference_card, nb in duplicates:
-        print(f"  • User {id_user}, Search {id_search}, Card {reference_card}: {nb} exemplaires")
+    for id_user, reference_card, nb in duplicates:
+        print(f"  • User {id_user}, Card {reference_card}: {nb} exemplaires")
         
         # Récupère tous les doublons, triés du plus récent au plus ancien
         alerts = (
             UserAlert.query
-            .filter_by(id_user=id_user, id_search=id_search, reference_card=reference_card)
+            .filter_by(id_user=id_user, reference_card=reference_card)
             .order_by(UserAlert.created_at.desc())
             .all()
         )
