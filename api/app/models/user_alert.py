@@ -3,12 +3,18 @@ from app.extensions import db
 
 
 class UserAlert(db.Model):
+    __tablename__ = 'user_alert'
+    
     id = db.Column(db.Integer, primary_key=True)
     id_user = db.Column(db.Integer, nullable=False)
     id_search = db.Column(db.Integer, nullable=True)
     reference_card = db.Column(db.String(200), nullable=False)
     mail_active = db.Column(db.Boolean, nullable=False, default=False)
     created_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc), nullable=False)
+
+    # __table_args__ = (
+    #     db.UniqueConstraint('id_user', 'id_search', 'reference_card', name='uq_user_search_card'),
+    # )
 
     def __repr__(self):
           return f"<UserAlert {self.reference_card}>"
