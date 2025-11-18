@@ -12,9 +12,9 @@ class UserAlert(db.Model):
     mail_active = db.Column(db.Boolean, nullable=False, default=False)
     created_at = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc), nullable=False)
 
-    # __table_args__ = (
-    #     db.UniqueConstraint('id_user', 'id_search', 'reference_card', name='uq_user_search_card'),
-    # )
+    __table_args__ = (
+        db.UniqueConstraint('id_user', 'reference_card', name='uq_user_search_card'),
+    )
 
     def __repr__(self):
           return f"<UserAlert {self.reference_card}>"
