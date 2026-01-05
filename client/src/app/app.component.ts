@@ -2,25 +2,25 @@ import { AfterViewInit, Component, ViewChild, ViewContainerRef } from '@angular/
 import { RouterOutlet } from '@angular/router';
 import { AuthStorageService } from './00_common/services/auth-storage.service';
 import { AuthViewService } from './authentication/auth-view.service';
+import { CookiesComponent } from './authentication/cookies/cookies.component';
+import { BuyMeCoffeeComponent } from './shared/buymecoffee/buymecoffee.component';
+import { FooterComponent } from './shared/footer/footer.component';
+import { HeaderComponent } from './shared/header/header.component';
+import { LoaderComponent } from './shared/services/loader/loader.component';
 import { ModalService } from './shared/services/modal/modal.service';
-// import { CookiesComponent } from './authentication/cookies/cookies.component';
-// import { BuyMeCoffeeComponent } from './shared/buymecoffee/buymecoffee.component';
-// import { FooterComponent } from './shared/footer/footer.component';
-// import { HeaderComponent } from './shared/header/header.component';
-// import { LoaderComponent } from './shared/services/loader/loader.component';
-// import { ToastComponent } from './shared/services/toast/toast.component';
+import { ToastComponent } from './shared/services/toast/toast.component';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   imports: [
     RouterOutlet,
-    // ToastComponent,
-    // LoaderComponent,
-    // HeaderComponent,
-    // FooterComponent,
-    // CookiesComponent,
-    // BuyMeCoffeeComponent
+    ToastComponent,
+    LoaderComponent,
+    HeaderComponent,
+    FooterComponent,
+    CookiesComponent,
+    BuyMeCoffeeComponent
   ],
 })
 export class AppComponent implements AfterViewInit {

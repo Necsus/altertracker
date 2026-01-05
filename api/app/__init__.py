@@ -45,19 +45,19 @@ def create_app():
     limiter.init_app(app)
     cache.init_app(app)
 
-    # app.register_blueprint(global_bp, url_prefix="/api/global")
-    # app.register_blueprint(auth_bp, url_prefix="/api/auth")
-    # app.register_blueprint(card_bp, url_prefix="/api/card")
-    # app.register_blueprint(offer_bp, url_prefix="/api/offer")
-    # app.register_blueprint(user_bp, url_prefix="/api/user")
-    # app.register_blueprint(discord_bp, url_prefix="/api/discord")
-    # app.register_blueprint(script_bp, url_prefix="/api/script")
-    # app.register_blueprint(purchase_bp, url_prefix="/api/purchase")
-    # app.register_blueprint(cookiemanager_bp, url_prefix="/api/cookie-manager")
-    # app.register_blueprint(chat_bp, url_prefix="/api/chat")
-    # app.register_blueprint(article_bp, url_prefix='/api/article')
-    # app.register_blueprint(player_bp, url_prefix='/api/player')
-    # app.register_blueprint(deck_bp, url_prefix='/api/decks')  # ✅ Enregistrer les routes decks
+    app.register_blueprint(global_bp, url_prefix="/api/global")
+    app.register_blueprint(auth_bp, url_prefix="/api/auth")
+    app.register_blueprint(card_bp, url_prefix="/api/card")
+    app.register_blueprint(offer_bp, url_prefix="/api/offer")
+    app.register_blueprint(user_bp, url_prefix="/api/user")
+    app.register_blueprint(discord_bp, url_prefix="/api/discord")
+    app.register_blueprint(script_bp, url_prefix="/api/script")
+    app.register_blueprint(purchase_bp, url_prefix="/api/purchase")
+    app.register_blueprint(cookiemanager_bp, url_prefix="/api/cookie-manager")
+    app.register_blueprint(chat_bp, url_prefix="/api/chat")
+    app.register_blueprint(article_bp, url_prefix='/api/article')
+    app.register_blueprint(player_bp, url_prefix='/api/player')
+    app.register_blueprint(deck_bp, url_prefix='/api/decks')  # ✅ Enregistrer les routes decks
 
     @app.before_request
     def handle_options():
